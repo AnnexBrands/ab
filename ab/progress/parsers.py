@@ -144,7 +144,8 @@ def _parse_table_row(line: str, group: EndpointGroup) -> Endpoint | None:
 # --- FIXTURES.md parsing ---
 
 _CAPTURED_SECTION_RE = re.compile(r"^## Captured Fixtures", re.IGNORECASE)
-_PENDING_SECTION_RE = re.compile(r"^## Pending Fixtures", re.IGNORECASE)
+_NEEDS_REQUEST_RE = re.compile(r"^## Needs Request Data", re.IGNORECASE)
+_NEEDS_ACCESS_RE = re.compile(r"^## Needs Access", re.IGNORECASE)
 _FIXTURE_ROW_RE = re.compile(r"^\|[^|]+\|")
 
 
@@ -154,7 +155,8 @@ def parse_fixtures(path: Path) -> list[Fixture]:
     lines = text.splitlines()
 
     fixtures: list[Fixture] = []
-    section: str | None = None  # "captured" or "pending"
+    # "captured", "needs-request-data", or "needs-access"
+    section: str | None = None
     header_seen = False
 
     for line in lines:
@@ -162,9 +164,17 @@ def parse_fixtures(path: Path) -> list[Fixture]:
             section = "captured"
             header_seen = False
             continue
-        if _PENDING_SECTION_RE.match(line):
-            section = "pending"
+        if _NEEDS_REQUEST_RE.match(line):
+            section = "needs-request-data"
             header_seen = False
+            continue
+        if _NEEDS_ACCESS_RE.match(line):
+            section = "needs-access"
+            header_seen = False
+            continue
+        # Any other ## heading ends the current section
+        if line.startswith("## "):
+            section = None
             continue
 
         if section is None:
@@ -188,7 +198,7 @@ def parse_fixtures(path: Path) -> list[Fixture]:
         if section == "captured":
             f = _parse_captured_row(cells)
         else:
-            f = _parse_pending_row(cells)
+            f = _parse_non_captured_row(cells, section)
 
         if f:
             fixtures.append(f)
@@ -214,19 +224,18 @@ def _parse_captured_row(cells: list[str]) -> Fixture | None:
     )
 
 
-def _parse_pending_row(cells: list[str]) -> Fixture | None:
-    """Parse a pending fixture row.
+def _parse_non_captured_row(cells: list[str], status: str) -> Fixture | None:
+    """Parse a needs-request-data or needs-access fixture row.
 
-    Columns: Endpoint Path | Method | Model Name | Capture Instructions | Blocker | ABConnectTools Ref
+    Columns: Endpoint Path | Method | Model Name | What's Missing or Access Required | ABConnectTools Ref
     """
-    if len(cells) < 5:
+    if len(cells) < 4:
         return None
     return Fixture(
         endpoint_path=cells[0],
         method=cells[1],
         model_name=cells[2],
-        status="pending",
-        capture_instructions=cells[3] if len(cells) > 3 else None,
-        blocker=cells[4] if len(cells) > 4 else None,
-        ref=cells[5] if len(cells) > 5 and cells[5] != "—" else None,
+        status=status,
+        blocker=cells[3] if len(cells) > 3 else None,
+        ref=cells[4] if len(cells) > 4 and cells[4] != "—" else None,
     )

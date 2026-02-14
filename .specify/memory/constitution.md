@@ -5,7 +5,7 @@
   Bump rationale: MINOR — Principle II rewritten (Fixture-Driven
     Development → Example-Driven Fixture Capture), Principle III
     reordered (Example before Fixture), Principle V status taxonomy
-    expanded (pending split into needs-request-data / needs-access),
+    simplified (pending replaced by needs-request-data),
     Development Workflow DISCOVER phases redefined (C = Call &
     Capture via examples, E = Enrich docs). No principles removed
     or incompatibly redefined.
@@ -18,23 +18,15 @@
     - III. Four-Way Harmony: Artifact order changed. Example now
       precedes Fixture & Test (example produces the fixture).
     - V. Pending Fixture Tracking → V. Endpoint Status Tracking:
-      Status taxonomy expanded. Generic "pending" replaced by
-      "needs-request-data" and "needs-access" for precision.
+      Status taxonomy simplified. Generic "pending" replaced by
+      "needs-request-data" — every failure is a request problem.
   Added sections: None
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ no update needed
-  Follow-up TODOs:
-    - Update .claude/workflows/DISCOVER.md to match new phase
-      definitions (C = Call & Capture, E = Enrich docs, D =
-      Determine requirements)
-    - Update FIXTURES.md pending table to use new status taxonomy
-      (needs-request-data vs needs-access instead of generic
-      "pending")
-    - Review existing examples/ to ensure they have researched
-      request params from ABConnectTools/swagger
+  Follow-up TODOs: None — all files updated in this revision.
 -->
 # ABConnect SDK Constitution
 
@@ -95,8 +87,8 @@ research the endpoint's requirements from two sources:
      `/AutoPrice/QuoteRequest` needs an items array with weight
      and class fields).
    - Missing **URL parameters** (e.g., `{addressId}` in the path).
-   - **Access/auth issue** — requires specific role or data state
-     that only a human can provide.
+   - **Unknown issue** — research ABConnectTools and swagger more
+     deeply for edge cases, required headers, or prerequisites.
 
 **Rules**:
 
@@ -104,10 +96,7 @@ research the endpoint's requirements from two sources:
   API response) are **prohibited**.
 - A failed API call MUST NOT be treated as "needs a response
   fixture." It MUST be treated as "example needs correct request
-  data."
-- Only when the request is confirmed correct and the failure is
-  due to access restrictions or missing staging data SHOULD the
-  endpoint be parked as `needs-access`.
+  data." Every failure is a request problem until proven otherwise.
 - Fixture files MUST be named `{ModelName}.json` and placed in
   `tests/fixtures/`.
 - `FIXTURES.md` at the repository root MUST track every endpoint's
@@ -169,16 +158,12 @@ repository root. Each entry MUST include:
 
 - Endpoint path and HTTP method.
 - Model name.
-- Status: one of **captured**, **needs-request-data**, or
-  **needs-access**.
+- Status: **captured** or **needs-request-data**.
 - For **captured**: date captured and source (staging, production,
   or legacy-validated).
 - For **needs-request-data**: what the example is missing — the
   specific query parameters, request body fields, or URL parameters
   that must be researched from ABConnectTools or swagger.
-- For **needs-access**: what access is required — specific role,
-  data precondition (e.g., "needs active shipment on job"), or
-  environment limitation (e.g., "no catalog data in staging").
 
 Rules:
 
@@ -191,8 +176,8 @@ Rules:
 - When a fixture is captured, the test MUST be updated to remove
   the skip and add `@pytest.mark.live`.
 - Entries MUST NOT use a generic "pending" status. Every
-  non-captured endpoint MUST specify whether it needs request
-  data or access.
+  non-captured endpoint MUST specify what request data is
+  missing.
 
 ### VI. Documentation Completeness
 
@@ -325,8 +310,7 @@ explicit entry/exit criteria to support clean context recovery
 4. **C — Call & Capture** — Write runnable examples using request
    data researched in Phase D. Run examples against staging.
    200 responses become fixtures. Errors are diagnosed as
-   request-data problems (Principle II). Endpoints needing
-   access are parked as `needs-access`.
+   request-data problems (Principle II).
 5. **O — Observe tests** — Run full test suite. Confirm Four-Way
    Harmony artifacts exist. Update `FIXTURES.md`.
 6. **V — Verify & commit** — Checkpoint commit. Phase complete
@@ -342,9 +326,8 @@ explicit entry/exit criteria to support clean context recovery
 - Phase C (Call & Capture) MUST use request data researched in
   Phase D. Agents MUST NOT fabricate fixture data. If an example
   returns an error, the agent MUST diagnose and fix the request
-  (wrong params, missing body fields). If the error is due to
-  access restrictions or missing staging data, the endpoint is
-  parked as `needs-access` in `FIXTURES.md`.
+  (wrong params, missing body fields). Track unresolved endpoints
+  as `needs-request-data` in `FIXTURES.md` with specifics.
 - Each phase MUST produce committed artifacts before proceeding.
 - When context is lost mid-phase, resume from the last committed
   checkpoint using Principle VIII recovery procedure.

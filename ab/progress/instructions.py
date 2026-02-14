@@ -47,42 +47,48 @@ def detect_required_constants(endpoint: Endpoint) -> list[str]:
 
 def build_instructions(item: ActionItem, constants: list[Constant]) -> list[str]:
     """Build step-by-step instructions based on blocker type."""
-    if item.blocker_type == "capture":
-        return _instructions_capture(item)
+    if item.blocker_type == "needs_request_data":
+        return _instructions_needs_request_data(item)
     elif item.blocker_type == "constant_needed":
         return _instructions_constant_needed(item)
-    elif item.blocker_type == "env_blocked":
-        return _instructions_env_blocked(item)
     elif item.blocker_type == "not_implemented":
         return _instructions_not_implemented(item)
     return []
 
 
-def _instructions_capture(item: ActionItem) -> list[str]:
-    """Instructions for endpoints that just need fixture capture."""
-    model = item.endpoint.response_model
+def _instructions_needs_request_data(item: ActionItem) -> list[str]:
+    """Instructions for endpoints that need correct request data."""
+    ep = item.endpoint
+    model = ep.response_model
+    group_lower = ep.group_name.lower().replace(" ", "_").replace("—", "").strip("_")
+
     steps = []
 
-    if item.fixture and item.fixture.capture_instructions:
+    # Show what's missing if known from FIXTURES.md
+    if item.fixture and item.fixture.blocker:
         steps.append(
-            f"Call the endpoint: <code>{item.fixture.capture_instructions}</code>"
-        )
-    else:
-        steps.append(
-            f"Call <code>{item.endpoint.method} {item.endpoint.path}</code> "
-            f"against staging API"
+            f"<strong>What's missing:</strong> {item.fixture.blocker}"
         )
 
     steps.append(
-        f"Save the JSON response to <code>tests/fixtures/{model}.json</code>"
+        f"Research ABConnectTools endpoint code "
+        f"(<code>endpoints/{group_lower}.py</code>) and swagger "
+        f"for required params/body"
+    )
+    steps.append(
+        f"Fix the example in <code>examples/{group_lower}.py</code> "
+        f"with correct request data"
+    )
+    steps.append(
+        f"Run the example — save 200 response to "
+        f"<code>tests/fixtures/{model}.json</code>"
     )
     steps.append(
         f"Run <code>pytest tests/ -k {_test_name(model)}</code> to verify "
         f"the fixture validates against the Pydantic model"
     )
     steps.append(
-        f"Update <code>FIXTURES.md</code>: move this entry from Pending to "
-        f"Captured with today's date"
+        "Update <code>FIXTURES.md</code>: move to Captured with today's date"
     )
 
     return steps
@@ -103,57 +109,35 @@ def _instructions_constant_needed(item: ActionItem) -> list[str]:
             f"<code>tests/constants.py</code>"
         )
 
-    # Then add capture steps
-    steps.extend(_instructions_capture(item))
+    # Then add request data steps
+    steps.extend(_instructions_needs_request_data(item))
     return steps
 
 
-def _instructions_env_blocked(item: ActionItem) -> list[str]:
-    """Instructions for endpoints blocked by environment limitations."""
-    blocker = item.fixture.blocker if item.fixture else "Unknown environment limitation"
-    model = item.endpoint.response_model
-
-    return [
-        f"<strong>Blocked:</strong> {blocker}",
-        "This fixture cannot be captured from the staging environment.",
-        (
-            "Options: (a) capture from production if you have access, "
-            "(b) request test data setup in staging, "
-            "or (c) defer until the environment limitation is resolved."
-        ),
-        (
-            f"When resolved, save the response to "
-            f"<code>tests/fixtures/{model}.json</code> and update "
-            f"<code>FIXTURES.md</code>"
-        ),
-    ]
-
-
 def _instructions_not_implemented(item: ActionItem) -> list[str]:
-    """Instructions for endpoints that need full implementation."""
+    """Instructions for endpoints that need full DISCOVER workflow."""
     ep = item.endpoint
     model = ep.response_model
     group_lower = ep.group_name.lower().replace(" ", "_").replace("—", "").strip("_")
 
     steps = [
-        f"<strong>Implementation needed</strong> — this endpoint has no models "
-        f"or code yet",
+        f"<strong>Phase D:</strong> Research ABConnectTools "
+        f"(<code>endpoints/{group_lower}.py</code>, "
+        f"<code>examples/api/{group_lower}.py</code>) "
+        f"and swagger for required params/body",
     ]
 
     if model and model != "—" and model != "ServiceBaseResponse":
         steps.append(
-            f"Create Pydantic model <code>{model}</code> in "
+            f"<strong>Phase I:</strong> Create Pydantic model "
+            f"<code>{model}</code> in "
             f"<code>ab/api/models/{group_lower}.py</code>"
         )
 
     steps.append(
-        f"Add endpoint method for <code>{ep.method} {ep.path}</code> in "
+        f"<strong>Phase S:</strong> Add endpoint method for "
+        f"<code>{ep.method} {ep.path}</code> in "
         f"<code>ab/api/endpoints/{group_lower}.py</code>"
-    )
-
-    steps.append(
-        f"Create skeleton test with <code>require_fixture(\"{model}\", "
-        f"\"{ep.method}\", \"{ep.path}\")</code>"
     )
 
     if ep.ref_status != "none":
@@ -163,7 +147,8 @@ def _instructions_not_implemented(item: ActionItem) -> list[str]:
         )
 
     steps.append(
-        f"Capture fixture: save response to "
+        f"<strong>Phase C:</strong> Write example with researched params, "
+        f"run it, save 200 response to "
         f"<code>tests/fixtures/{model}.json</code>"
     )
 

@@ -31,9 +31,8 @@ tr:hover { background: #f9f9f9; }
 .badge-done { background: #28a745; color: #fff; }
 .badge-pending { background: #ffc107; color: #333; }
 .badge-ns { background: #6c757d; color: #fff; }
-.badge-capture { background: #17a2b8; color: #fff; }
+.badge-request { background: #17a2b8; color: #fff; }
 .badge-constant { background: #fd7e14; color: #fff; }
-.badge-envblocked { background: #dc3545; color: #fff; }
 details { margin: 6px 0; border: 1px solid #ddd; border-radius: 4px; }
 details[open] { border-color: #aaa; }
 summary { padding: 8px 12px; cursor: pointer; font-size: 0.9rem;
@@ -184,7 +183,7 @@ def render_action_required(action_items: list[ActionItem]) -> str:
         parts.append(
             f"<p class='tier-header'>"
             f"<span class='badge badge-pending'>Tier 1</span> "
-            f"Scaffolded — needs fixture capture or constants "
+            f"Scaffolded — needs correct request data "
             f"({len(tier1)} endpoints)</p>"
         )
         parts.append(_render_tier_groups(tier1))
@@ -256,9 +255,8 @@ def _render_action_item(item: ActionItem) -> str:
 def _blocker_badge(blocker_type: str) -> str:
     """Render a badge for the blocker type."""
     labels = {
-        "capture": ("Needs Fixture", "badge-capture"),
+        "needs_request_data": ("Needs Request Data", "badge-request"),
         "constant_needed": ("Needs Constant", "badge-constant"),
-        "env_blocked": ("Env Blocked", "badge-envblocked"),
         "not_implemented": ("Not Started", "badge-ns"),
     }
     label, cls = labels.get(blocker_type, ("Unknown", "badge-ns"))

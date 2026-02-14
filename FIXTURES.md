@@ -2,14 +2,15 @@
 
 Tracks capture status for all endpoint fixtures in `tests/fixtures/`.
 
-**Constitution**: v2.0.0, Principles II & V
-**Rule**: Fabricated fixtures are prohibited. Every fixture MUST
-come from a real API response (human-captured or legacy-validated).
+**Constitution**: v2.1.0, Principles II & V
+**Rule**: Fabricated fixtures are prohibited. Failed API calls
+mean the example needs correct request data — not a response
+fixture. See Principle II (Example-Driven Fixture Capture).
 
 ## Summary
 
 - **Captured**: 22
-- **Pending**: 27
+- **Needs Request Data**: 27
 
 ## Captured Fixtures
 
@@ -38,42 +39,39 @@ come from a real API response (human-captured or legacy-validated).
 | /users/list | POST | User | 2026-02-13 | staging | — |
 | /users/roles | GET | UserRole | 2026-02-13 | staging | `UsersRoles.json` |
 
-## Pending Fixtures
+## Needs Request Data
 
-Endpoints below have models and skeleton tests but need real
-fixtures captured by a human. Run the endpoint against staging
-and save the JSON response to `tests/fixtures/{ModelName}.json`.
+Endpoints below return errors because the example has wrong or
+missing request parameters. Research ABConnectTools endpoint code,
+examples, and swagger to find the correct request data. Fix the
+example, re-run, and capture the fixture.
 
-The **ABConnectTools Ref** column shows fixtures in the legacy
-project that can be referenced for response shape (do NOT copy —
-capture fresh from staging).
-
-| Endpoint Path | Method | Model Name | Capture Instructions | Blocker | ABConnectTools Ref |
-|---------------|--------|------------|---------------------|---------|-------------------|
-| /address/isvalid | GET | AddressIsValidResult | `api.address.validate(...)` — needs valid address params | Returns 400 in staging with test params | — |
-| /address/propertytype | GET | PropertyType | `api.address.get_property_type(...)` | Returns 204 in staging | — |
-| /lookup/items | GET | LookupItem | `api.lookup.get_items(...)` | Returns 204 in staging | — |
-| /Catalog | GET | CatalogWithSellersDto | `api.catalog.list()` | No catalog data in staging | — |
-| /Catalog/{id} | GET | CatalogExpandedDto | `api.catalog.get(catalog_id)` | No catalog data in staging | — |
-| /Lot | GET | LotDto | `api.lots.list(catalog_id)` | No lot data in staging | — |
-| /Lot/{id} | GET | LotDataDto | `api.lots.get(lot_id)` | No lot data in staging | — |
-| /Lot/overrides | POST | LotOverrideDto | `api.lots.get_overrides(...)` | No lot data in staging | — |
-| /AutoPrice/QuoteRequest | POST | QuoteRequestResponse | `api.autoprice.quote_request(...)` — needs valid job with items | Requires certified quote-eligible job | — |
-| /job/{id}/timeline | GET | TimelineTask | `api.jobs.get_timeline(job_id)` — use job with active timeline | Needs job with timeline data | — |
-| /job/{id}/timeline/{taskCode}/agent | GET | TimelineAgent | `api.jobs.get_timeline_agent(job_id, task_code)` | Needs job with timeline agent | — |
-| /job/{id}/tracking | GET | TrackingInfo | `api.jobs.get_tracking(job_id)` — use shipped job | Needs job with shipment tracking | — |
-| /v3/job/{id}/tracking/{historyAmount} | GET | TrackingInfoV3 | `api.jobs.get_tracking_v3(job_id, 5)` | Needs job with shipment tracking | — |
-| /job/{id}/shipment/ratequotes | GET | RateQuote | `api.shipments.get_rate_quotes(job_id)` | Needs job with rate quotes | — |
-| /job/{id}/shipment/origindestination | GET | ShipmentOriginDestination | `api.shipments.get_origin_destination(job_id)` | Needs job with shipment addresses | — |
-| /job/{id}/shipment/accessorials | GET | Accessorial | `api.shipments.get_accessorials(job_id)` | Needs job with shipment | `ShipmentAccessorials.json` |
-| /job/{id}/shipment/ratesstate | GET | RatesState | `api.shipments.get_rates_state(job_id)` | Needs job in rating phase | — |
-| /shipment | GET | ShipmentInfo | `api.shipments.get_shipment(shipment_id)` | Needs valid shipment ID | — |
-| /shipment/accessorials | GET | GlobalAccessorial | `api.shipments.get_global_accessorials()` | May need specific carrier config | `ShipmentAccessorials.json` |
-| /job/{id}/payment | GET | PaymentInfo | `api.payments.get(job_id)` | Needs job with payment data | — |
-| /job/{id}/payment/sources | GET | PaymentSource | `api.payments.get_sources(job_id)` | Needs job with payment sources | — |
-| /job/{id}/payment/ACHPaymentSession | POST | ACHSessionResponse | `api.payments.create_ach_session(job_id, ...)` | Needs ACH-eligible job | — |
-| /job/{id}/form/shipments | GET | FormsShipmentPlan | `api.forms.get_shipments(job_id)` | Needs job with shipment plan | — |
-| /job/{id}/note | GET | JobNote | `api.jobs.get_notes(job_id)` — use job with notes | Needs job with notes | — |
-| /job/{id}/parcelitems | GET | ParcelItem | `api.jobs.get_parcel_items(job_id)` | Needs job with parcel items | — |
-| /job/{id}/parcel-items-with-materials | GET | ParcelItemWithMaterials | `api.jobs.get_parcel_items_with_materials(job_id)` | Needs job with packed items | — |
-| /job/{id}/packagingcontainers | GET | PackagingContainer | `api.jobs.get_packaging_containers(job_id)` | Needs job with containers | — |
+| Endpoint Path | Method | Model Name | What's Missing | ABConnectTools Ref |
+|---------------|--------|------------|---------------|-------------------|
+| /address/isvalid | GET | AddressIsValidResult | Query params: needs valid `street`, `city`, `state`, `zipCode` — returns 400 with test params | — |
+| /address/propertytype | GET | PropertyType | Query params: needs valid `street` + `zipCode` for a real address — returns 204 with test params | — |
+| /AutoPrice/QuoteRequest | POST | QuoteRequestResponse | Request body: needs items array with `weight`, `class` fields and valid origin/destination — research ABConnectTools `endpoints/autoprice.py` | — |
+| /lookup/items | GET | LookupItem | Returns 204 — research ABConnectTools for required query params or correct lookup key | — |
+| /Catalog | GET | CatalogWithSellersDto | Returns empty — research ABConnectTools `endpoints/catalog.py` for required params or correct staging catalog IDs | — |
+| /Catalog/{id} | GET | CatalogExpandedDto | Needs valid catalog ID — research ABConnectTools examples for realistic IDs | — |
+| /Lot | GET | LotDto | Needs valid catalog ID param — research ABConnectTools `endpoints/lots.py` | — |
+| /Lot/{id} | GET | LotDataDto | Needs valid lot ID — research ABConnectTools examples | — |
+| /Lot/overrides | POST | LotOverrideDto | Request body: needs lot override params — research ABConnectTools `endpoints/lots.py` | — |
+| /job/{id}/timeline | GET | TimelineTask | Needs job ID with active timeline — research ABConnectTools `endpoints/jobs/timeline.py` for correct job selection | — |
+| /job/{id}/timeline/{taskCode}/agent | GET | TimelineAgent | Needs job ID + task code — research ABConnectTools for valid task codes | — |
+| /job/{id}/tracking | GET | TrackingInfo | Needs shipped job ID — research ABConnectTools `endpoints/jobs/tracking.py` for job selection criteria | — |
+| /v3/job/{id}/tracking/{historyAmount} | GET | TrackingInfoV3 | Needs shipped job ID + history amount param — research ABConnectTools for v3 tracking endpoint | — |
+| /job/{id}/shipment/ratequotes | GET | RateQuote | Needs job ID with rate quotes — research ABConnectTools `endpoints/jobs/shipments.py` | — |
+| /job/{id}/shipment/origindestination | GET | ShipmentOriginDestination | Needs job ID with shipment — research ABConnectTools `endpoints/jobs/shipments.py` | — |
+| /job/{id}/shipment/accessorials | GET | Accessorial | Needs job ID with active shipment — research ABConnectTools `endpoints/jobs/shipments.py` | `ShipmentAccessorials.json` |
+| /job/{id}/shipment/ratesstate | GET | RatesState | Needs job ID in rating phase — research ABConnectTools for job state requirements | — |
+| /shipment | GET | ShipmentInfo | Needs valid shipment ID — research ABConnectTools `endpoints/shipments.py` for ID lookup | — |
+| /shipment/accessorials | GET | GlobalAccessorial | Research ABConnectTools `endpoints/shipments.py` for correct params | `ShipmentAccessorials.json` |
+| /job/{id}/payment | GET | PaymentInfo | Needs job ID with payment data — research ABConnectTools `endpoints/jobs/payments.py` | — |
+| /job/{id}/payment/sources | GET | PaymentSource | Needs job ID with payment sources — research ABConnectTools `endpoints/jobs/payments.py` | — |
+| /job/{id}/payment/ACHPaymentSession | POST | ACHSessionResponse | Request body: needs ACH session params — research ABConnectTools `endpoints/jobs/payments.py` | — |
+| /job/{id}/form/shipments | GET | FormsShipmentPlan | Needs job ID with shipment plan — research ABConnectTools `endpoints/jobs/forms.py` | — |
+| /job/{id}/note | GET | JobNote | Needs job ID with notes — research ABConnectTools `endpoints/jobs/notes.py` | — |
+| /job/{id}/parcelitems | GET | ParcelItem | Needs job ID with parcel items — research ABConnectTools `endpoints/jobs/parcels.py` | — |
+| /job/{id}/parcel-items-with-materials | GET | ParcelItemWithMaterials | Needs job ID with packed items — research ABConnectTools for correct endpoint params | — |
+| /job/{id}/packagingcontainers | GET | PackagingContainer | Needs job ID with containers — research ABConnectTools for correct endpoint params | — |

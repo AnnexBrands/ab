@@ -23,23 +23,19 @@ flowchart TD
     E[E — Enrich docs\nSphinx documentation]
     R[R — Release\nPR ready]
     FIX[FIX REQUEST\nResearch correct\nparams / body]
-    PARK[PARK\nneeds-access\nin FIXTURES.md]
     MORE{More service\ngroups?}
 
     D --> I --> S --> C
     C -->|200 response| O
-    C -->|error: bad request| FIX
-    C -->|error: access/data| PARK
+    C -->|error| FIX
     FIX --> C
     O --> V --> E --> R
-    PARK --> V
     R --> MORE
     MORE -->|yes| D
     MORE -->|no| DONE[Done]
 
     style C fill:#d4edda,stroke:#155724
     style FIX fill:#fff3cd,stroke:#856404
-    style PARK fill:#f8d7da,stroke:#721c24
     style R fill:#d4edda,stroke:#155724
     style DONE fill:#d4edda,stroke:#155724
 ```
@@ -146,13 +142,9 @@ researched in Phase D. Run examples against staging.
 2. Run the example.
 3. **200 response** → save response as fixture in
    `tests/fixtures/{ModelName}.json`. Done.
-4. **Error response** → diagnose:
-   - **Bad request (4xx)** → the example has wrong or missing
-     request data. Go back to Phase D research for this endpoint.
-     Fix the example. Re-run. Do NOT ask for a response fixture.
-   - **Access/auth error or missing staging data** → request is
-     correct but needs human access or data that doesn't exist
-     in staging. Park as `needs-access` in `FIXTURES.md`.
+4. **Error response** → the example has wrong or missing request
+   data. Go back to Phase D research for this endpoint. Fix the
+   example. Re-run. Do NOT ask for a response fixture.
 
 **Examples go in `examples/{service}.py`**. Each example file
 covers all endpoints for that service group.
@@ -185,8 +177,8 @@ and add `@pytest.mark.live`. Update `FIXTURES.md` status to
 `captured`.
 
 **Exit**: Examples exist for all endpoints. Fixtures captured
-for endpoints that returned 200. Remaining endpoints parked
-with correct status in `FIXTURES.md`.
+for endpoints that returned 200. Remaining endpoints tracked
+as `needs-request-data` in `FIXTURES.md` with specifics.
 **Artifact**: `examples/{service}.py`,
 `tests/fixtures/{ModelName}.json` (for captured endpoints)
 
@@ -203,8 +195,7 @@ for target service group.
 3. Verify Four-Way Harmony checklist for each endpoint.
 
 **Exit**: All tests pass (captured) or skip with actionable
-messages (needs-request-data or needs-access). No unexpected
-failures.
+messages (needs-request-data). No unexpected failures.
 **Artifact**: Passing test output.
 
 **Four-Way Harmony checklist** (per endpoint):
@@ -224,17 +215,15 @@ failures.
 **Action**:
 1. Update `FIXTURES.md`:
    - Captured endpoints → `captured` with date and source.
-   - Endpoints with bad requests → `needs-request-data` with
+   - Endpoints still failing → `needs-request-data` with
      specifics on what params/body are missing.
-   - Endpoints needing access → `needs-access` with what
-     access/data is required.
 2. Update `specs/api-surface.md` — mark endpoints as done.
 3. Run full test suite: `pytest --tb=short`.
 4. Commit checkpoint.
 
 **Exit**: Clean git state. `FIXTURES.md` current. No generic
 "pending" statuses — every non-captured endpoint specifies
-whether it `needs-request-data` or `needs-access`.
+what request data is missing.
 **Artifact**: Git commit.
 
 **Commit message**:
@@ -314,7 +303,6 @@ git diff --stat
 # Count by status
 grep -c "captured" FIXTURES.md
 grep -c "needs-request-data" FIXTURES.md
-grep -c "needs-access" FIXTURES.md
 ```
 
 ### Step 5: Run tests to see current state
@@ -351,8 +339,8 @@ Quick lookup for Phase D:
 ## Anti-Patterns
 
 - **Fabricating fixtures**: Never invent JSON data. If the
-  example errors, fix the request. If access is the problem,
-  park the endpoint as `needs-access` and move on.
+  example errors, fix the request. Research ABConnectTools and
+  swagger to find the correct params/body.
 - **Asking for response fixtures when the request is wrong**:
   A 400 error means the example needs correct parameters, not
   that a human needs to provide a response. Research
@@ -365,8 +353,8 @@ Quick lookup for Phase D:
   stricter standards (extra="forbid"/"allow", drift logging,
   mixin inheritance).
 - **Generic "pending" status**: Every non-captured endpoint
-  MUST specify `needs-request-data` (fixable by research) or
-  `needs-access` (needs human). Never use a vague "pending."
+  MUST specify `needs-request-data` with details on what's
+  missing. Never use a vague "pending."
 - **Skipping phases**: Every phase produces artifacts. Skipping
   a phase leaves gaps that compound.
 - **Re-discovering endpoints**: The endpoint inventory lives in

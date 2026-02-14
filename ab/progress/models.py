@@ -52,11 +52,10 @@ class Fixture:
     endpoint_path: str
     method: str
     model_name: str
-    status: str  # "captured" or "pending"
+    status: str  # "captured" or "needs-request-data"
     capture_date: str | None = None
     source: str | None = None
-    capture_instructions: str | None = None
-    blocker: str | None = None
+    blocker: str | None = None  # "What's Missing" or "Access Required"
     ref: str | None = None
 
 
@@ -91,11 +90,10 @@ def classify_action_items(
 ) -> list[ActionItem]:
     """Classify non-done endpoints into action items with blocker types.
 
-    Status classification logic (from data-model.md):
+    Status classification logic (constitution v2.1.0):
     1. not_started AND no fixture record -> "not_implemented"
-    2. pending AND fixture blocker contains env limitation -> "env_blocked"
-    3. pending AND path has param AND required constant missing -> "constant_needed"
-    4. pending AND fixture file missing -> "capture"
+    2. pending AND path has param AND required constant missing -> "constant_needed"
+    3. any non-captured fixture or missing fixture file -> "needs_request_data"
     """
     from ab.progress.instructions import build_instructions, detect_required_constants
 
@@ -116,17 +114,17 @@ def classify_action_items(
             fixture = fixture_map.get((ep.path, ep.method))
             exists = ep.response_model in fixture_files
 
-            # Done endpoints: skip unless they have a pending fixture without
-            # a file on disk (code exists but fixture not yet captured)
+            # Done endpoints: skip unless they have a non-captured fixture
+            # without a file on disk (code exists but fixture not yet captured)
             if ep.ab_status == "done":
                 if exists:
                     continue  # fully done
-                # Check if there's a pending fixture for this model
+                # Check if there's a non-captured fixture for this model
                 model_fixture = fixture_by_model.get(ep.response_model)
-                if model_fixture and model_fixture.status == "pending":
+                if model_fixture and model_fixture.status != "captured":
                     fixture = model_fixture
                 else:
-                    continue  # done and no pending fixture record
+                    continue  # done and no outstanding fixture record
 
             # Determine tier: 1 = has code (done or pending), 2 = not started
             tier = 2 if ep.ab_status == "not_started" else 1
@@ -138,16 +136,12 @@ def classify_action_items(
             # Determine blocker type
             if ep.ab_status == "not_started" and fixture is None:
                 blocker = "not_implemented"
-            elif fixture and fixture.blocker and _is_env_blocked(fixture.blocker):
-                blocker = "env_blocked"
             elif missing and ep.ab_status != "not_started":
                 blocker = "constant_needed"
-            elif not exists and ep.ab_status != "not_started":
-                blocker = "capture"
             elif ep.ab_status == "not_started":
                 blocker = "not_implemented"
             else:
-                blocker = "capture"
+                blocker = "needs_request_data"
 
             item = ActionItem(
                 endpoint=ep,
@@ -170,7 +164,7 @@ def classify_action_items(
     covered_models = {i.endpoint.response_model for i in items}
 
     for fix in fixtures:
-        if fix.status != "pending":
+        if fix.status == "captured":
             continue
         if fix.model_name in covered_fixtures or fix.model_name in covered_models:
             continue
@@ -193,12 +187,10 @@ def classify_action_items(
         req_consts = detect_required_constants(ep)
         missing = [c for c in req_consts if c not in constant_names]
 
-        if fix.blocker and _is_env_blocked(fix.blocker):
-            blocker = "env_blocked"
-        elif missing:
+        if missing:
             blocker = "constant_needed"
         else:
-            blocker = "capture"
+            blocker = "needs_request_data"
 
         item = ActionItem(
             endpoint=ep,
@@ -223,15 +215,3 @@ def _group_from_path(endpoint_path: str) -> str:
     return "Unknown"
 
 
-def _is_env_blocked(blocker: str) -> bool:
-    """Check if a blocker reason indicates an environment limitation."""
-    env_keywords = [
-        "no catalog data",
-        "no lot data",
-        "no staging",
-        "not available in staging",
-        "requires certified",
-        "requires admin",
-    ]
-    lower = blocker.lower()
-    return any(kw in lower for kw in env_keywords)
