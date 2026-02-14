@@ -1,25 +1,85 @@
-"""Example: Company operations."""
+"""Example: Company operations (8 methods)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("Companies", env="staging")
 
-# Get a company by UUID
-company = api.companies.get_by_id("93179b52-3da9-e311-b6f8-000c298b59ee")
-print(f"Company: {company.name}")  # Navis Pack & Ship #14004OH
+LIVE_COMPANY_UUID = "93179b52-3da9-e311-b6f8-000c298b59ee"
 
-# Get company details
-details = api.companies.get_details("93179b52-3da9-e311-b6f8-000c298b59ee")
-print(f"Details: {details}")
+# ── Captured fixtures ────────────────────────────────────────────────
 
-# Get full details
-full = api.companies.get_fulldetails("93179b52-3da9-e311-b6f8-000c298b59ee")
-print(f"Full details: {full}")
+runner.add(
+    "get_by_id",
+    lambda api: api.companies.get_by_id(LIVE_COMPANY_UUID),
+    response_model="CompanySimple",
+    fixture_file="CompanySimple.json",
+)
 
-# List companies accessible to current user
-my_companies = api.companies.available_by_current_user()
-print(f"Accessible companies: {len(my_companies) if my_companies else 0}")
+runner.add(
+    "get_fulldetails",
+    lambda api: api.companies.get_fulldetails(LIVE_COMPANY_UUID),
+    response_model="CompanyDetails",
+    fixture_file="CompanyDetails.json",
+)
 
-# Search companies
-# results = api.companies.search({"searchText": "Navis"})
-# print(f"Search results: {results}")
+runner.add(
+    "available_by_current_user",
+    lambda api: api.companies.available_by_current_user(),
+    response_model="List[SearchCompanyResponse]",
+    fixture_file="SearchCompanyResponse.json",
+)
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "get_details",
+    lambda api: api.companies.get_details(
+        # TODO: capture fixture — needs company UUID with populated details
+        LIVE_COMPANY_UUID,
+    ),
+    response_model="CompanyDetails",
+)
+
+runner.add(
+    "update_fulldetails",
+    lambda api: api.companies.update_fulldetails(
+        LIVE_COMPANY_UUID,
+        # TODO: capture fixture — needs valid CompanyDetails body
+        {},
+    ),
+    request_model="CompanyDetails",
+    response_model="CompanyDetails",
+)
+
+runner.add(
+    "create",
+    lambda api: api.companies.create(
+        # TODO: capture fixture — needs valid CompanyDetails body for new company
+        {},
+    ),
+    request_model="CompanyDetails",
+    response_model="str",
+)
+
+runner.add(
+    "search",
+    lambda api: api.companies.search(
+        # TODO: capture fixture — needs valid CompanySearchRequest body
+        {},
+    ),
+    request_model="CompanySearchRequest",
+    response_model="List[SearchCompanyResponse]",
+)
+
+runner.add(
+    "list",
+    lambda api: api.companies.list(
+        # TODO: capture fixture — needs valid ListRequest body
+        {},
+    ),
+    request_model="ListRequest",
+    response_model="List[CompanySimple]",
+)
+
+if __name__ == "__main__":
+    runner.run()

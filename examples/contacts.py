@@ -1,25 +1,69 @@
-"""Example: Contact operations."""
+"""Example: Contact operations (7 methods)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("Contacts", env="staging")
 
-# Get current user's contact info
-me = api.contacts.get_current_user()
-print(f"Current user: {me.full_name}")
+# ── Captured fixtures ────────────────────────────────────────────────
 
-# Get a specific contact
-contact = api.contacts.get("30760")
-print(f"Contact: {contact}")
+runner.add(
+    "get_current_user",
+    lambda api: api.contacts.get_current_user(),
+    response_model="ContactSimple",
+    fixture_file="ContactSimple.json",
+)
 
-# Get contact details (editable form)
-details = api.contacts.get_details("30760")
-print(f"Details: {details}")
+runner.add(
+    "get_details",
+    lambda api: api.contacts.get_details("30760"),
+    response_model="ContactDetailedInfo",
+    fixture_file="ContactDetailedInfo.json",
+)
 
-# Get primary details
-primary = api.contacts.get_primary_details("30760")
-print(f"Primary: {primary.full_name} - {primary.email}")
+runner.add(
+    "get_primary_details",
+    lambda api: api.contacts.get_primary_details("30760"),
+    response_model="ContactPrimaryDetails",
+    fixture_file="ContactPrimaryDetails.json",
+)
 
-# Search contacts
-results = api.contacts.search({"searchText": "Justine"})
-print(f"Search results: {results}")
+runner.add(
+    "search",
+    lambda api: api.contacts.search({"searchText": "Justine"}),
+    request_model="ContactSearchRequest",
+    response_model="List[SearchContactEntityResult]",
+    fixture_file="SearchContactEntityResult.json",
+)
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "get",
+    lambda api: api.contacts.get(
+        # TODO: capture fixture — needs valid contact ID (string)
+        "30760",
+    ),
+    response_model="ContactSimple",
+)
+
+runner.add(
+    "update_details",
+    lambda api: api.contacts.update_details(
+        "30760",
+        # TODO: capture fixture — needs valid ContactEditRequest body
+        {},
+    ),
+    request_model="ContactEditRequest",
+)
+
+runner.add(
+    "create",
+    lambda api: api.contacts.create(
+        # TODO: capture fixture — needs valid ContactEditRequest body for new contact
+        {},
+    ),
+    request_model="ContactEditRequest",
+)
+
+if __name__ == "__main__":
+    runner.run()
