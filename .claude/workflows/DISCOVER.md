@@ -1,4 +1,4 @@
-# DISCOVER Workflow
+# DISCOVER Workflow v2
 
 Phased approach for systematically implementing missing API
 endpoints with real fixtures and clean context recovery.
@@ -6,67 +6,68 @@ endpoints with real fixtures and clean context recovery.
 **Constitution**: `.specify/memory/constitution.md` v2.0.0
 **Principles**: II (Fixture-Driven), III (Four-Way Harmony),
 V (Pending Fixture Tracking), VIII (Phase-Based Context Recovery)
+**Endpoint inventory**: `specs/api-surface.md`
 
 ## Overview
 
 ```mermaid
 flowchart TD
-    D[D — Discover\nGap analysis from swagger]
+    R[R — Reference\nScan ABConnectTools]
     I[I — Implement models\nPydantic models + skeleton tests]
     S[S — Scaffold endpoints\nEndpoint methods + client wiring]
     C{C — Capture fixtures\nHuman provides real data}
     O[O — Observe tests\nRun suite, check harmony]
     V[V — Verify & commit\nCheckpoint commit]
     E[E — Examples & docs\nRunnable examples + Sphinx]
-    R[R — Release\nPR ready]
+    R2[R2 — Release\nPR ready]
     PARK[PARK\nSkip-marked, tracked\nin FIXTURES.md]
     MORE{More service\ngroups?}
 
-    D --> I --> S --> C
+    R --> I --> S --> C
     C -->|fixture captured| O
     C -->|unavailable now| PARK
-    O --> V --> E --> R
+    O --> V --> E --> R2
     PARK --> V
-    R --> MORE
-    MORE -->|yes| D
+    R2 --> MORE
+    MORE -->|yes| R
     MORE -->|no| DONE[Done]
 
     style C fill:#fff3cd,stroke:#856404
     style PARK fill:#f8d7da,stroke:#721c24
-    style R fill:#d4edda,stroke:#155724
+    style R2 fill:#d4edda,stroke:#155724
     style DONE fill:#d4edda,stroke:#155724
 ```
 
 ## Phase Definitions
 
-### D — Discover
+### R — Reference Scan
 
-**Entry**: Swagger specs available at `ab/api/schemas/`.
-**Action**: Compare swagger endpoints vs implemented endpoints.
-Produce a gap list grouped by service domain.
-**Exit**: Gap analysis committed (in spec or tracking file).
-**Artifact**: `specs/{NNN}/gap-analysis.md` or equivalent.
+**Entry**: Target group selected from `specs/api-surface.md`.
+**Action**: Read ABConnectTools reference material for the target group.
+Do NOT copy code — study patterns, field names, edge cases.
 
-```bash
-# Quick state check
-python -c "
-import json
-from pathlib import Path
-for spec in Path('ab/api/schemas').glob('*.json'):
-    data = json.loads(spec.read_text())
-    paths = data.get('paths', {})
-    print(f'{spec.stem}: {len(paths)} paths')
-"
-```
+1. **Routes**: Read `ABConnectTools/ABConnect/api/routes.py`
+   (`SCHEMA["{GROUP}"]`) for the complete route list.
+2. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
+   for field names, aliases, Optional vs required, nesting.
+3. **Endpoints**: Read `ABConnectTools/ABConnect/api/endpoints/{service}.py`
+   for method signatures, parameter handling, error paths.
+4. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json|pdf`
+   for response shapes (see Ref column in `api-surface.md`).
+5. **Examples**: Read `ABConnectTools/examples/api/{service}.py`
+   for realistic usage patterns and parameter values.
+6. Note field patterns, model names, known API quirks.
+
+**Exit**: Understanding of legacy patterns. No code written.
+**Artifact**: Optionally note deviations in the feature's `research.md`.
 
 ### I — Implement Models
 
-**Entry**: Gap analysis exists for target service group.
+**Entry**: Reference scan complete for target service group.
 **Action**:
-1. Create Pydantic models from swagger schemas.
-2. Cross-reference legacy project (`/usr/src/pkgs/ABConnectTools/`)
-   for field patterns and known deviations.
-3. Write skeleton test files with `pytest.skip()` for each model
+1. Create Pydantic models from swagger schemas + ABConnectTools
+   model patterns observed in Phase R.
+2. Write skeleton test files with `pytest.skip()` for each model
    that lacks a fixture.
 
 **Exit**: Models pass `ruff check`. Tests skip cleanly.
@@ -77,7 +78,6 @@ for spec in Path('ab/api/schemas').glob('*.json'):
 
 ```python
 import pytest
-from pathlib import Path
 from tests.conftest import FIXTURES_DIR, load_fixture
 from ab.api.models.{service} import {ModelName}
 
@@ -109,7 +109,7 @@ all new endpoints. Imports work.
 `ab/client.py`, updated `__init__.py` files.
 
 **Checkpoint commit**: At this point, commit with message:
-`feat({service}): add models and endpoint scaffold (DISCOVER D-I-S)`
+`feat({service}): add models and endpoint scaffold (DISCOVER R-I-S)`
 
 ### C — Capture Fixtures (Human Required)
 
@@ -138,14 +138,14 @@ print(json.dumps(result.model_dump(by_alias=True), indent=2))
 curl -s -H 'Authorization: Bearer TOKEN' \
   'https://portal.staging.abconnect.co/api/api/{path}' \
   | jq '.' > tests/fixtures/{ModelName}.json
-
-# Option 3: Copy from legacy project (if validated)
-cp /usr/src/pkgs/ABConnectTools/tests/fixtures/{Name}.json \
-   tests/fixtures/{ModelName}.json
 ```
 
 **After capturing**: Update the test to remove `pytest.skip()`
 and add `@pytest.mark.live`. Update `FIXTURES.md`.
+
+**ABConnectTools reference**: If staging data is unavailable,
+check `ABConnectTools/tests/fixtures/` for response shapes to
+understand field structure. Do NOT copy fixtures — capture fresh.
 
 ### O — Observe Tests
 
@@ -172,8 +172,9 @@ and add `@pytest.mark.live`. Update `FIXTURES.md`.
 **Entry**: Tests pass for target service group.
 **Action**:
 1. Update `FIXTURES.md` — move entries from pending to captured.
-2. Run full test suite: `pytest --tb=short`.
-3. Commit checkpoint.
+2. Update `specs/api-surface.md` — mark endpoints as done.
+3. Run full test suite: `pytest --tb=short`.
+4. Commit checkpoint.
 
 **Exit**: Clean git state. `FIXTURES.md` current.
 **Artifact**: Git commit.
@@ -186,6 +187,8 @@ and add `@pytest.mark.live`. Update `FIXTURES.md`.
 **Entry**: Fixtures verified for target service group.
 **Action**:
 1. Write runnable example in `examples/{service}.py`.
+   Reference `ABConnectTools/examples/api/{service}.py` for
+   realistic usage patterns.
 2. Write Sphinx documentation page.
 3. Final Four-Way Harmony audit.
 
@@ -195,13 +198,13 @@ and add `@pytest.mark.live`. Update `FIXTURES.md`.
 **Commit message**:
 `docs({service}): add examples and docs (DISCOVER E)`
 
-### R — Release
+### R2 — Release
 
 **Entry**: All DISCOVER phases complete for the batch.
 **Action**:
 1. Final `pytest` run (full suite).
 2. `ruff check .` passes.
-3. Update `specs/{NNN}/tasks.md` checkboxes.
+3. Update `specs/api-surface.md` status columns.
 4. PR ready.
 
 **Exit**: Branch ready for PR to main.
@@ -214,22 +217,15 @@ all DISCOVER phases before starting the next.
 ### Grouping Rules
 
 1. **By API surface**: ACPortal, Catalog, ABC.
-2. **By domain**: jobs/*, companies/*, contacts/*, shipments/*,
-   payments/*, etc.
-3. **By priority**: Stakeholder-driven (Principle VII).
+2. **By domain**: See `specs/api-surface.md` groups.
+3. **By fixture availability**: Groups where ABConnectTools has
+   fixtures are faster to validate — prioritize these.
+4. **By priority**: Stakeholder-driven (Principle VII).
 
 ### Recommended Batch Order
 
-| Batch | Domain | Est. Endpoints | API |
-|-------|--------|---------------|-----|
-| 1 | Jobs (timeline, tracking, notes, parcels) | ~22 | ACPortal |
-| 2 | Shipments + Forms | ~29 | ACPortal |
-| 3 | Payments | ~10 | ACPortal |
-| 4 | Companies (extended) | ~30 | ACPortal |
-| 5 | Contacts (extended) | ~25 | ACPortal |
-| 6 | Settings / Admin | ~40 | ACPortal |
-| 7 | Reports / Analytics | ~20 | ACPortal |
-| 8 | ABC remaining | ~5 | ABC |
+See `specs/api-surface.md` § Batch Planning for current
+prioritized batch list.
 
 ## Resuming Work
 
@@ -242,7 +238,13 @@ recovery, or handoff to a different agent):
 Read .claude/workflows/DISCOVER.md
 ```
 
-### Step 2: Check git state
+### Step 2: Check the endpoint inventory
+
+```
+Read specs/api-surface.md
+```
+
+### Step 3: Check git state
 
 ```bash
 git log --oneline -20
@@ -250,7 +252,7 @@ git status
 git diff --stat
 ```
 
-### Step 3: Check fixture state
+### Step 4: Check fixture state
 
 ```bash
 # Count pending vs captured
@@ -258,30 +260,50 @@ grep -c "pending" FIXTURES.md
 grep -c "captured" FIXTURES.md
 ```
 
-### Step 4: Run tests to see current state
+### Step 5: Run tests to see current state
 
 ```bash
 pytest --tb=line -q 2>&1 | tail -20
 ```
 
-### Step 5: Identify current phase
+### Step 6: Identify current phase
 
 Look at the last commit message for DISCOVER phase markers
-(e.g., `DISCOVER D-I-S` means phases D, I, S are done —
+(e.g., `DISCOVER R-I-S` means phases R, I, S are done —
 resume at phase C).
 
-### Step 6: Resume
+### Step 7: Resume
 
 Pick up from the next incomplete phase. Do NOT restart from
 scratch. All prior phase artifacts are committed and valid.
+
+## ABConnectTools Reference Paths
+
+Quick lookup for Phase R:
+
+| What | Path |
+|------|------|
+| All routes | `/usr/src/pkgs/ABConnectTools/ABConnect/api/routes.py` |
+| Models | `/usr/src/pkgs/ABConnectTools/ABConnect/api/models/{service}.py` |
+| Endpoints | `/usr/src/pkgs/ABConnectTools/ABConnect/api/endpoints/{service}.py` |
+| Job sub-endpoints | `/usr/src/pkgs/ABConnectTools/ABConnect/api/endpoints/jobs/{sub}.py` |
+| Fixtures (JSON) | `/usr/src/pkgs/ABConnectTools/tests/fixtures/{Name}.json` |
+| Fixtures (PDF) | `/usr/src/pkgs/ABConnectTools/tests/fixtures/{Name}.pdf` |
+| Examples | `/usr/src/pkgs/ABConnectTools/examples/api/{service}.py` |
 
 ## Anti-Patterns
 
 - **Fabricating fixtures**: Never invent JSON data. If you
   cannot capture a real response, write a skipping test and
   move on. The human will capture it in Phase C.
+- **Copying from ABConnectTools**: Phase R is read-only.
+  Understand patterns, then implement clean-room with our
+  stricter standards (extra="forbid"/"allow", drift logging,
+  mixin inheritance).
 - **Skipping phases**: Every phase produces artifacts. Skipping
   a phase leaves gaps that compound.
+- **Re-discovering endpoints**: The endpoint inventory lives in
+  `specs/api-surface.md`. Never re-parse swagger to find gaps.
 - **Giant batches**: Keep batches to 5–15 endpoints. Larger
   batches risk context overflow before reaching Phase V
   (checkpoint commit).
