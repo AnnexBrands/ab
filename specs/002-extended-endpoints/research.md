@@ -93,7 +93,7 @@
 
 ### D8: Form Fixture Strategy
 
-**Decision**: Form endpoints that return binary content (PDF/HTML) do NOT get traditional JSON fixture files. Instead, they get integration tests that verify: (a) the endpoint returns bytes, (b) the content-type header matches expected format, and (c) the byte content is non-empty. The one form endpoint that returns JSON (`get_form_shipments`) gets a standard JSON fixture.
+**Decision**: Form endpoints that return PDF bytes do NOT get traditional JSON fixture files. Instead, they get integration tests that verify: (a) the endpoint returns bytes, (b) the content-type header is `application/pdf`, and (c) the byte content is non-empty. The one form endpoint that returns JSON (`get_form_shipments`) gets a standard JSON fixture.
 
 **How ABConnectTools does it**: ABConnectTools has no fixture validation for form endpoints. `FormsShipmentPlan` is the only model, and it has no corresponding fixture test.
 

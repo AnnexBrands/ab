@@ -114,7 +114,7 @@ A developer building a warehouse or operations integration needs to add notes to
 - What happens when timeline status increment is called on a job already at its final status? The SDK returns the API's error response as a typed exception indicating the job cannot be advanced further.
 - What happens when rate quotes return no results (no carriers available)? The SDK returns an empty list rather than raising an error, consistent with the existing pattern for list endpoints.
 - What happens when tracking information is unavailable (shipment not yet picked up)? The SDK returns a tracking model with empty/null tracking events, not an error.
-- What happens when form endpoints return binary content (PDF/HTML) instead of JSON? The SDK returns raw bytes with no wrapper object, consistent with the existing `documents.get()` pattern. Callers who need the content type can inspect the response headers via the underlying HTTP client if needed.
+- What happens when form endpoints return PDF bytes instead of JSON? The SDK returns raw bytes with no wrapper object, consistent with the existing `documents.get()` pattern.
 
 ## Requirements *(mandatory)*
 
@@ -133,7 +133,7 @@ A developer building a warehouse or operations integration needs to add notes to
 - **FR-011**: Every new endpoint group MUST have a runnable example file in `examples/`.
 - **FR-012**: New endpoint groups (forms, shipments, payments) MUST be exposed as attributes on the `ABConnectAPI` client (e.g., `api.forms`, `api.shipments`, `api.payments`). Endpoints extending existing groups (timeline on jobs, notes on jobs, parcels on jobs) MUST be added as methods on the existing endpoint class.
 - **FR-013**: A design decisions document MUST be created at `specs/002-extended-endpoints/research.md` documenting architectural choices that depart from ABConnectTools patterns, with explicit references to how ABConnectTools handles the same operations.
-- **FR-014**: Form endpoints that return binary content (PDF/HTML) MUST use the same binary response pattern established by `documents.get()` in feature 001.
+- **FR-014**: Form endpoints that return PDF bytes MUST use the same binary response pattern established by `documents.get()` in feature 001.
 - **FR-015**: Swagger compliance tests MUST be updated to reflect the newly implemented endpoints, reducing the unimplemented count.
 
 ### Key Entities
@@ -147,13 +147,13 @@ A developer building a warehouse or operations integration needs to add notes to
 - **PaymentSource**: A stored payment method (card or bank account). Key attributes: source ID, type, last four digits, and expiration.
 - **JobNote**: A text note attached to a job. Key attributes: note ID, author, timestamp, content, and visibility.
 - **ParcelItem**: A packaged item within a job. Key attributes: parcel item ID, dimensions, weight, description, and associated materials.
-- **JobForm**: A generated business document (invoice, BOL, etc.). Returns binary content (PDF/HTML) rather than a JSON model.
+- **JobForm**: A generated business document (invoice, BOL, etc.). Returns PDF bytes rather than a JSON model.
 
 ### Assumptions
 
 - All new endpoints use the same authentication mechanism (Bearer JWT via the existing `HttpClient`) and the same ACPortal base URL pattern (`portal.{env}.abconnect.co/api/api`).
 - The shipment global endpoints (`/api/shipment`, `/api/shipment/accessorials`, `/api/shipment/document/{docId}`) use the same ACPortal base URL as job-scoped shipment endpoints.
-- Form endpoints return either HTML or PDF binary content; the response content type determines the format. The SDK does not convert between formats.
+- Form endpoints return PDF bytes. The SDK returns raw bytes directly.
 - Payment endpoints involving Stripe (ACH, bank sources) interact with Stripe indirectly through ABConnect's API — the SDK does not call Stripe directly.
 - Timeline task codes and status values follow a fixed set defined by ABConnect's business logic; the SDK models these as string fields rather than strict enums to avoid breaking on new codes.
 - Only tracking v3 is implemented (latest, most complete data). Tracking v1 (basic) and v2 (intermediate) are skipped as deprecated API versions.

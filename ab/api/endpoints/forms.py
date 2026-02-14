@@ -1,7 +1,7 @@
 """Forms API endpoints — ACPortal.
 
 Covers 15 job form types: invoices, BOLs, packing slips, quotes, labels,
-and more.  Most endpoints return raw bytes (PDF/HTML); the ``get_shipments``
+and more.  Most endpoints return raw PDF bytes; the ``get_shipments``
 method returns JSON (List[FormsShipmentPlan]).
 """
 
@@ -33,7 +33,7 @@ _GET_USAR_EDITABLE = Route("GET", "/job/{jobDisplayId}/form/usar/editable", resp
 class FormsEndpoint(BaseEndpoint):
     """Form generation operations (ACPortal API).
 
-    Most methods return raw ``bytes`` (PDF or HTML content).  Use
+    Most methods return raw ``bytes`` (PDF content).  Use
     :meth:`get_shipments` to get JSON shipment plan data for BOL selection.
     """
 

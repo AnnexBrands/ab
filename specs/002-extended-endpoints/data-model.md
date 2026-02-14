@@ -349,7 +349,7 @@ The only JSON-returning form endpoint (`get_form_shipments`).
 | carrier_name | Optional[str] | carrierName | Carrier |
 | service_type | Optional[str] | serviceType | Service level |
 
-*All other form endpoints return raw `bytes` (PDF/HTML) — no Pydantic model needed.*
+*All other form endpoints return raw PDF `bytes` — no Pydantic model needed.*
 
 ## Model Count Summary
 

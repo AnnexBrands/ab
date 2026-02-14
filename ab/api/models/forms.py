@@ -13,7 +13,7 @@ class FormsShipmentPlan(ResponseModel):
     """Shipment plan for BOL selection — GET /job/{jobDisplayId}/form/shipments.
 
     This is the only JSON-returning form endpoint.  All other form endpoints
-    return raw bytes (PDF/HTML).
+    return raw PDF bytes.
     """
 
     shipment_plan_id: Optional[str] = Field(None, alias="shipmentPlanId", description="Plan identifier")
