@@ -27,6 +27,3 @@ Python 3.11+: Follow standard conventions
 - 002-extended-endpoints: Added Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (unchanged from 001)
 
 - 001-abconnect-sdk: Added Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv
-
-<!-- MANUAL ADDITIONS START -->
-<!-- MANUAL ADDITIONS END -->
