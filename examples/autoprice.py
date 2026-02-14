@@ -1,21 +1,39 @@
-"""Example: AutoPrice operations (requires ABC API access_key)."""
+"""Example: AutoPrice operations (2 methods)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("AutoPrice", env="staging")
 
-# Quick quote
-quote = api.autoprice.quick_quote({
-    "originZip": "43213",
-    "destinationZip": "90210",
-    "weight": 150,
-})
-print(f"Quick quote: {quote}")
+# ── Captured fixtures ────────────────────────────────────────────────
 
-# Full quote request
-result = api.autoprice.quote_request({
-    "originZip": "43213",
-    "destinationZip": "90210",
-    "items": [{"weight": 150, "class": "70"}],
-})
-print(f"Quote request: {result}")
+runner.add(
+    "quick_quote",
+    lambda api: api.autoprice.quick_quote({
+        "originZip": "43213",
+        "destinationZip": "90210",
+        "weight": 150,
+    }),
+    request_model="QuoteRequestModel",
+    response_model="QuickQuoteResponse",
+    fixture_file="QuickQuoteResponse.json",
+)
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "quote_request",
+    lambda api: api.autoprice.quote_request(
+        # TODO: capture fixture — needs items array with weight, class fields
+        #       and valid origin/destination
+        {
+            "originZip": "43213",
+            "destinationZip": "90210",
+            "items": [{"weight": 150, "class": "70"}],
+        },
+    ),
+    request_model="QuoteRequestModel",
+    response_model="QuoteRequestResponse",
+)
+
+if __name__ == "__main__":
+    runner.run()

@@ -1,18 +1,51 @@
-"""Example: Document operations."""
+"""Example: Document operations (4 methods)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("Documents", env="staging")
 
-# List documents
-docs = api.documents.list()
-print(f"Documents: {docs}")
+LIVE_JOB_DISPLAY_ID = 2000000
 
-# Upload a document (uncomment to run)
-# result = api.documents.upload(job_id="...", file_path="/path/to/file.pdf")
-# print(f"Uploaded: {result}")
+# ── Captured fixtures ────────────────────────────────────────────────
 
-# Download a document (uncomment to run)
-# content = api.documents.get("path/to/document.pdf")
-# with open("downloaded.pdf", "wb") as f:
-#     f.write(content)
+runner.add(
+    "list",
+    lambda api: api.documents.list(job_id="2000000"),
+    response_model="List[Document]",
+    fixture_file="Document.json",
+)
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "upload",
+    lambda api: api.documents.upload(
+        # TODO: capture fixture — needs valid job ID and local file path
+        job_id="2000000",
+        file_path="/tmp/test-upload.pdf",
+        document_type=6,
+        sharing_level=0,
+    ),
+)
+
+runner.add(
+    "get",
+    lambda api: api.documents.get(
+        # TODO: capture fixture — needs valid document path from list response
+        #       binary response — fixture save N/A
+        "path/to/document.pdf",
+    ),
+)
+
+runner.add(
+    "update",
+    lambda api: api.documents.update(
+        # TODO: capture fixture — needs valid document ID and DocumentUpdateRequest body
+        "doc-id-placeholder",
+        {},
+    ),
+    request_model="DocumentUpdateRequest",
+)
+
+if __name__ == "__main__":
+    runner.run()

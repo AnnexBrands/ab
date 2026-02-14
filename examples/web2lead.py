@@ -1,18 +1,29 @@
-"""Example: Web2Lead operations (requires ABC API access_key)."""
+"""Example: Web2Lead operations (2 methods)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("Web2Lead", env="staging")
 
-# Get Web2Lead configuration
-config = api.web2lead.get()
-print(f"Web2Lead config: {config}")
+# ── Captured fixtures ────────────────────────────────────────────────
 
-# Submit a lead (uncomment to run)
-# result = api.web2lead.post({
-#     "companyCode": "14004OH",
-#     "firstName": "John",
-#     "lastName": "Doe",
-#     "email": "john@example.com",
-# })
-# print(f"Lead submitted: {result}")
+runner.add(
+    "get",
+    lambda api: api.web2lead.get(),
+    response_model="Web2LeadResponse",
+    fixture_file="Web2LeadResponse.json",
+)
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "post",
+    lambda api: api.web2lead.post(
+        # TODO: capture fixture — needs valid Web2LeadRequest body
+        {},
+    ),
+    request_model="Web2LeadRequest",
+    response_model="Web2LeadResponse",
+)
+
+if __name__ == "__main__":
+    runner.run()

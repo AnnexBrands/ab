@@ -1,21 +1,31 @@
-"""Example: Tracking operations."""
+"""Example: Tracking operations (2 methods, via api.jobs.*)."""
 
-from ab import ABConnectAPI
+from examples._runner import ExampleRunner
 
-api = ABConnectAPI(env="staging")
+runner = ExampleRunner("Tracking", env="staging")
+
+LIVE_JOB_DISPLAY_ID = 2000000
+
+# ── Needs request data ───────────────────────────────────────────────
+
+runner.add(
+    "get_tracking",
+    lambda api: api.jobs.get_tracking(
+        # TODO: capture fixture — needs shipped job ID with tracking data
+        LIVE_JOB_DISPLAY_ID,
+    ),
+    response_model="TrackingInfo",
+)
+
+runner.add(
+    "get_tracking_v3",
+    lambda api: api.jobs.get_tracking_v3(
+        # TODO: capture fixture — needs shipped job ID with tracking history
+        LIVE_JOB_DISPLAY_ID,
+        history_amount=10,
+    ),
+    response_model="TrackingInfoV3",
+)
 
 if __name__ == "__main__":
-    job_id = "12345"
-
-    # Get basic tracking info
-    tracking = api.jobs.get_tracking(job_id)
-    print(f"Tracking for job {job_id}:")
-    print(f"  Status: {tracking.status}")
-    print(f"  Location: {tracking.location}")
-    print(f"  ETA: {tracking.estimated_delivery}")
-
-    # Get v3 tracking with history
-    tracking_v3 = api.jobs.get_tracking_v3(job_id, history_amount=10)
-    print(f"\nTracking history (v3):")
-    for detail in tracking_v3.tracking_details:
-        print(f"  {detail}")
+    runner.run()
