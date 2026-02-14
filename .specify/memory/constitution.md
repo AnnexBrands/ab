@@ -1,40 +1,40 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 1.2.0 → 2.0.0
-  Bump rationale: MAJOR — Principle V redefined (Mock Tracking →
-    Pending Fixture Tracking), Principle VIII added (Phase-Based
-    Context Recovery), Principle II rewritten (fabricated mocks
-    prohibited), Development Workflow replaced with DISCOVER phases.
+  Version change: 2.0.0 → 2.1.0
+  Bump rationale: MINOR — Principle II rewritten (Fixture-Driven
+    Development → Example-Driven Fixture Capture), Principle III
+    reordered (Example before Fixture), Principle V status taxonomy
+    expanded (pending split into needs-request-data / needs-access),
+    Development Workflow DISCOVER phases redefined (C = Call &
+    Capture via examples, E = Enrich docs). No principles removed
+    or incompatibly redefined.
   Modified principles:
-    - II. Fixture-Driven Development: Rewritten. Fabricated mocks
-      prohibited. Fixtures MUST come from real API responses or
-      validated legacy data. Missing fixtures cause test skips with
-      capture instructions, not fake data.
-    - V. Mock Tracking & Transparency → V. Pending Fixture Tracking:
-      Renamed and redefined. MOCKS.md replaced by FIXTURES.md as a
-      capture-status tracker. No more fabricated data registry.
-  Added principles:
-    - VIII. Phase-Based Context Recovery: Work organized into
-      discrete phases with checkpoint artifacts. Enables clean
-      resume after context loss.
-  Added sections:
-    - Development Workflow: Replaced with DISCOVER phase model
-      referencing .claude/workflows/DISCOVER.md.
-  Removed sections: None (old Development Workflow replaced)
+    - II. Fixture-Driven Development → II. Example-Driven Fixture
+      Capture: Examples are the fixture capture mechanism. Before
+      writing an example, research ABConnectTools and swagger for
+      required request bodies and params. 200 → save fixture.
+      Error → fix the request, not ask for a response fixture.
+    - III. Four-Way Harmony: Artifact order changed. Example now
+      precedes Fixture & Test (example produces the fixture).
+    - V. Pending Fixture Tracking → V. Endpoint Status Tracking:
+      Status taxonomy expanded. Generic "pending" replaced by
+      "needs-request-data" and "needs-access" for precision.
+  Added sections: None
+  Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ no update needed
-      (phase names are generic; DISCOVER is a runtime workflow)
   Follow-up TODOs:
-    - Create .claude/workflows/DISCOVER.md with mermaid diagram
-    - Delete fabricated mock fixtures from tests/fixtures/
-    - Rename MOCKS.md → FIXTURES.md and convert to new format
-    - Update test files: replace @pytest.mark.mock on fabricated
-      fixtures with pytest.skip() + capture instructions
-    - Remove capture_fixtures*.py scripts (ad-hoc, replace with
-      documented capture procedure in DISCOVER.md)
+    - Update .claude/workflows/DISCOVER.md to match new phase
+      definitions (C = Call & Capture, E = Enrich docs, D =
+      Determine requirements)
+    - Update FIXTURES.md pending table to use new status taxonomy
+      (needs-request-data vs needs-access instead of generic
+      "pending")
+    - Review existing examples/ to ensure they have researched
+      request params from ABConnectTools/swagger
 -->
 # ABConnect SDK Constitution
 
@@ -64,36 +64,62 @@ so that common fields are defined once and composed explicitly.
   responses, the model MUST match reality and include a comment
   documenting the swagger deviation.
 
-### II. Fixture-Driven Development
+### II. Example-Driven Fixture Capture
 
-Every endpoint MUST have at least one fixture — a real JSON
-response stored in `tests/fixtures/`. Fixtures MUST come from
-one of two sources:
+Every endpoint MUST have a runnable example in `examples/` that
+calls the SDK method with correct parameters. Examples are the
+primary mechanism for capturing fixtures.
 
-1. **Human-captured** — saved by a developer from an actual API
-   call to staging or production.
-2. **Legacy-validated** — extracted from the legacy ABConnectTools
-   project (`/usr/src/pkgs/ABConnectTools/`) where the fixture has
-   been confirmed to match real API responses.
+**Before writing an example**, the developer (human or agent) MUST
+research the endpoint's requirements from two sources:
 
-Fabricated fixtures (invented JSON that has never been validated
-against a real API response) are **prohibited**.
+1. **ABConnectTools** — Read the legacy endpoint implementation
+   (`/usr/src/pkgs/ABConnectTools/ABConnect/api/endpoints/`) and
+   examples (`/usr/src/pkgs/ABConnectTools/examples/api/`) to
+   understand required parameters, request bodies, and realistic
+   test values.
+2. **Swagger specs** — Read the swagger schema for parameter
+   definitions, required vs optional fields, and request body
+   structure.
 
-- Fixtures are the source of truth for model correctness.
-- New endpoints MUST NOT be considered complete until a real
-  fixture is captured and validates against the Pydantic model.
+**The capture loop**:
+
+1. Example calls the endpoint method with researched parameters.
+2. **200 response** → save the response body as a fixture in
+   `tests/fixtures/{ModelName}.json`. Fixture captured.
+3. **Error response** → the EXAMPLE needs fixing, not a response
+   fixture. Diagnose what the request is missing:
+   - Missing or wrong **query parameters** (e.g., `/address/isvalid`
+     needs `street`, `city`, `state`, `zipCode`).
+   - Missing or wrong **request body** (e.g.,
+     `/AutoPrice/QuoteRequest` needs an items array with weight
+     and class fields).
+   - Missing **URL parameters** (e.g., `{addressId}` in the path).
+   - **Access/auth issue** — requires specific role or data state
+     that only a human can provide.
+
+**Rules**:
+
+- Fabricated fixtures (invented JSON never validated against a real
+  API response) are **prohibited**.
+- A failed API call MUST NOT be treated as "needs a response
+  fixture." It MUST be treated as "example needs correct request
+  data."
+- Only when the request is confirmed correct and the failure is
+  due to access restrictions or missing staging data SHOULD the
+  endpoint be parked as `needs-access`.
+- Fixture files MUST be named `{ModelName}.json` and placed in
+  `tests/fixtures/`.
+- `FIXTURES.md` at the repository root MUST track every endpoint's
+  status. See Principle V.
 - When a fixture is not yet available, the model test MUST exist
   but MUST use `pytest.skip()` with an actionable message:
   ```python
   pytest.skip(
-      "Fixture needed: capture {ModelName}.json via "
-      "{HTTP_METHOD} {endpoint_path}"
+      "Fixture needed: run examples/{service}.py — "
+      "endpoint needs {what's missing}"
   )
   ```
-- Fixture files MUST be named `{ModelName}.json` and placed in
-  `tests/fixtures/`.
-- `FIXTURES.md` at the repository root MUST track every
-  endpoint's fixture status. See Principle V.
 
 ### III. Four-Way Harmony (NON-NEGOTIABLE)
 
@@ -102,11 +128,11 @@ mutually consistent:
 
 1. **Implementation** (`ab/api/endpoints/` + `ab/api/models/`)
    — endpoint class method and Pydantic model.
-2. **Fixture & Test** (`tests/`) — captured fixture validating
-   against the model; test covering both fixture validation and
-   live call (when safe).
-3. **Example** (`examples/`) — runnable Python demonstrating
-   endpoint usage and expected output shape.
+2. **Example** (`examples/`) — runnable Python that calls the
+   endpoint with correct parameters. The example is the fixture
+   capture instrument (Principle II).
+3. **Fixture & Test** (`tests/`) — fixture captured by running
+   the example; test validating the fixture against the model.
 4. **Sphinx Documentation** (`docs/`) — RST/MyST page with
    endpoint description, example code block, link to the model
    class, and link to the example file.
@@ -114,10 +140,10 @@ mutually consistent:
 Adding or modifying any one artifact MUST trigger review of the
 other three. An endpoint missing any artifact is incomplete.
 
-Endpoints awaiting fixture capture (Principle II) are tracked as
-**partial** — they have implementation + skeleton test but lack
-a captured fixture. Partial endpoints MUST NOT be merged to main
-without at least a skip-marked test.
+Endpoints whose examples do not yet produce a 200 response are
+tracked as **partial** in `FIXTURES.md` with a status indicating
+what's missing (see Principle V). Partial endpoints MUST NOT be
+merged to main without at least a skip-marked test.
 
 ### IV. Swagger-Informed, Reality-Validated
 
@@ -136,31 +162,37 @@ types, or miss entire response models.
 - When a model intentionally deviates from swagger, the deviation
   MUST be documented with a comment on the affected field(s).
 
-### V. Pending Fixture Tracking
+### V. Endpoint Status Tracking
 
-Every endpoint's fixture status MUST be tracked in `FIXTURES.md`
-at the repository root. Each entry MUST include:
+Every endpoint's status MUST be tracked in `FIXTURES.md` at the
+repository root. Each entry MUST include:
 
 - Endpoint path and HTTP method.
 - Model name.
-- Status: **captured** (real fixture exists) or **pending**
-  (needs human capture).
+- Status: one of **captured**, **needs-request-data**, or
+  **needs-access**.
 - For **captured**: date captured and source (staging, production,
   or legacy-validated).
-- For **pending**: capture instructions — the exact API call,
-  required parameters, prerequisites, and any known blockers
-  (e.g., "requires admin role", "needs active shipment on job").
+- For **needs-request-data**: what the example is missing — the
+  specific query parameters, request body fields, or URL parameters
+  that must be researched from ABConnectTools or swagger.
+- For **needs-access**: what access is required — specific role,
+  data precondition (e.g., "needs active shipment on job"), or
+  environment limitation (e.g., "no catalog data in staging").
 
 Rules:
 
-- Tests for endpoints with `pending` fixtures MUST skip with
+- Tests for endpoints without captured fixtures MUST skip with
   an actionable message, NOT fabricate data.
-- `FIXTURES.md` MUST be updated whenever a fixture is captured
-  or a new endpoint is added.
-- The pending fixture count MUST be visible in test output
+- `FIXTURES.md` MUST be updated whenever a fixture is captured,
+  an example is written, or a new endpoint is added.
+- The non-captured endpoint count MUST be visible in test output
   (pytest skip summary).
 - When a fixture is captured, the test MUST be updated to remove
   the skip and add `@pytest.mark.live`.
+- Entries MUST NOT use a generic "pending" status. Every
+  non-captured endpoint MUST specify whether it needs request
+  data or access.
 
 ### VI. Documentation Completeness
 
@@ -281,34 +313,43 @@ explicit entry/exit criteria to support clean context recovery
 
 ### DISCOVER Phases
 
-1. **D — Discover** — Identify unimplemented endpoints from
-   swagger specs. Produce a gap analysis with priority groupings.
+1. **D — Determine** — Research the target service group from
+   ABConnectTools and swagger. For each endpoint, identify
+   required request bodies, URL parameters, query parameters,
+   and realistic test values. This research informs Phase E.
 2. **I — Implement models** — Create Pydantic models from swagger
-   schemas and legacy project reference. Write skeleton tests that
-   skip with fixture-capture instructions.
+   schemas and ABConnectTools patterns. Write skeleton tests that
+   skip with actionable messages.
 3. **S — Scaffold endpoints** — Write endpoint class methods with
    route definitions. Register in `client.py`. Wire models.
-4. **C — Capture fixtures** — Human captures real fixtures from
-   staging or production. Tests transition from skip to pass.
+4. **C — Call & Capture** — Write runnable examples using request
+   data researched in Phase D. Run examples against staging.
+   200 responses become fixtures. Errors are diagnosed as
+   request-data problems (Principle II). Endpoints needing
+   access are parked as `needs-access`.
 5. **O — Observe tests** — Run full test suite. Confirm Four-Way
    Harmony artifacts exist. Update `FIXTURES.md`.
 6. **V — Verify & commit** — Checkpoint commit. Phase complete
    and recoverable.
-7. **E — Examples & docs** — Write runnable examples and Sphinx
-   documentation. Final Four-Way Harmony check.
+7. **E — Enrich documentation** — Write Sphinx documentation.
+   Final Four-Way Harmony check.
 8. **R — Release** — PR ready. All principles satisfied.
 
 ### Phase Rules
 
 - Phases D–S (1–3) MAY be executed by an AI agent within a
   single context window.
-- Phase C (Capture) MUST involve a human — agents MUST NOT
-  fabricate fixture data.
+- Phase C (Call & Capture) MUST use request data researched in
+  Phase D. Agents MUST NOT fabricate fixture data. If an example
+  returns an error, the agent MUST diagnose and fix the request
+  (wrong params, missing body fields). If the error is due to
+  access restrictions or missing staging data, the endpoint is
+  parked as `needs-access` in `FIXTURES.md`.
 - Each phase MUST produce committed artifacts before proceeding.
 - When context is lost mid-phase, resume from the last committed
   checkpoint using Principle VIII recovery procedure.
 - Work within phases MAY use batch-by-type strategy (all models
-  → all endpoints → all tests across a service group) for
+  → all endpoints → all examples across a service group) for
   parallel efficiency.
 
 ### Batching Strategy
@@ -350,4 +391,4 @@ principles.
   instructions for entering mid-flight. Workflows without
   recovery procedures are incomplete.
 
-**Version**: 2.0.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14
+**Version**: 2.1.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14

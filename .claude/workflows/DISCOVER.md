@@ -1,72 +1,94 @@
-# DISCOVER Workflow v2
+# DISCOVER Workflow v3
 
 Phased approach for systematically implementing missing API
-endpoints with real fixtures and clean context recovery.
+endpoints with example-driven fixture capture and clean context
+recovery.
 
-**Constitution**: `.specify/memory/constitution.md` v2.0.0
-**Principles**: II (Fixture-Driven), III (Four-Way Harmony),
-V (Pending Fixture Tracking), VIII (Phase-Based Context Recovery)
+**Constitution**: `.specify/memory/constitution.md` v2.1.0
+**Principles**: II (Example-Driven Fixture Capture),
+III (Four-Way Harmony), V (Endpoint Status Tracking),
+VIII (Phase-Based Context Recovery)
 **Endpoint inventory**: `specs/api-surface.md`
 
 ## Overview
 
 ```mermaid
 flowchart TD
-    R[R — Reference\nScan ABConnectTools]
+    D[D — Determine\nResearch params from\nABConnectTools + swagger]
     I[I — Implement models\nPydantic models + skeleton tests]
     S[S — Scaffold endpoints\nEndpoint methods + client wiring]
-    C{C — Capture fixtures\nHuman provides real data}
+    C[C — Call & Capture\nExamples call methods\n200 → fixture saved]
     O[O — Observe tests\nRun suite, check harmony]
     V[V — Verify & commit\nCheckpoint commit]
-    E[E — Examples & docs\nRunnable examples + Sphinx]
-    R2[R2 — Release\nPR ready]
-    PARK[PARK\nSkip-marked, tracked\nin FIXTURES.md]
+    E[E — Enrich docs\nSphinx documentation]
+    R[R — Release\nPR ready]
+    FIX[FIX REQUEST\nResearch correct\nparams / body]
+    PARK[PARK\nneeds-access\nin FIXTURES.md]
     MORE{More service\ngroups?}
 
-    R --> I --> S --> C
-    C -->|fixture captured| O
-    C -->|unavailable now| PARK
-    O --> V --> E --> R2
+    D --> I --> S --> C
+    C -->|200 response| O
+    C -->|error: bad request| FIX
+    C -->|error: access/data| PARK
+    FIX --> C
+    O --> V --> E --> R
     PARK --> V
-    R2 --> MORE
-    MORE -->|yes| R
+    R --> MORE
+    MORE -->|yes| D
     MORE -->|no| DONE[Done]
 
-    style C fill:#fff3cd,stroke:#856404
+    style C fill:#d4edda,stroke:#155724
+    style FIX fill:#fff3cd,stroke:#856404
     style PARK fill:#f8d7da,stroke:#721c24
-    style R2 fill:#d4edda,stroke:#155724
+    style R fill:#d4edda,stroke:#155724
     style DONE fill:#d4edda,stroke:#155724
 ```
 
 ## Phase Definitions
 
-### R — Reference Scan
+### D — Determine Requirements
 
 **Entry**: Target group selected from `specs/api-surface.md`.
-**Action**: Read ABConnectTools reference material for the target group.
-Do NOT copy code — study patterns, field names, edge cases.
+**Action**: Research ABConnectTools and swagger for the target
+group. The goal is to know exactly what each endpoint needs
+BEFORE writing an example.
+
+For each endpoint in the group:
 
 1. **Routes**: Read `ABConnectTools/ABConnect/api/routes.py`
-   (`SCHEMA["{GROUP}"]`) for the complete route list.
-2. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
+   (`SCHEMA["{GROUP}"]`) for method + path.
+2. **Endpoint code**: Read
+   `ABConnectTools/ABConnect/api/endpoints/{service}.py` for
+   method signatures — what parameters does it accept? What
+   does it pass as query params vs request body vs URL params?
+3. **Examples**: Read `ABConnectTools/examples/api/{service}.py`
+   for realistic parameter values and usage patterns.
+4. **Swagger**: Read the swagger spec for parameter definitions,
+   required vs optional fields, and request/response body schemas.
+5. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
    for field names, aliases, Optional vs required, nesting.
-3. **Endpoints**: Read `ABConnectTools/ABConnect/api/endpoints/{service}.py`
-   for method signatures, parameter handling, error paths.
-4. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json|pdf`
+6. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json`
    for response shapes (see Ref column in `api-surface.md`).
-5. **Examples**: Read `ABConnectTools/examples/api/{service}.py`
-   for realistic usage patterns and parameter values.
-6. Note field patterns, model names, known API quirks.
 
-**Exit**: Understanding of legacy patterns. No code written.
-**Artifact**: Optionally note deviations in the feature's `research.md`.
+**Key output per endpoint**:
+
+- HTTP method + path
+- Required query parameters (with example values)
+- Required request body fields (with example values)
+- Required URL parameters (with example values)
+- Known quirks or prerequisites
+
+**Exit**: Understanding of what every endpoint needs. No code
+written yet.
+**Artifact**: Optionally note deviations in the feature's
+`research.md`.
 
 ### I — Implement Models
 
-**Entry**: Reference scan complete for target service group.
+**Entry**: Determine phase complete for target service group.
 **Action**:
 1. Create Pydantic models from swagger schemas + ABConnectTools
-   model patterns observed in Phase R.
+   model patterns observed in Phase D.
 2. Write skeleton test files with `pytest.skip()` for each model
    that lacks a fixture.
 
@@ -86,8 +108,8 @@ class Test{Service}Models:
         fixture = FIXTURES_DIR / "{ModelName}.json"
         if not fixture.exists():
             pytest.skip(
-                "Fixture needed: capture {ModelName}.json via "
-                "GET /api/api/{endpoint_path}"
+                "Fixture needed: run examples/{service}.py — "
+                "endpoint needs {what_is_missing}"
             )
         data = load_fixture("{ModelName}")
         model = {ModelName}.model_validate(data)
@@ -109,96 +131,129 @@ all new endpoints. Imports work.
 `ab/client.py`, updated `__init__.py` files.
 
 **Checkpoint commit**: At this point, commit with message:
-`feat({service}): add models and endpoint scaffold (DISCOVER R-I-S)`
+`feat({service}): add models and endpoint scaffold (DISCOVER D-I-S)`
 
-### C — Capture Fixtures (Human Required)
+### C — Call & Capture
 
-**Entry**: Endpoints implemented for target service group.
-**Action**: Human runs endpoints against staging or production
-and saves responses as fixture files.
+**Entry**: Endpoints scaffolded for target service group.
+**Action**: Write runnable examples using the request data
+researched in Phase D. Run examples against staging.
 
-**Exit**: Fixture files exist in `tests/fixtures/`.
-**Artifact**: `tests/fixtures/{ModelName}.json`
+**The capture loop** (per endpoint):
 
-**Instructions for the human**:
+1. Write example call with researched parameters (query params,
+   request body, URL params).
+2. Run the example.
+3. **200 response** → save response as fixture in
+   `tests/fixtures/{ModelName}.json`. Done.
+4. **Error response** → diagnose:
+   - **Bad request (4xx)** → the example has wrong or missing
+     request data. Go back to Phase D research for this endpoint.
+     Fix the example. Re-run. Do NOT ask for a response fixture.
+   - **Access/auth error or missing staging data** → request is
+     correct but needs human access or data that doesn't exist
+     in staging. Park as `needs-access` in `FIXTURES.md`.
 
-```bash
-# Option 1: Use the SDK directly
-python -c "
+**Examples go in `examples/{service}.py`**. Each example file
+covers all endpoints for that service group.
+
+**Example pattern**:
+
+```python
+"""Example: {Service} operations."""
+
 from ab import ABConnectAPI
 import json
 
-api = ABConnectAPI(env='staging')
-# Replace with actual endpoint call:
-result = api.{service}.{method}({params})
-print(json.dumps(result.model_dump(by_alias=True), indent=2))
-" > tests/fixtures/{ModelName}.json
+api = ABConnectAPI(env="staging")
 
-# Option 2: Use curl + jq
-curl -s -H 'Authorization: Bearer TOKEN' \
-  'https://portal.staging.abconnect.co/api/api/{path}' \
-  | jq '.' > tests/fixtures/{ModelName}.json
+# {endpoint_description}
+result = api.{service}.{method}(
+    # Parameters researched from ABConnectTools + swagger:
+    param1="realistic_value",
+    param2="realistic_value",
+)
+print(f"{Method}: {result}")
+
+# Save fixture (run once, then remove this block):
+# with open(f"tests/fixtures/{ModelName}.json", "w") as f:
+#     json.dump(result.model_dump(by_alias=True), f, indent=2)
 ```
 
 **After capturing**: Update the test to remove `pytest.skip()`
-and add `@pytest.mark.live`. Update `FIXTURES.md`.
+and add `@pytest.mark.live`. Update `FIXTURES.md` status to
+`captured`.
 
-**ABConnectTools reference**: If staging data is unavailable,
-check `ABConnectTools/tests/fixtures/` for response shapes to
-understand field structure. Do NOT copy fixtures — capture fresh.
+**Exit**: Examples exist for all endpoints. Fixtures captured
+for endpoints that returned 200. Remaining endpoints parked
+with correct status in `FIXTURES.md`.
+**Artifact**: `examples/{service}.py`,
+`tests/fixtures/{ModelName}.json` (for captured endpoints)
+
+**Commit message**:
+`feat({service}): add examples and capture fixtures (DISCOVER C)`
 
 ### O — Observe Tests
 
-**Entry**: Fixtures captured for target service group.
+**Entry**: Examples written and fixtures captured (where possible)
+for target service group.
 **Action**:
 1. Run `pytest tests/models/test_{service}_models.py -v`.
 2. Check for extra-field warnings (model drift detection).
 3. Verify Four-Way Harmony checklist for each endpoint.
 
-**Exit**: All tests pass. No unexpected skips.
+**Exit**: All tests pass (captured) or skip with actionable
+messages (needs-request-data or needs-access). No unexpected
+failures.
 **Artifact**: Passing test output.
 
 **Four-Way Harmony checklist** (per endpoint):
 
 - [ ] `ab/api/endpoints/{service}.py` — method exists
 - [ ] `ab/api/models/{service}.py` — model exists
-- [ ] `tests/fixtures/{ModelName}.json` — fixture captured
-- [ ] `tests/models/test_{service}_models.py` — test passes
-- [ ] `examples/{service}.py` — example exists (Phase E)
+- [ ] `examples/{service}.py` — example exists with correct params
+- [ ] `tests/fixtures/{ModelName}.json` — fixture captured (or
+      status tracked in `FIXTURES.md`)
+- [ ] `tests/models/test_{service}_models.py` — test passes or
+      skips with actionable message
 - [ ] `docs/` — documentation exists (Phase E)
 
 ### V — Verify & Commit
 
 **Entry**: Tests pass for target service group.
 **Action**:
-1. Update `FIXTURES.md` — move entries from pending to captured.
+1. Update `FIXTURES.md`:
+   - Captured endpoints → `captured` with date and source.
+   - Endpoints with bad requests → `needs-request-data` with
+     specifics on what params/body are missing.
+   - Endpoints needing access → `needs-access` with what
+     access/data is required.
 2. Update `specs/api-surface.md` — mark endpoints as done.
 3. Run full test suite: `pytest --tb=short`.
 4. Commit checkpoint.
 
-**Exit**: Clean git state. `FIXTURES.md` current.
+**Exit**: Clean git state. `FIXTURES.md` current. No generic
+"pending" statuses — every non-captured endpoint specifies
+whether it `needs-request-data` or `needs-access`.
 **Artifact**: Git commit.
 
 **Commit message**:
-`feat({service}): capture fixtures and verify models (DISCOVER C-O-V)`
+`feat({service}): verify models and update tracking (DISCOVER O-V)`
 
-### E — Examples & Docs
+### E — Enrich Documentation
 
 **Entry**: Fixtures verified for target service group.
 **Action**:
-1. Write runnable example in `examples/{service}.py`.
-   Reference `ABConnectTools/examples/api/{service}.py` for
-   realistic usage patterns.
-2. Write Sphinx documentation page.
-3. Final Four-Way Harmony audit.
+1. Write Sphinx documentation page.
+2. Final Four-Way Harmony audit.
 
-**Exit**: Example runs. Docs build without warnings.
-**Artifact**: `examples/{service}.py`, `docs/{service}.rst`
+**Exit**: Docs build without warnings.
+**Artifact**: `docs/{service}.rst`
 
 **Commit message**:
-`docs({service}): add examples and docs (DISCOVER E)`
+`docs({service}): add documentation (DISCOVER E)`
 
-### R2 — Release
+### R — Release
 
 **Entry**: All DISCOVER phases complete for the batch.
 **Action**:
@@ -218,8 +273,9 @@ all DISCOVER phases before starting the next.
 
 1. **By API surface**: ACPortal, Catalog, ABC.
 2. **By domain**: See `specs/api-surface.md` groups.
-3. **By fixture availability**: Groups where ABConnectTools has
-   fixtures are faster to validate — prioritize these.
+3. **By request complexity**: Groups where ABConnectTools has
+   examples with realistic parameter values are faster to
+   implement — prioritize these.
 4. **By priority**: Stakeholder-driven (Principle VII).
 
 ### Recommended Batch Order
@@ -252,12 +308,13 @@ git status
 git diff --stat
 ```
 
-### Step 4: Check fixture state
+### Step 4: Check endpoint status
 
 ```bash
-# Count pending vs captured
-grep -c "pending" FIXTURES.md
+# Count by status
 grep -c "captured" FIXTURES.md
+grep -c "needs-request-data" FIXTURES.md
+grep -c "needs-access" FIXTURES.md
 ```
 
 ### Step 5: Run tests to see current state
@@ -269,7 +326,7 @@ pytest --tb=line -q 2>&1 | tail -20
 ### Step 6: Identify current phase
 
 Look at the last commit message for DISCOVER phase markers
-(e.g., `DISCOVER R-I-S` means phases R, I, S are done —
+(e.g., `DISCOVER D-I-S` means phases D, I, S are done —
 resume at phase C).
 
 ### Step 7: Resume
@@ -279,7 +336,7 @@ scratch. All prior phase artifacts are committed and valid.
 
 ## ABConnectTools Reference Paths
 
-Quick lookup for Phase R:
+Quick lookup for Phase D:
 
 | What | Path |
 |------|------|
@@ -293,13 +350,23 @@ Quick lookup for Phase R:
 
 ## Anti-Patterns
 
-- **Fabricating fixtures**: Never invent JSON data. If you
-  cannot capture a real response, write a skipping test and
-  move on. The human will capture it in Phase C.
-- **Copying from ABConnectTools**: Phase R is read-only.
+- **Fabricating fixtures**: Never invent JSON data. If the
+  example errors, fix the request. If access is the problem,
+  park the endpoint as `needs-access` and move on.
+- **Asking for response fixtures when the request is wrong**:
+  A 400 error means the example needs correct parameters, not
+  that a human needs to provide a response. Research
+  ABConnectTools and swagger to find the right request data.
+- **Writing examples without research**: Phase D exists for a
+  reason. Every example MUST use parameters researched from
+  ABConnectTools endpoint code, examples, and swagger specs.
+- **Copying from ABConnectTools**: Phase D is read-only.
   Understand patterns, then implement clean-room with our
   stricter standards (extra="forbid"/"allow", drift logging,
   mixin inheritance).
+- **Generic "pending" status**: Every non-captured endpoint
+  MUST specify `needs-request-data` (fixable by research) or
+  `needs-access` (needs human). Never use a vague "pending."
 - **Skipping phases**: Every phase produces artifacts. Skipping
   a phase leaves gaps that compound.
 - **Re-discovering endpoints**: The endpoint inventory lives in
