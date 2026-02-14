@@ -1,0 +1,10 @@
+{
+  "quoteId": "quote-001",
+  "status": "Completed",
+  "results": [
+    {
+      "carrier": "XPO",
+      "price": 1200.5
+    }
+  ]
+}

@@ -1,0 +1,3419 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ABC.WebAPI",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/autoprice/quickquote": {
+      "post": {
+        "tags": [
+          "AutoPrice"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/autoprice/quoterequest": {
+      "post": {
+        "tags": [
+          "AutoPrice"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.RequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.RequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.RequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.RequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/autoprice/v2/quoterequest": {
+      "post": {
+        "tags": [
+          "AutoPrice"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/job/update": {
+      "post": {
+        "tags": [
+          "Job"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Job.UpdateInfoRequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Job.UpdateInfoRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Job.UpdateInfoRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Job.UpdateInfoRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/logbuffer/flush": {
+      "post": {
+        "tags": [
+          "LogBuffer"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/report/webrevenue": {
+      "get": {
+        "tags": [
+          "Report"
+        ],
+        "parameters": [
+          {
+            "name": "accessKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Test/renderedtemplate": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Test/recentestimates": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Test/contact": {
+      "get": {
+        "tags": [
+          "Test"
+        ],
+        "parameters": [
+          {
+            "name": "crmContactId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Web2Lead/get": {
+      "get": {
+        "tags": [
+          "Web2Lead"
+        ],
+        "parameters": [
+          {
+            "name": "AccessKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FirstName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "LastName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Address1",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Address2",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "City",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "StateProvince",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ZipPostalCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ReferrerPage",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "EntryUrl",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SubmissionPage",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HowHeard",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Phone",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ShipDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ShipFrom",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ShipTo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "BusinessLead",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ReferredBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ReferredName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CustomerComments",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "IPAddress",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FranchiseeId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CompanyName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Paid",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Commodity",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Industry",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "FullName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Web2Lead/post": {
+      "post": {
+        "tags": [
+          "Web2Lead"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.RequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.RequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.RequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.RequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/Web2Lead/postv2": {
+      "post": {
+        "tags": [
+          "Web2Lead"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.V2.RequestModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.V2.RequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.V2.RequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ABC.WebAPI.Models.Web2Lead.V2.RequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AB.ABCEntities.Address": {
+        "type": "object",
+        "properties": {
+          "companyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "addressID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "result": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressMappingID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "contactID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "primaryCustomerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Contact"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Common.AddressDetails": {
+        "type": "object",
+        "properties": {
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isValid": {
+            "type": "boolean"
+          },
+          "dontValidate": {
+            "type": "boolean"
+          },
+          "propertyType": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.PropertyType"
+          },
+          "address1Value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "address2Value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "countrySkipZipCodeVerification": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "zipCodeResolvingFailed": {
+            "type": "boolean"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fullCityLine": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/AB.ABCEntities.GeoEntities.LatLng"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Common.AdvancedSettings.LimitCarrierToSetting": {
+        "type": "object",
+        "properties": {
+          "carrierCodes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "carrierAPIs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.FreightEntities.CarrierAPI"
+            },
+            "nullable": true
+          },
+          "isEmpty": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "isExcluded": {
+            "type": "boolean"
+          },
+          "usedFor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Common.EmailDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "invalid": {
+            "type": "boolean"
+          },
+          "dontSpam": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Common.PhoneDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Common.PropertyType": {
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "AB.ABCEntities.Company": {
+        "type": "object",
+        "properties": {
+          "companyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "addressID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "result": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressMappingID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "contactID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "primaryCustomerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Contact"
+          },
+          "address": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Address"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyType": {
+            "type": "string",
+            "nullable": true
+          },
+          "parcelOnly": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isThirdParty": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCompanyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyTypeID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "parentCompanyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "companyPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyFax": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyWebSite": {
+            "type": "string",
+            "nullable": true
+          },
+          "industryType": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "industryTypeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerCell": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyCell": {
+            "type": "string",
+            "nullable": true
+          },
+          "pzCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "referralCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyLogo": {
+            "type": "string",
+            "nullable": true
+          },
+          "letterHeadLogo": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailLogo": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsMarkerImage": {
+            "type": "string",
+            "nullable": true
+          },
+          "colorTheme": {
+            "type": "string",
+            "nullable": true
+          },
+          "franchiseeMaturityType": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "pricingToUse": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "totalRows": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "companyInsurancePricing": {
+            "$ref": "#/components/schemas/AB.ABCEntities.CompanyInsurancePricing"
+          },
+          "companyServicePricing": {
+            "$ref": "#/components/schemas/AB.ABCEntities.CompanyServicePricing"
+          },
+          "companyTaxPricing": {
+            "$ref": "#/components/schemas/AB.ABCEntities.CompanyTaxPricing"
+          },
+          "wholeSaleMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "baseMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "mediumMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "highMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "miles": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "insuranceType": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isGlobal": {
+            "type": "boolean"
+          },
+          "isQbUser": {
+            "type": "boolean"
+          },
+          "skipIntacct": {
+            "type": "boolean"
+          },
+          "isAccess": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyDisplayID": {
+            "type": "string",
+            "nullable": true
+          },
+          "depth": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "franchiseeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isPrefered": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "createdUser": {
+            "type": "string",
+            "nullable": true
+          },
+          "mappingLocations": {
+            "type": "string",
+            "nullable": true
+          },
+          "locationCount": {
+            "type": "string",
+            "nullable": true
+          },
+          "baseParent": {
+            "type": "string",
+            "nullable": true
+          },
+          "copyMaterialFrom": {
+            "type": "string",
+            "nullable": true
+          },
+          "isHide": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isDontUse": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "mainAddress": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.AddressDetails"
+          },
+          "accountManagerFranchiseeId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "accountManagerFranchiseeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "carrierAccountsSourceCompanyId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "carrierAccountsSourceCompanyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "autoPriceAPIEnableEmails": {
+            "type": "boolean"
+          },
+          "autoPriceAPIEnableSMSs": {
+            "type": "boolean"
+          },
+          "commercialCapabilities": {
+            "$ref": "#/components/schemas/AB.ABCEntities.CompanyEntities.CommercialCapabilities"
+          },
+          "primaryContactId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "payerContactId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "payerContactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalJobs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalJobsRevenue": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalSales": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalSalesRevenue": {
+            "type": "number",
+            "format": "double"
+          },
+          "isReadonly": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "addressData": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.AddressData"
+          },
+          "overridableAddressData": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.OverridableAddressData"
+          },
+          "companyInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.CompanyEntities.CompanyInfo"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.CompanyEntities.CommercialCapabilities": {
+        "enum": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32,
+          64,
+          128,
+          256
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "AB.ABCEntities.CompanyEntities.CompanyInfo": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyTypeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "thumbnailLogo": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyLogo": {
+            "type": "string",
+            "nullable": true
+          },
+          "mapsMarkerImage": {
+            "type": "string",
+            "nullable": true
+          },
+          "mainAddress": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.AddressDetails"
+          },
+          "isThirdParty": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isHidden": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.CompanyInsurancePricing": {
+        "type": "object",
+        "properties": {
+          "insuranceSlabID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deductibleAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "companyId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "transpTypeID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdby": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "modifiedby": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "insuranceType": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "wholeSaleMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "baseMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "mediumMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "highMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.CompanyServicePricing": {
+        "type": "object",
+        "properties": {
+          "servicePricingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "serviceCategoryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "categoryValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "wholeSaleMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "baseMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "mediumMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "highMarkup": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isTaxable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "taxPercent": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceCategoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyTypeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "parentCategoryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.CompanyTaxPricing": {
+        "type": "object",
+        "properties": {
+          "jobID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "serviceCategoryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "taxSlabID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isTaxable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "taxPercent": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "companyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "serviceCategotyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Contact": {
+        "type": "object",
+        "properties": {
+          "companyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "addressID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "string",
+            "nullable": true
+          },
+          "result": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressMappingID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "contactID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "primaryCustomerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Contact"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCompanyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "payerID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "custCompanyid": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "puBusinessStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "delBusinessStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "puZone": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "newContactId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contactIsBusiness": {
+            "type": "boolean"
+          },
+          "contactFirstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactLastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactFullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactFax": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerCell": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactEmailID": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactTypeID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "referId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "referredName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactDept": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactAssistant": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactAssistantPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactHomePhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactBirthDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isPrimary": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isPrefered": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "referredBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isPayer": {
+            "type": "boolean"
+          },
+          "payerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "otherReferral": {
+            "type": "string",
+            "nullable": true
+          },
+          "masterConstantID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCompanyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "masterConstantValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalRecord": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "industryType": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactAddress": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Address"
+          },
+          "contactUser": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Users"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contactWebSite": {
+            "type": "string",
+            "nullable": true
+          },
+          "isGlobal": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAccess": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactDisplayID": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "franchiseeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactType": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdUser": {
+            "type": "string",
+            "nullable": true
+          },
+          "mappingLocations": {
+            "type": "string",
+            "nullable": true
+          },
+          "locationCount": {
+            "type": "string",
+            "nullable": true
+          },
+          "baseParent": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ContactEntities.ContactAddressDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "deactivatedReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "metaData": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.AddressDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ContactEntities.ContactDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contactDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "careOf": {
+            "type": "string",
+            "nullable": true
+          },
+          "bolNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxId": {
+            "type": "string",
+            "nullable": true
+          },
+          "isBusiness": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "isPayer": {
+            "type": "boolean"
+          },
+          "isPrefered": {
+            "type": "boolean"
+          },
+          "isPrivate": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "companyId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "rootContactId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "ownerFranchiseeId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "company": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Company"
+          },
+          "legacyGuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "assistant": {
+            "type": "string",
+            "nullable": true
+          },
+          "department": {
+            "type": "string",
+            "nullable": true
+          },
+          "webSite": {
+            "type": "string",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "jobTitleId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "jobTitle": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailsList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.ContactEntities.ContactEmailDetails"
+            },
+            "nullable": true
+          },
+          "phonesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.ContactEntities.ContactPhoneDetails"
+            },
+            "nullable": true
+          },
+          "addressesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.ContactEntities.ContactAddressDetails"
+            },
+            "nullable": true
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "primaryPhoneDetail": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.PhoneDetails"
+          },
+          "primaryPhone": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "primaryEmailDetail": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.EmailDetails"
+          },
+          "primaryEmail": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "primaryAddressDetail": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.AddressDetails"
+          },
+          "editable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isEmpty": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "fullNameUpdateRequired": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ContactEntities.ContactEmailDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "deactivatedReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "metaData": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.EmailDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ContactEntities.ContactPhoneDetails": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "deactivatedReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "metaData": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.PhoneDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.FreightEntities.CarrierAPI": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          14,
+          20
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "AB.ABCEntities.GeoEntities.LatLng": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyTypeParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyType": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.PropertyType"
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactDetails": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ContactEntities.ContactDetails"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.JobBaseInfo": {
+        "type": "object",
+        "properties": {
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobSellPrice": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerComments": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobType": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipOutDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "residenceDelivery": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "packAgent": {
+            "type": "string",
+            "nullable": true
+          },
+          "otherRefNo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.LaborInfo": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "hours": {
+            "type": "string",
+            "nullable": true
+          },
+          "parsedHours": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "parsedType": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.LaborType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.LaborType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.ReferrerInfo": {
+        "type": "object",
+        "properties": {
+          "referrerPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "entryUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "submissionPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "howHeard": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.RequestModel": {
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.JobBaseInfo"
+          },
+          "referrerInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ReferrerInfo"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "pickup": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "pickupService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ServiceInfo"
+          },
+          "deliveryService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ServiceInfo"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.QuoteItems"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.ServiceInfo": {
+        "type": "object",
+        "properties": {
+          "agentCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "nullable": true
+          },
+          "feeOverrideAmount": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessorials": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "labor": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.LaborInfo"
+          },
+          "doneBy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.CarrierServiceInfo": {
+        "type": "object",
+        "properties": {
+          "accessorials": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "limitCarriersTo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.Common.AdvancedSettings.LimitCarrierToSetting"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.ContactInfo": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactDisplayId": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyTypeParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyType": {
+            "$ref": "#/components/schemas/AB.ABCEntities.Common.PropertyType"
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.ContainerInfo": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "length": {
+            "type": "number",
+            "format": "double"
+          },
+          "width": {
+            "type": "number",
+            "format": "double"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sell": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.JobBaseInfo": {
+        "type": "object",
+        "properties": {
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerComments": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobType": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipOutDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "otherRefNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "isExpedited": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "useOnlyOwnerTariffs": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "settingsKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "doNotTip": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.PackagingServiceInfo": {
+        "type": "object",
+        "properties": {
+          "extraContainers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ContainerInfo"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.QuoteRequestItem": {
+        "type": "object",
+        "properties": {
+          "lengthParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "l": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "widthParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "w": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "heightParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "h": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "weightParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "wgt": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "valueParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "cpack": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemID": {
+            "type": "string",
+            "nullable": true
+          },
+          "notedConditions": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerItemId": {
+            "type": "string",
+            "nullable": true
+          },
+          "forceCrate": {
+            "type": "boolean"
+          },
+          "qtyParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "doNotTip": {
+            "type": "boolean"
+          },
+          "commodityId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.RawRequestModel": {
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.JobBaseInfo"
+          },
+          "referrerInfo": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ReferrerInfo"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ContactInfo"
+          },
+          "pickup": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ContactInfo"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ContactInfo"
+          },
+          "pickupService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ServiceInfo"
+          },
+          "deliveryService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.ServiceInfo"
+          },
+          "carrierServices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "packService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.PackagingServiceInfo"
+          },
+          "carrierService": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.CarrierServiceInfo"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.V2.QuoteRequestItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.JobEntities.QuoteAPI.V2.ServiceInfo": {
+        "type": "object",
+        "properties": {
+          "accessorials": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "date": {
+            "type": "string",
+            "nullable": true
+          },
+          "doneBy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.QuoteItems": {
+        "type": "object",
+        "properties": {
+          "lengthParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "l": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "widthParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "w": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "heightParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "h": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "weightParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "wgt": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "valueParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "laborHrsParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "laborHrs": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cpack": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemID": {
+            "type": "string",
+            "nullable": true
+          },
+          "notedConditions": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "forceCrate": {
+            "type": "boolean"
+          },
+          "qtyParam": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ReportEntities.Common.AddressData": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstLastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine1": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine2": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactBOLNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "propertyType": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullCityLine": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "cellPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine2Visible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "companyVisible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "countryNameVisible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "phoneVisible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "emailVisible": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "fullAddressLine": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "fullAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ReportEntities.Common.OverridableAddressData": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "firstLastName": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "addressLine1": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "addressLine2": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "city": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "state": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "zipCode": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "phone": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "email": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "fullAddressLine": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "fullAddress": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          },
+          "fullCityLine": {
+            "$ref": "#/components/schemas/AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.ReportEntities.Common.Overridable`1[System.String]": {
+        "type": "object",
+        "properties": {
+          "defaultValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "overrideValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "forceEmpty": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AB.ABCEntities.Users": {
+        "type": "object",
+        "properties": {
+          "rowID": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "totalRows": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "userExpirationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dashboardUserID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "companyID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hasAccess": {
+            "type": "boolean"
+          },
+          "modifiedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "modifiedBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "dashboardID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "results": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userCompanyID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "companyType": {
+            "type": "string",
+            "nullable": true
+          },
+          "corporateCompanyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "usersystemLogID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "userID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "loginTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "logoutTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createBy": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "sortingDirection": {
+            "type": "string",
+            "nullable": true
+          },
+          "sortingBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "countryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "pricingToUse": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "parentCompanyID": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "crmContactId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ABC.WebAPI.Models.Job.UpdateInfoRequestModel": {
+        "required": [
+          "accessKey"
+        ],
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "bookingKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "pickup": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/AB.ABCEntities.JobEntities.QuoteAPI.ContactInfo"
+          },
+          "updateDeliveryToCustomer": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "comments": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ABC.WebAPI.Models.Web2Lead.RequestModel": {
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateProvince": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipPostalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "referrerPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "entryUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "submissionPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "howHeard": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipFrom": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipTo": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessLead": {
+            "type": "string",
+            "nullable": true
+          },
+          "referredBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "referredName": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerComments": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "searchTerm": {
+            "type": "string",
+            "nullable": true
+          },
+          "franchiseeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "paid": {
+            "type": "string",
+            "nullable": true
+          },
+          "commodity": {
+            "type": "string",
+            "nullable": true
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ABC.WebAPI.Models.Web2Lead.V2.RequestModel": {
+        "type": "object",
+        "properties": {
+          "accessKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "stateProvince": {
+            "type": "string",
+            "nullable": true
+          },
+          "zipPostalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "referrerPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "entryUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "submissionPage": {
+            "type": "string",
+            "nullable": true
+          },
+          "howHeard": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipFrom": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipTo": {
+            "type": "string",
+            "nullable": true
+          },
+          "businessLead": {
+            "type": "string",
+            "nullable": true
+          },
+          "referredBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "referredName": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerComments": {
+            "type": "string",
+            "nullable": true
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "searchTerm": {
+            "type": "string",
+            "nullable": true
+          },
+          "franchiseeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "paid": {
+            "type": "string",
+            "nullable": true
+          },
+          "commodity": {
+            "type": "string",
+            "nullable": true
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

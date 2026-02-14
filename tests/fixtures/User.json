@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "login": "1075steve",
+  "fullName": "Steve Wells",
+  "contactId": 1271,
+  "contactDisplayId": "1312608",
+  "contactCompanyName": "Navis Pack & Ship #1075MD (1075MD)",
+  "contactCompanyId": "a5abc3b0-2fcd-4a5c-9499-8c891ef35d8a",
+  "contactCompanyDisplayId": "616038",
+  "email": "MD1075@GoNavis.com",
+  "emailConfirmed": true,
+  "contactPhone": "4107378020",
+  "contactEmail": "MD1075@GoNavis.com",
+  "password": null,
+  "lockoutDateUtc": "2018-08-20T12:28:23.78",
+  "lockoutEnabled": true,
+  "role": "Admin",
+  "isActive": true,
+  "legacyId": "00000000-0000-0000-0000-000000000000",
+  "additionalUserCompanies": [],
+  "additionalUserCompaniesNames": [],
+  "crmContactId": 0
+}

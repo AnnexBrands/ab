@@ -1,0 +1,306 @@
+{
+  "id": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "details": {
+    "displayId": "852949",
+    "name": "Navis Pack & Ship #14004OH",
+    "taxId": "",
+    "code": "14004OH",
+    "parentId": "764db661-27e1-48b7-962f-1b5157390c53",
+    "franchiseeId": null,
+    "companyTypeId": "e7f85166-34cf-429b-805d-261b44cb0c04",
+    "industryTypeId": "6664ddb1-b7f1-e311-b7f5-000c298b59ee",
+    "cellPhone": null,
+    "phone": "6147065958",
+    "fax": "6147065965",
+    "email": "oh14004@goNavis.com",
+    "website": "https://gonavis.com/about/oh14004",
+    "isActive": true,
+    "isHidden": false,
+    "isGlobal": true,
+    "isNotUsed": false,
+    "isPreferred": true,
+    "payerContactId": 30760,
+    "payerContactName": "Justine Yigitbasi"
+  },
+  "preferences": {
+    "companyHeaderLogo": {
+      "filePath": "\\Uploads\\CompanyHeaderLogo\\0dfd1405-0546-eb11-822b-fcb1a6dfbbb6#Navis_Horz[2].jpg",
+      "newFile": null
+    },
+    "thumbnailLogo": {
+      "filePath": "\\Uploads\\ThumbnailLogo\\5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+      "newFile": null
+    },
+    "letterHeadLogo": {
+      "filePath": "\\Uploads\\LetterHeadLogo\\02cd0516-0546-eb11-822b-fcb1a6dfbbb6#Navis_Horz[1].jpg",
+      "newFile": null
+    },
+    "mapsMarker": {
+      "filePath": "\\Uploads\\MapsMarkerImage\\5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+      "newFile": null
+    },
+    "isQbUser": true,
+    "skipIntacct": false,
+    "pricingToUse": "4e8e4f3b-65f9-4625-bba0-fad6fa5e7d6e",
+    "pzCode": "PZ820",
+    "insuranceTypeId": "eea23c05-29b2-e111-b36c-00155d6b2c30",
+    "franchiseeMaturityTypeId": null,
+    "isCompanyUsedAsCarrierSource": false,
+    "carrierAccountsSourceCompanyId": null,
+    "carrierAccountsSourceCompanyName": null,
+    "accountManagerFranchiseeId": null,
+    "accountManagerFranchiseeName": null,
+    "autoPriceAPIEnableEmails": false,
+    "autoPriceAPIEnableSMSs": false,
+    "copyMaterials": 0
+  },
+  "capabilities": 63,
+  "address": {
+    "id": 140026,
+    "isValid": true,
+    "dontValidate": false,
+    "propertyType": 3,
+    "address1Value": "5738 Westbourne Ave",
+    "address2Value": "",
+    "countryName": "United States",
+    "countryCode": "US",
+    "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+    "countrySkipZipCodeVerification": null,
+    "zipCodeResolvingFailed": false,
+    "latitude": 39.9850328,
+    "longitude": -82.847824,
+    "fullCityLine": "Columbus, OH, 43213",
+    "coordinates": {
+      "latitude": 39.9850328,
+      "longitude": -82.847824
+    },
+    "address1": "5738 Westbourne Ave",
+    "address2": null,
+    "city": "Columbus",
+    "state": "OH",
+    "zipCode": "43213"
+  },
+  "accountInformation": {
+    "lmiUserName": "packaging-ws",
+    "lmiClientCode": "PZ820",
+    "useFlatRates": false,
+    "fedEx": {
+      "restApiAccounts": []
+    },
+    "ups": {
+      "shipperNumber": "",
+      "clientId": "",
+      "clientSecret": ""
+    },
+    "roadRunner": {
+      "userName": "navis14004",
+      "password": "shipping#1",
+      "appId": "cbb53854-66b1-4593-a250-932401574cbf",
+      "apiKey": "DaoIFZeydbJyV0jOQ8I0ug=="
+    },
+    "maersk": {
+      "locationId": 29695796,
+      "tariffHeaderId": 31888,
+      "userName": "OH14004@GONAVIS.COM",
+      "password": "February02*",
+      "addressId": 111994,
+      "controlStation": "GOP"
+    },
+    "teamWW": {
+      "apiKey": "01GW2V3S5KDJNP772M110EZQB4"
+    },
+    "estes": {
+      "userName": "",
+      "password": "",
+      "account": ""
+    },
+    "forwardAir": {
+      "userName": "annexlax",
+      "password": "DuTgfWa6cgzuj4r9",
+      "customerId": "ANNEXLAX",
+      "billTo": "2552326",
+      "shipperNumber": "2552312"
+    },
+    "btx": {
+      "apiKey": null
+    },
+    "globalTranz": {
+      "accessKey": "120d634e917d4dbaaec69aedccbb8173",
+      "userName": "NAVIS16",
+      "password": "Primetime123"
+    },
+    "usps": {
+      "accountNumber": null,
+      "customerRegistrationId": null,
+      "mailerId": null,
+      "mailerIdCode": null,
+      "clientId": null,
+      "clientSecret": null
+    }
+  },
+  "pricing": {
+    "transportationCharge": {
+      "baseTripFee": 50.0,
+      "baseTripMile": 15.0,
+      "extraFee": 1.0,
+      "fuelSurcharge": 0.05
+    },
+    "transportationMarkups": {
+      "wholeSale": 1.0,
+      "base": 1.25,
+      "medium": 2.3,
+      "high": 2.5
+    },
+    "carrierFreightMarkups": {
+      "wholeSale": 1.98,
+      "base": 2.36,
+      "medium": 2.7,
+      "high": 3.0
+    },
+    "carrierOtherMarkups": {
+      "wholeSale": 1.67,
+      "base": 2.0,
+      "medium": 2.3,
+      "high": 4.0
+    },
+    "materialMarkups": {
+      "wholeSale": 1.67,
+      "base": 2.3,
+      "medium": 2.9,
+      "high": 4.0
+    },
+    "laborCharge": {
+      "cost": 22.0,
+      "charge": 65.0
+    },
+    "accesorialCharge": {
+      "stairs": 50.0,
+      "elevator": 0.0,
+      "longCarry": 50.0,
+      "certificateOfInsurance": 0.0,
+      "deInstallation": 0.0,
+      "disassembly": 0.0,
+      "timeSpecific": 0.0,
+      "saturday": 0.0
+    },
+    "royalties": {
+      "franchisee": 6.0,
+      "national": 3.0,
+      "local": 0.0
+    },
+    "paymentSettings": {
+      "creditCardSurcharge": 3.0,
+      "stripeConnected": true
+    }
+  },
+  "insurance": {
+    "isp": {
+      "insuranceSlabId": "b91d502e-2fb2-e111-b36c-00155d6b2c30",
+      "option": 1,
+      "sellPrice": 1.0
+    },
+    "nsp": {
+      "insuranceSlabId": "ba1d502e-2fb2-e111-b36c-00155d6b2c30",
+      "option": 1,
+      "sellPrice": 1.0
+    },
+    "ltl": {
+      "insuranceSlabId": "b81d502e-2fb2-e111-b36c-00155d6b2c30",
+      "option": 1,
+      "sellPrice": 3.0
+    }
+  },
+  "finalMileTariff": [
+    {
+      "groupId": "891d514c-7e1d-433f-a74a-6538cfedc0d1",
+      "from": 0.0,
+      "to": 300.0,
+      "toCurb": 150.0,
+      "intoGarage": 175.0,
+      "roomOfChoice": 200.0,
+      "whiteGlove": 225.0,
+      "deleteGroup": false
+    },
+    {
+      "groupId": "5ec11bcd-2e0b-4192-9960-db8122bce6a7",
+      "from": 301.0,
+      "to": 600.0,
+      "toCurb": 200.0,
+      "intoGarage": 225.0,
+      "roomOfChoice": 250.0,
+      "whiteGlove": 275.0,
+      "deleteGroup": false
+    },
+    {
+      "groupId": "03d39953-e744-4f5a-a38b-658a53cfb1cd",
+      "from": 601.0,
+      "to": 900.0,
+      "toCurb": 225.0,
+      "intoGarage": 250.0,
+      "roomOfChoice": 275.0,
+      "whiteGlove": 300.0,
+      "deleteGroup": false
+    },
+    {
+      "groupId": "d57f0671-1f25-4dde-a6e6-6550412fad57",
+      "from": 901.0,
+      "to": 1200.0,
+      "toCurb": 275.0,
+      "intoGarage": 300.0,
+      "roomOfChoice": 325.0,
+      "whiteGlove": 350.0,
+      "deleteGroup": false
+    },
+    {
+      "groupId": "5162552d-35b3-4431-a105-30923ce8271f",
+      "from": 1201.0,
+      "to": 1500.0,
+      "toCurb": 375.0,
+      "intoGarage": 400.0,
+      "roomOfChoice": 425.0,
+      "whiteGlove": 525.0,
+      "deleteGroup": false
+    },
+    {
+      "groupId": "6144809d-8146-49ae-a69e-f10dd4791da1",
+      "from": 1501.0,
+      "to": 2000.0,
+      "toCurb": 450.0,
+      "intoGarage": 475.0,
+      "roomOfChoice": 525.0,
+      "whiteGlove": 600.0,
+      "deleteGroup": false
+    }
+  ],
+  "taxes": {
+    "deliveryService": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "insurance": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "pickupService": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "services": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "transportationService": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "packagingMaterial": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    },
+    "packagingLabor": {
+      "isTaxable": false,
+      "taxPercent": 0.0
+    }
+  },
+  "readOnlyAccess": false
+}
