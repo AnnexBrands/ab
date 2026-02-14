@@ -7,7 +7,7 @@ from typing import List, Optional
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
-from ab.api.models.mixins import FullAuditModel
+from ab.api.models.mixins import FullAuditModel, IdentifiedModel
 
 
 class Job(ResponseModel, FullAuditModel):
@@ -118,3 +118,166 @@ class JobUpdateRequest(RequestModel):
     job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
     # Fields defined by ABC API — details from fixture
     updates: Optional[dict] = Field(None, description="Update payload")
+
+
+# ---- Timeline / Status models -----------------------------------------
+
+
+class TimelineTask(ResponseModel, IdentifiedModel):
+    """Timeline task — GET /job/{jobDisplayId}/timeline."""
+
+    id: Optional[str] = Field(None, description="Timeline task ID")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Task type code")
+    status: Optional[int] = Field(None, description="Status code")
+    status_name: Optional[str] = Field(None, alias="statusName", description="Human-readable status")
+    agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
+    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="When task is scheduled")
+    completed_date: Optional[str] = Field(None, alias="completedDate", description="When task was completed")
+    comments: Optional[str] = Field(None, description="Task notes")
+    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Completion flag")
+    sort_order: Optional[int] = Field(None, alias="sortOrder", description="Display order")
+
+
+class TimelineAgent(ResponseModel):
+    """Timeline agent — GET /job/{jobDisplayId}/timeline/{taskCode}/agent."""
+
+    contact_id: Optional[str] = Field(None, alias="contactId", description="Agent contact ID")
+    name: Optional[str] = Field(None, description="Agent name")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Agent's company")
+
+
+class TimelineTaskCreateRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/timeline."""
+
+    task_code: str = Field(..., alias="taskCode", description="Task type code")
+    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Scheduled date")
+    comments: Optional[str] = Field(None, description="Notes")
+    agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
+
+
+class TimelineTaskUpdateRequest(RequestModel):
+    """Body for PATCH /job/{jobDisplayId}/timeline/{timelineTaskId}."""
+
+    status: Optional[int] = Field(None, description="New status code")
+    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Updated schedule")
+    completed_date: Optional[str] = Field(None, alias="completedDate", description="Completion date")
+    comments: Optional[str] = Field(None, description="Updated notes")
+
+
+class IncrementStatusRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/timeline/incrementjobstatus."""
+
+    create_email: Optional[bool] = Field(None, alias="createEmail", description="Send status notification email")
+
+
+# ---- Tracking models --------------------------------------------------
+
+
+class TrackingInfo(ResponseModel):
+    """Tracking info — GET /job/{jobDisplayId}/tracking."""
+
+    status: Optional[str] = Field(None, description="Current tracking status")
+    location: Optional[str] = Field(None, description="Current location")
+    estimated_delivery: Optional[str] = Field(None, alias="estimatedDelivery", description="ETA")
+    events: Optional[List[dict]] = Field(None, description="Tracking event history")
+    carrier_name: Optional[str] = Field(None, alias="carrierName", description="Carrier")
+    pro_number: Optional[str] = Field(None, alias="proNumber", description="PRO number")
+
+
+class TrackingInfoV3(ResponseModel):
+    """Tracking info v3 — GET /v3/job/{jobDisplayId}/tracking/{historyAmount}."""
+
+    tracking_details: Optional[List[dict]] = Field(None, alias="trackingDetails", description="Detailed tracking entries")
+    carrier_info: Optional[List[dict]] = Field(None, alias="carrierInfo", description="Carrier metadata")
+    shipment_status: Optional[str] = Field(None, alias="shipmentStatus", description="Overall status")
+
+
+# ---- Notes models -----------------------------------------------------
+
+
+class JobNote(ResponseModel, IdentifiedModel):
+    """Job note — GET /job/{jobDisplayId}/note."""
+
+    id: Optional[str] = Field(None, description="Note ID")
+    comment: Optional[str] = Field(None, description="Note content")
+    is_important: Optional[bool] = Field(None, alias="isImportant", description="Flagged as important")
+    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Completion status")
+    author: Optional[str] = Field(None, description="Author name")
+    modify_date: Optional[str] = Field(None, alias="modifiyDate", description="Last modified (API typo preserved)")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Associated timeline task")
+
+
+class JobNoteCreateRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/note."""
+
+    comments: str = Field(..., description="Note content (max 8000 chars)")
+    task_code: str = Field(..., alias="taskCode", description="Associated timeline task code")
+    is_important: Optional[bool] = Field(None, alias="isImportant", description="Flag as important")
+    send_notification: Optional[bool] = Field(None, alias="sendNotification", description="Notify assigned users")
+    due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
+
+
+class JobNoteUpdateRequest(RequestModel):
+    """Body for PUT /job/{jobDisplayId}/note/{id}."""
+
+    comments: Optional[str] = Field(None, description="Updated content")
+    is_important: Optional[bool] = Field(None, alias="isImportant", description="Updated flag")
+    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Mark complete")
+
+
+# ---- Parcels & Items models -------------------------------------------
+
+
+class ParcelItem(ResponseModel):
+    """Parcel item — GET /job/{jobDisplayId}/parcelitems."""
+
+    parcel_item_id: Optional[str] = Field(None, alias="parcelItemId", description="Parcel item ID")
+    description: Optional[str] = Field(None, description="Item description")
+    length: Optional[float] = Field(None, description="Length (inches)")
+    width: Optional[float] = Field(None, description="Width (inches)")
+    height: Optional[float] = Field(None, description="Height (inches)")
+    weight: Optional[float] = Field(None, description="Weight (lbs)")
+    quantity: Optional[int] = Field(None, description="Number of pieces")
+    packaging_type: Optional[str] = Field(None, alias="packagingType", description="Package type")
+
+
+class ParcelItemWithMaterials(ResponseModel):
+    """Parcel item with materials — GET /job/{jobDisplayId}/parcel-items-with-materials."""
+
+    parcel_item_id: Optional[str] = Field(None, alias="parcelItemId", description="Parcel item ID")
+    description: Optional[str] = Field(None, description="Item description")
+    materials: Optional[List[dict]] = Field(None, description="Associated materials")
+    dimensions: Optional[dict] = Field(None, description="Packed dimensions")
+
+
+class PackagingContainer(ResponseModel):
+    """Packaging container — GET /job/{jobDisplayId}/packagingcontainers."""
+
+    container_id: Optional[str] = Field(None, alias="containerId", description="Container ID")
+    name: Optional[str] = Field(None, description="Container name")
+    dimensions: Optional[dict] = Field(None, description="Container dimensions")
+
+
+class ParcelItemCreateRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/parcelitems."""
+
+    description: str = Field(..., description="Item description")
+    length: Optional[float] = Field(None, description="Length")
+    width: Optional[float] = Field(None, description="Width")
+    height: Optional[float] = Field(None, description="Height")
+    weight: Optional[float] = Field(None, description="Weight")
+    quantity: Optional[int] = Field(None, description="Quantity")
+
+
+class ItemNotesRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/item/notes."""
+
+    notes: str = Field(..., description="Item notes content")
+
+
+class ItemUpdateRequest(RequestModel):
+    """Body for PUT /job/{jobDisplayId}/item/{itemId}."""
+
+    description: Optional[str] = Field(None, description="Updated description")
+    quantity: Optional[int] = Field(None, description="Updated quantity")
+    weight: Optional[float] = Field(None, description="Updated weight")

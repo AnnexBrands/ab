@@ -1,26 +1,40 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 1.1.0 → 1.2.0
+  Version change: 1.2.0 → 2.0.0
+  Bump rationale: MAJOR — Principle V redefined (Mock Tracking →
+    Pending Fixture Tracking), Principle VIII added (Phase-Based
+    Context Recovery), Principle II rewritten (fabricated mocks
+    prohibited), Development Workflow replaced with DISCOVER phases.
   Modified principles:
-    - I. Pydantic Model Fidelity: Amended extra config to endorse
-      split RequestModel (extra="forbid") / ResponseModel
-      (extra="ignore") per research decision D2.
-    - III. Four-Way Harmony: Fixed path prefix src/ → ab/.
-    - V. Mock Tracking: SHOULD → MUST for pytest markers.
-  Modified sections:
-    - Development Workflow: Amended to reflect batch-by-type
-      strategy for initial build-out. Per-endpoint docs-first
-      remains an option for incremental additions.
-  Added sections (prior version):
-    - Principle VII. Flywheel Evolution
-  Removed sections: None
+    - II. Fixture-Driven Development: Rewritten. Fabricated mocks
+      prohibited. Fixtures MUST come from real API responses or
+      validated legacy data. Missing fixtures cause test skips with
+      capture instructions, not fake data.
+    - V. Mock Tracking & Transparency → V. Pending Fixture Tracking:
+      Renamed and redefined. MOCKS.md replaced by FIXTURES.md as a
+      capture-status tracker. No more fabricated data registry.
+  Added principles:
+    - VIII. Phase-Based Context Recovery: Work organized into
+      discrete phases with checkpoint artifacts. Enables clean
+      resume after context loss.
+  Added sections:
+    - Development Workflow: Replaced with DISCOVER phase model
+      referencing .claude/workflows/DISCOVER.md.
+  Removed sections: None (old Development Workflow replaced)
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ no update needed
-    - .specify/templates/agent-file-template.md ✅ no update needed
-  Follow-up TODOs: None
+      (phase names are generic; DISCOVER is a runtime workflow)
+  Follow-up TODOs:
+    - Create .claude/workflows/DISCOVER.md with mermaid diagram
+    - Delete fabricated mock fixtures from tests/fixtures/
+    - Rename MOCKS.md → FIXTURES.md and convert to new format
+    - Update test files: replace @pytest.mark.mock on fabricated
+      fixtures with pytest.skip() + capture instructions
+    - Remove capture_fixtures*.py scripts (ad-hoc, replace with
+      documented capture procedure in DISCOVER.md)
 -->
 # ABConnect SDK Constitution
 
@@ -52,21 +66,34 @@ so that common fields are defined once and composed explicitly.
 
 ### II. Fixture-Driven Development
 
-Every endpoint MUST have at least one example that returns a
-captured fixture (a real JSON response stored in `tests/fixtures/`).
-Each fixture MUST validate against its corresponding Pydantic model
-without error.
+Every endpoint MUST have at least one fixture — a real JSON
+response stored in `tests/fixtures/`. Fixtures MUST come from
+one of two sources:
+
+1. **Human-captured** — saved by a developer from an actual API
+   call to staging or production.
+2. **Legacy-validated** — extracted from the legacy ABConnectTools
+   project (`/usr/src/pkgs/ABConnectTools/`) where the fixture has
+   been confirmed to match real API responses.
+
+Fabricated fixtures (invented JSON that has never been validated
+against a real API response) are **prohibited**.
 
 - Fixtures are the source of truth for model correctness.
-- New endpoints MUST NOT be considered complete until a fixture
-  is captured and validates.
-- Where a fixture cannot be obtained from a live API (auth
-  restrictions, destructive operations, missing data), a mock
-  fixture MUST be created and tracked in `MOCKS.md` at the
-  repository root with: endpoint path, reason mock is needed,
-  date added, and status (mock / live).
+- New endpoints MUST NOT be considered complete until a real
+  fixture is captured and validates against the Pydantic model.
+- When a fixture is not yet available, the model test MUST exist
+  but MUST use `pytest.skip()` with an actionable message:
+  ```python
+  pytest.skip(
+      "Fixture needed: capture {ModelName}.json via "
+      "{HTTP_METHOD} {endpoint_path}"
+  )
+  ```
 - Fixture files MUST be named `{ModelName}.json` and placed in
   `tests/fixtures/`.
+- `FIXTURES.md` at the repository root MUST track every
+  endpoint's fixture status. See Principle V.
 
 ### III. Four-Way Harmony (NON-NEGOTIABLE)
 
@@ -87,6 +114,11 @@ mutually consistent:
 Adding or modifying any one artifact MUST trigger review of the
 other three. An endpoint missing any artifact is incomplete.
 
+Endpoints awaiting fixture capture (Principle II) are tracked as
+**partial** — they have implementation + skeleton test but lack
+a captured fixture. Partial endpoints MUST NOT be merged to main
+without at least a skip-marked test.
+
 ### IV. Swagger-Informed, Reality-Validated
 
 The three swagger specs (ACPortal, Catalog-API, ABC-API) are
@@ -104,21 +136,31 @@ types, or miss entire response models.
 - When a model intentionally deviates from swagger, the deviation
   MUST be documented with a comment on the affected field(s).
 
-### V. Mock Tracking & Transparency
+### V. Pending Fixture Tracking
 
-Any endpoint or fixture that relies on fabricated data rather than
-a captured live response MUST be explicitly tracked.
+Every endpoint's fixture status MUST be tracked in `FIXTURES.md`
+at the repository root. Each entry MUST include:
 
-- `MOCKS.md` MUST list every mocked fixture with: endpoint path,
-  HTTP method, model name, reason (e.g., "requires admin role",
-  "destructive POST"), date added, and resolution status.
-- Mocks MUST use realistic data shapes matching known model
-  definitions.
-- Mocks MUST be replaced with live fixtures as soon as access or
-  safe execution becomes available.
-- CI/test output MUST distinguish mock-validated tests from
-  live-validated tests via pytest markers (`@pytest.mark.mock`,
-  `@pytest.mark.live`).
+- Endpoint path and HTTP method.
+- Model name.
+- Status: **captured** (real fixture exists) or **pending**
+  (needs human capture).
+- For **captured**: date captured and source (staging, production,
+  or legacy-validated).
+- For **pending**: capture instructions — the exact API call,
+  required parameters, prerequisites, and any known blockers
+  (e.g., "requires admin role", "needs active shipment on job").
+
+Rules:
+
+- Tests for endpoints with `pending` fixtures MUST skip with
+  an actionable message, NOT fabricate data.
+- `FIXTURES.md` MUST be updated whenever a fixture is captured
+  or a new endpoint is added.
+- The pending fixture count MUST be visible in test output
+  (pytest skip summary).
+- When a fixture is captured, the test MUST be updated to remove
+  the skip and add `@pytest.mark.live`.
 
 ### VI. Documentation Completeness
 
@@ -151,8 +193,8 @@ The flywheel stages are:
 3. **Guidelines** — Patterns that succeed in showcases MUST be
    distilled into reusable guidelines (coding patterns, model
    conventions, endpoint design idioms). Winning demos propagate:
-   a pattern proven in a mock or showcase MUST be promoted to a
-   guideline rather than remaining ad-hoc.
+   a pattern proven in a showcase MUST be promoted to a guideline
+   rather than remaining ad-hoc.
 4. **Agents.md** — Proven guidelines MUST be encoded into the
    project's `CLAUDE.md` (agent guidance file) so that all future
    development — human or AI-assisted — follows the validated
@@ -167,14 +209,45 @@ stakeholder discussions, closing the loop. Each full rotation
 MUST produce at least one measurable improvement to guidelines
 or agent guidance.
 
-- Mocks and showcase demos that receive positive stakeholder
-  validation MUST be tagged for propagation into permanent
-  fixtures, examples, or guidelines within the same sprint.
+- Showcases that receive positive stakeholder validation MUST
+  be tagged for propagation into permanent fixtures, examples,
+  or guidelines within the same sprint.
 - Engineering themes MUST be reviewed and updated at least once
   per planning cycle.
 - The `CLAUDE.md` agent guidance file MUST NOT be treated as
   static; it is a living artifact that evolves with each flywheel
   rotation.
+
+### VIII. Phase-Based Context Recovery
+
+Development work MUST be organized into discrete phases with
+explicit entry conditions, exit criteria, and checkpoint
+artifacts. This ensures that work can be resumed by a new agent
+context (or human) without loss of progress.
+
+- Each work phase MUST produce a checkpoint artifact (committed
+  file, updated tracking document, or passing test) before the
+  phase is considered complete.
+- Phase transitions MUST be committed to git. Uncommitted work
+  spanning multiple phases is prohibited.
+- The `.claude/workflows/` directory MUST contain workflow
+  definitions with mermaid diagrams documenting phase sequences,
+  entry/exit criteria, and recovery procedures.
+- When resuming work after context loss, the agent MUST:
+  1. Read the relevant workflow definition.
+  2. Check `git log` and `git status` to identify the last
+     completed phase.
+  3. Read `FIXTURES.md` and run `pytest --tb=line` to assess
+     current state.
+  4. Resume from the next incomplete phase — never restart from
+     scratch.
+- Work sessions MUST begin with a state assessment and end with
+  a checkpoint commit. If a session cannot complete its current
+  phase, progress MUST be committed as work-in-progress with
+  clear notes on remaining steps.
+- Each feature's `specs/{NNN}/tasks.md` MUST use checkbox tasks
+  (`- [ ]` / `- [x]`) so that progress is machine-readable
+  across context boundaries.
 
 ## API Coverage & Scope
 
@@ -201,28 +274,51 @@ single `/api/` prefix. The SDK MUST handle this internally.
 
 ## Development Workflow
 
-When developing endpoints in batch (the default for initial SDK
-build-out), artifacts are grouped by type across endpoint groups
-for parallel efficiency:
+Endpoint development follows the **DISCOVER** phased workflow
+defined in `.claude/workflows/DISCOVER.md`. Each phase has
+explicit entry/exit criteria to support clean context recovery
+(Principle VIII).
 
-1. **Model** — Define Pydantic request/response models from
-   swagger + any available real responses.
-2. **Implement** — Write the endpoint class method with route
-   definition, wiring models to request/response validation.
-3. **Fixture** — Capture a live response fixture (or create a
-   tracked mock if live capture is not possible).
-4. **Test** — Write tests that validate the fixture against the
-   model and (where safe) make a live API call.
-5. **Document** — Write Sphinx docs and runnable example for each
-   endpoint with cross-references to the model class.
-6. **Verify Harmony** — Confirm all four harmony artifacts exist
-   and are consistent.
+### DISCOVER Phases
 
-When adding a single endpoint to an existing codebase, the
-sequence MAY be reordered to docs-first if preferred, but all
-six steps MUST be completed before the endpoint is considered
-done. The batch-first ordering optimizes for parallel model
-and endpoint development during initial SDK build-out.
+1. **D — Discover** — Identify unimplemented endpoints from
+   swagger specs. Produce a gap analysis with priority groupings.
+2. **I — Implement models** — Create Pydantic models from swagger
+   schemas and legacy project reference. Write skeleton tests that
+   skip with fixture-capture instructions.
+3. **S — Scaffold endpoints** — Write endpoint class methods with
+   route definitions. Register in `client.py`. Wire models.
+4. **C — Capture fixtures** — Human captures real fixtures from
+   staging or production. Tests transition from skip to pass.
+5. **O — Observe tests** — Run full test suite. Confirm Four-Way
+   Harmony artifacts exist. Update `FIXTURES.md`.
+6. **V — Verify & commit** — Checkpoint commit. Phase complete
+   and recoverable.
+7. **E — Examples & docs** — Write runnable examples and Sphinx
+   documentation. Final Four-Way Harmony check.
+8. **R — Release** — PR ready. All principles satisfied.
+
+### Phase Rules
+
+- Phases D–S (1–3) MAY be executed by an AI agent within a
+  single context window.
+- Phase C (Capture) MUST involve a human — agents MUST NOT
+  fabricate fixture data.
+- Each phase MUST produce committed artifacts before proceeding.
+- When context is lost mid-phase, resume from the last committed
+  checkpoint using Principle VIII recovery procedure.
+- Work within phases MAY use batch-by-type strategy (all models
+  → all endpoints → all tests across a service group) for
+  parallel efficiency.
+
+### Batching Strategy
+
+Work in service groups of 5–15 endpoints:
+
+- Group by API surface (ACPortal, Catalog, ABC).
+- Group by domain (jobs/*, companies/*, contacts/*).
+- Each batch completes all DISCOVER phases before starting next.
+- Prioritize groups by stakeholder need (Principle VII).
 
 ## Governance
 
@@ -238,7 +334,7 @@ principles.
   clarifications).
 - **Compliance review**: Every PR MUST include a self-check
   against the Four-Way Harmony principle. Reviewers MUST verify
-  that new endpoints satisfy all seven principles.
+  that new endpoints satisfy all eight principles.
 - **Versioning policy**: This constitution follows MAJOR.MINOR.PATCH
   semantic versioning. The version line below tracks the current
   state.
@@ -249,5 +345,9 @@ principles.
   (stakeholder input through engineering themes) MUST complete
   per planning cycle. The outcome MUST be reflected as a
   `CLAUDE.md` update or a constitution amendment.
+- **Context recovery**: Every workflow in `.claude/workflows/`
+  MUST include a "Resuming Work" section with step-by-step
+  instructions for entering mid-flight. Workflows without
+  recovery procedures are incomplete.
 
-**Version**: 1.2.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
+**Version**: 2.0.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14

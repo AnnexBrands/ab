@@ -12,6 +12,9 @@ from ab.api.endpoints.lots import LotsEndpoint
 from ab.api.endpoints.sellers import SellersEndpoint
 from ab.api.endpoints.users import UsersEndpoint
 from ab.api.endpoints.web2lead import Web2LeadEndpoint
+from ab.api.endpoints.forms import FormsEndpoint
+from ab.api.endpoints.payments import PaymentsEndpoint
+from ab.api.endpoints.shipments import ShipmentsEndpoint
 
 __all__ = [
     "AddressEndpoint",
@@ -20,10 +23,13 @@ __all__ = [
     "CompaniesEndpoint",
     "ContactsEndpoint",
     "DocumentsEndpoint",
+    "FormsEndpoint",
     "JobsEndpoint",
     "LookupEndpoint",
     "LotsEndpoint",
+    "PaymentsEndpoint",
     "SellersEndpoint",
+    "ShipmentsEndpoint",
     "UsersEndpoint",
     "Web2LeadEndpoint",
 ]

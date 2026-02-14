@@ -70,10 +70,13 @@ class ABConnectAPI:
             CompaniesEndpoint,
             ContactsEndpoint,
             DocumentsEndpoint,
+            FormsEndpoint,
             JobsEndpoint,
             LookupEndpoint,
             LotsEndpoint,
+            PaymentsEndpoint,
             SellersEndpoint,
+            ShipmentsEndpoint,
             UsersEndpoint,
             Web2LeadEndpoint,
         )
@@ -86,6 +89,9 @@ class ABConnectAPI:
         self.address = AddressEndpoint(self._acportal)
         self.lookup = LookupEndpoint(self._acportal)
         self.users = UsersEndpoint(self._acportal)
+        self.forms = FormsEndpoint(self._acportal)
+        self.shipments = ShipmentsEndpoint(self._acportal)
+        self.payments = PaymentsEndpoint(self._acportal)
 
         # Catalog endpoints
         self.catalog = CatalogEndpoint(self._catalog)
