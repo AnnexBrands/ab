@@ -28,6 +28,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.scripts]
+ex = "examples.__main__:main"
+
 [project.urls]
 "Repository" = "https://github.com/AnnexBrands/ABConnnect"
 
@@ -44,7 +47,7 @@ docs = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["ab*"]
+include = ["ab*", "examples*"]
 
 [tool.setuptools.package-data]
 ab = ["py.typed", "api/schemas/*.json"]

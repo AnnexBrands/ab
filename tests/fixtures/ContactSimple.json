@@ -1,5 +1,10 @@
 {
+  "id": null,
+  "firstName": null,
+  "lastName": null,
   "fullName": "Brett Monson",
+  "email": null,
+  "phone": null,
   "companyId": "cf8085ed-b2f2-e611-9f52-00155d426802",
   "companyName": "Liveauctioneers.com"
 }
