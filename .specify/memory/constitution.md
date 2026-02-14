@@ -1,21 +1,25 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: (none) → 1.0.0
-  Modified principles: N/A (initial creation)
-  Added sections:
-    - Core Principles (6 principles)
-    - API Coverage & Scope
-    - Development Workflow
-    - Governance
-  Removed sections: N/A
+  Version change: 1.1.0 → 1.2.0
+  Modified principles:
+    - I. Pydantic Model Fidelity: Amended extra config to endorse
+      split RequestModel (extra="forbid") / ResponseModel
+      (extra="ignore") per research decision D2.
+    - III. Four-Way Harmony: Fixed path prefix src/ → ab/.
+    - V. Mock Tracking: SHOULD → MUST for pytest markers.
+  Modified sections:
+    - Development Workflow: Amended to reflect batch-by-type
+      strategy for initial build-out. Per-endpoint docs-first
+      remains an option for incremental additions.
+  Added sections (prior version):
+    - Principle VII. Flywheel Evolution
+  Removed sections: None
   Templates requiring updates:
-    - .specify/templates/plan-template.md ⚠ pending (no changes needed
-      at this time; Constitution Check section is generic)
-    - .specify/templates/spec-template.md ⚠ pending (no changes needed
-      at this time; template is generic)
-    - .specify/templates/tasks-template.md ⚠ pending (no changes needed
-      at this time; template is generic)
+    - .specify/templates/plan-template.md ✅ no update needed
+    - .specify/templates/spec-template.md ✅ no update needed
+    - .specify/templates/tasks-template.md ✅ no update needed
+    - .specify/templates/agent-file-template.md ✅ no update needed
   Follow-up TODOs: None
 -->
 # ABConnect SDK Constitution
@@ -30,8 +34,13 @@ Pydantic model. Models MUST use mixin-based inheritance
 JobRelatedModel, FullAuditModel, CompanyAuditModel, JobAuditModel)
 so that common fields are defined once and composed explicitly.
 
-- All models MUST inherit from `ABConnectBaseModel` with
-  `extra="forbid"` to catch unexpected fields immediately.
+- All models MUST inherit from `ABConnectBaseModel`.
+  Request models MUST use `extra="forbid"` (via `RequestModel`)
+  to catch typos and invalid outbound fields. Response models
+  MUST use `extra="ignore"` (via `ResponseModel`) to survive
+  API field additions without breaking deserialization.
+  Fixture validation tests catch new response fields by
+  comparing fixture snapshots, not by model rejection.
 - Field names MUST be snake_case with camelCase aliases matching
   the actual API JSON keys.
 - All fields MUST declare explicit `Optional[...]` when nullable.
@@ -63,7 +72,7 @@ without error.
 For every API endpoint, four artifacts MUST exist and remain
 mutually consistent:
 
-1. **Implementation** (`src/api/endpoints/` + `src/api/models/`)
+1. **Implementation** (`ab/api/endpoints/` + `ab/api/models/`)
    — endpoint class method and Pydantic model.
 2. **Fixture & Test** (`tests/`) — captured fixture validating
    against the model; test covering both fixture validation and
@@ -106,7 +115,7 @@ a captured live response MUST be explicitly tracked.
   definitions.
 - Mocks MUST be replaced with live fixtures as soon as access or
   safe execution becomes available.
-- CI/test output SHOULD distinguish mock-validated tests from
+- CI/test output MUST distinguish mock-validated tests from
   live-validated tests via pytest markers (`@pytest.mark.mock`,
   `@pytest.mark.live`).
 
@@ -124,6 +133,47 @@ MUST have Sphinx documentation that includes:
 
 Documentation MUST be buildable with `make html` without warnings.
 Broken cross-references are build failures.
+
+### VII. Flywheel Evolution
+
+Development priorities, patterns, and engineering themes MUST
+evolve through an iterative flywheel rather than top-down decree.
+The flywheel stages are:
+
+1. **Stakeholder Input** — Corporate stakeholders surface business
+   needs, pain points, and integration priorities. These inputs
+   MUST be captured as feature requests or spec amendments.
+2. **Showcases** — Working demos, mock integrations, and prototype
+   endpoints MUST be presented in regular showcases. Showcases are
+   the primary venue for validating that engineering work aligns
+   with stakeholder expectations.
+3. **Guidelines** — Patterns that succeed in showcases MUST be
+   distilled into reusable guidelines (coding patterns, model
+   conventions, endpoint design idioms). Winning demos propagate:
+   a pattern proven in a mock or showcase MUST be promoted to a
+   guideline rather than remaining ad-hoc.
+4. **Agents.md** — Proven guidelines MUST be encoded into the
+   project's `CLAUDE.md` (agent guidance file) so that all future
+   development — human or AI-assisted — follows the validated
+   patterns automatically.
+5. **Engineering Themes** — Recurring guidelines and stakeholder
+   priorities MUST be synthesized into engineering themes (e.g.,
+   "bulk operations quarter", "catalog reliability sprint") that
+   inform the next cycle of spec prioritization.
+
+The flywheel is continuous: engineering themes feed back into
+stakeholder discussions, closing the loop. Each full rotation
+MUST produce at least one measurable improvement to guidelines
+or agent guidance.
+
+- Mocks and showcase demos that receive positive stakeholder
+  validation MUST be tagged for propagation into permanent
+  fixtures, examples, or guidelines within the same sprint.
+- Engineering themes MUST be reviewed and updated at least once
+  per planning cycle.
+- The `CLAUDE.md` agent guidance file MUST NOT be treated as
+  static; it is a living artifact that evolves with each flywheel
+  rotation.
 
 ## API Coverage & Scope
 
@@ -150,23 +200,28 @@ single `/api/` prefix. The SDK MUST handle this internally.
 
 ## Development Workflow
 
-The mandatory development sequence for each endpoint is:
+When developing endpoints in batch (the default for initial SDK
+build-out), artifacts are grouped by type across endpoint groups
+for parallel efficiency:
 
-1. **Document** — Write Sphinx docs and example stub describing
-   the endpoint's purpose and expected models.
-2. **Model** — Define Pydantic request/response models from
+1. **Model** — Define Pydantic request/response models from
    swagger + any available real responses.
+2. **Implement** — Write the endpoint class method with route
+   definition, wiring models to request/response validation.
 3. **Fixture** — Capture a live response fixture (or create a
    tracked mock if live capture is not possible).
 4. **Test** — Write tests that validate the fixture against the
    model and (where safe) make a live API call.
-5. **Implement** — Write the endpoint class method with route
-   definition, wiring models to request/response validation.
+5. **Document** — Write Sphinx docs and runnable example for each
+   endpoint with cross-references to the model class.
 6. **Verify Harmony** — Confirm all four harmony artifacts exist
    and are consistent.
 
-This sequence ensures models are reality-grounded before
-implementation code is written.
+When adding a single endpoint to an existing codebase, the
+sequence MAY be reordered to docs-first if preferred, but all
+six steps MUST be completed before the endpoint is considered
+done. The batch-first ordering optimizes for parallel model
+and endpoint development during initial SDK build-out.
 
 ## Governance
 
@@ -182,12 +237,16 @@ principles.
   clarifications).
 - **Compliance review**: Every PR MUST include a self-check
   against the Four-Way Harmony principle. Reviewers MUST verify
-  that new endpoints satisfy all six principles.
+  that new endpoints satisfy all seven principles.
 - **Versioning policy**: This constitution follows MAJOR.MINOR.PATCH
   semantic versioning. The version line below tracks the current
   state.
 - **Runtime guidance**: Detailed development commands, environment
   setup, and domain knowledge belong in `CLAUDE.md` or `README.md`,
   not in this constitution. This document governs principles only.
+- **Flywheel accountability**: At least one flywheel rotation
+  (stakeholder input through engineering themes) MUST complete
+  per planning cycle. The outcome MUST be reflected as a
+  `CLAUDE.md` update or a constitution amendment.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13
+**Version**: 1.2.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-13

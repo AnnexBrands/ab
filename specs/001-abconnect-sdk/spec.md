@@ -5,15 +5,25 @@
 **Status**: Draft
 **Input**: User description: "Create an API SDK for the set of ABConnect APIs with fixture-driven Pydantic models, Four-Way Harmony, Sphinx documentation, and mock tracking"
 
+## Clarifications
+
+### Session 2026-02-13
+
+- Q: What is the relationship to ABConnectTools? → A: Clean rebuild, independent coexisting package. High-quality patterns only; ABConnectTools is reference material, not a code source.
+- Q: Should the initial release target all endpoints or a subset? → A: Core subset first (~30-50 endpoints across all 3 APIs). Auth, client, models, tests, docs, and endpoint infrastructure MUST be optimal and production-quality from the start. Foundation quality over breadth.
+- Q: Should the SDK include a CLI interface? → A: Python API only for the initial release. CLI deferred to a future feature.
+- Q: Should Django session-based auth be included? → A: Yes. Both FileTokenStorage and SessionTokenStorage from the start.
+- Q: What should the installable package be named? → A: `ab`. Import as `from ab.api import ...`, install as `pip install ab`.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Call Any Endpoint and Get a Typed Response (Priority: P1)
 
 A developer integrating with ABConnect wants to call any API endpoint
-and receive a validated, typed Pydantic model as the response. The SDK
-handles authentication, URL routing (ACPortal vs Catalog vs ABC), and
-response parsing transparently so the developer works with Python
-objects rather than raw JSON.
+and receive a validated, typed Pydantic model as the response. The
+`ab` package handles authentication, URL routing (ACPortal vs Catalog
+vs ABC), and response parsing transparently so the developer works
+with Python objects rather than raw JSON.
 
 **Why this priority**: This is the foundational value proposition of
 the SDK. Without typed endpoint access, nothing else (docs, fixtures,
@@ -42,6 +52,10 @@ as typed Python attributes.
 4. **Given** an expired access token, **When** the developer makes
    any API call, **Then** the SDK transparently refreshes the token
    and retries the request without developer intervention.
+5. **Given** a Django application using SessionTokenStorage, **When**
+   the developer initializes the client with a Django request object,
+   **Then** tokens are stored in the Django session and persist across
+   requests.
 
 ---
 
@@ -142,8 +156,9 @@ distinguish mock-validated from live-validated tests.
 ### Edge Cases
 
 - What happens when the API returns a field not declared in the
-  Pydantic model? The model uses `extra="forbid"`, so validation
-  fails and the test surfaces the new field for model update.
+  Pydantic model? Response models use `extra="ignore"`, so
+  deserialization succeeds. The next fixture capture detects the
+  new field via snapshot comparison, prompting a model update.
 - What happens when the API removes a previously required field?
   The fixture test fails, prompting a model update to make the field
   Optional or remove it.
@@ -167,14 +182,23 @@ distinguish mock-validated from live-validated tests.
 
 - **FR-001**: SDK MUST provide typed client methods for all
   implemented endpoints across ACPortal, Catalog, and ABC APIs.
+  Initial release targets 59 core endpoints (37 ACPortal +
+  17 Catalog + 5 ABC) covering Companies, Contacts, Jobs,
+  Documents, Address, Lookup, Users, Catalog, Lots, Sellers,
+  AutoPrice, and Web2Lead.
 - **FR-002**: SDK MUST authenticate via OAuth2 password grant and
-  automatically refresh tokens before expiration.
+  automatically refresh tokens before expiration. MUST support both
+  FileTokenStorage (standalone) and SessionTokenStorage (Django).
 - **FR-003**: SDK MUST route requests to the correct base URL based
   on the API surface (ACPortal double `/api/api/`, Catalog single
   `/api/`, ABC single `/api/`).
-- **FR-004**: Every response model MUST inherit from
-  `ABConnectBaseModel` with `extra="forbid"` and use mixin-based
-  inheritance (IdentifiedModel, TimestampedModel, etc.).
+- **FR-004**: Every model MUST inherit from `ABConnectBaseModel`
+  and use mixin-based inheritance (IdentifiedModel,
+  TimestampedModel, etc.). Request models MUST use
+  `extra="forbid"` (via `RequestModel`) to catch invalid
+  outbound fields. Response models MUST use `extra="ignore"`
+  (via `ResponseModel`) to survive API field additions without
+  breaking deserialization.
 - **FR-005**: Every response model MUST use snake_case field names
   with camelCase aliases matching actual API JSON keys.
 - **FR-006**: Every implemented endpoint MUST have a corresponding
@@ -201,6 +225,13 @@ distinguish mock-validated from live-validated tests.
 - **FR-014**: SDK MUST distinguish mock-validated tests from
   live-validated tests via pytest markers (`@pytest.mark.mock`,
   `@pytest.mark.live`).
+- **FR-015**: SDK MUST be installable as the `ab` package
+  (`pip install ab`) with imports under the `ab` namespace
+  (e.g., `from ab.api import ABConnectAPI`).
+- **FR-016**: SDK is a clean-room rebuild. No code MUST be copied
+  from ABConnectTools. ABConnectTools serves as architectural
+  reference only.
+- **FR-017**: Initial release is Python API only. No CLI interface.
 
 ### Key Entities
 
@@ -221,6 +252,10 @@ distinguish mock-validated from live-validated tests.
 - **Client**: The top-level SDK object that manages authentication,
   environment configuration, and provides access to all endpoint
   groups as attributes (e.g., `client.companies`, `client.catalog`).
+- **TokenStorage**: Abstract base for authentication token
+  persistence. Two implementations: FileTokenStorage (caches tokens
+  on disk for standalone scripts) and SessionTokenStorage (stores
+  tokens in Django request.session for web apps).
 
 ### Assumptions
 
@@ -231,12 +266,16 @@ distinguish mock-validated from live-validated tests.
 - Sphinx documentation uses the ReadTheDocs theme with MyST-parser
   for Markdown support.
 - The existing ABConnectTools project at `/usr/src/pkgs/ABConnectTools/`
-  serves as the architectural reference for patterns and conventions.
+  serves as the architectural reference for patterns and conventions
+  but no code is copied from it.
 - ACPortal swagger is the most unreliable of the three specs; Catalog
   and ABC swagger are generally more accurate but still require
   fixture validation.
 - Fixture capture requires valid staging credentials configured via
   environment variables.
+- The initial core endpoint subset will be determined during planning
+  by selecting the most-used operations from Companies, Contacts,
+  Jobs, Catalog, and Quoting groups.
 
 ## Success Criteria *(mandatory)*
 
@@ -252,10 +291,15 @@ distinguish mock-validated from live-validated tests.
   fixture is unavailable, with no untracked mocks.
 - **SC-005**: Swagger compliance tests identify 100% of unimplemented
   endpoints across all three API surfaces.
-- **SC-006**: A developer unfamiliar with the SDK can find and call
-  any documented endpoint within 5 minutes using only the Sphinx
-  documentation.
+- **SC-006**: Every endpoint documentation page includes a
+  runnable Python code example and a cross-reference link to the
+  response model class, enabling a developer unfamiliar with the
+  SDK to find and call any documented endpoint using only the
+  Sphinx documentation.
 - **SC-007**: Model validation catches field changes (additions,
   removals, type changes) within one test run after an API update.
 - **SC-008**: Token refresh is seamless — zero authentication failures
-  during normal usage within a session.
+  during normal usage within a session, for both FileTokenStorage and
+  SessionTokenStorage modes.
+- **SC-009**: Package installs cleanly via `pip install ab` with no
+  dependency conflicts against ABConnectTools.
