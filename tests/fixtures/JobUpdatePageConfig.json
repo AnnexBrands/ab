@@ -1,0 +1,12 @@
+{
+  "config": {
+    "fields": [
+      "status",
+      "pickup_date",
+      "delivery_date"
+    ],
+    "readonly": [
+      "jobDisplayId"
+    ]
+  }
+}

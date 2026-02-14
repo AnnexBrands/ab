@@ -1,0 +1,32 @@
+{
+  "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+  "jobDisplayId": 2000001,
+  "status": "Booked",
+  "customer": {
+    "name": "Jane Smith",
+    "phone": "555-0200"
+  },
+  "pickup": {
+    "address": {
+      "city": "Los Angeles",
+      "state": "CA"
+    }
+  },
+  "delivery": {
+    "address": {
+      "city": "New York",
+      "state": "NY"
+    }
+  },
+  "items": [
+    {
+      "description": "Sofa",
+      "weight": 150
+    }
+  ],
+  "isActive": true,
+  "createdDate": "2025-03-10T09:00:00Z",
+  "modifiedDate": "2025-03-15T11:00:00Z",
+  "createdBy": "agent1",
+  "modifiedBy": "agent1"
+}

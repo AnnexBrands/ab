@@ -1,0 +1,10 @@
+{
+  "jobDisplayId": 2000001,
+  "prices": [
+    {
+      "carrier": "XPO",
+      "amount": 1200.50
+    }
+  ],
+  "total": 1200.50
+}

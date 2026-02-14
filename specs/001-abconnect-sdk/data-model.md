@@ -9,7 +9,7 @@
 ```
 ABConnectBaseModel
 ├── RequestModel          # extra="forbid" — strict outbound
-└── ResponseModel         # extra="ignore" — lenient inbound
+└── ResponseModel         # extra="allow" — resilient inbound + logger.warning on extras
 ```
 
 ### Mixins (composed via multiple inheritance)

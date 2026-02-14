@@ -1,0 +1,10 @@
+{
+  "quotes": [
+    {
+      "carrier": "XPO",
+      "price": 1200.5,
+      "transitDays": 5
+    }
+  ],
+  "errors": []
+}

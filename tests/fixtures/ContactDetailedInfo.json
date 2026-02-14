@@ -1,0 +1,435 @@
+{
+  "editable": null,
+  "isEmpty": false,
+  "fullNameUpdateRequired": null,
+  "emailsList": [
+    {
+      "email": {
+        "id": 116237,
+        "email": "oh14004@goNavis.com",
+        "invalid": false,
+        "dontSpam": false
+      },
+      "id": 17936,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null
+    },
+    {
+      "email": {
+        "id": 77049,
+        "email": "joshua.yigitbasi@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      },
+      "id": 305463,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Josh"
+    },
+    {
+      "email": {
+        "id": 196279,
+        "email": "justine.yigitbasi@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      },
+      "id": 305464,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Justine"
+    },
+    {
+      "email": {
+        "id": 258387,
+        "email": "meggan.williams@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      },
+      "id": 388549,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Meggan"
+    },
+    {
+      "email": {
+        "id": 403195,
+        "email": "william.shannon@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      },
+      "id": 553961,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null
+    }
+  ],
+  "phonesList": [
+    {
+      "phone": {
+        "id": 118507,
+        "phone": "6147065958"
+      },
+      "id": 25585,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Primary"
+    },
+    {
+      "phone": {
+        "id": 106498,
+        "phone": "6147065965"
+      },
+      "id": 488221,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Fax"
+    }
+  ],
+  "addressesList": [
+    {
+      "address": {
+        "id": 140026,
+        "isValid": true,
+        "dontValidate": false,
+        "propertyType": 3,
+        "address1Value": "5738 Westbourne Ave",
+        "address2Value": "",
+        "countryName": null,
+        "countryCode": "US",
+        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+        "countrySkipZipCodeVerification": null,
+        "zipCodeResolvingFailed": false,
+        "latitude": 39.9850328,
+        "longitude": -82.847824,
+        "fullCityLine": "Columbus, OH, 43213",
+        "coordinates": {
+          "latitude": 39.9850328,
+          "longitude": -82.847824
+        },
+        "address1": "5738 Westbourne Ave",
+        "address2": null,
+        "city": "Columbus",
+        "state": "OH",
+        "zipCode": "43213"
+      },
+      "id": 27546,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null
+    },
+    {
+      "address": {
+        "id": 722336,
+        "isValid": false,
+        "dontValidate": true,
+        "propertyType": null,
+        "address1Value": "869 8 Mile Rd",
+        "address2Value": "",
+        "countryName": null,
+        "countryCode": "US",
+        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+        "countrySkipZipCodeVerification": null,
+        "zipCodeResolvingFailed": false,
+        "latitude": 39.1031971,
+        "longitude": -84.5064881,
+        "fullCityLine": "Cincinnati, OH, 45202",
+        "coordinates": {
+          "latitude": 39.1031971,
+          "longitude": -84.5064881
+        },
+        "address1": "869 8 Mile Rd",
+        "address2": null,
+        "city": "Cincinnati",
+        "state": "OH",
+        "zipCode": "45202"
+      },
+      "id": 18019244,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null
+    }
+  ],
+  "fax": "6147065965",
+  "primaryPhone": "6147065958",
+  "primaryEmail": "oh14004@goNavis.com",
+  "id": 30760,
+  "contactDisplayId": "1308994",
+  "fullName": "Justine Yigitbasi",
+  "contactTypeId": 4,
+  "careOf": null,
+  "bolNotes": null,
+  "taxId": null,
+  "isBusiness": true,
+  "isPayer": true,
+  "isPrefered": true,
+  "isPrivate": false,
+  "isActive": true,
+  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "rootContactId": null,
+  "ownerFranchiseeId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "company": {
+    "userId": "00000000-0000-0000-0000-000000000000",
+    "companyName": "Navis Pack & Ship #14004OH",
+    "contactName": null,
+    "contactPhone": null,
+    "companyType": null,
+    "parcelOnly": null,
+    "isThirdParty": false,
+    "companyCode": "14004OH",
+    "parentCompanyName": "Navis USA Master",
+    "companyTypeID": "e7f85166-34cf-429b-805d-261b44cb0c04",
+    "parentCompanyID": "764db661-27e1-48b7-962f-1b5157390c53",
+    "companyPhone": "6147065958",
+    "companyEmail": "oh14004@goNavis.com",
+    "companyFax": "6147065965",
+    "companyWebSite": "https://gonavis.com/about/oh14004",
+    "industryType": "6664ddb1-b7f1-e311-b7f5-000c298b59ee",
+    "industryTypeName": null,
+    "taxId": "",
+    "customerCell": null,
+    "companyCell": null,
+    "pzCode": "PZ820",
+    "referralCode": null,
+    "companyLogo": "0dfd1405-0546-eb11-822b-fcb1a6dfbbb6#Navis_Horz[2].jpg",
+    "letterHeadLogo": "02cd0516-0546-eb11-822b-fcb1a6dfbbb6#Navis_Horz[1].jpg",
+    "thumbnailLogo": "5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+    "mapsMarkerImage": "5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+    "colorTheme": "Theme1",
+    "franchiseeMaturityType": null,
+    "pricingToUse": "4e8e4f3b-65f9-4625-bba0-fad6fa5e7d6e",
+    "totalRows": null,
+    "address": null,
+    "companyInsurancePricing": null,
+    "companyServicePricing": null,
+    "companyTaxPricing": null,
+    "wholeSaleMarkup": null,
+    "baseMarkup": null,
+    "mediumMarkup": null,
+    "highMarkup": null,
+    "miles": null,
+    "insuranceType": "eea23c05-29b2-e111-b36c-00155d6b2c30",
+    "isGlobal": true,
+    "isQbUser": true,
+    "skipIntacct": false,
+    "isAccess": null,
+    "companyDisplayID": "852949",
+    "depth": null,
+    "franchiseeName": null,
+    "isPrefered": true,
+    "createdUser": null,
+    "mappingLocations": null,
+    "locationCount": null,
+    "baseParent": null,
+    "copyMaterialFrom": null,
+    "isHide": false,
+    "isDontUse": false,
+    "mainAddress": {
+      "id": 140026,
+      "isValid": true,
+      "dontValidate": false,
+      "propertyType": 3,
+      "address1Value": "5738 Westbourne Ave",
+      "address2Value": "",
+      "countryName": null,
+      "countryCode": null,
+      "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+      "countrySkipZipCodeVerification": null,
+      "zipCodeResolvingFailed": false,
+      "latitude": 39.9850328,
+      "longitude": -82.847824,
+      "fullCityLine": "Columbus, OH, 43213",
+      "coordinates": {
+        "latitude": 39.9850328,
+        "longitude": -82.847824
+      },
+      "address1": "5738 Westbourne Ave",
+      "address2": null,
+      "city": "Columbus",
+      "state": "OH",
+      "zipCode": "43213"
+    },
+    "accountManagerFranchiseeId": null,
+    "accountManagerFranchiseeName": null,
+    "carrierAccountsSourceCompanyId": null,
+    "carrierAccountsSourceCompanyName": null,
+    "autoPriceAPIEnableEmails": false,
+    "autoPriceAPIEnableSMSs": false,
+    "commercialCapabilities": 63,
+    "primaryContactId": 30760,
+    "payerContactId": 30760,
+    "payerContactName": "Justine Yigitbasi",
+    "totalJobs": 37,
+    "totalJobsRevenue": 18835.52,
+    "totalSales": 67,
+    "totalSalesRevenue": 51661.48,
+    "isReadonly": null,
+    "addressData": {
+      "company": "Navis Pack & Ship #14004OH",
+      "firstLastName": "Justine Yigitbasi",
+      "addressLine1": "5738 Westbourne Ave",
+      "addressLine2": null,
+      "contactBOLNote": null,
+      "city": "Columbus",
+      "state": "OH",
+      "stateCode": null,
+      "zipCode": "43213",
+      "countryName": null,
+      "propertyType": null,
+      "fullCityLine": "Columbus, OH, 43213",
+      "phone": "(614) 706-5958",
+      "cellPhone": null,
+      "fax": "(614) 706-5965",
+      "email": "oh14004@goNavis.com",
+      "addressLine2Visible": false,
+      "companyVisible": true,
+      "countryNameVisible": false,
+      "phoneVisible": true,
+      "emailVisible": true,
+      "fullAddressLine": "5738 Westbourne Ave",
+      "fullAddress": "5738 Westbourne Ave, Columbus OH 43213",
+      "countryId": null
+    },
+    "overridableAddressData": {
+      "company": {
+        "defaultValue": "Navis Pack & Ship #14004OH",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "Navis Pack & Ship #14004OH"
+      },
+      "firstLastName": {
+        "defaultValue": "Justine Yigitbasi",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "Justine Yigitbasi"
+      },
+      "addressLine1": {
+        "defaultValue": "5738 Westbourne Ave",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "5738 Westbourne Ave"
+      },
+      "addressLine2": {
+        "defaultValue": null,
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": null
+      },
+      "city": {
+        "defaultValue": "Columbus",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "Columbus"
+      },
+      "state": {
+        "defaultValue": "OH",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "OH"
+      },
+      "zipCode": {
+        "defaultValue": "43213",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "43213"
+      },
+      "phone": {
+        "defaultValue": "(614) 706-5958",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "(614) 706-5958"
+      },
+      "email": {
+        "defaultValue": "oh14004@goNavis.com",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "oh14004@goNavis.com"
+      },
+      "fullAddressLine": "5738 Westbourne Ave",
+      "fullAddress": {
+        "defaultValue": "5738 Westbourne Ave, Columbus OH 43213",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "5738 Westbourne Ave, Columbus OH 43213"
+      },
+      "fullCityLine": {
+        "defaultValue": "Columbus, OH, 43213",
+        "overrideValue": null,
+        "forceEmpty": false,
+        "value": "Columbus, OH, 43213"
+      }
+    },
+    "companyInfo": {
+      "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+      "companyTypeId": "e7f85166-34cf-429b-805d-261b44cb0c04",
+      "companyDisplayId": null,
+      "companyName": "Navis Pack & Ship #14004OH",
+      "companyCode": "14004OH",
+      "companyEmail": "oh14004@goNavis.com",
+      "companyPhone": "6147065958",
+      "thumbnailLogo": "5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+      "companyLogo": "0dfd1405-0546-eb11-822b-fcb1a6dfbbb6#Navis_Horz[2].jpg",
+      "mapsMarkerImage": "5edb2859-aa6f-41ba-8db1-dd6ebbd327b5#nav.png",
+      "mainAddress": {
+        "id": 140026,
+        "isValid": true,
+        "dontValidate": false,
+        "propertyType": 3,
+        "address1Value": "5738 Westbourne Ave",
+        "address2Value": "",
+        "countryName": null,
+        "countryCode": null,
+        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+        "countrySkipZipCodeVerification": null,
+        "zipCodeResolvingFailed": false,
+        "latitude": 39.9850328,
+        "longitude": -82.847824,
+        "fullCityLine": "Columbus, OH, 43213",
+        "coordinates": {
+          "latitude": 39.9850328,
+          "longitude": -82.847824
+        },
+        "address1": "5738 Westbourne Ave",
+        "address2": null,
+        "city": "Columbus",
+        "state": "OH",
+        "zipCode": "43213"
+      },
+      "isThirdParty": false,
+      "isActive": false,
+      "isHidden": false
+    },
+    "companyID": "93179b52-3da9-e311-b6f8-000c298b59ee",
+    "addressID": null,
+    "address1": null,
+    "address2": null,
+    "city": null,
+    "state": null,
+    "stateCode": null,
+    "countryName": null,
+    "countryCode": null,
+    "countryID": null,
+    "zipCode": null,
+    "isActive": true,
+    "createdDate": null,
+    "createdBy": null,
+    "modifiedDate": null,
+    "modifiedBy": null,
+    "latitude": null,
+    "longitude": null,
+    "result": null,
+    "addressMappingID": null,
+    "contactID": null,
+    "userID": "00000000-0000-0000-0000-000000000000",
+    "primaryCustomerName": "Justine Yigitbasi",
+    "contactInfo": null
+  },
+  "legacyGuid": "781d3fd8-3da9-e311-b6f8-000c298b59ee",
+  "isPrimary": true,
+  "assistant": null,
+  "department": null,
+  "webSite": null,
+  "birthDate": null,
+  "jobTitleId": null,
+  "jobTitle": null
+}

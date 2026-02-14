@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "title": "Fall 2026 Auction",
+  "sellers": [
+    {
+      "id": 1,
+      "name": "Estate Co"
+    }
+  ],
+  "lotCount": 25,
+  "status": "Active"
+}

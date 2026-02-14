@@ -23,18 +23,24 @@ calls to the same endpoint overwrite each other's params.
 **Decision**: Define two base classes:
 - `RequestModel(ABConnectBaseModel)` with `extra="forbid"` — strict
   outbound validation catches typos and invalid fields.
-- `ResponseModel(ABConnectBaseModel)` with `extra="ignore"` — lenient
+- `ResponseModel(ABConnectBaseModel)` with `extra="allow"` — resilient
   inbound deserialization survives API additions without breaking.
+  Extra fields are stored in `model_extra` and logged via
+  `logger.warning` in `model_post_init` to surface drift immediately.
 
 **Rationale**: ABConnectTools uses `extra="forbid"` for all models.
 When the API adds a new field, all response deserialization breaks
-until the model is updated. Response models should gracefully ignore
-unknown fields; request models should be strict.
+until the model is updated. Response models should accept unknown
+fields while making them visible. `extra="allow"` + warning logging
+gives production resilience with immediate developer visibility.
 
 **Alternatives considered**:
 - Single `extra="forbid"` everywhere (current) — breaks on API
   changes.
-- Single `extra="ignore"` everywhere — misses typos in request bodies.
+- `extra="ignore"` for responses — silently drops unknown fields,
+  drift goes unnoticed until fixture re-capture.
+- Single `extra="forbid"` everywhere with fast model updates —
+  requires SDK release for every API field addition.
 
 ### D3: Instance-Level Request Handler
 

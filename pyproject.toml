@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ab"
+version = "0.1.0"
+description = "Python SDK for ABConnect APIs — typed Pydantic models, fixture-driven validation, and Sphinx documentation."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Brett Monson", email = "bmonson@annexbrands.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "requests>=2.28",
+    "python-dotenv>=1.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+
+[project.urls]
+"Repository" = "https://github.com/AnnexBrands/ABConnnect"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0",
+    "myst-parser>=3.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ab*"]
+
+[tool.setuptools.package-data]
+ab = ["py.typed", "api/schemas/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "mock: tests backed by mock/fabricated fixtures",
+    "live: tests backed by live-captured fixtures",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]

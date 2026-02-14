@@ -37,10 +37,11 @@ so that common fields are defined once and composed explicitly.
 - All models MUST inherit from `ABConnectBaseModel`.
   Request models MUST use `extra="forbid"` (via `RequestModel`)
   to catch typos and invalid outbound fields. Response models
-  MUST use `extra="ignore"` (via `ResponseModel`) to survive
-  API field additions without breaking deserialization.
-  Fixture validation tests catch new response fields by
-  comparing fixture snapshots, not by model rejection.
+  MUST use `extra="allow"` (via `ResponseModel`) so that API
+  field additions do not break deserialization. Extra fields
+  MUST be logged via `logger.warning` in `model_post_init` to
+  surface drift immediately. Fixture validation tests catch
+  new response fields on next capture via snapshot comparison.
 - Field names MUST be snake_case with camelCase aliases matching
   the actual API JSON keys.
 - All fields MUST declare explicit `Optional[...]` when nullable.

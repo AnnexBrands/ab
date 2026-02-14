@@ -156,9 +156,11 @@ distinguish mock-validated from live-validated tests.
 ### Edge Cases
 
 - What happens when the API returns a field not declared in the
-  Pydantic model? Response models use `extra="ignore"`, so
-  deserialization succeeds. The next fixture capture detects the
-  new field via snapshot comparison, prompting a model update.
+  Pydantic model? Response models use `extra="allow"`, so
+  deserialization succeeds but a `logger.warning` is emitted
+  for each unexpected field. The next fixture capture detects
+  the new field via snapshot comparison, prompting a model
+  update.
 - What happens when the API removes a previously required field?
   The fixture test fails, prompting a model update to make the field
   Optional or remove it.
@@ -196,9 +198,10 @@ distinguish mock-validated from live-validated tests.
   and use mixin-based inheritance (IdentifiedModel,
   TimestampedModel, etc.). Request models MUST use
   `extra="forbid"` (via `RequestModel`) to catch invalid
-  outbound fields. Response models MUST use `extra="ignore"`
+  outbound fields. Response models MUST use `extra="allow"`
   (via `ResponseModel`) to survive API field additions without
-  breaking deserialization.
+  breaking deserialization; unexpected fields MUST be logged
+  via `logger.warning` to surface model drift immediately.
 - **FR-005**: Every response model MUST use snake_case field names
   with camelCase aliases matching actual API JSON keys.
 - **FR-006**: Every implemented endpoint MUST have a corresponding

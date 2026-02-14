@@ -1,0 +1,10 @@
+{
+  "isValid": true,
+  "validatedAddress": {
+    "street": "123 Main St",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipCode": "90210"
+  },
+  "suggestions": []
+}

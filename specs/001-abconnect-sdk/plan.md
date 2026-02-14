@@ -35,7 +35,7 @@ configuration via pydantic-settings, and timeouts with retry logic.
 
 | Principle | Gate | Status |
 |-----------|------|--------|
-| I. Pydantic Model Fidelity | All models inherit ABConnectBaseModel; RequestModel (extra="forbid") for strict outbound / ResponseModel (extra="ignore") for resilient inbound; mixin inheritance for shared fields | PASS |
+| I. Pydantic Model Fidelity | All models inherit ABConnectBaseModel; RequestModel (extra="forbid") for strict outbound / ResponseModel (extra="allow" + logger.warning) for resilient inbound with drift visibility; mixin inheritance for shared fields | PASS |
 | II. Fixture-Driven Development | Every endpoint gets a fixture in `tests/fixtures/`; mock fixtures tracked in `MOCKS.md` | PASS |
 | III. Four-Way Harmony | Implementation + Test/Fixture + Example + Sphinx Docs required per endpoint | PASS |
 | IV. Swagger-Informed, Reality-Validated | Swagger specs bundled in `ab/api/schemas/`; models validated against fixtures, deviations documented | PASS |
