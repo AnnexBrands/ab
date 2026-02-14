@@ -1,7 +1,12 @@
 {
-  "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
-  "docPath": "jobs/2000001/bol.pdf",
-  "docType": 1,
-  "fileName": "bol.pdf",
-  "sharingLevel": 0
+  "id": 1771682,
+  "path": "job/2000000/USAR%287%29.pdf",
+  "thumbnailPath": null,
+  "description": "USAR USAR(7).pdf",
+  "typeName": "USAR",
+  "typeId": 2,
+  "fileName": "USAR(7).pdf",
+  "shared": 0,
+  "tags": [],
+  "jobItems": []
 }

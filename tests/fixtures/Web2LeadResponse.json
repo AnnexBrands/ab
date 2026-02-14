@@ -1,4 +1,8 @@
 {
-  "success": true,
-  "leadId": "lead-001"
+  "SubmitNewLeadGETResult": {
+    "NC_Import_Failed": true,
+    "NC_Import_ErrorMessage": "Invalid Access Key",
+    "NC_JobId": null,
+    "NC_ContactId": null
+  }
 }

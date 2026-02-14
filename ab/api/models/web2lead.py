@@ -9,11 +9,24 @@ from pydantic import Field
 from ab.api.models.base import RequestModel, ResponseModel
 
 
-class Web2LeadResponse(ResponseModel):
-    """Response from Web2Lead endpoints."""
+class Web2LeadGETResult(ResponseModel):
+    """Inner result object from GET /Web2Lead/get."""
 
-    success: Optional[bool] = Field(None, description="Whether the operation succeeded")
-    lead_id: Optional[str] = Field(None, alias="leadId", description="Created lead ID")
+    nc_import_failed: Optional[bool] = Field(None, alias="NC_Import_Failed", description="Whether import failed")
+    nc_import_error_message: Optional[str] = Field(None, alias="NC_Import_ErrorMessage", description="Error message")
+    nc_job_id: Optional[str] = Field(None, alias="NC_JobId", description="Created job ID")
+    nc_contact_id: Optional[str] = Field(None, alias="NC_ContactId", description="Created contact ID")
+
+
+class Web2LeadResponse(ResponseModel):
+    """Response from GET /Web2Lead/get.
+
+    Live API wraps the result under ``SubmitNewLeadGETResult``.
+    """
+
+    result: Optional[Web2LeadGETResult] = Field(
+        None, alias="SubmitNewLeadGETResult", description="Lead submission result"
+    )
 
 
 class Web2LeadRequest(RequestModel):

@@ -43,8 +43,16 @@ class BaseEndpoint:
             return True, m.group(1)
         return False, type_str
 
-    def _request(self, route: Route, **kwargs: Any) -> Any:
+    def _request(
+        self, route: Route, *, client: Optional[HttpClient] = None, **kwargs: Any
+    ) -> Any:
         """Dispatch a :class:`Route` through the HTTP client.
+
+        Args:
+            route: The route to dispatch.
+            client: Override the default client for this request.  Used by
+                endpoints that span multiple API surfaces (e.g. Jobs).
+            **kwargs: Forwarded to :meth:`HttpClient.request`.
 
         Handles:
         - request model validation (if route.request_model is set and
@@ -58,7 +66,8 @@ class BaseEndpoint:
             if hasattr(model_cls, "check"):
                 kwargs["json"] = model_cls.check(body)
 
-        response = self._client.request(route.method, route.path, **kwargs)
+        target = client or self._client
+        response = target.request(route.method, route.path, **kwargs)
 
         # Cast response to model(s)
         if route.response_model is None:

@@ -1,10 +1,27 @@
 {
-  "quotes": [
-    {
-      "carrier": "XPO",
-      "price": 1200.5,
-      "transitDays": 5
-    }
-  ],
-  "errors": []
+  "SubmitQuickQuoteRequestPOSTResult": {
+    "QuoteCertified": false,
+    "TotalAmount": null,
+    "Warnings": null,
+    "PriceBreakdown": {
+      "Pickup": 0.0,
+      "Packaging": 0.0,
+      "Transportation": 0.0,
+      "Insurance": 0.0,
+      "Delivery": 0.0,
+      "Miscellaneous": 0.0
+    },
+    "CarrierInfo": {
+      "Api": null,
+      "Code": null,
+      "ShortCode": null,
+      "SignatureOption": null,
+      "CarrierSpecificSignatureOption": null
+    },
+    "RequestErrors": [
+      "Object reference not set to an instance of an object."
+    ],
+    "ConsideredPickupAreas": null,
+    "ConsideredDeliveryAreas": null
+  }
 }

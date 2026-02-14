@@ -1,6 +1,16 @@
 {
-  "id": "cal-001",
-  "title": "Pickup Window",
-  "start": "2025-04-01T08:00:00Z",
-  "end": "2025-04-01T12:00:00Z"
+  "id": "26611eb7-0b0b-403c-3685-08de5fe859c2",
+  "title": null,
+  "start": null,
+  "end": null,
+  "name": "Grandfather clock",
+  "quantity": 1,
+  "length": 1.0,
+  "width": 0.0,
+  "height": 0.0,
+  "weight": 0.0,
+  "value": 10.0,
+  "notes": null,
+  "notedConditions": null,
+  "customerItemId": null
 }

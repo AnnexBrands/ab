@@ -29,11 +29,11 @@ class TestABConnectSettings:
         assert settings.client_secret == "csecret"
         assert settings.environment == "production"
 
-    def test_default_timeout_and_retries(self):
+    def test_default_timeout_and_attempts(self):
         with patch.dict(os.environ, _VALID_ENV, clear=False):
             settings = ABConnectSettings()
         assert settings.timeout == 30
-        assert settings.max_retries == 3
+        assert settings.max_attempts == 3
 
     def test_staging_environment(self):
         env = {**_VALID_ENV, "ABCONNECT_ENVIRONMENT": "staging"}

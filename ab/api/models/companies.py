@@ -37,13 +37,18 @@ class CompanyDetails(ResponseModel):
 
 
 class SearchCompanyResponse(ResponseModel):
-    """Single result from POST /companies/search/v2."""
+    """Single result from GET /companies/availableByCurrentUser.
+
+    The live API returns ``companyName`` and ``name`` (both present),
+    plus ``typeId`` and ``parentCompanyId``.
+    """
 
     id: Optional[str] = Field(None, description="Company UUID")
-    name: Optional[str] = Field(None, description="Company name")
     code: Optional[str] = Field(None, description="Company code")
-    city: Optional[str] = Field(None, description="City")
-    state: Optional[str] = Field(None, description="State")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Full company name")
+    name: Optional[str] = Field(None, description="Company name")
+    type_id: Optional[str] = Field(None, alias="typeId", description="Company type UUID")
+    parent_company_id: Optional[str] = Field(None, alias="parentCompanyId", description="Parent company UUID")
 
 
 class CompanySearchRequest(RequestModel):

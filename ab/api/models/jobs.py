@@ -22,37 +22,65 @@ class Job(ResponseModel, FullAuditModel):
 
 
 class JobSearchResult(ResponseModel):
-    """Single search hit — GET /job/search."""
+    """Single search hit — GET /job/search and POST /job/searchByDetails.
 
-    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Display ID")
-    status: Optional[str] = Field(None, description="Job status")
-    customer_name: Optional[str] = Field(None, alias="customerName", description="Customer name")
-    agent: Optional[str] = Field(None, description="Assigned agent")
+    The live API returns ``jobDisplayID`` (capital *ID*) as a string,
+    not the camelCase ``jobDisplayId`` that swagger shows.
+    """
+
+    job_display_id: Optional[str] = Field(None, alias="jobDisplayID", description="Display ID (string)")
+    job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
+    customer_full_name: Optional[str] = Field(None, alias="customerFullName", description="Customer full name")
+    customer_phone_number: Optional[str] = Field(None, alias="customerPhoneNumber", description="Customer phone")
+    jobstatus: Optional[str] = Field(None, description="Job status text")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    agent_code: Optional[str] = Field(None, alias="agentCode", description="Agent code")
+    job_total_amount: Optional[float] = Field(None, alias="jobTotalAmount", description="Total amount")
+    pu_address1: Optional[str] = Field(None, alias="puAddress1", description="Pickup address line 1")
+    pu_city: Optional[str] = Field(None, alias="puCity", description="Pickup city")
+    pu_state: Optional[str] = Field(None, alias="puState", description="Pickup state")
+    del_city: Optional[str] = Field(None, alias="delCity", description="Delivery city")
+    del_state: Optional[str] = Field(None, alias="delState", description="Delivery state")
+    status_id: Optional[str] = Field(None, alias="statusID", description="Status UUID")
 
 
 class JobPrice(ResponseModel):
     """Price info — GET /job/{jobDisplayId}/price."""
 
-    # Fields TBD from fixture; using flexible dict-style for now
     job_display_id: Optional[int] = Field(None, alias="jobDisplayId")
     prices: Optional[List[dict]] = Field(None, description="Price breakdowns")
     total: Optional[float] = Field(None, description="Total price")
+    total_sell_price: Optional[float] = Field(None, alias="totalSellPrice", description="Total sell price")
 
 
 class CalendarItem(ResponseModel):
-    """Calendar item — GET /job/{jobDisplayId}/calendaritems."""
+    """Calendar/line item — GET /job/{jobDisplayId}/calendaritems.
 
-    id: Optional[str] = Field(None, description="Calendar item ID")
+    Despite the name, the live API returns job line-item details
+    (name, quantity, dimensions, value) rather than calendar events.
+    """
+
+    id: Optional[str] = Field(None, description="Item UUID")
     title: Optional[str] = Field(None, description="Item title")
     start: Optional[str] = Field(None, description="Start datetime")
     end: Optional[str] = Field(None, description="End datetime")
+    name: Optional[str] = Field(None, description="Item name/description")
+    quantity: Optional[int] = Field(None, description="Quantity")
+    length: Optional[float] = Field(None, description="Length dimension")
+    width: Optional[float] = Field(None, description="Width dimension")
+    height: Optional[float] = Field(None, description="Height dimension")
+    weight: Optional[float] = Field(None, description="Weight")
+    value: Optional[float] = Field(None, description="Declared value")
+    notes: Optional[str] = Field(None, description="Item notes")
+    customer_item_id: Optional[str] = Field(None, alias="customerItemId", description="Customer item reference")
 
 
 class JobUpdatePageConfig(ResponseModel):
     """Update page config — GET /job/{id}/updatePageConfig."""
 
-    # Swagger-reliable; exact fields from fixture
     config: Optional[dict] = Field(None, description="Page configuration data")
+    page_controls: Optional[int] = Field(None, alias="pageControls", description="Page control bitmask")
+    workflow_controls: Optional[int] = Field(None, alias="workflowControls", description="Workflow control bitmask")
 
 
 class JobCreateRequest(RequestModel):

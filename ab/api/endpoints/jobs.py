@@ -68,12 +68,4 @@ class JobsEndpoint(BaseEndpoint):
 
     def update(self, data: dict | Any) -> Any:
         """POST /job/update (ABC API surface)"""
-        from ab.api.base import BaseEndpoint
-
-        # Use ABC client for this route
-        old_client = self._client
-        self._client = self._abc_client
-        try:
-            return self._request(_ABC_UPDATE, json=data)
-        finally:
-            self._client = old_client
+        return self._request(_ABC_UPDATE, client=self._abc_client, json=data)

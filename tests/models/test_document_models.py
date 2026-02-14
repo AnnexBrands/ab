@@ -8,7 +8,10 @@ from ab.api.models.documents import Document
 
 
 class TestDocumentModels:
-    @pytest.mark.mock
+    @pytest.mark.live
     def test_document(self):
         data = load_fixture("Document")
         model = Document.model_validate(data)
+        assert model.id == 1771682
+        assert model.file_name == "USAR(7).pdf"
+        assert model.type_name == "USAR"

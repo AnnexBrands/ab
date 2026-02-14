@@ -1,12 +1,5 @@
 {
-  "config": {
-    "fields": [
-      "status",
-      "pickup_date",
-      "delivery_date"
-    ],
-    "readonly": [
-      "jobDisplayId"
-    ]
-  }
+  "config": null,
+  "pageControls": 79,
+  "workflowControls": 983
 }

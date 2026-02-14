@@ -133,7 +133,7 @@ class HttpClient:
 
         last_exc: Optional[Exception] = None
 
-        for attempt in range(1, self._settings.max_retries + 1):
+        for attempt in range(1, self._settings.max_attempts + 1):
             logger.debug("%s %s (attempt %d)", method.upper(), url, attempt)
 
             try:
@@ -149,12 +149,12 @@ class HttpClient:
                 )
             except requests.RequestException as exc:
                 last_exc = exc
-                if attempt < self._settings.max_retries:
+                if attempt < self._settings.max_attempts:
                     self._backoff(attempt)
                     continue
                 raise RequestError(0, str(exc)) from exc
 
-            if resp.status_code in _RETRYABLE_STATUS_CODES and attempt < self._settings.max_retries:
+            if resp.status_code in _RETRYABLE_STATUS_CODES and attempt < self._settings.max_attempts:
                 self._backoff(attempt)
                 continue
 
@@ -164,7 +164,7 @@ class HttpClient:
             return self._handle_response(resp)
 
         # Should not reach here, but just in case
-        raise RequestError(0, f"Request failed after {self._settings.max_retries} attempts")
+        raise RequestError(0, f"Request failed after {self._settings.max_attempts} attempts")
 
     @staticmethod
     def _backoff(attempt: int) -> None:

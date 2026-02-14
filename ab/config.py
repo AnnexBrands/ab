@@ -41,7 +41,7 @@ class ABConnectSettings(BaseSettings):
     )
     access_key: Optional[str] = Field(default=None, description="ABC API access key")
     timeout: int = Field(default=30, description="HTTP request timeout in seconds")
-    max_retries: int = Field(default=3, description="Max retry attempts for transient errors")
+    max_attempts: int = Field(default=3, description="Max total attempts per request (1 initial + retries)")
 
     @model_validator(mode="after")
     def _validate_required(self) -> "ABConnectSettings":

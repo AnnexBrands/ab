@@ -69,8 +69,14 @@ from ab.api.models.documents import Document, DocumentUpdateRequest
 from ab.api.models.address import AddressIsValidResult, PropertyType
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
 from ab.api.models.users import User, UserCreateRequest, UserRole, UserUpdateRequest
-from ab.api.models.autoprice import QuickQuoteResponse, QuoteRequestModel, QuoteRequestResponse
-from ab.api.models.web2lead import Web2LeadRequest, Web2LeadResponse
+from ab.api.models.autoprice import (
+    QuickQuotePriceBreakdown,
+    QuickQuoteResponse,
+    QuickQuoteResult,
+    QuoteRequestModel,
+    QuoteRequestResponse,
+)
+from ab.api.models.web2lead import Web2LeadGETResult, Web2LeadRequest, Web2LeadResponse
 
 __all__ = [
     # Base
@@ -107,7 +113,8 @@ __all__ = [
     # Users
     "User", "UserRole", "UserCreateRequest", "UserUpdateRequest",
     # AutoPrice
-    "QuickQuoteResponse", "QuoteRequestResponse", "QuoteRequestModel",
+    "QuickQuoteResponse", "QuickQuoteResult", "QuickQuotePriceBreakdown",
+    "QuoteRequestResponse", "QuoteRequestModel",
     # Web2Lead
-    "Web2LeadResponse", "Web2LeadRequest",
+    "Web2LeadResponse", "Web2LeadGETResult", "Web2LeadRequest",
 ]
