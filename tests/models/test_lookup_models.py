@@ -2,7 +2,7 @@
 
 import pytest
 
-from tests.conftest import load_fixture
+from tests.conftest import require_fixture
 
 from ab.api.models.address import AddressIsValidResult, PropertyType
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
@@ -11,31 +11,28 @@ from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, L
 class TestLookupModels:
     @pytest.mark.live
     def test_contact_type_entity(self):
-        data = load_fixture("ContactTypeEntity")
+        data = require_fixture("ContactTypeEntity", "GET", "/lookup/contacttypes")
         model = ContactTypeEntity.model_validate(data)
         assert model.id is not None
 
     @pytest.mark.live
     def test_country_code_dto(self):
-        data = load_fixture("CountryCodeDto")
+        data = require_fixture("CountryCodeDto", "GET", "/lookup/countries")
         model = CountryCodeDto.model_validate(data)
 
     @pytest.mark.live
     def test_job_status(self):
-        data = load_fixture("JobStatus")
+        data = require_fixture("JobStatus", "GET", "/lookup/jobstatuses")
         model = JobStatus.model_validate(data)
 
-    @pytest.mark.mock
     def test_lookup_item(self):
-        data = load_fixture("LookupItem")
+        data = require_fixture("LookupItem", "GET", "/lookup/items")
         model = LookupItem.model_validate(data)
 
-    @pytest.mark.mock
     def test_address_is_valid_result(self):
-        data = load_fixture("AddressIsValidResult")
+        data = require_fixture("AddressIsValidResult", "GET", "/address/isvalid")
         model = AddressIsValidResult.model_validate(data)
 
-    @pytest.mark.mock
     def test_property_type(self):
-        data = load_fixture("PropertyType")
+        data = require_fixture("PropertyType", "GET", "/address/propertytype")
         model = PropertyType.model_validate(data)

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -19,9 +18,35 @@ def load_fixture(model_name: str) -> dict | list:
 
     Returns:
         Parsed JSON data.
+
+    Raises:
+        FileNotFoundError: If fixture file does not exist.
     """
     path = FIXTURES_DIR / f"{model_name}.json"
     return json.loads(path.read_text())
+
+
+def require_fixture(model_name: str, method: str = "", path: str = "") -> dict | list:
+    """Load a fixture or skip the test with capture instructions.
+
+    If the fixture file does not exist, the calling test is skipped
+    with an actionable message telling the human how to capture it.
+
+    Args:
+        model_name: e.g. ``"CompanySimple"``
+        method: HTTP method, e.g. ``"GET"``
+        path: API endpoint path, e.g. ``"/companies/{id}"``
+
+    Returns:
+        Parsed JSON data (when fixture exists).
+    """
+    fixture_path = FIXTURES_DIR / f"{model_name}.json"
+    if not fixture_path.exists():
+        msg = f"Fixture needed: capture {model_name}.json"
+        if method and path:
+            msg += f" via {method} {path}"
+        pytest.skip(msg)
+    return load_fixture(model_name)
 
 
 @pytest.fixture(scope="session")

@@ -2,7 +2,7 @@
 
 import pytest
 
-from tests.conftest import load_fixture
+from tests.conftest import require_fixture
 
 from ab.api.models.users import User, UserRole
 
@@ -10,13 +10,13 @@ from ab.api.models.users import User, UserRole
 class TestUserModels:
     @pytest.mark.live
     def test_user(self):
-        data = load_fixture("User")
+        data = require_fixture("User", "POST", "/users/list")
         model = User.model_validate(data)
         assert model.id is not None
 
     @pytest.mark.live
     def test_user_role(self):
-        data = load_fixture("UserRole")
+        data = require_fixture("UserRole", "GET", "/users/roles")
         # Live API returns plain string; wrap if needed
         if isinstance(data, str):
             data = {"name": data}

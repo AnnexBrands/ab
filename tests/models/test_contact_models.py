@@ -2,7 +2,7 @@
 
 import pytest
 
-from tests.conftest import load_fixture
+from tests.conftest import require_fixture
 
 from ab.api.models.contacts import (
     ContactDetailedInfo,
@@ -15,25 +15,25 @@ from ab.api.models.contacts import (
 class TestContactModels:
     @pytest.mark.live
     def test_contact_simple(self):
-        data = load_fixture("ContactSimple")
+        data = require_fixture("ContactSimple", "GET", "/contacts/user")
         model = ContactSimple.model_validate(data)
         # /contacts/user may not return id — assert at least one name field
         assert model.id is not None or model.full_name is not None
 
     @pytest.mark.live
     def test_contact_detailed_info(self):
-        data = load_fixture("ContactDetailedInfo")
+        data = require_fixture("ContactDetailedInfo", "GET", "/contacts/{id}/editdetails")
         model = ContactDetailedInfo.model_validate(data)
         assert model.id is not None
 
     @pytest.mark.live
     def test_contact_primary_details(self):
-        data = load_fixture("ContactPrimaryDetails")
+        data = require_fixture("ContactPrimaryDetails", "GET", "/contacts/{id}/primarydetails")
         model = ContactPrimaryDetails.model_validate(data)
         assert model.full_name is not None
 
     @pytest.mark.live
     def test_search_contact_entity_result(self):
-        data = load_fixture("SearchContactEntityResult")
+        data = require_fixture("SearchContactEntityResult", "POST", "/contacts/v2/search")
         model = SearchContactEntityResult.model_validate(data)
         assert model.id is not None or model.full_name is not None

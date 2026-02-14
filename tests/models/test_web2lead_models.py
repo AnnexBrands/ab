@@ -2,7 +2,7 @@
 
 import pytest
 
-from tests.conftest import load_fixture
+from tests.conftest import require_fixture
 
 from ab.api.models.web2lead import Web2LeadResponse
 
@@ -10,7 +10,7 @@ from ab.api.models.web2lead import Web2LeadResponse
 class TestWeb2LeadModels:
     @pytest.mark.live
     def test_web2lead_response(self):
-        data = load_fixture("Web2LeadResponse")
+        data = require_fixture("Web2LeadResponse", "GET", "/Web2Lead")
         model = Web2LeadResponse.model_validate(data)
         assert model.result is not None
         assert model.result.nc_import_failed is True

@@ -2,7 +2,7 @@
 
 import pytest
 
-from tests.conftest import load_fixture
+from tests.conftest import require_fixture
 
 from ab.api.models.documents import Document
 
@@ -10,7 +10,7 @@ from ab.api.models.documents import Document
 class TestDocumentModels:
     @pytest.mark.live
     def test_document(self):
-        data = load_fixture("Document")
+        data = require_fixture("Document", "GET", "/documents")
         model = Document.model_validate(data)
         assert model.id == 1771682
         assert model.file_name == "USAR(7).pdf"

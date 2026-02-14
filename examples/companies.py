@@ -21,5 +21,5 @@ my_companies = api.companies.available_by_current_user()
 print(f"Accessible companies: {len(my_companies) if my_companies else 0}")
 
 # Search companies
-results = api.companies.search({"searchText": "Navis"})
-print(f"Search results: {results}")
+# results = api.companies.search({"searchText": "Navis"})
+# print(f"Search results: {results}")

@@ -1,8 +1,8 @@
-"""Mock coverage verification test (T111).
+"""Fixture coverage verification test.
 
-Asserts every fixture file in tests/fixtures/ is either:
-(a) tested by a @pytest.mark.live test, or
-(b) listed in MOCKS.md with status.
+Asserts every fixture file in tests/fixtures/ is tracked in
+FIXTURES.md, and every captured entry in FIXTURES.md has a
+corresponding fixture file on disk.
 """
 
 from __future__ import annotations
@@ -11,73 +11,69 @@ import re
 from pathlib import Path
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
-MOCKS_MD = Path(__file__).parent.parent / "MOCKS.md"
-
-# Fixtures known to be captured from live API
-LIVE_FIXTURES = {
-    "CompanySimple",
-    "CompanyDetails",
-    "ContactSimple",
-    "ContactDetailedInfo",
-    "ContactPrimaryDetails",
-    "SearchContactEntityResult",
-    "ContactTypeEntity",
-    "CountryCodeDto",
-    "JobStatus",
-    "SellerExpandedDto",
-    "User",
-    "UserRole",
-}
+FIXTURES_MD = Path(__file__).parent.parent / "FIXTURES.md"
 
 
-class TestMockCoverage:
-    def test_all_fixtures_accounted_for(self):
-        """Every fixture file must be live or tracked in MOCKS.md."""
-        all_fixtures = {
-            p.stem for p in FIXTURES_DIR.glob("*.json")
-        }
-        mocks_content = MOCKS_MD.read_text()
-
-        # Extract model names from MOCKS.md table rows
-        tracked_mocks = set()
-        for line in mocks_content.splitlines():
-            match = re.match(r"\|\s*\S+.*?\|\s*\w+\s*\|\s*(\w+)\s*\|", line)
-            if match:
-                tracked_mocks.add(match.group(1))
-
-        accounted = LIVE_FIXTURES | tracked_mocks
-        untracked = all_fixtures - accounted
-
-        assert not untracked, (
-            f"Untracked fixtures (not live and not in MOCKS.md): {untracked}"
-        )
-
-    def test_no_phantom_mocks(self):
-        """Every entry in MOCKS.md mock table should have a fixture file."""
-        all_fixtures = {
-            p.stem for p in FIXTURES_DIR.glob("*.json")
-        }
-        mocks_content = MOCKS_MD.read_text()
-
-        # Only check mock section entries
-        in_mock_section = False
-        phantom = set()
-        for line in mocks_content.splitlines():
-            if "## Mock Fixtures" in line:
-                in_mock_section = True
+def _extract_models_from_section(content: str, section_header: str) -> set[str]:
+    """Extract model names from a FIXTURES.md table section."""
+    models: set[str] = set()
+    in_section = False
+    header_rows = 0
+    for line in content.splitlines():
+        if section_header in line:
+            in_section = True
+            header_rows = 0
+            continue
+        if line.startswith("## ") and in_section:
+            break
+        if in_section and line.startswith("|"):
+            header_rows += 1
+            if header_rows <= 2:
+                # Skip table header row and separator row
                 continue
-            if line.startswith("## ") and in_mock_section:
-                break
-            if in_mock_section:
-                match = re.match(r"\|\s*\S+.*?\|\s*\w+\s*\|\s*(\w+)\s*\|", line)
-                if match:
-                    name = match.group(1)
-                    if name not in all_fixtures and name not in ("Model", "Name", "Date"):
-                        phantom.add(name)
+            match = re.match(
+                r"\|\s*\S+.*?\|\s*\w+\s*\|\s*(\w+)\s*\|", line
+            )
+            if match:
+                models.add(match.group(1))
+    return models
 
-        assert not phantom, (
-            f"MOCKS.md references fixtures that don't exist: {phantom}"
+
+class TestFixtureCoverage:
+    def test_fixtures_md_exists(self):
+        assert FIXTURES_MD.exists(), "FIXTURES.md not found at repository root"
+
+    def test_all_fixture_files_tracked(self):
+        """Every fixture file on disk must appear in FIXTURES.md."""
+        all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        content = FIXTURES_MD.read_text()
+        captured = _extract_models_from_section(content, "## Captured Fixtures")
+        pending = _extract_models_from_section(content, "## Pending Fixtures")
+        tracked = captured | pending
+        untracked = all_files - tracked
+        assert not untracked, (
+            f"Fixture files not tracked in FIXTURES.md: {untracked}"
         )
 
-    def test_mocks_md_exists(self):
-        assert MOCKS_MD.exists(), "MOCKS.md not found at repository root"
+    def test_captured_fixtures_exist_on_disk(self):
+        """Every 'captured' entry in FIXTURES.md must have a file."""
+        content = FIXTURES_MD.read_text()
+        captured = _extract_models_from_section(content, "## Captured Fixtures")
+        all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        missing = captured - all_files
+        assert not missing, (
+            f"FIXTURES.md lists as captured but file missing: {missing}"
+        )
+
+    def test_pending_fixtures_do_not_exist_on_disk(self):
+        """Pending entries should NOT have fixture files (they need capture)."""
+        content = FIXTURES_MD.read_text()
+        pending = _extract_models_from_section(content, "## Pending Fixtures")
+        all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        present = pending & all_files
+        if present:
+            # Fixture was captured but FIXTURES.md not updated — warn
+            assert not present, (
+                f"Fixtures exist on disk but still listed as pending in "
+                f"FIXTURES.md — move to Captured section: {present}"
+            )
