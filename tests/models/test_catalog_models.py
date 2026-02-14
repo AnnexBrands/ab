@@ -37,14 +37,15 @@ class TestCatalogModels:
         model = LotOverrideDto.model_validate(data)
         assert model.customer_item_id is not None
 
+    @pytest.mark.live
     def test_seller_dto(self):
-        data = require_fixture("SellerDto", "GET", "/Seller/{id}")
+        data = require_fixture("SellerDto", "GET", "/Seller/{id}", required=True)
         model = SellerDto.model_validate(data)
         assert model.id is not None
         assert model.name is not None
 
     @pytest.mark.live
     def test_seller_expanded_dto(self):
-        data = require_fixture("SellerExpandedDto", "GET", "/Seller/{id}")
+        data = require_fixture("SellerExpandedDto", "GET", "/Seller/{id}", required=True)
         model = SellerExpandedDto.model_validate(data)
         assert model.id is not None

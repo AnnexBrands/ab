@@ -10,7 +10,7 @@ from ab.api.models.autoprice import QuickQuoteResponse, QuoteRequestResponse
 class TestAutoPriceModels:
     @pytest.mark.live
     def test_quick_quote_response(self):
-        data = require_fixture("QuickQuoteResponse", "POST", "/AutoPrice/QuickQuote")
+        data = require_fixture("QuickQuoteResponse", "POST", "/AutoPrice/QuickQuote", required=True)
         model = QuickQuoteResponse.model_validate(data)
         assert model.result is not None
         assert model.result.quote_certified is False
