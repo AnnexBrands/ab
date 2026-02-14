@@ -60,7 +60,8 @@ runner.add(
     "request_rate_quotes",
     lambda api: api.shipments.request_rate_quotes(
         LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs rate-quote request params
+        # TODO: capture fixture — needs TransportationRatesRequestModel body
+        data={},
     ),
     response_model="List[RateQuote]",
 )

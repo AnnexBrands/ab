@@ -10,7 +10,7 @@ LIVE_JOB_DISPLAY_ID = 2000000
 
 runner.add(
     "list",
-    lambda api: api.documents.list(job_id="2000000"),
+    lambda api: api.documents.list(job_display_id="2000000"),
     response_model="List[Document]",
     fixture_file="Document.json",
 )

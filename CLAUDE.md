@@ -28,7 +28,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 005-harden-example-params: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 004-scaffold-examples-fixtures: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 003-progress-report: Added Python 3.11+ (same as SDK) + None beyond stdlib (`re`, `pathlib`, `html`, `json`, `datetime`)
-- 002-extended-endpoints: Added Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (unchanged from 001)
 

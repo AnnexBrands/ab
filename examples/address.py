@@ -9,12 +9,10 @@ runner = ExampleRunner("Address", env="staging")
 runner.add(
     "validate",
     lambda api: api.address.validate(
-        # TODO: capture fixture — needs valid street, city, state, zipCode
-        Line1="12742 E Caley Av",
-        City="Centennial",
-        State="CO",
-        ZipCode="80111",
-        Country="US",
+        line1="12742 E Caley Av",
+        city="Centennial",
+        state="CO",
+        zip="80111",
     ),
     response_model="AddressIsValidResult",
     fixture_file="AddressIsValidResult.json",
@@ -23,9 +21,10 @@ runner.add(
 runner.add(
     "get_property_type",
     lambda api: api.address.get_property_type(
-        # TODO: capture fixture — needs valid street + zipCode for real address
-        street="123 Main St",
-        zip_code="43213",
+        address1="12742 E Caley Av",
+        city="Centennial",
+        state="CO",
+        zip_code="80111",
     ),
     response_model="PropertyType",
     fixture_file="PropertyType.json",

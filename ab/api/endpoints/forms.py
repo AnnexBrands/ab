@@ -85,7 +85,7 @@ class FormsEndpoint(BaseEndpoint):
         """
         params: dict[str, Any] = {}
         if ops_type is not None:
-            params["opsType"] = ops_type
+            params["type"] = ops_type
         return self._request(_GET_OPERATIONS.bind(jobDisplayId=job_display_id), params=params or None)
 
     def get_shipments(self, job_display_id: int) -> Any:
