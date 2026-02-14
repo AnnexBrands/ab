@@ -4,10 +4,11 @@ Phased approach for systematically implementing missing API
 endpoints with example-driven fixture capture and clean context
 recovery.
 
-**Constitution**: `.specify/memory/constitution.md` v2.1.0
+**Constitution**: `.specify/memory/constitution.md` v2.2.0
 **Principles**: II (Example-Driven Fixture Capture),
 III (Four-Way Harmony), V (Endpoint Status Tracking),
-VIII (Phase-Based Context Recovery)
+VIII (Phase-Based Context Recovery),
+IX (Endpoint Input Validation)
 **Endpoint inventory**: `specs/api-surface.md`
 
 ## Overview
@@ -61,6 +62,9 @@ For each endpoint in the group:
    for realistic parameter values and usage patterns.
 4. **Swagger**: Read the swagger spec for parameter definitions,
    required vs optional fields, and request/response body schemas.
+   **Critically**: note the exact query parameter names and
+   whether the endpoint has a `requestBody` — this determines
+   transport type (Principle IX).
 5. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
    for field names, aliases, Optional vs required, nesting.
 6. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json`
@@ -120,8 +124,12 @@ class Test{Service}Models:
 2. Register endpoint in `ab/client.py`.
 3. Export from `ab/api/endpoints/__init__.py`.
 4. Export models from `ab/api/models/__init__.py`.
+5. Verify input validation (Principle IX): parameter names
+   MUST match swagger, request bodies MUST validate against
+   Pydantic `RequestModel` before sending.
 
-**Exit**: Endpoint code passes `ruff check`. Client registers
+**Exit**: Endpoint code passes `ruff check` and
+`pytest tests/test_example_params.py`. Client registers
 all new endpoints. Imports work.
 **Artifact**: `ab/api/endpoints/{service}.py`, updated
 `ab/client.py`, updated `__init__.py` files.
@@ -345,6 +353,13 @@ Quick lookup for Phase D:
   A 400 error means the example needs correct parameters, not
   that a human needs to provide a response. Research
   ABConnectTools and swagger to find the right request data.
+- **Unvalidated inputs**: Endpoint methods MUST validate
+  inputs against Pydantic models and swagger param names before
+  making HTTP calls. Guessed parameter names (e.g., `street`
+  instead of swagger's `Line1`) are silently ignored by the
+  API. Request bodies sent as `params=` instead of `json=`
+  are silently dropped. `tests/test_example_params.py` catches
+  these automatically (Principle IX).
 - **Writing examples without research**: Phase D exists for a
   reason. Every example MUST use parameters researched from
   ABConnectTools endpoint code, examples, and swagger specs.

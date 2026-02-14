@@ -9,7 +9,7 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 
 ## Summary
 
-- **Captured**: 22
+- **Captured**: 23
 - **Needs Request Data**: 27
 
 ## Captured Fixtures
@@ -38,6 +38,7 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 | /Web2Lead | GET | Web2LeadResponse | 2026-02-13 | staging | — |
 | /users/list | POST | User | 2026-02-13 | staging | — |
 | /users/roles | GET | UserRole | 2026-02-13 | staging | `UsersRoles.json` |
+| /address/isvalid | GET | AddressIsValidResult | 2026-02-14 | staging | — |
 
 ## Needs Request Data
 
@@ -48,8 +49,7 @@ example, re-run, and capture the fixture.
 
 | Endpoint Path | Method | Model Name | What's Missing | ABConnectTools Ref |
 |---------------|--------|------------|---------------|-------------------|
-| /address/isvalid | GET | AddressIsValidResult | Query params: needs valid `street`, `city`, `state`, `zipCode` — returns 400 with test params | — |
-| /address/propertytype | GET | PropertyType | Query params: needs valid `street` + `zipCode` for a real address — returns 204 with test params | — |
+| /address/propertytype | GET | PropertyType | Query params: needs valid `address1`, `city`, `state`, `zip_code` for a real address — returns null with test params | — |
 | /AutoPrice/QuoteRequest | POST | QuoteRequestResponse | Request body: needs items array with `weight`, `class` fields and valid origin/destination — research ABConnectTools `endpoints/autoprice.py` | — |
 | /lookup/items | GET | LookupItem | Returns 204 — research ABConnectTools for required query params or correct lookup key | — |
 | /Catalog | GET | CatalogWithSellersDto | Returns empty — research ABConnectTools `endpoints/catalog.py` for required params or correct staging catalog IDs | — |

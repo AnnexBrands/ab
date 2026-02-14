@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -29,10 +29,10 @@ class DocumentsEndpoint(BaseEndpoint):
             }
             return self._client.request("POST", "/documents", files=files, data=data)
 
-    def list(self, *, job_id: Optional[str] = None, **params: Any) -> Any:
+    def list(self, *, job_display_id: Optional[str] = None, **params: Any) -> Any:
         """GET /documents/list"""
-        if job_id:
-            params["jobId"] = job_id
+        if job_display_id:
+            params["jobDisplayId"] = job_display_id
         return self._request(_LIST, params=params)
 
     def get(self, doc_path: str) -> bytes:

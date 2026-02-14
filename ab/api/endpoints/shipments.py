@@ -39,9 +39,9 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
         return self._request(_GET_RATE_QUOTES.bind(jobDisplayId=job_display_id))
 
-    def request_rate_quotes(self, job_display_id: int, **params: Any) -> Any:
+    def request_rate_quotes(self, job_display_id: int, data: dict | None = None) -> Any:
         """POST /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
-        return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), params=params)
+        return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), json=data)
 
     def book(self, job_display_id: int, data: dict | Any) -> Any:
         """POST /job/{jobDisplayId}/shipment/book (ACPortal)"""

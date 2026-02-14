@@ -1,32 +1,32 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 2.0.0 → 2.1.0
-  Bump rationale: MINOR — Principle II rewritten (Fixture-Driven
-    Development → Example-Driven Fixture Capture), Principle III
-    reordered (Example before Fixture), Principle V status taxonomy
-    simplified (pending replaced by needs-request-data),
-    Development Workflow DISCOVER phases redefined (C = Call &
-    Capture via examples, E = Enrich docs). No principles removed
-    or incompatibly redefined.
+  Version change: 2.1.0 → 2.2.0
+  Bump rationale: MINOR — New Principle IX (Endpoint Input
+    Validation) added. Codifies that endpoint methods MUST
+    validate inputs against Pydantic models before making HTTP
+    calls. Required params/body fields MUST raise early (TypeError
+    or ValidationError) rather than silently passing bad data.
+    Driven by feature 005 findings: 5 endpoints silently ignored
+    inputs due to unvalidated parameter names and transport.
   Modified principles:
-    - II. Fixture-Driven Development → II. Example-Driven Fixture
-      Capture: Examples are the fixture capture mechanism. Before
-      writing an example, research ABConnectTools and swagger for
-      required request bodies and params. 200 → save fixture.
-      Error → fix the request, not ask for a response fixture.
-    - III. Four-Way Harmony: Artifact order changed. Example now
-      precedes Fixture & Test (example produces the fixture).
-    - V. Pending Fixture Tracking → V. Endpoint Status Tracking:
-      Status taxonomy simplified. Generic "pending" replaced by
-      "needs-request-data" — every failure is a request problem.
-  Added sections: None
+    - II. Example-Driven Fixture Capture: Updated stale example
+      (address/isvalid params corrected to Line1, City, State, Zip).
+    - IV. Swagger-Informed, Reality-Validated: Added bullet
+      requiring automated param-name validation via
+      tests/test_example_params.py.
+  Added sections:
+    - IX. Endpoint Input Validation
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ no update needed
   Follow-up TODOs: None — all files updated in this revision.
+  Propagated changes:
+    - .claude/workflows/DISCOVER.md ✅ updated (v2.2.0 ref,
+      Phase D swagger note, Phase S validation exit gate,
+      anti-patterns for unvalidated inputs)
 -->
 # ABConnect SDK Constitution
 
@@ -82,10 +82,13 @@ research the endpoint's requirements from two sources:
 3. **Error response** → the EXAMPLE needs fixing, not a response
    fixture. Diagnose what the request is missing:
    - Missing or wrong **query parameters** (e.g., `/address/isvalid`
-     needs `street`, `city`, `state`, `zipCode`).
+     needs `Line1`, `City`, `State`, `Zip` — these are the swagger
+     parameter names, not guesses).
    - Missing or wrong **request body** (e.g.,
      `/AutoPrice/QuoteRequest` needs an items array with weight
      and class fields).
+   - Wrong **transport** — a POST endpoint sending `params=`
+     instead of `json=` will silently drop the request body.
    - Missing **URL parameters** (e.g., `{addressId}` in the path).
    - **Unknown issue** — research ABConnectTools and swagger more
      deeply for edge cases, required headers, or prerequisites.
@@ -117,14 +120,18 @@ mutually consistent:
 
 1. **Implementation** (`ab/api/endpoints/` + `ab/api/models/`)
    — endpoint class method and Pydantic model.
+   — request json, request params, or response json out of harmony
+     with swagger MUST be explicitly excused in `api-surface.md`.
 2. **Example** (`examples/`) — runnable Python that calls the
    endpoint with correct parameters. The example is the fixture
    capture instrument (Principle II).
 3. **Fixture & Test** (`tests/`) — fixture captured by running
    the example; test validating the fixture against the model.
+   - test exists for all endpoints that does not error in HTTP
+     or when cast to response model in return
 4. **Sphinx Documentation** (`docs/`) — RST/MyST page with
-   endpoint description, example code block, link to the model
-   class, and link to the example file.
+   endpoint description, example code block, repr of model class
+   and link to the example file.
 
 Adding or modifying any one artifact MUST trigger review of the
 other three. An endpoint missing any artifact is incomplete.
@@ -150,6 +157,10 @@ types, or miss entire response models.
   is determined by fixture validation.
 - When a model intentionally deviates from swagger, the deviation
   MUST be documented with a comment on the affected field(s).
+- Query parameter names sent by endpoint methods MUST match
+  swagger parameter definitions. `tests/test_example_params.py`
+  MUST enforce this automatically by cross-referencing endpoint
+  source against swagger specs (Principle IX).
 
 ### V. Endpoint Status Tracking
 
@@ -266,6 +277,54 @@ context (or human) without loss of progress.
   (`- [ ]` / `- [x]`) so that progress is machine-readable
   across context boundaries.
 
+### IX. Endpoint Input Validation
+
+Every endpoint method MUST validate its inputs before making
+an HTTP call. Unvalidated inputs cause silent failures — the
+API ignores unrecognized parameters without returning an error,
+producing empty or default responses that appear to work but
+carry no user data.
+
+**Request body validation**:
+
+- Endpoints that accept a request body MUST define a Pydantic
+  `RequestModel` (with `extra="forbid"`) for that body.
+- The endpoint method MUST validate the body against the model
+  before sending it. Invalid or extra fields MUST raise a
+  `ValidationError` at call time, not silently pass through.
+- Required fields in the swagger `requestBody` schema MUST be
+  required (not `Optional`) in the Pydantic model.
+
+**Query parameter validation**:
+
+- Parameter names mapped inside endpoint methods MUST match
+  the swagger spec's query parameter definitions. Names MUST
+  NOT be guessed or invented.
+- Python method signatures MUST use snake_case. The mapping to
+  the API's PascalCase or camelCase happens inside the method
+  body (e.g., `params["Line1"] = line1`).
+- Required swagger query parameters SHOULD be required Python
+  arguments (not `Optional`) so that callers get a `TypeError`
+  at call time rather than a silent 400 or empty response.
+
+**Automated enforcement**:
+
+- `tests/test_example_params.py` MUST cross-reference every
+  endpoint method's parameter mappings against the swagger
+  specs via static analysis. Unknown parameter names and
+  incorrect transport (e.g., `params=` where `json=` is
+  required) MUST cause test failure.
+- This test MUST run as part of the standard `pytest` suite
+  (not gated behind a marker).
+
+**Rationale**: Feature 005 found 5 endpoints where inputs were
+silently ignored (`address.validate`, `address.get_property_type`,
+`forms.get_operations`, `shipments.request_rate_quotes`,
+`documents.list`). In each case, the root cause was that the
+endpoint method accepted inputs without validating them against
+the swagger contract. Pydantic validation at the SDK boundary
+catches these errors before the HTTP call is made.
+
 ## API Coverage & Scope
 
 This SDK covers three ABConnect API surfaces:
@@ -301,18 +360,22 @@ explicit entry/exit criteria to support clean context recovery
 1. **D — Determine** — Research the target service group from
    ABConnectTools and swagger. For each endpoint, identify
    required request bodies, URL parameters, query parameters,
-   and realistic test values. This research informs Phase E.
+   correct transport type (params vs json), and realistic test
+   values. This research informs Phases S and C.
 2. **I — Implement models** — Create Pydantic models from swagger
    schemas and ABConnectTools patterns. Write skeleton tests that
    skip with actionable messages.
 3. **S — Scaffold endpoints** — Write endpoint class methods with
    route definitions. Register in `client.py`. Wire models.
+   Endpoint methods MUST use correct transport (Principle IX)
+   and map parameter names to exact swagger names.
 4. **C — Call & Capture** — Write runnable examples using request
    data researched in Phase D. Run examples against staging.
    200 responses become fixtures. Errors are diagnosed as
    request-data problems (Principle II).
-5. **O — Observe tests** — Run full test suite. Confirm Four-Way
-   Harmony artifacts exist. Update `FIXTURES.md`.
+5. **O — Observe tests** — Run full test suite including
+   `tests/test_example_params.py` (Principle IX). Confirm
+   Four-Way Harmony artifacts exist. Update `FIXTURES.md`.
 6. **V — Verify & commit** — Checkpoint commit. Phase complete
    and recoverable.
 7. **E — Enrich documentation** — Write Sphinx documentation.
@@ -323,11 +386,16 @@ explicit entry/exit criteria to support clean context recovery
 
 - Phases D–S (1–3) MAY be executed by an AI agent within a
   single context window.
+- Phase S (Scaffold) MUST verify transport correctness: GET
+  endpoints use `params=`, POST/PUT/PATCH with requestBody use
+  `json=`. Parameter names MUST match swagger. Run
+  `pytest tests/test_example_params.py` as Phase S exit gate.
 - Phase C (Call & Capture) MUST use request data researched in
   Phase D. Agents MUST NOT fabricate fixture data. If an example
   returns an error, the agent MUST diagnose and fix the request
-  (wrong params, missing body fields). Track unresolved endpoints
-  as `needs-request-data` in `FIXTURES.md` with specifics.
+  (wrong params, missing body fields, wrong transport). Track
+  unresolved endpoints as `needs-request-data` in `FIXTURES.md`
+  with specifics.
 - Each phase MUST produce committed artifacts before proceeding.
 - When context is lost mid-phase, resume from the last committed
   checkpoint using Principle VIII recovery procedure.
@@ -358,7 +426,7 @@ principles.
   clarifications).
 - **Compliance review**: Every PR MUST include a self-check
   against the Four-Way Harmony principle. Reviewers MUST verify
-  that new endpoints satisfy all eight principles.
+  that new endpoints satisfy all nine principles.
 - **Versioning policy**: This constitution follows MAJOR.MINOR.PATCH
   semantic versioning. The version line below tracks the current
   state.
@@ -374,4 +442,4 @@ principles.
   instructions for entering mid-flight. Workflows without
   recovery procedures are incomplete.
 
-**Version**: 2.1.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14
+**Version**: 2.2.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14
