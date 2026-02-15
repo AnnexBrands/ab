@@ -1,4 +1,4 @@
-"""Jobs API endpoints — ACPortal (28 routes) + ABC (1 route).
+"""Jobs API endpoints — ACPortal (54 routes) + ABC (1 route).
 
 This file handles two API surfaces. ACPortal routes use the default
 ``api_surface="acportal"``; the ABC job update route explicitly sets
@@ -57,6 +57,41 @@ _GET_PARCEL_ITEMS_MATERIALS = Route("GET", "/job/{jobDisplayId}/parcel-items-wit
 _GET_PACKAGING_CONTAINERS = Route("GET", "/job/{jobDisplayId}/packagingcontainers", response_model="List[PackagingContainer]")
 _PUT_ITEM = Route("PUT", "/job/{jobDisplayId}/item/{itemId}", request_model="ItemUpdateRequest", response_model="ServiceBaseResponse")
 _POST_ITEM_NOTES = Route("POST", "/job/{jobDisplayId}/item/notes", request_model="ItemNotesRequest", response_model="ServiceBaseResponse")
+
+
+# RFQ routes (job-scoped)
+_LIST_RFQS = Route("GET", "/job/{jobDisplayId}/rfq", response_model="List[QuoteRequestDisplayInfo]")
+_GET_RFQ_STATUS = Route("GET", "/job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}", response_model="QuoteRequestStatus")
+
+# On-Hold routes
+_LIST_ON_HOLD = Route("GET", "/job/{jobDisplayId}/onhold", response_model="List[ExtendedOnHoldInfo]")
+_CREATE_ON_HOLD = Route("POST", "/job/{jobDisplayId}/onhold", request_model="SaveOnHoldRequest", response_model="SaveOnHoldResponse")
+_DELETE_ON_HOLD = Route("DELETE", "/job/{jobDisplayId}/onhold")
+_GET_ON_HOLD = Route("GET", "/job/{jobDisplayId}/onhold/{id}", response_model="OnHoldDetails")
+_UPDATE_ON_HOLD = Route("PUT", "/job/{jobDisplayId}/onhold/{onHoldId}", request_model="SaveOnHoldRequest", response_model="SaveOnHoldResponse")
+_GET_ON_HOLD_FOLLOWUP_USER = Route("GET", "/job/{jobDisplayId}/onhold/followupuser/{contactId}", response_model="OnHoldUser")
+_LIST_ON_HOLD_FOLLOWUP_USERS = Route("GET", "/job/{jobDisplayId}/onhold/followupusers", response_model="List[OnHoldUser]")
+_ADD_ON_HOLD_COMMENT = Route("POST", "/job/{jobDisplayId}/onhold/{onHoldId}/comment", response_model="OnHoldNoteDetails")
+_UPDATE_ON_HOLD_DATES = Route("PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/dates", request_model="SaveOnHoldDatesModel")
+_RESOLVE_ON_HOLD = Route("PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/resolve", response_model="ResolveJobOnHoldResponse")
+
+# Email routes
+_SEND_EMAIL = Route("POST", "/job/{jobDisplayId}/email")
+_SEND_DOCUMENT_EMAIL = Route("POST", "/job/{jobDisplayId}/email/senddocument", request_model="SendDocumentEmailModel")
+_CREATE_TRANSACTIONAL_EMAIL = Route("POST", "/job/{jobDisplayId}/email/createtransactionalemail")
+_SEND_TEMPLATE_EMAIL = Route("POST", "/job/{jobDisplayId}/email/{emailTemplateGuid}/send")
+
+# SMS routes
+_LIST_SMS = Route("GET", "/job/{jobDisplayId}/sms")
+_SEND_SMS = Route("POST", "/job/{jobDisplayId}/sms", request_model="SendSMSModel")
+_MARK_SMS_READ = Route("POST", "/job/{jobDisplayId}/sms/read", request_model="MarkSmsAsReadModel")
+_GET_SMS_TEMPLATE = Route("GET", "/job/{jobDisplayId}/sms/templatebased/{templateId}")
+
+# Freight routes
+_LIST_FREIGHT_PROVIDERS = Route("GET", "/job/{jobDisplayId}/freightproviders", response_model="List[PricedFreightProvider]")
+_SAVE_FREIGHT_PROVIDERS = Route("POST", "/job/{jobDisplayId}/freightproviders", request_model="ShipmentPlanProvider")
+_GET_FREIGHT_PROVIDER_RATE_QUOTE = Route("POST", "/job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote")
+_ADD_FREIGHT_ITEMS = Route("POST", "/job/{jobDisplayId}/freightitems")
 
 
 class JobsEndpoint(BaseEndpoint):
@@ -203,3 +238,113 @@ class JobsEndpoint(BaseEndpoint):
     def add_item_notes(self, job_display_id: int, data: dict | Any) -> Any:
         """POST /job/{jobDisplayId}/item/notes (ACPortal)"""
         return self._request(_POST_ITEM_NOTES.bind(jobDisplayId=job_display_id), json=data)
+
+    # ---- RFQ (job-scoped) -------------------------------------------------
+
+    def list_rfqs(self, job_display_id: int) -> Any:
+        """GET /job/{jobDisplayId}/rfq (ACPortal)"""
+        return self._request(_LIST_RFQS.bind(jobDisplayId=job_display_id))
+
+    def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> Any:
+        """GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} (ACPortal)"""
+        return self._request(_GET_RFQ_STATUS.bind(
+            jobDisplayId=job_display_id,
+            rfqServiceType=rfq_service_type,
+            companyId=company_id,
+        ))
+
+    # ---- On-Hold ----------------------------------------------------------
+
+    def list_on_hold(self, job_display_id: int) -> Any:
+        """GET /job/{jobDisplayId}/onhold (ACPortal)"""
+        return self._request(_LIST_ON_HOLD.bind(jobDisplayId=job_display_id))
+
+    def create_on_hold(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/onhold (ACPortal)"""
+        return self._request(_CREATE_ON_HOLD.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def delete_on_hold(self, job_display_id: int) -> Any:
+        """DELETE /job/{jobDisplayId}/onhold (ACPortal)"""
+        return self._request(_DELETE_ON_HOLD.bind(jobDisplayId=job_display_id))
+
+    def get_on_hold(self, job_display_id: int, on_hold_id: str) -> Any:
+        """GET /job/{jobDisplayId}/onhold/{id} (ACPortal)"""
+        return self._request(_GET_ON_HOLD.bind(jobDisplayId=job_display_id, id=on_hold_id))
+
+    def update_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+        """PUT /job/{jobDisplayId}/onhold/{onHoldId} (ACPortal)"""
+        return self._request(_UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs)
+
+    def get_on_hold_followup_user(self, job_display_id: int, contact_id: str) -> Any:
+        """GET /job/{jobDisplayId}/onhold/followupuser/{contactId} (ACPortal)"""
+        return self._request(_GET_ON_HOLD_FOLLOWUP_USER.bind(jobDisplayId=job_display_id, contactId=contact_id))
+
+    def list_on_hold_followup_users(self, job_display_id: int) -> Any:
+        """GET /job/{jobDisplayId}/onhold/followupusers (ACPortal)"""
+        return self._request(_LIST_ON_HOLD_FOLLOWUP_USERS.bind(jobDisplayId=job_display_id))
+
+    def add_on_hold_comment(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/onhold/{onHoldId}/comment (ACPortal)"""
+        return self._request(_ADD_ON_HOLD_COMMENT.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs)
+
+    def update_on_hold_dates(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+        """PUT /job/{jobDisplayId}/onhold/{onHoldId}/dates (ACPortal)"""
+        return self._request(_UPDATE_ON_HOLD_DATES.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs)
+
+    def resolve_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+        """PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve (ACPortal)"""
+        return self._request(_RESOLVE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs)
+
+    # ---- Email ------------------------------------------------------------
+
+    def send_email(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/email (ACPortal)"""
+        return self._request(_SEND_EMAIL.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def send_document_email(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/email/senddocument (ACPortal)"""
+        return self._request(_SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def create_transactional_email(self, job_display_id: int) -> Any:
+        """POST /job/{jobDisplayId}/email/createtransactionalemail (ACPortal)"""
+        return self._request(_CREATE_TRANSACTIONAL_EMAIL.bind(jobDisplayId=job_display_id))
+
+    def send_template_email(self, job_display_id: int, template_guid: str) -> Any:
+        """POST /job/{jobDisplayId}/email/{emailTemplateGuid}/send (ACPortal)"""
+        return self._request(_SEND_TEMPLATE_EMAIL.bind(jobDisplayId=job_display_id, emailTemplateGuid=template_guid))
+
+    # ---- SMS --------------------------------------------------------------
+
+    def list_sms(self, job_display_id: int) -> Any:
+        """GET /job/{jobDisplayId}/sms (ACPortal)"""
+        return self._request(_LIST_SMS.bind(jobDisplayId=job_display_id))
+
+    def send_sms(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/sms (ACPortal)"""
+        return self._request(_SEND_SMS.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def mark_sms_read(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/sms/read (ACPortal)"""
+        return self._request(_MARK_SMS_READ.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def get_sms_template(self, job_display_id: int, template_id: str) -> Any:
+        """GET /job/{jobDisplayId}/sms/templatebased/{templateId} (ACPortal)"""
+        return self._request(_GET_SMS_TEMPLATE.bind(jobDisplayId=job_display_id, templateId=template_id))
+
+    # ---- Freight Providers ------------------------------------------------
+
+    def list_freight_providers(self, job_display_id: int, **params: Any) -> Any:
+        """GET /job/{jobDisplayId}/freightproviders (ACPortal)"""
+        return self._request(_LIST_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id), params=params or None)
+
+    def save_freight_providers(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/freightproviders (ACPortal)"""
+        return self._request(_SAVE_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def get_freight_provider_rate_quote(self, job_display_id: int, option_index: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote (ACPortal)"""
+        return self._request(_GET_FREIGHT_PROVIDER_RATE_QUOTE.bind(jobDisplayId=job_display_id, optionIndex=option_index), json=kwargs)
+
+    def add_freight_items(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/freightitems (ACPortal)"""
+        return self._request(_ADD_FREIGHT_ITEMS.bind(jobDisplayId=job_display_id), json=kwargs)

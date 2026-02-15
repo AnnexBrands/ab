@@ -86,3 +86,35 @@ class ContactSearchRequest(RequestModel):
     search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
     page: int = Field(1, description="Page number")
     page_size: int = Field(25, alias="pageSize", description="Results per page")
+
+
+# ---- Extended contact models (008) ----------------------------------------
+
+
+class ContactHistory(ResponseModel):
+    """Contact interaction history — POST /contacts/{contactId}/history."""
+
+    events: Optional[List[dict]] = Field(None, description="History events")
+    total_count: Optional[int] = Field(None, alias="totalCount", description="Total event count")
+
+
+class ContactHistoryAggregated(ResponseModel):
+    """Aggregated history — GET /contacts/{contactId}/history/aggregated."""
+
+    summary: Optional[dict] = Field(None, description="Aggregated summary")
+    by_type: Optional[List[dict]] = Field(None, alias="byType", description="Breakdown by type")
+
+
+class ContactGraphData(ResponseModel):
+    """Contact graph data — GET /contacts/{contactId}/history/graphdata."""
+
+    data_points: Optional[List[dict]] = Field(None, alias="dataPoints", description="Graph data points")
+    labels: Optional[List[str]] = Field(None, description="Graph labels")
+
+
+class ContactMergePreview(ResponseModel):
+    """Merge preview result — POST /contacts/{mergeToId}/merge/preview."""
+
+    merge_to: Optional[dict] = Field(None, alias="mergeTo", description="Target contact")
+    merge_from: Optional[dict] = Field(None, alias="mergeFrom", description="Source contact")
+    conflicts: Optional[List[dict]] = Field(None, description="Merge conflicts")

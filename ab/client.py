@@ -67,17 +67,25 @@ class ABConnectAPI:
             AddressEndpoint,
             AutoPriceEndpoint,
             CatalogEndpoint,
+            CommoditiesEndpoint,
+            CommodityMapsEndpoint,
             CompaniesEndpoint,
             ContactsEndpoint,
+            DashboardEndpoint,
             DocumentsEndpoint,
             FormsEndpoint,
             JobsEndpoint,
             LookupEndpoint,
             LotsEndpoint,
+            NotesEndpoint,
+            PartnersEndpoint,
             PaymentsEndpoint,
+            ReportsEndpoint,
+            RFQEndpoint,
             SellersEndpoint,
             ShipmentsEndpoint,
             UsersEndpoint,
+            ViewsEndpoint,
             Web2LeadEndpoint,
         )
 
@@ -92,6 +100,14 @@ class ABConnectAPI:
         self.forms = FormsEndpoint(self._acportal)
         self.shipments = ShipmentsEndpoint(self._acportal)
         self.payments = PaymentsEndpoint(self._acportal)
+        self.rfq = RFQEndpoint(self._acportal)
+        self.reports = ReportsEndpoint(self._acportal)
+        self.dashboard = DashboardEndpoint(self._acportal)
+        self.views = ViewsEndpoint(self._acportal)
+        self.commodities = CommoditiesEndpoint(self._acportal)
+        self.commodity_maps = CommodityMapsEndpoint(self._acportal)
+        self.notes = NotesEndpoint(self._acportal)
+        self.partners = PartnersEndpoint(self._acportal)
 
         # Catalog endpoints
         self.catalog = CatalogEndpoint(self._catalog)

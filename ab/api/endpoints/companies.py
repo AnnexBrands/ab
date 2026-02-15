@@ -1,4 +1,4 @@
-"""Companies API endpoints (8 routes)."""
+"""Companies API endpoints (24 routes)."""
 
 from __future__ import annotations
 
@@ -16,6 +16,39 @@ _CREATE = Route("POST", "/companies/fulldetails", request_model="CompanyDetails"
 _SEARCH = Route("POST", "/companies/search/v2", request_model="CompanySearchRequest", response_model="List[SearchCompanyResponse]")
 _LIST = Route("POST", "/companies/list", request_model="ListRequest", response_model="List[CompanySimple]")
 _AVAILABLE = Route("GET", "/companies/availableByCurrentUser", response_model="List[CompanySimple]")
+
+# Brands (008)
+_GET_BRANDS = Route("GET", "/companies/brands", response_model="List[CompanyBrand]")
+_GET_BRANDS_TREE = Route("GET", "/companies/brandstree", response_model="List[BrandTree]")
+
+# Geo Settings (008)
+_GET_GEO_AREA_COMPANIES = Route("GET", "/companies/geoAreaCompanies")
+_GET_GEO_SETTINGS = Route("GET", "/companies/{companyId}/geosettings", response_model="GeoSettings")
+_SAVE_GEO_SETTINGS = Route("POST", "/companies/{companyId}/geosettings", request_model="GeoSettingsSaveRequest")
+_GET_GLOBAL_GEO_SETTINGS = Route("GET", "/companies/geosettings", response_model="GeoSettings")
+
+# Carrier Accounts (008)
+_SEARCH_CARRIER_ACCOUNTS = Route("GET", "/companies/search/carrier-accounts")
+_SUGGEST_CARRIERS = Route("GET", "/companies/suggest-carriers")
+_GET_CARRIER_ACCOUNTS = Route("GET", "/companies/{companyId}/carrierAcounts", response_model="List[CarrierAccount]")
+_SAVE_CARRIER_ACCOUNTS = Route(
+    "POST", "/companies/{companyId}/carrierAcounts",
+    request_model="CarrierAccountSaveRequest",
+)
+
+# Packaging (008)
+_GET_PACKAGING_SETTINGS = Route("GET", "/companies/{companyId}/packagingsettings", response_model="PackagingSettings")
+_SAVE_PACKAGING_SETTINGS = Route("POST", "/companies/{companyId}/packagingsettings")
+_GET_PACKAGING_LABOR = Route("GET", "/companies/{companyId}/packaginglabor", response_model="PackagingLabor")
+_SAVE_PACKAGING_LABOR = Route("POST", "/companies/{companyId}/packaginglabor")
+_GET_INHERITED_PACKAGING_TARIFFS = Route(
+    "GET", "/companies/{companyId}/inheritedPackagingTariffs",
+    response_model="List[PackagingTariff]",
+)
+_GET_INHERITED_PACKAGING_LABOR = Route(
+    "GET", "/companies/{companyId}/inheritedpackaginglabor",
+    response_model="PackagingLabor",
+)
 
 
 class CompaniesEndpoint(BaseEndpoint):
@@ -59,3 +92,75 @@ class CompaniesEndpoint(BaseEndpoint):
     def available_by_current_user(self) -> Any:
         """GET /companies/availableByCurrentUser"""
         return self._request(_AVAILABLE)
+
+    # ---- Brands (008) -----------------------------------------------------
+
+    def get_brands(self) -> Any:
+        """GET /companies/brands"""
+        return self._request(_GET_BRANDS)
+
+    def get_brands_tree(self) -> Any:
+        """GET /companies/brandstree"""
+        return self._request(_GET_BRANDS_TREE)
+
+    # ---- Geo Settings (008) -----------------------------------------------
+
+    def get_geo_area_companies(self, **params: Any) -> Any:
+        """GET /companies/geoAreaCompanies"""
+        return self._request(_GET_GEO_AREA_COMPANIES, params=params or None)
+
+    def get_geo_settings(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/geosettings"""
+        return self._request(_GET_GEO_SETTINGS.bind(companyId=self._resolve(company_id)))
+
+    def save_geo_settings(self, company_id: str, **kwargs: Any) -> Any:
+        """POST /companies/{companyId}/geosettings"""
+        return self._request(_SAVE_GEO_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
+
+    def get_global_geo_settings(self) -> Any:
+        """GET /companies/geosettings"""
+        return self._request(_GET_GLOBAL_GEO_SETTINGS)
+
+    # ---- Carrier Accounts (008) -------------------------------------------
+
+    def search_carrier_accounts(self, **params: Any) -> Any:
+        """GET /companies/search/carrier-accounts"""
+        return self._request(_SEARCH_CARRIER_ACCOUNTS, params=params or None)
+
+    def suggest_carriers(self, **params: Any) -> Any:
+        """GET /companies/suggest-carriers"""
+        return self._request(_SUGGEST_CARRIERS, params=params or None)
+
+    def get_carrier_accounts(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/carrierAcounts"""
+        return self._request(_GET_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)))
+
+    def save_carrier_accounts(self, company_id: str, **kwargs: Any) -> Any:
+        """POST /companies/{companyId}/carrierAcounts"""
+        return self._request(_SAVE_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)), json=kwargs)
+
+    # ---- Packaging (008) --------------------------------------------------
+
+    def get_packaging_settings(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/packagingsettings"""
+        return self._request(_GET_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)))
+
+    def save_packaging_settings(self, company_id: str, **kwargs: Any) -> Any:
+        """POST /companies/{companyId}/packagingsettings"""
+        return self._request(_SAVE_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
+
+    def get_packaging_labor(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/packaginglabor"""
+        return self._request(_GET_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
+
+    def save_packaging_labor(self, company_id: str, **kwargs: Any) -> Any:
+        """POST /companies/{companyId}/packaginglabor"""
+        return self._request(_SAVE_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)), json=kwargs)
+
+    def get_inherited_packaging_tariffs(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/inheritedPackagingTariffs"""
+        return self._request(_GET_INHERITED_PACKAGING_TARIFFS.bind(companyId=self._resolve(company_id)))
+
+    def get_inherited_packaging_labor(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/inheritedpackaginglabor"""
+        return self._request(_GET_INHERITED_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))

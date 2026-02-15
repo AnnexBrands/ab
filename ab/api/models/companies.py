@@ -58,3 +58,73 @@ class CompanySearchRequest(RequestModel):
     page: int = Field(1, description="Page number")
     page_size: int = Field(25, alias="pageSize", description="Results per page")
     filters: Optional[dict] = Field(None, description="Filter criteria")
+
+
+# ---- Extended company models (008) ----------------------------------------
+
+
+class CompanyBrand(ResponseModel):
+    """Brand record — GET /companies/brands."""
+
+    id: Optional[str] = Field(None, description="Brand ID")
+    name: Optional[str] = Field(None, description="Brand name")
+    parent_id: Optional[str] = Field(None, alias="parentId", description="Parent brand ID")
+
+
+class BrandTree(ResponseModel):
+    """Hierarchical brand tree — GET /companies/brandstree."""
+
+    id: Optional[str] = Field(None, description="Brand ID")
+    name: Optional[str] = Field(None, description="Brand name")
+    children: Optional[List[dict]] = Field(None, description="Child brands")
+
+
+class GeoSettings(ResponseModel):
+    """Geographic settings — GET /companies/{companyId}/geosettings."""
+
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    service_areas: Optional[List[dict]] = Field(None, alias="serviceAreas", description="Service area definitions")
+    restrictions: Optional[List[dict]] = Field(None, description="Geographic restrictions")
+
+
+class GeoSettingsSaveRequest(RequestModel):
+    """Body for POST /companies/{companyId}/geosettings."""
+
+    service_areas: Optional[List[dict]] = Field(None, alias="serviceAreas", description="Service area definitions")
+    restrictions: Optional[List[dict]] = Field(None, description="Geographic restrictions")
+
+
+class CarrierAccount(ResponseModel):
+    """Carrier account — GET /companies/{companyId}/carrierAcounts."""
+
+    id: Optional[str] = Field(None, description="Carrier account ID")
+    carrier_name: Optional[str] = Field(None, alias="carrierName", description="Carrier name")
+    account_number: Optional[str] = Field(None, alias="accountNumber", description="Account number")
+
+
+class CarrierAccountSaveRequest(RequestModel):
+    """Body for POST /companies/{companyId}/carrierAcounts."""
+
+    carrier_name: Optional[str] = Field(None, alias="carrierName", description="Carrier name")
+    account_number: Optional[str] = Field(None, alias="accountNumber", description="Account number")
+
+
+class PackagingSettings(ResponseModel):
+    """Packaging config — GET /companies/{companyId}/packagingsettings."""
+
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    settings: Optional[dict] = Field(None, description="Packaging settings data")
+
+
+class PackagingLabor(ResponseModel):
+    """Packaging labor config — GET /companies/{companyId}/packaginglabor."""
+
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    labor_rates: Optional[List[dict]] = Field(None, alias="laborRates", description="Labor rate entries")
+
+
+class PackagingTariff(ResponseModel):
+    """Inherited packaging tariff — GET /companies/{companyId}/inheritedPackagingTariffs."""
+
+    tariff_id: Optional[str] = Field(None, alias="tariffId", description="Tariff ID")
+    rates: Optional[List[dict]] = Field(None, description="Tariff rate entries")
