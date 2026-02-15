@@ -281,3 +281,122 @@ class ItemUpdateRequest(RequestModel):
     description: Optional[str] = Field(None, description="Updated description")
     quantity: Optional[int] = Field(None, description="Updated quantity")
     weight: Optional[float] = Field(None, description="Updated weight")
+
+
+# ---- On-Hold models (008) ------------------------------------------------
+
+
+class ExtendedOnHoldInfo(ResponseModel):
+    """On-hold listing entry — GET /job/{jobDisplayId}/onhold."""
+
+    id: Optional[str] = Field(None, description="On-hold record ID")
+    reason: Optional[str] = Field(None, description="Hold reason")
+    description: Optional[str] = Field(None, description="Hold description")
+    follow_up_user: Optional[str] = Field(None, alias="followUpUser", description="Follow-up user name")
+    follow_up_date: Optional[str] = Field(None, alias="followUpDate", description="Follow-up date")
+    status: Optional[str] = Field(None, description="Hold status")
+    created_date: Optional[str] = Field(None, alias="createdDate", description="Created date")
+
+
+class OnHoldDetails(ResponseModel):
+    """Full on-hold detail — GET /job/{jobDisplayId}/onhold/{id}."""
+
+    id: Optional[str] = Field(None, description="On-hold record ID")
+    reason: Optional[str] = Field(None, description="Hold reason")
+    description: Optional[str] = Field(None, description="Hold description")
+    comments: Optional[List[dict]] = Field(None, description="Associated comments")
+    dates: Optional[dict] = Field(None, description="Date information")
+    follow_up_user: Optional[dict] = Field(None, alias="followUpUser", description="Follow-up user details")
+    status: Optional[str] = Field(None, description="Hold status")
+
+
+class SaveOnHoldRequest(RequestModel):
+    """Body for POST/PUT /job/{jobDisplayId}/onhold."""
+
+    reason: Optional[str] = Field(None, description="Hold reason")
+    description: Optional[str] = Field(None, description="Hold description")
+    follow_up_contact_id: Optional[str] = Field(None, alias="followUpContactId", description="Follow-up contact ID")
+    follow_up_date: Optional[str] = Field(None, alias="followUpDate", description="Follow-up date")
+
+
+class SaveOnHoldResponse(ResponseModel):
+    """On-hold create/update response."""
+
+    on_hold_id: Optional[str] = Field(None, alias="onHoldId", description="On-hold record ID")
+    status: Optional[str] = Field(None, description="Operation status")
+
+
+class ResolveJobOnHoldResponse(ResponseModel):
+    """On-hold resolution response."""
+
+    resolved: Optional[bool] = Field(None, description="Whether resolved successfully")
+    status: Optional[str] = Field(None, description="Resolution status")
+
+
+class SaveOnHoldDatesModel(RequestModel):
+    """Body for PUT /job/{jobDisplayId}/onhold/{onHoldId}/dates."""
+
+    follow_up_date: Optional[str] = Field(None, alias="followUpDate", description="Follow-up date")
+    due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
+
+
+class OnHoldUser(ResponseModel):
+    """Follow-up user info — GET /job/{jobDisplayId}/onhold/followupuser/{contactId}."""
+
+    contact_id: Optional[str] = Field(None, alias="contactId", description="Contact ID")
+    name: Optional[str] = Field(None, description="User name")
+    email: Optional[str] = Field(None, description="User email")
+
+
+class OnHoldNoteDetails(ResponseModel):
+    """On-hold comment — POST /job/{jobDisplayId}/onhold/{onHoldId}/comment."""
+
+    id: Optional[str] = Field(None, description="Comment ID")
+    comment: Optional[str] = Field(None, description="Comment text")
+    author: Optional[str] = Field(None, description="Author name")
+    date: Optional[str] = Field(None, description="Comment date")
+
+
+# ---- Email/SMS models (008) -----------------------------------------------
+
+
+class SendDocumentEmailModel(RequestModel):
+    """Body for POST /job/{jobDisplayId}/email/senddocument."""
+
+    to: Optional[List[str]] = Field(None, description="Recipient emails")
+    cc: Optional[List[str]] = Field(None, description="CC emails")
+    bcc: Optional[List[str]] = Field(None, description="BCC emails")
+    subject: Optional[str] = Field(None, description="Email subject")
+    body: Optional[str] = Field(None, description="Email body")
+    document_type: Optional[str] = Field(None, alias="documentType", description="Document type")
+
+
+class SendSMSModel(RequestModel):
+    """Body for POST /job/{jobDisplayId}/sms."""
+
+    phone_number: Optional[str] = Field(None, alias="phoneNumber", description="Phone number")
+    message: Optional[str] = Field(None, description="SMS message body")
+    template_id: Optional[str] = Field(None, alias="templateId", description="SMS template ID")
+
+
+class MarkSmsAsReadModel(RequestModel):
+    """Body for POST /job/{jobDisplayId}/sms/read."""
+
+    sms_ids: Optional[List[str]] = Field(None, alias="smsIds", description="SMS IDs to mark read")
+
+
+# ---- Freight provider models (008) ----------------------------------------
+
+
+class PricedFreightProvider(ResponseModel):
+    """Freight provider with pricing — GET /job/{jobDisplayId}/freightproviders."""
+
+    provider_name: Optional[str] = Field(None, alias="providerName", description="Provider name")
+    service_types: Optional[List[dict]] = Field(None, alias="serviceTypes", description="Available service types")
+    rate_available: Optional[bool] = Field(None, alias="rateAvailable", description="Whether rate is available")
+
+
+class ShipmentPlanProvider(RequestModel):
+    """Save freight provider selection — POST /job/{jobDisplayId}/freightproviders."""
+
+    provider_data: Optional[dict] = Field(None, alias="providerData", description="Provider selection data")

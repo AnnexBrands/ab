@@ -1,0 +1,69 @@
+"""Example: Dashboard operations (9 methods).
+
+Covers dashboard summary, grid views, grid view state, and operational
+panels (inbound, in-house, outbound, local deliveries, recent estimates).
+"""
+
+from examples._runner import ExampleRunner
+
+runner = ExampleRunner("Dashboard", env="staging")
+
+LIVE_VIEW_ID = "PLACEHOLDER"
+
+# ═══════════════════════════════════════════════════════════════════════
+# Dashboard
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "get",
+    lambda api: api.dashboard.get(),
+    response_model="DashboardSummary",
+    fixture_file="DashboardSummary.json",
+)
+
+runner.add(
+    "get_grid_views",
+    lambda api: api.dashboard.get_grid_views(),
+    response_model="List[GridViewInfo]",
+    fixture_file="GridViewInfo.json",
+)
+
+runner.add(
+    "get_grid_view_state",
+    lambda api: api.dashboard.get_grid_view_state(LIVE_VIEW_ID),
+    response_model="GridViewState",
+    fixture_file="GridViewState.json",
+)
+
+runner.add(
+    "save_grid_view_state",
+    lambda api: api.dashboard.save_grid_view_state(LIVE_VIEW_ID, columns=[], filters=[]),
+)
+
+runner.add(
+    "inbound",
+    lambda api: api.dashboard.inbound(),
+)
+
+runner.add(
+    "in_house",
+    lambda api: api.dashboard.in_house(),
+)
+
+runner.add(
+    "outbound",
+    lambda api: api.dashboard.outbound(),
+)
+
+runner.add(
+    "local_deliveries",
+    lambda api: api.dashboard.local_deliveries(),
+)
+
+runner.add(
+    "recent_estimates",
+    lambda api: api.dashboard.recent_estimates(),
+)
+
+if __name__ == "__main__":
+    runner.run()

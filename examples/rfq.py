@@ -1,0 +1,76 @@
+"""Example: RFQ lifecycle operations (9 methods).
+
+Covers standalone RFQ operations (get, accept, decline, cancel, accept_winner,
+add_comment, get_for_job) plus job-scoped RFQ queries (list_rfqs, get_rfq_status).
+"""
+
+from examples._runner import ExampleRunner
+
+runner = ExampleRunner("RFQ", env="staging")
+
+LIVE_JOB_DISPLAY_ID = 2000000
+LIVE_RFQ_ID = "PLACEHOLDER"
+
+# ═══════════════════════════════════════════════════════════════════════
+# Standalone RFQ Operations
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "get",
+    lambda api: api.rfq.get(LIVE_RFQ_ID),
+    response_model="QuoteRequestDisplayInfo",
+    fixture_file="QuoteRequestDisplayInfo.json",
+)
+
+runner.add(
+    "get_for_job",
+    lambda api: api.rfq.get_for_job(str(LIVE_JOB_DISPLAY_ID)),
+    response_model="List[QuoteRequestDisplayInfo]",
+)
+
+runner.add(
+    "accept",
+    lambda api: api.rfq.accept(LIVE_RFQ_ID, notes="Accepted via SDK"),
+    request_model="AcceptModel",
+)
+
+runner.add(
+    "decline",
+    lambda api: api.rfq.decline(LIVE_RFQ_ID),
+)
+
+runner.add(
+    "cancel",
+    lambda api: api.rfq.cancel(LIVE_RFQ_ID),
+)
+
+runner.add(
+    "accept_winner",
+    lambda api: api.rfq.accept_winner(LIVE_RFQ_ID),
+)
+
+runner.add(
+    "add_comment",
+    lambda api: api.rfq.add_comment(LIVE_RFQ_ID, notes="Comment via SDK"),
+    request_model="AcceptModel",
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# Job-Scoped RFQ Queries
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "list_rfqs",
+    lambda api: api.jobs.list_rfqs(LIVE_JOB_DISPLAY_ID),
+    response_model="List[QuoteRequestDisplayInfo]",
+)
+
+runner.add(
+    "get_rfq_status",
+    lambda api: api.jobs.get_rfq_status(LIVE_JOB_DISPLAY_ID, "LTL", "COMPANY_ID"),
+    response_model="QuoteRequestStatus",
+    fixture_file="QuoteRequestStatus.json",
+)
+
+if __name__ == "__main__":
+    runner.run()
