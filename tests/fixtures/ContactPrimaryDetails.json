@@ -1,35 +1,8 @@
 {
+  "id": null,
   "fullName": "Justine Yigitbasi",
   "email": "oh14004@goNavis.com",
   "phone": "6147065958",
-  "cellPhone": null,
-  "fax": "6147065965",
-  "address": {
-    "id": 140026,
-    "isValid": true,
-    "dontValidate": false,
-    "propertyType": 3,
-    "address1Value": "5738 Westbourne Ave",
-    "address2Value": "",
-    "countryName": null,
-    "countryCode": null,
-    "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
-    "countrySkipZipCodeVerification": null,
-    "zipCodeResolvingFailed": false,
-    "latitude": 39.9850328,
-    "longitude": -82.847824,
-    "fullCityLine": "Columbus, OH, 43213",
-    "coordinates": {
-      "latitude": 39.9850328,
-      "longitude": -82.847824
-    },
-    "address1": "5738 Westbourne Ave",
-    "address2": null,
-    "city": "Columbus",
-    "state": "OH",
-    "zipCode": "43213"
-  },
-  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
   "company": {
     "userId": "00000000-0000-0000-0000-000000000000",
     "companyName": "Navis Pack & Ship #14004OH",
@@ -286,5 +259,33 @@
     "primaryCustomerName": "Justine Yigitbasi",
     "contactInfo": null
   },
-  "companyName": "Navis Pack & Ship #14004OH"
+  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "companyName": "Navis Pack & Ship #14004OH",
+  "cellPhone": null,
+  "fax": "6147065965",
+  "address": {
+    "id": 140026,
+    "isValid": true,
+    "dontValidate": false,
+    "propertyType": 3,
+    "address1Value": "5738 Westbourne Ave",
+    "address2Value": "",
+    "countryName": null,
+    "countryCode": null,
+    "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+    "countrySkipZipCodeVerification": null,
+    "zipCodeResolvingFailed": false,
+    "latitude": 39.9850328,
+    "longitude": -82.847824,
+    "fullCityLine": "Columbus, OH, 43213",
+    "coordinates": {
+      "latitude": 39.9850328,
+      "longitude": -82.847824
+    },
+    "address1": "5738 Westbourne Ave",
+    "address2": null,
+    "city": "Columbus",
+    "state": "OH",
+    "zipCode": "43213"
+  }
 }

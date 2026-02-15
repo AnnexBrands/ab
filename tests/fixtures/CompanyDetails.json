@@ -55,6 +55,9 @@
     "copyMaterials": 0
   },
   "capabilities": 63,
+  "settings": null,
+  "addresses": null,
+  "contacts": null,
   "address": {
     "id": 140026,
     "isValid": true,

@@ -1,0 +1,53 @@
+[
+  {
+    "shipmentPlanId": null,
+    "providerOptionIndex": null,
+    "carrierName": null,
+    "serviceType": null,
+    "jobShipmentID": "d988709b-8818-4f36-d532-08de5fe859bf",
+    "jobID": "e30de49d-86ca-ee11-ac1c-0a15ce13c9bf",
+    "fromAddressId": 245046,
+    "toAddressId": 407491,
+    "providerID": "ed282b80-54fe-4f42-bf1b-69103ce1f76c",
+    "sequenceNo": 2,
+    "fromLocationCompanyName": "Training",
+    "toLocationCompanyName": "Training",
+    "transportType": "PickUp",
+    "providerCompanyName": "Training",
+    "optionIndex": null
+  },
+  {
+    "shipmentPlanId": null,
+    "providerOptionIndex": null,
+    "carrierName": null,
+    "serviceType": null,
+    "jobShipmentID": "77ddad3f-3d85-4a4e-d532-08de5fe859bf",
+    "jobID": "e30de49d-86ca-ee11-ac1c-0a15ce13c9bf",
+    "fromAddressId": 407491,
+    "toAddressId": 7165,
+    "providerID": "ed282b80-54fe-4f42-bf1b-69103ce1f76c",
+    "sequenceNo": 6,
+    "fromLocationCompanyName": "Training",
+    "toLocationCompanyName": "",
+    "transportType": "Delivery",
+    "providerCompanyName": "Training",
+    "optionIndex": null
+  },
+  {
+    "shipmentPlanId": null,
+    "providerOptionIndex": null,
+    "carrierName": null,
+    "serviceType": null,
+    "jobShipmentID": "3a3d338d-8cd5-4d71-8270-7995d3e0d23d",
+    "jobID": "e30de49d-86ca-ee11-ac1c-0a15ce13c9bf",
+    "fromAddressId": null,
+    "toAddressId": null,
+    "providerID": null,
+    "sequenceNo": 0,
+    "fromLocationCompanyName": "Training",
+    "toLocationCompanyName": "",
+    "transportType": "House",
+    "providerCompanyName": "",
+    "optionIndex": null
+  }
+]

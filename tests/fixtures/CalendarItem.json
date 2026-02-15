@@ -1,16 +1,18 @@
-{
-  "id": "26611eb7-0b0b-403c-3685-08de5fe859c2",
-  "title": null,
-  "start": null,
-  "end": null,
-  "name": "Grandfather clock",
-  "quantity": 1,
-  "length": 1.0,
-  "width": 0.0,
-  "height": 0.0,
-  "weight": 0.0,
-  "value": 10.0,
-  "notes": null,
-  "notedConditions": null,
-  "customerItemId": null
-}
+[
+  {
+    "id": "26611eb7-0b0b-403c-3685-08de5fe859c2",
+    "title": null,
+    "start": null,
+    "end": null,
+    "name": "Grandfather clock",
+    "quantity": 1,
+    "length": 1.0,
+    "width": 0.0,
+    "height": 0.0,
+    "weight": 0.0,
+    "value": 10.0,
+    "notes": null,
+    "customerItemId": null,
+    "notedConditions": null
+  }
+]

@@ -1,0 +1,66 @@
+{
+  "origin": {
+    "contactName": "Training User",
+    "companyName": "Training",
+    "phoneNumber": "8009814202",
+    "emailAddress": "training@abconnect.co",
+    "address": {
+      "id": 771539,
+      "isValid": true,
+      "dontValidate": false,
+      "propertyType": null,
+      "address1Value": "301 S Courtland St",
+      "address2Value": "Chamberlain",
+      "countryName": null,
+      "countryCode": null,
+      "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+      "countrySkipZipCodeVerification": null,
+      "zipCodeResolvingFailed": false,
+      "latitude": 43.8084657,
+      "longitude": -99.3327321,
+      "fullCityLine": "Chamberlain, SD, 57325",
+      "coordinates": {
+        "latitude": 43.8084657,
+        "longitude": -99.3327321
+      },
+      "address1": "301 S Courtland St",
+      "address2": "Chamberlain",
+      "city": "Chamberlain",
+      "state": "SD",
+      "zipCode": "57325"
+    },
+    "taxIds": []
+  },
+  "destination": {
+    "contactName": null,
+    "companyName": null,
+    "phoneNumber": null,
+    "emailAddress": null,
+    "address": {
+      "id": 7165,
+      "isValid": false,
+      "dontValidate": false,
+      "propertyType": null,
+      "address1Value": "",
+      "address2Value": "",
+      "countryName": null,
+      "countryCode": "US",
+      "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+      "countrySkipZipCodeVerification": null,
+      "zipCodeResolvingFailed": false,
+      "latitude": 33.9253024,
+      "longitude": -84.3857442,
+      "fullCityLine": "Atlanta, GA, 30328",
+      "coordinates": {
+        "latitude": 33.9253024,
+        "longitude": -84.3857442
+      },
+      "address1": null,
+      "address2": null,
+      "city": "Atlanta",
+      "state": "GA",
+      "zipCode": "30328"
+    },
+    "taxIds": []
+  }
+}

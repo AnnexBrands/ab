@@ -1,4 +1,38 @@
-{
-  "id": 1,
-  "value": "Carrier"
-}
+[
+  {
+    "id": 1,
+    "name": null,
+    "description": null,
+    "value": "Carrier"
+  },
+  {
+    "id": 2,
+    "name": null,
+    "description": null,
+    "value": "Customers"
+  },
+  {
+    "id": 3,
+    "name": null,
+    "description": null,
+    "value": "Employee"
+  },
+  {
+    "id": 4,
+    "name": null,
+    "description": null,
+    "value": "Franchisee"
+  },
+  {
+    "id": 5,
+    "name": null,
+    "description": null,
+    "value": "Industry"
+  },
+  {
+    "id": 6,
+    "name": null,
+    "description": null,
+    "value": "Vendor"
+  }
+]

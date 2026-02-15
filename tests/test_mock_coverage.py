@@ -49,7 +49,8 @@ class TestFixtureCoverage:
         content = FIXTURES_MD.read_text()
         captured = _extract_models_from_section(content, "## Captured Fixtures")
         pending = _extract_models_from_section(content, "## Pending Fixtures")
-        tracked = captured | pending
+        needs_data = _extract_models_from_section(content, "## Needs Request Data")
+        tracked = captured | pending | needs_data
         untracked = all_files - tracked
         assert not untracked, (
             f"Fixture files not tracked in FIXTURES.md: {untracked}"

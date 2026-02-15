@@ -1,7 +1,25 @@
 {
-  "catalogs": [],
-  "id": 1,
-  "name": "Staging Test Seller UPD",
-  "customerDisplayId": 22,
-  "isActive": true
+  "items": [
+    {
+      "id": 1,
+      "name": "Staging Test Seller UPD",
+      "displayId": null,
+      "catalogs": [],
+      "customerDisplayId": 22,
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Everard Auctions & Appraisals",
+      "displayId": null,
+      "catalogs": [],
+      "customerDisplayId": 4098,
+      "isActive": true
+    }
+  ],
+  "pageNumber": 1,
+  "totalPages": 1,
+  "totalItems": 2,
+  "hasPreviousPage": false,
+  "hasNextPage": false
 }
