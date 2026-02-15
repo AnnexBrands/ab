@@ -10,6 +10,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies) (004-scaffold-examples-fixtures)
 - Filesystem (fixture JSON files in `tests/fixtures/`) (004-scaffold-examples-fixtures)
 - Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps) (006-verify-artifact-integrity)
+- Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies) (007-request-model-methodology)
+- Filesystem (fixture JSON files in `tests/fixtures/` and `tests/fixtures/requests/`) (007-request-model-methodology)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -29,7 +31,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 007-request-model-methodology: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 006-verify-artifact-integrity: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps)
 - 005-harden-example-params: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 004-scaffold-examples-fixtures: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

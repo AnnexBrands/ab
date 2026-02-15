@@ -7,6 +7,20 @@ specs. Updated incrementally as groups are implemented.
 **Last updated**: 2026-02-14
 **Source**: `/usr/src/pkgs/ABConnectTools/ABConnect/api/routes.py` (399 lines, 30 groups)
 
+## Completeness Tracking
+
+Per feature 007, endpoint completeness is tracked across four dimensions:
+
+1. **Request Model** — Pydantic `RequestModel` subclass for body/params validation
+2. **Request Fixture** — JSON file in `tests/fixtures/requests/` validating against request model
+3. **Response Model** — Pydantic `ResponseModel` subclass for response casting
+4. **Response Fixture** — JSON file in `tests/fixtures/` captured from live API
+
+See `FIXTURES.md` for per-endpoint 4D status. The AB column in tables below
+tracks implementation status (code exists); `FIXTURES.md` tracks fixture
+capture status (data exists). An endpoint is fully complete when all four
+applicable dimensions are satisfied.
+
 ## API Surfaces
 
 ### ACPortal

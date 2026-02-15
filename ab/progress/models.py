@@ -52,11 +52,13 @@ class Fixture:
     endpoint_path: str
     method: str
     model_name: str
-    status: str  # "captured" or "needs-request-data"
+    status: str  # "captured", "needs-request-data", or "partial"
     capture_date: str | None = None
     source: str | None = None
     blocker: str | None = None  # "What's Missing" or "Access Required"
     ref: str | None = None
+    request_model: str | None = None
+    request_fixture_status: str | None = None  # "captured", "needs-data", or None
 
 
 @dataclass

@@ -65,17 +65,30 @@ For each endpoint in the group:
    **Critically**: note the exact query parameter names and
    whether the endpoint has a `requestBody` — this determines
    transport type (Principle IX).
-5. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
+5. **Request body schema**: For POST/PUT/PATCH endpoints, extract
+   the `requestBody` schema from swagger. Note required fields,
+   field types, camelCase names, and nesting. These become the
+   basis for `RequestModel` subclasses.
+6. **Query parameter schema**: For endpoints with query params,
+   extract `parameters` from swagger where `in: query`. Note
+   required vs optional, types, and exact names. These become
+   the basis for `params_model` definitions on Route.
+7. **Models**: Read `ABConnectTools/ABConnect/api/models/{service}.py`
    for field names, aliases, Optional vs required, nesting.
-6. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json`
+   Check for both response models AND request/input models.
+8. **Fixtures**: Check `ABConnectTools/tests/fixtures/{Name}.json`
    for response shapes (see Ref column in `api-surface.md`).
 
 **Key output per endpoint**:
 
 - HTTP method + path
-- Required query parameters (with example values)
-- Required request body fields (with example values)
+- Required query parameters (with example values and types)
+- Required request body fields (with example values and types)
 - Required URL parameters (with example values)
+- **Request model fields**: camelCase names, snake_case aliases,
+  required vs optional, nesting structure
+- **Params model fields** (if query params exist): parameter
+  names, types, required vs optional
 - Known quirks or prerequisites
 
 **Exit**: Understanding of what every endpoint needs. No code
@@ -87,16 +100,27 @@ written yet.
 
 **Entry**: Determine phase complete for target service group.
 **Action**:
-1. Create Pydantic models from swagger schemas + ABConnectTools
-   model patterns observed in Phase D.
-2. Write skeleton test files with `pytest.skip()` for each model
-   that lacks a fixture.
+1. Create Pydantic **response** models from swagger response
+   schemas + ABConnectTools model patterns observed in Phase D.
+2. Create Pydantic **request** models (`RequestModel` subclasses)
+   for POST/PUT/PATCH endpoints. Fields use `snake_case` with
+   `alias=camelCase` (via `AliasGenerator`). Set `extra="forbid"`
+   to catch typos early. Derive fields from the swagger
+   `requestBody` schema researched in Phase D.
+3. Create Pydantic **params** models for endpoints with query
+   parameters, following the same `RequestModel` pattern.
+4. Write skeleton **response** fixture test files with
+   `pytest.skip()` for each model that lacks a fixture.
+5. Write skeleton **request** fixture tests in
+   `tests/models/test_request_fixtures.py` — the parametrized
+   test auto-discovers `tests/fixtures/requests/*.json` files.
+   No manual test per model needed.
 
 **Exit**: Models pass `ruff check`. Tests skip cleanly.
 **Artifact**: `ab/api/models/{service}.py`,
 `tests/models/test_{service}_models.py`
 
-**Skeleton test pattern**:
+**Skeleton response test pattern**:
 
 ```python
 import pytest
@@ -116,17 +140,54 @@ class Test{Service}Models:
         assert model.id is not None
 ```
 
+**Request model pattern**:
+
+```python
+from ab.api.models._base import RequestModel
+
+class {EndpointName}Request(RequestModel):
+    """Request body for POST /api/{service}/{endpoint}."""
+    search_text: str | None = None
+    page: int = 1
+    page_size: int = 25
+    # Fields use snake_case; AliasGenerator produces camelCase
+```
+
 ### S — Scaffold Endpoints
 
 **Entry**: Models defined for target service group.
 **Action**:
-1. Write endpoint class methods with route definitions.
-2. Register endpoint in `ab/client.py`.
-3. Export from `ab/api/endpoints/__init__.py`.
-4. Export models from `ab/api/models/__init__.py`.
-5. Verify input validation (Principle IX): parameter names
+1. Write endpoint class methods with **`**kwargs: Any`
+   signatures** for body-accepting endpoints (POST/PUT/PATCH).
+   Do NOT use `data: dict | Any` — callers pass snake_case
+   keyword arguments directly.
+2. Define Route objects with:
+   - `request_model="ModelName"` for body validation
+     (POST/PUT/PATCH endpoints)
+   - `params_model="ModelName"` for query param validation
+     (endpoints with query parameters)
+   - `response_model="ModelName"` for response parsing
+3. Pass `json=kwargs` to `self._request()` for body endpoints.
+   Pass `params=kwargs` for query-param-only endpoints.
+   `_request()` auto-validates via the model's `.check()`.
+4. Register endpoint in `ab/client.py`.
+5. Export from `ab/api/endpoints/__init__.py`.
+6. Export models from `ab/api/models/__init__.py`.
+7. Verify input validation (Principle IX): parameter names
    MUST match swagger, request bodies MUST validate against
    Pydantic `RequestModel` before sending.
+
+**Endpoint signature pattern**:
+
+```python
+_SEARCH = Route("POST", "/companies/search/v2",
+    request_model="CompanySearchRequest",
+    response_model="CompanySearchResponse")
+
+def search(self, **kwargs: Any) -> Any:
+    """POST /companies/search/v2"""
+    return self._request(_SEARCH, json=kwargs)
+```
 
 **Exit**: Endpoint code passes `ruff check` and
 `pytest tests/test_example_params.py`. Client registers
@@ -141,18 +202,28 @@ all new endpoints. Imports work.
 
 **Entry**: Endpoints scaffolded for target service group.
 **Action**: Write runnable examples using the request data
-researched in Phase D. Run examples against staging.
+researched in Phase D. Run examples against staging. Capture
+both **response fixtures** and **request fixtures**.
 
 **The capture loop** (per endpoint):
 
-1. Write example call with researched parameters (query params,
-   request body, URL params).
+1. Write example call with researched parameters using
+   **snake_case kwargs** (NOT raw dicts):
+   `api.{service}.{method}(search_text="test", page_size=25)`.
 2. Run the example.
-3. **200 response** → save response as fixture in
-   `tests/fixtures/{ModelName}.json`. Done.
+3. **200 response** → save response fixture to
+   `tests/fixtures/{ResponseModel}.json`. Save request fixture
+   to `tests/fixtures/requests/{RequestModel}.json` (camelCase
+   keys, matching the serialized request body). Done.
 4. **Error response** → the example has wrong or missing request
    data. Go back to Phase D research for this endpoint. Fix the
    example. Re-run. Do NOT ask for a response fixture.
+
+**Request fixture capture**: For each endpoint with a
+`request_model`, create a JSON file containing realistic
+request data in camelCase (as it would be sent over the wire).
+Derive values from ABConnectTools examples and swagger specs.
+Add `request_fixture_file` to the `runner.add()` entry.
 
 **Examples go in `examples/{service}.py`**. Each example file
 covers all endpoints for that service group.
@@ -163,32 +234,30 @@ covers all endpoints for that service group.
 """Example: {Service} operations."""
 
 from ab import ABConnectAPI
-import json
 
 api = ABConnectAPI(env="staging")
 
 # {endpoint_description}
 result = api.{service}.{method}(
-    # Parameters researched from ABConnectTools + swagger:
-    param1="realistic_value",
-    param2="realistic_value",
+    # kwargs researched from ABConnectTools + swagger:
+    search_text="realistic_value",
+    page_size=25,
 )
 print(f"{Method}: {result}")
-
-# Save fixture (run once, then remove this block):
-# with open(f"tests/fixtures/{ModelName}.json", "w") as f:
-#     json.dump(result.model_dump(by_alias=True), f, indent=2)
 ```
 
 **After capturing**: Update the test to remove `pytest.skip()`
 and add `@pytest.mark.live`. Update `FIXTURES.md` status to
-`captured`.
+`captured` (or `complete` in unified 4D format).
 
-**Exit**: Examples exist for all endpoints. Fixtures captured
-for endpoints that returned 200. Remaining endpoints tracked
-as `needs-request-data` in `FIXTURES.md` with specifics.
+**Exit**: Examples exist for all endpoints. Response fixtures
+captured for endpoints that returned 200. Request fixtures
+captured for all endpoints with request models. Remaining
+endpoints tracked as `needs-request-data` in `FIXTURES.md`
+with specifics.
 **Artifact**: `examples/{service}.py`,
-`tests/fixtures/{ModelName}.json` (for captured endpoints)
+`tests/fixtures/{ResponseModel}.json` (response fixtures),
+`tests/fixtures/requests/{RequestModel}.json` (request fixtures)
 
 **Commit message**:
 `feat({service}): add examples and capture fixtures (DISCOVER C)`
@@ -198,40 +267,62 @@ as `needs-request-data` in `FIXTURES.md` with specifics.
 **Entry**: Examples written and fixtures captured (where possible)
 for target service group.
 **Action**:
-1. Run `pytest tests/models/test_{service}_models.py -v`.
-2. Check for extra-field warnings (model drift detection).
-3. Verify Four-Way Harmony checklist for each endpoint.
+1. Run `pytest tests/models/test_{service}_models.py -v`
+   (response fixture validation).
+2. Run `pytest tests/models/test_request_fixtures.py -v`
+   (request fixture validation).
+3. Check for extra-field warnings (model drift detection).
+4. Verify Four-Way Harmony checklist for each endpoint.
 
 **Exit**: All tests pass (captured) or skip with actionable
 messages (needs-request-data). No unexpected failures.
+Request fixtures validate against their `RequestModel` classes.
 **Artifact**: Passing test output.
 
-**Four-Way Harmony checklist** (per endpoint):
+**Four-Way Harmony checklist** (per endpoint — all 4 dimensions):
 
-- [ ] `ab/api/endpoints/{service}.py` — method exists
-- [ ] `ab/api/models/{service}.py` — model exists
-- [ ] `examples/{service}.py` — example exists with correct params
-- [ ] `tests/fixtures/{ModelName}.json` — fixture captured (or
-      status tracked in `FIXTURES.md`)
-- [ ] `tests/models/test_{service}_models.py` — test passes or
-      skips with actionable message
+- [ ] `ab/api/endpoints/{service}.py` — method exists with
+      `**kwargs` signature (not `data: dict`)
+- [ ] `ab/api/models/{service}.py` — response model exists
+- [ ] `ab/api/models/{service}.py` — request model exists
+      (for POST/PUT/PATCH; `—` for GET with no body)
+- [ ] Route has `request_model` set (POST/PUT/PATCH) and/or
+      `params_model` set (query param endpoints)
+- [ ] `examples/{service}.py` — example exists with kwargs
+- [ ] `tests/fixtures/{ResponseModel}.json` — response fixture
+      captured (or tracked in `FIXTURES.md`)
+- [ ] `tests/fixtures/requests/{RequestModel}.json` — request
+      fixture captured (or `—` for GET with no body)
+- [ ] `tests/models/test_{service}_models.py` — response test
+      passes or skips with actionable message
+- [ ] `tests/models/test_request_fixtures.py` — request fixture
+      validates (auto-discovered)
 - [ ] `docs/` — documentation exists (Phase E)
 
 ### V — Verify & Commit
 
 **Entry**: Tests pass for target service group.
 **Action**:
-1. Update `FIXTURES.md`:
-   - Captured endpoints → `captured` with date and source.
-   - Endpoints still failing → `needs-request-data` with
-     specifics on what params/body are missing.
+1. Update `FIXTURES.md` using the **unified 4D format**
+   (one table per API surface with columns: Endpoint Path |
+   Method | Req Model | Req Fixture | Resp Model | Resp
+   Fixture | Status | Notes):
+   - For each endpoint, fill all four dimensions:
+     - **Req Model**: model class name or `—` (GET with no body)
+     - **Req Fixture**: `captured` or `needs-data` or `—`
+     - **Resp Model**: model class name
+     - **Resp Fixture**: `captured` or `needs-data`
+   - **Status**: `complete` (all applicable dimensions captured),
+     `partial` (some captured), `needs-request-data` (blocked)
+   - **Notes**: specifics on what's missing (never leave blank
+     for non-complete endpoints)
 2. Update `specs/api-surface.md` — mark endpoints as done.
 3. Run full test suite: `pytest --tb=short`.
 4. Commit checkpoint.
 
-**Exit**: Clean git state. `FIXTURES.md` current. No generic
-"pending" statuses — every non-captured endpoint specifies
-what request data is missing.
+**Exit**: Clean git state. `FIXTURES.md` current with 4D status.
+No generic "pending" statuses — every non-complete endpoint
+specifies what request data is missing across all dimensions.
 **Artifact**: Git commit.
 
 **Commit message**:
@@ -346,9 +437,33 @@ Quick lookup for Phase D:
 
 ## Anti-Patterns
 
-- **Fabricating fixtures**: Never invent JSON data. If the
-  example errors, fix the request. Research ABConnectTools and
-  swagger to find the correct params/body.
+- **Using `data: dict | Any` signatures**: Endpoint methods
+  MUST accept `**kwargs: Any`, not `data: dict`. Callers pass
+  snake_case keyword arguments directly. The `_request()`
+  method validates kwargs against the `RequestModel` via
+  `.check()` which calls `model_validate()` then
+  `model_dump(by_alias=True)`. Using raw dicts bypasses
+  validation entirely.
+  See: `specs/007-request-model-methodology/contracts/endpoint-pattern.md`
+- **Omitting `request_model` on POST/PUT/PATCH Routes**: Every
+  Route for a body-accepting method MUST set `request_model`.
+  Without it, `_request()` sends raw unvalidated kwargs as
+  JSON — typos in field names are silently ignored by the API.
+  Similarly, endpoints with query parameters SHOULD set
+  `params_model` for validation.
+- **Not tracking request fixtures in FIXTURES.md**: Every
+  endpoint entry MUST fill all four dimensions (Req Model,
+  Req Fixture, Resp Model, Resp Fixture). Use `—` only for
+  dimensions that genuinely don't apply (e.g., GET with no
+  body). Never leave request columns blank.
+- **Fabricating request fixtures**: Request fixtures MUST be
+  derived from swagger schemas and ABConnectTools examples,
+  not invented. The fixture must validate against its
+  `RequestModel` via `tests/models/test_request_fixtures.py`.
+  Use realistic values from staging, not placeholder text.
+- **Fabricating response fixtures**: Never invent JSON data.
+  If the example errors, fix the request. Research
+  ABConnectTools and swagger to find the correct params/body.
 - **Asking for response fixtures when the request is wrong**:
   A 400 error means the example needs correct parameters, not
   that a human needs to provide a response. Research

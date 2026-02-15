@@ -66,6 +66,13 @@ class BaseEndpoint:
             if hasattr(model_cls, "check"):
                 kwargs["json"] = model_cls.check(body)
 
+        # Validate outbound query params
+        if "params" in kwargs and route.params_model:
+            model_cls = self._resolve_model(route.params_model)
+            params = kwargs["params"]
+            if hasattr(model_cls, "check"):
+                kwargs["params"] = model_cls.check(params)
+
         target = client or self._client
         response = target.request(route.method, route.path, **kwargs)
 

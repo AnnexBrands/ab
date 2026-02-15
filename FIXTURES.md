@@ -9,74 +9,86 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 
 ## Summary
 
-- **Captured**: 24
+- **Captured (response)**: 24
+- **Captured (request)**: 1
 - **Needs Request Data**: 26
 - **Total tracked**: 50
 
-## Captured Fixtures
+## Status Legend
 
-| Endpoint Path | Method | Model Name | Date | Source | ABConnectTools Ref |
-|---------------|--------|------------|------|--------|--------------------|
-| /companies/{id} | GET | CompanySimple | 2026-02-13 | staging | `CompanySimple.json` |
-| /companies/{id}/fulldetails | GET | CompanyDetails | 2026-02-13 | staging | — |
-| /companies/availableByCurrentUser | GET | SearchCompanyResponse | 2026-02-13 | staging | `CompanyAvailableByCurrentUser.json` |
-| /contacts/user | GET | ContactSimple | 2026-02-13 | staging | `ContactUser.json` |
-| /contacts/{id}/primarydetails | GET | ContactPrimaryDetails | 2026-02-13 | staging | — |
-| /job/{id}/price | GET | JobPrice | 2026-02-13 | staging | — |
-| /job/{id}/calendaritems | GET | CalendarItem | 2026-02-13 | staging | — |
-| /job/{id}/updatePageConfig | GET | JobUpdatePageConfig | 2026-02-13 | staging | — |
-| /lookup/contacttypes | GET | ContactTypeEntity | 2026-02-13 | staging | `LookupContactTypes.json` |
-| /lookup/countries | GET | CountryCodeDto | 2026-02-13 | staging | `LookupCountries.json` |
-| /lookup/jobstatuses | GET | JobStatus | 2026-02-13 | staging | — |
-| /Seller/{id} | GET | SellerDto | 2026-02-13 | staging | — |
-| /Seller/{id} | GET | SellerExpandedDto | 2026-02-13 | staging | — |
-| /Seller | GET | SellerExpandedDto_detail | 2026-02-14 | staging | — |
-| /Web2Lead | GET | Web2LeadResponse | 2026-02-13 | staging | — |
-| /users/list | POST | User | 2026-02-13 | staging | — |
-| /address/isvalid | GET | AddressIsValidResult | 2026-02-14 | staging | — |
-| /job/{id}/shipment/ratequotes | GET | RateQuote | 2026-02-14 | staging | — |
-| /job/{id}/shipment/accessorials | GET | Accessorial | 2026-02-14 | staging | `ShipmentAccessorials.json` |
-| /job/{id}/shipment/origindestination | GET | ShipmentOriginDestination | 2026-02-14 | staging | — |
-| /job/{id}/shipment/ratesstate | GET | RatesState | 2026-02-14 | staging | — |
-| /shipment | GET | ShipmentInfo | 2026-02-14 | staging | — |
-| /shipment/accessorials | GET | GlobalAccessorial | 2026-02-14 | staging | `ShipmentAccessorials.json` |
-| /job/{id}/form/shipments | GET | FormsShipmentPlan | 2026-02-14 | staging | — |
+- **captured**: Fixture file exists and validates against model
+- **needs-data**: Example fails — see Notes for what's missing
+- **—**: Not applicable (e.g., GET with no request body)
 
-## Needs Request Data
+## ACPortal Endpoints
 
-Endpoints below return errors because the example has wrong or
-missing request parameters. Research ABConnectTools endpoint code,
-examples, and swagger to find the correct request data. Fix the
-example, re-run, and capture the fixture.
+| Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes |
+|---------------|--------|-----------|-------------|------------|--------------|--------|-------|
+| /companies/{id} | GET | — | — | CompanySimple | captured | complete | 2026-02-13, staging |
+| /companies/{id}/details | GET | — | — | CompanyDetails | needs-data | partial | HTTP 500 on staging — needs company UUID with populated details |
+| /companies/{id}/fulldetails | GET | — | — | CompanyDetails | captured | complete | 2026-02-13, staging |
+| /companies/{companyId}/fulldetails | PUT | CompanyDetails | needs-data | CompanyDetails | needs-data | needs-request-data | Needs valid CompanyDetails kwargs |
+| /companies/fulldetails | POST | CompanyDetails | needs-data | str | needs-data | needs-request-data | Needs valid CompanyDetails kwargs for new company |
+| /companies/search/v2 | POST | CompanySearchRequest | captured | List[SearchCompanyResponse] | needs-data | partial | Request fixture captured; response needs valid search that returns results |
+| /companies/list | POST | ListRequest | needs-data | List[CompanySimple] | needs-data | needs-request-data | Needs valid ListRequest kwargs |
+| /companies/availableByCurrentUser | GET | — | — | SearchCompanyResponse | captured | complete | 2026-02-13, staging |
+| /contacts/user | GET | — | — | ContactSimple | captured | complete | 2026-02-13, staging |
+| /contacts/{id}/primarydetails | GET | — | — | ContactPrimaryDetails | captured | complete | 2026-02-13, staging |
+| /contacts/{id}/editdetails | GET | — | — | ContactDetailedInfo | needs-data | needs-request-data | HTTP 500 on staging — was previously captured but now fails |
+| /contacts/v2/search | POST | SearchContactEntityResult | needs-data | SearchContactEntityResult | needs-data | needs-request-data | HTTP 400 — needs PageSize (1-32767) and PageNumber (1-32767) in request body |
+| /documents | GET | — | — | Document | needs-data | needs-request-data | HTTP 500 on staging — was previously captured but now fails |
+| /address/isvalid | GET | — | — | AddressIsValidResult | captured | complete | 2026-02-14, staging |
+| /address/propertytype | GET | — | — | PropertyType | needs-data | needs-request-data | Query params: needs valid address1, city, state, zip_code for a real address |
+| /lookup/contacttypes | GET | — | — | ContactTypeEntity | captured | complete | 2026-02-13, staging |
+| /lookup/countries | GET | — | — | CountryCodeDto | captured | complete | 2026-02-13, staging |
+| /lookup/jobstatuses | GET | — | — | JobStatus | captured | complete | 2026-02-13, staging |
+| /lookup/items | GET | — | — | LookupItem | needs-data | needs-request-data | Returns 204 — research ABConnectTools for required query params |
+| /users/list | POST | — | — | User | captured | partial | 2026-02-13, staging. Model warning: response is paginated wrapper (totalCount, data) |
+| /users/roles | GET | — | — | UserRole | needs-data | needs-request-data | Model mismatch — API returns list of strings, model expects dict |
+| /job/{id} | GET | — | — | Job | needs-data | needs-request-data | HTTP 500 on staging |
+| /job/{id}/price | GET | — | — | JobPrice | captured | complete | 2026-02-13, staging |
+| /job/{id}/calendaritems | GET | — | — | CalendarItem | captured | complete | 2026-02-13, staging |
+| /job/{id}/updatePageConfig | GET | — | — | JobUpdatePageConfig | captured | complete | 2026-02-13, staging |
+| /job/search | GET | — | — | JobSearchResult | needs-data | needs-request-data | HTTP 404 on staging |
+| /job/{id}/timeline | GET | — | — | TimelineTask | needs-data | needs-request-data | Needs job ID with active timeline |
+| /job/{id}/timeline/{taskCode}/agent | GET | — | — | TimelineAgent | needs-data | needs-request-data | Needs job ID + task code |
+| /job/{id}/tracking | GET | — | — | TrackingInfo | needs-data | needs-request-data | Works but no fixture_file set in example |
+| /v3/job/{id}/tracking/{historyAmount} | GET | — | — | TrackingInfoV3 | needs-data | needs-request-data | Works but no fixture_file set in example |
+| /job/{id}/payment | GET | — | — | PaymentInfo | needs-data | needs-request-data | Works but no fixture_file set in example |
+| /job/{id}/payment/sources | GET | — | — | PaymentSource | needs-data | needs-request-data | Works but no fixture_file set in example |
+| /job/{id}/payment/ACHPaymentSession | POST | ACHSessionResponse | needs-data | ACHSessionResponse | needs-data | needs-request-data | Needs ACH session params |
+| /job/{id}/note | GET | — | — | JobNote | needs-data | needs-request-data | Model bug — id field typed as str but API returns int |
+| /job/{id}/parcelitems | GET | — | — | ParcelItem | needs-data | needs-request-data | Returns empty list — needs job with parcel items |
+| /job/{id}/parcel-items-with-materials | GET | — | — | ParcelItemWithMaterials | needs-data | needs-request-data | Returns empty list — needs job with packed items |
+| /job/{id}/packagingcontainers | GET | — | — | PackagingContainer | needs-data | needs-request-data | Model has warning fields — works but model incomplete |
+| /job/{id}/shipment/ratequotes | GET | — | — | RateQuote | captured | complete | 2026-02-14, staging |
+| /job/{id}/shipment/accessorials | GET | — | — | Accessorial | captured | complete | 2026-02-14, staging |
+| /job/{id}/shipment/origindestination | GET | — | — | ShipmentOriginDestination | captured | complete | 2026-02-14, staging |
+| /job/{id}/shipment/ratesstate | GET | — | — | RatesState | captured | complete | 2026-02-14, staging |
+| /shipment | GET | — | — | ShipmentInfo | captured | complete | 2026-02-14, staging |
+| /shipment/accessorials | GET | — | — | GlobalAccessorial | captured | complete | 2026-02-14, staging |
+| /job/{id}/form/shipments | GET | — | — | FormsShipmentPlan | captured | complete | 2026-02-14, staging |
+| /AutoPrice/QuickQuote | POST | QuoteRequestModel | needs-data | QuickQuoteResponse | needs-data | needs-request-data | Request model validation error — field names don't match (originZip vs OriginZip) |
+| /AutoPrice/QuoteRequest | POST | QuoteRequestModel | needs-data | QuoteRequestResponse | needs-data | needs-request-data | Needs items array with weight, class fields and valid origin/destination |
 
-| Endpoint Path | Method | Model Name | What's Missing | ABConnectTools Ref |
-|---------------|--------|------------|---------------|-------------------|
-| /address/propertytype | GET | PropertyType | Query params: needs valid `address1`, `city`, `state`, `zip_code` for a real address — returns null with test params | — |
-| /AutoPrice/QuickQuote | POST | QuickQuoteResponse | Request model validation error — QuoteRequestModel field names don't match example params (originZip vs OriginZip) | — |
-| /AutoPrice/QuoteRequest | POST | QuoteRequestResponse | Request body: needs items array with `weight`, `class` fields and valid origin/destination — research ABConnectTools `endpoints/autoprice.py` | — |
-| /contacts/{id}/editdetails | GET | ContactDetailedInfo | HTTP 500 on staging — was previously captured but now fails; investigate staging data | `ContactDetails.json` |
-| /contacts/v2/search | POST | SearchContactEntityResult | HTTP 400 — needs PageSize (1-32767) and PageNumber (1-32767) in request body | — |
-| /documents | GET | Document | HTTP 500 on staging — was previously captured but now fails; investigate staging data | — |
-| /job/{id} | GET | Job | HTTP 500 on staging — was previously captured but now fails; investigate job ID or staging data | — |
-| /job/search | GET | JobSearchResult | HTTP 404 on staging — was previously captured but now fails; investigate search endpoint path | — |
-| /lookup/items | GET | LookupItem | Returns 204 — research ABConnectTools for required query params or correct lookup key | — |
-| /users/roles | GET | UserRole | Model mismatch — API returns list of strings, UserRole model expects dict; fix model to accept str | `UsersRoles.json` |
-| /Catalog | GET | CatalogWithSellersDto | Returns empty — research ABConnectTools `endpoints/catalog.py` for required params or correct staging catalog IDs | — |
-| /Catalog/{id} | GET | CatalogExpandedDto | Needs valid catalog ID — research ABConnectTools examples for realistic IDs | — |
-| /Lot | GET | LotDto | Needs valid catalog ID param — research ABConnectTools `endpoints/lots.py` | — |
-| /Lot/{id} | GET | LotDataDto | Needs valid lot ID — research ABConnectTools examples | — |
-| /Lot/overrides | POST | LotOverrideDto | Request body: needs lot override params — research ABConnectTools `endpoints/lots.py` | — |
-| /job/{id}/timeline | GET | TimelineTask | Needs job ID with active timeline — research ABConnectTools `endpoints/jobs/timeline.py` for correct job selection | — |
-| /job/{id}/timeline/{taskCode}/agent | GET | TimelineAgent | Needs job ID + task code — research ABConnectTools for valid task codes | — |
-| /job/{id}/tracking | GET | TrackingInfo | Works but no fixture_file set in example — model has warning fields (statuses, success, errorMessage) | — |
-| /v3/job/{id}/tracking/{historyAmount} | GET | TrackingInfoV3 | Works but no fixture_file set in example — model has warning fields (statuses, carriers) | — |
-| /job/{id}/payment | GET | PaymentInfo | Works but no fixture_file set in example — model has many warning fields | — |
-| /job/{id}/payment/sources | GET | PaymentSource | Works but no fixture_file set in example | — |
-| /job/{id}/payment/ACHPaymentSession | POST | ACHSessionResponse | Request body: needs ACH session params — research ABConnectTools `endpoints/jobs/payments.py` | — |
-| /job/{id}/note | GET | JobNote | Model bug — id field typed as str but API returns int; fix model | — |
-| /job/{id}/parcelitems | GET | ParcelItem | Returns empty list — needs job with parcel items | — |
-| /job/{id}/parcel-items-with-materials | GET | ParcelItemWithMaterials | Returns empty list — needs job with packed items | — |
-| /job/{id}/packagingcontainers | GET | PackagingContainer | Model has warning fields (description, length, width, height, weight, totalCost) — works but model incomplete | — |
+## Catalog Endpoints
+
+| Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes |
+|---------------|--------|-----------|-------------|------------|--------------|--------|-------|
+| /Seller/{id} | GET | — | — | SellerDto | captured | complete | 2026-02-13, staging |
+| /Seller/{id} | GET | — | — | SellerExpandedDto | captured | complete | 2026-02-13, staging |
+| /Seller | GET | — | — | SellerExpandedDto | captured | complete | 2026-02-14, staging |
+| /Catalog | GET | — | — | CatalogWithSellersDto | needs-data | needs-request-data | Returns empty — research ABConnectTools for required params |
+| /Catalog/{id} | GET | — | — | CatalogExpandedDto | needs-data | needs-request-data | Needs valid catalog ID |
+| /Lot | GET | — | — | LotDto | needs-data | needs-request-data | Needs valid catalog ID param |
+| /Lot/{id} | GET | — | — | LotDataDto | needs-data | needs-request-data | Needs valid lot ID |
+| /Lot/overrides | POST | LotOverrideDto | needs-data | LotOverrideDto | needs-data | needs-request-data | Needs lot override params |
+
+## ABC Endpoints
+
+| Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes |
+|---------------|--------|-----------|-------------|------------|--------------|--------|-------|
+| /Web2Lead | GET | — | — | Web2LeadResponse | captured | complete | 2026-02-13, staging |
 
 ## Model Warning Summary
 
