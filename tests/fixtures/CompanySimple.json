@@ -1,8 +1,7 @@
 {
   "id": "93179b52-3da9-e311-b6f8-000c298b59ee",
-  "code": "14004OH",
-  "companyName": "Navis Pack & Ship #14004OH",
   "name": "Navis Pack & Ship #14004OH",
-  "typeId": "e7f85166-34cf-429b-805d-261b44cb0c04",
+  "code": "14004OH",
+  "companyType": null,
   "parentCompanyId": "764db661-27e1-48b7-962f-1b5157390c53"
 }

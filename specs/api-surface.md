@@ -207,7 +207,7 @@ Legend: Done = implemented in AB, Total = routes in ABConnectTools, Ref = ABConn
 | # | Route Key | Method | Path | Response Model | AB | Ref |
 |---|-----------|--------|------|---------------|-----|-----|
 | 1 | GET | GET | /contacts/{id} | ContactDetails | — | JSON |
-| 2 | GET_EDITDETAILS | GET | /contacts/{contactId}/editdetails | ContactDetailedInfo | done | — |
+| 2 | GET_EDITDETAILS | GET | /contacts/{contactId}/editdetails | ContactDetailedInfo | pending | — |
 | 3 | HISTORY_AGGREGATED | GET | /contacts/{contactId}/history/aggregated | ContactHistoryAggregatedCost | — | — |
 | 4 | HISTORY_GRAPHDATA | GET | /contacts/{contactId}/history/graphdata | ContactHistoryGraphData | — | — |
 | 5 | PRIMARYDETAILS | GET | /contacts/{contactId}/primarydetails | ContactPrimaryDetails | done | — |
@@ -217,11 +217,11 @@ Legend: Done = implemented in AB, Total = routes in ABConnectTools, Ref = ABConn
 | 9 | HISTORY | POST | /contacts/{contactId}/history | ContactHistoryInfo | — | — |
 | 10 | MERGE_PREVIEW | POST | /contacts/{mergeToId}/merge/preview | MergeContactsPreviewInfo | — | — |
 | 11 | SEARCH | POST | /contacts/search | ServiceBaseResponse | — | — |
-| 12 | V2_SEARCH | POST | /contacts/v2/search | List[SearchContactEntityResult] | done | — |
+| 12 | V2_SEARCH | POST | /contacts/v2/search | List[SearchContactEntityResult] | pending | — |
 | 13 | PUT_EDITDETAILS | PUT | /contacts/{contactId}/editdetails | ServiceBaseResponse | — | — |
 | 14 | MERGE | PUT | /contacts/{mergeToId}/merge | ServiceBaseResponse | — | — |
 
-**Total**: 14 | **AB done**: 4 | **ABConnectTools fixtures**: ContactDetails, ContactUser
+**Total**: 14 | **AB done**: 2 | **ABConnectTools fixtures**: ContactDetails, ContactUser
 **AB file**: `endpoints/contacts.py` | **ABConnectTools file**: `endpoints/contacts.py`, `models/contacts.py`, `models/contacthistory.py`, `models/contactmerge.py`
 
 ---
@@ -252,12 +252,12 @@ Legend: Done = implemented in AB, Total = routes in ABConnectTools, Ref = ABConn
 |---|-----------|--------|------|---------------|-----|-----|
 | 1 | GET | GET | /documents/get/{docPath} | DocumentDetails | — | — |
 | 2 | THUMBNAIL | GET | /documents/get/thumbnail/{docPath} | — | — | — |
-| 3 | LIST | GET | /documents/list | List[DocumentDetails] | done | — |
+| 3 | LIST | GET | /documents/list | List[DocumentDetails] | pending | — |
 | 4 | POST | POST | /documents | ServiceBaseResponse | — | — |
 | 5 | HIDE | PUT | /documents/hide/{docId} | ServiceBaseResponse | — | — |
 | 6 | UPDATE | PUT | /documents/update/{docId} | ServiceBaseResponse | — | — |
 
-**Total**: 6 | **AB done**: 1 | **ABConnectTools fixtures**: —
+**Total**: 6 | **AB done**: 0 | **ABConnectTools fixtures**: —
 **AB file**: `endpoints/documents.py` | **ABConnectTools file**: `endpoints/documents.py`, `models/documents.py`
 
 ---
@@ -292,13 +292,13 @@ The JOB group contains 99 routes. Organized by sub-domain:
 
 | # | Route Key | Method | Path | Response Model | AB | Ref |
 |---|-----------|--------|------|---------------|-----|-----|
-| 1 | GET | GET | /job/{jobDisplayId} | CalendarJob | done | — |
+| 1 | GET | GET | /job/{jobDisplayId} | CalendarJob | pending | — |
 | 2 | GET_CALENDARITEMS | GET | /job/{jobDisplayId}/calendaritems | List[CalendarItem] | done | — |
 | 3 | GET_DOCUMENT_CONFIG | GET | /job/documentConfig | — | — | — |
 | 4 | GET_FEEDBACK | GET | /job/feedback/{jobDisplayId} | FeedbackSaveModel | — | — |
 | 5 | GET_JOB_ACCESS_LEVEL | GET | /job/jobAccessLevel | JobAccessLevel | — | — |
 | 6 | GET_PRICE | GET | /job/{jobDisplayId}/price | — | done | — |
-| 7 | GET_SEARCH | GET | /job/search | List[SearchJobInfo] | done | — |
+| 7 | GET_SEARCH | GET | /job/search | List[SearchJobInfo] | pending | — |
 | 8 | GET_SUBMANAGEMENTSTATUS | GET | /job/{jobDisplayId}/submanagementstatus | — | — | — |
 | 9 | GET_UPDATE_PAGE_CONFIG | GET | /job/{jobDisplayId}/updatePageConfig | JobUpdatePageConfig | done | — |
 | 10 | POST | POST | /job | ServiceBaseResponse | — | — |
@@ -309,7 +309,7 @@ The JOB group contains 99 routes. Organized by sub-domain:
 | 15 | POST_TRANSFER | POST | /job/transfer/{jobDisplayId} | ServiceBaseResponse | — | — |
 | 16 | PUT_SAVE | PUT | /job/save | ServiceBaseResponse | — | — |
 
-**AB done**: 5 of 16
+**AB done**: 3 of 16
 
 #### Job — Timeline
 
@@ -622,12 +622,12 @@ The JOB group contains 99 routes. Organized by sub-domain:
 | # | Route Key | Method | Path | Response Model | AB | Ref |
 |---|-----------|--------|------|---------------|-----|-----|
 | 1 | POCUSERS | GET | /users/pocusers | List[PocUser] | — | JSON |
-| 2 | ROLES | GET | /users/roles | List[str] | done | JSON |
+| 2 | ROLES | GET | /users/roles | List[str] | pending | JSON |
 | 3 | LIST | POST | /users/list | ServiceBaseResponse | done | — |
 | 4 | USER | POST | /users/user | ServiceBaseResponse | — | — |
 | 5 | USER_UPDATE | PUT | /users/user | ServiceBaseResponse | — | — |
 
-**Total**: 5 | **AB done**: 2 | **ABConnectTools fixtures**: UsersPocUsers, UsersRoles
+**Total**: 5 | **AB done**: 1 | **ABConnectTools fixtures**: UsersPocUsers, UsersRoles
 
 ---
 

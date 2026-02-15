@@ -1,0 +1,20 @@
+{
+  "shipmentId": null,
+  "status": null,
+  "carrier": null,
+  "proNumber": null,
+  "usedAPI": 1,
+  "historyProviderName": "ReTrans",
+  "historyStatuses": [],
+  "weight": {
+    "pounds": 0.0,
+    "originalWeight": null,
+    "originalWeightMeasureUnit": null
+  },
+  "jobWeight": null,
+  "successfully": false,
+  "errorMessage": "ReTrans unexpected error",
+  "multipleShipments": false,
+  "packages": [],
+  "estimatedDelivery": null
+}
