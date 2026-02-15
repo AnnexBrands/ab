@@ -86,14 +86,15 @@ print(rfqs)
 ### Step 6: Test + Fixture
 
 ```python
-# tests/models/test_fixtures.py — add test case
-def test_quote_request_display_info(self):
-    fixture = load_fixture("QuoteRequestDisplayInfo")
-    if fixture is None:
-        pytest.skip("Fixture needed: run examples/rfq.py")
-    model = QuoteRequestDisplayInfo.model_validate(fixture)
-    assert model
+# tests/models/test_rfq_models.py (one file per endpoint group)
+class TestRFQModels:
+    def test_quote_request_display_info(self):
+        data = require_fixture("QuoteRequestDisplayInfo", "GET", "/rfq/{rfqId}")
+        model = QuoteRequestDisplayInfo.model_validate(data)
+        assert model.rfq_id is not None
 ```
+
+Note: `require_fixture()` is provided by `conftest.py` and auto-skips when the fixture JSON has not been captured yet.
 
 ### Step 7: Sphinx Docs
 

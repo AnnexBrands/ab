@@ -66,7 +66,7 @@ ab/
 │   │   ├── companies.py         # EXTENDED — 16 methods (brands, geo, carriers, packaging)
 │   │   ├── contacts.py          # EXTENDED — 5 methods (history, merge)
 │   │   ├── dashboard.py         # NEW — 9 dashboard + grid view state
-│   │   ├── jobs.py              # EXTENDED — 22 methods (on-hold, email, SMS, freight)
+│   │   ├── jobs.py              # EXTENDED — 24 methods (RFQ, on-hold, email, SMS, freight)
 │   │   ├── lookup.py            # EXTENDED — 12 methods (generic + named conveniences)
 │   │   ├── notes.py             # NEW — 4 global note operations
 │   │   ├── partners.py          # NEW — 3 partner operations

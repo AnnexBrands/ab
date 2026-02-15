@@ -155,7 +155,7 @@ class PartnersEndpoint(BaseEndpoint):
 
 ## Extended Endpoint Classes
 
-### JobsEndpoint (`api.jobs`) — 22 new methods
+### JobsEndpoint (`api.jobs`) — 24 new methods
 
 ```python
 # ---- On-Hold (10 methods) ------------------------------------------------
@@ -331,8 +331,8 @@ def merge(self, merge_to_id: str, **kwargs: Any) -> Any: ...
 | CommodityMapsEndpoint | 0 (new) | 5 | 5 |
 | NotesEndpoint | 0 (new) | 4 | 4 |
 | PartnersEndpoint | 0 (new) | 3 | 3 |
-| JobsEndpoint | 32 | 24 | 56 |
+| JobsEndpoint | 30 | 24 | 54 |
 | LookupEndpoint | 4 | 12 | 16 |
 | CompaniesEndpoint | 8 | 16 | 24 |
 | ContactsEndpoint | 7 | 5 | 12 |
-| **TOTAL** | **51** | **106** | **157** |
+| **TOTAL** | **49** | **106** | **155** |

@@ -153,6 +153,7 @@ All models follow Constitution Principle I: `ResponseModel` (`extra="allow"`) fo
 
 ## Notes
 
+- The "Key Fields" columns above list representative attributes, not exhaustive field lists. See the actual Pydantic model source files in `ab/api/models/` for the complete field definitions.
 - All response models use `extra="allow"` with drift logging. Field definitions are initial best-guesses from swagger; actual fields will be refined during fixture capture (Constitution Principle IV).
 - Many swagger schemas for these endpoints are incomplete or missing. Initial models will have `Optional[dict]` or `Optional[List[dict]]` fields for complex nested structures, to be refined when live API responses reveal the actual shape.
 - Request models will be validated against swagger parameter definitions and ABConnectTools implementations during Phase D of each batch.

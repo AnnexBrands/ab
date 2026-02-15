@@ -6,7 +6,7 @@
 
 ## Content Quality
 
-- [x] No implementation details (languages, frameworks, APIs)
+- [x] No implementation details beyond established SDK patterns (languages, frameworks, APIs)
 - [x] Focused on user value and business needs
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
@@ -32,5 +32,4 @@
 ## Notes
 
 - All items pass validation. Spec is ready for `/speckit.clarify` or `/speckit.plan`.
-- Implementation details are intentionally limited to SDK interface patterns (method signatures, model naming conventions) which are architectural constraints, not implementation decisions.
-- The `**kwargs` pattern, Route definitions, and Pydantic model conventions referenced in FR-016 are established project patterns from features 001 and 007 — they describe the interface contract, not implementation.
+- The spec references established SDK patterns (Route, `**kwargs`, RequestModel/ResponseModel, Pydantic conventions) from features 001 and 007. These are interface contracts carried forward as project constraints, not new implementation decisions introduced by this feature.

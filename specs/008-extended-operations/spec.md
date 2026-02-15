@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-extended-operations`
 **Created**: 2026-02-14
-**Status**: Draft
+**Status**: Complete
 **Input**: User description: "Implement the next group of SDK endpoints covering medium-priority operational workflows: RFQ lifecycle, job on-hold management, job email and SMS, reports and dashboards, extended company and contact operations, commodity management, extended lookups, global notes, partners, freight providers, and views/grids."
 
 ## Clarifications
