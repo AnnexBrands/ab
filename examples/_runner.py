@@ -47,6 +47,7 @@ class ExampleEntry:
     response_model: Optional[str] = None
     request_model: Optional[str] = None
     fixture_file: Optional[str] = None
+    request_fixture_file: Optional[str] = None
 
 
 class ExampleRunner:
@@ -83,6 +84,7 @@ class ExampleRunner:
         response_model: Optional[str] = None,
         request_model: Optional[str] = None,
         fixture_file: Optional[str] = None,
+        request_fixture_file: Optional[str] = None,
     ) -> None:
         """Register a structured entry."""
         self.entries.append(
@@ -92,6 +94,7 @@ class ExampleRunner:
                 response_model=response_model,
                 request_model=request_model,
                 fixture_file=fixture_file,
+                request_fixture_file=request_fixture_file,
             )
         )
 
@@ -126,14 +129,15 @@ class ExampleRunner:
     def _list_entries(self) -> None:
         """Print metadata for every registered entry."""
         print(f"\n  {self.title} — {len(self.entries)} entries\n")
-        print(f"  {'Name':<30} {'Response Model':<30} {'Request Model':<25} {'Fixture File'}")
-        print(f"  {'─' * 30} {'─' * 30} {'─' * 25} {'─' * 30}")
+        print(f"  {'Name':<25} {'Resp Model':<25} {'Req Model':<22} {'Fixture':<28} {'Req Fixture'}")
+        print(f"  {'─' * 25} {'─' * 25} {'─' * 22} {'─' * 28} {'─' * 25}")
         for e in self.entries:
             print(
-                f"  {e.name:<30} "
-                f"{(e.response_model or '—'):<30} "
-                f"{(e.request_model or '—'):<25} "
-                f"{e.fixture_file or '—'}"
+                f"  {e.name:<25} "
+                f"{(e.response_model or '—'):<25} "
+                f"{(e.request_model or '—'):<22} "
+                f"{(e.fixture_file or '—'):<28} "
+                f"{e.request_fixture_file or '—'}"
             )
         print()
 
@@ -147,6 +151,8 @@ class ExampleRunner:
             print(f"  Request Model  : {entry.request_model}")
         if entry.fixture_file:
             print(f"  Fixture        : tests/fixtures/{entry.fixture_file}")
+        if entry.request_fixture_file:
+            print(f"  Req Fixture    : tests/fixtures/{entry.request_fixture_file}")
         print(f"{'=' * 64}\n")
 
         try:

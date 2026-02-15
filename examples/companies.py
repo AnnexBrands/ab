@@ -44,8 +44,7 @@ runner.add(
     "update_fulldetails",
     lambda api: api.companies.update_fulldetails(
         LIVE_COMPANY_UUID,
-        # TODO: capture fixture — needs valid CompanyDetails body
-        {},
+        # TODO: capture fixture — needs valid CompanyDetails kwargs
     ),
     request_model="CompanyDetails",
     response_model="CompanyDetails",
@@ -54,8 +53,7 @@ runner.add(
 runner.add(
     "create",
     lambda api: api.companies.create(
-        # TODO: capture fixture — needs valid CompanyDetails body for new company
-        {},
+        # TODO: capture fixture — needs valid CompanyDetails kwargs for new company
     ),
     request_model="CompanyDetails",
     response_model="str",
@@ -64,8 +62,10 @@ runner.add(
 runner.add(
     "search",
     lambda api: api.companies.search(
-        # TODO: capture fixture — needs valid CompanySearchRequest body
-        {},
+        # TODO: capture fixture — needs valid CompanySearchRequest kwargs
+        search_text="test",
+        page=1,
+        page_size=25,
     ),
     request_model="CompanySearchRequest",
     response_model="List[SearchCompanyResponse]",
@@ -74,8 +74,7 @@ runner.add(
 runner.add(
     "list",
     lambda api: api.companies.list(
-        # TODO: capture fixture — needs valid ListRequest body
-        {},
+        # TODO: capture fixture — needs valid ListRequest kwargs
     ),
     request_model="ListRequest",
     response_model="List[CompanySimple]",

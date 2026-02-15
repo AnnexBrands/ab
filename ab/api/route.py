@@ -21,6 +21,7 @@ class Route:
     method: str
     path: str
     request_model: Optional[str] = None
+    params_model: Optional[str] = None
     response_model: Optional[str] = None
     api_surface: str = "acportal"  # acportal | catalog | abc
 
@@ -47,6 +48,7 @@ class Route:
             method=self.method,
             path=new_path,
             request_model=self.request_model,
+            params_model=self.params_model,
             response_model=self.response_model,
             api_surface=self.api_surface,
         )

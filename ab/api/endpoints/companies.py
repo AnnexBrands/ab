@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, List, Optional
+from typing import Any
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -40,21 +40,21 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/fulldetails"""
         return self._request(_GET_FULLDETAILS.bind(companyId=self._resolve(company_id)))
 
-    def update_fulldetails(self, company_id: str, data: dict | Any) -> Any:
+    def update_fulldetails(self, company_id: str, **kwargs: Any) -> Any:
         """PUT /companies/{companyId}/fulldetails"""
-        return self._request(_UPDATE_FULLDETAILS.bind(companyId=self._resolve(company_id)), json=data)
+        return self._request(_UPDATE_FULLDETAILS.bind(companyId=self._resolve(company_id)), json=kwargs)
 
-    def create(self, data: dict | Any) -> Any:
+    def create(self, **kwargs: Any) -> Any:
         """POST /companies/fulldetails — returns new company ID string."""
-        return self._request(_CREATE, json=data)
+        return self._request(_CREATE, json=kwargs)
 
-    def search(self, data: dict | Any) -> Any:
+    def search(self, **kwargs: Any) -> Any:
         """POST /companies/search/v2"""
-        return self._request(_SEARCH, json=data)
+        return self._request(_SEARCH, json=kwargs)
 
-    def list(self, data: dict | Any) -> Any:
+    def list(self, **kwargs: Any) -> Any:
         """POST /companies/list"""
-        return self._request(_LIST, json=data)
+        return self._request(_LIST, json=kwargs)
 
     def available_by_current_user(self) -> Any:
         """GET /companies/availableByCurrentUser"""

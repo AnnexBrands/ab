@@ -143,19 +143,112 @@ def _parse_table_row(line: str, group: EndpointGroup) -> Endpoint | None:
 
 # --- FIXTURES.md parsing ---
 
+# Legacy format sections
 _CAPTURED_SECTION_RE = re.compile(r"^## Captured Fixtures", re.IGNORECASE)
 _NEEDS_REQUEST_RE = re.compile(r"^## Needs Request Data", re.IGNORECASE)
 _NEEDS_ACCESS_RE = re.compile(r"^## Needs Access", re.IGNORECASE)
+# Unified 4D format sections
+_SURFACE_SECTION_RE = re.compile(
+    r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE
+)
 _FIXTURE_ROW_RE = re.compile(r"^\|[^|]+\|")
 
 
 def parse_fixtures(path: Path) -> list[Fixture]:
-    """Parse FIXTURES.md into Fixture objects."""
+    """Parse FIXTURES.md into Fixture objects.
+
+    Supports both the legacy two-section format and the unified 4D format
+    (feature 007). Auto-detects format by looking for surface-section headers.
+    """
     text = path.read_text()
     lines = text.splitlines()
 
+    # Detect format: unified 4D has "## ACPortal Endpoints" etc.
+    is_unified = any(_SURFACE_SECTION_RE.match(line) for line in lines)
+
+    if is_unified:
+        return _parse_unified_fixtures(lines)
+    return _parse_legacy_fixtures(lines)
+
+
+def _parse_unified_fixtures(lines: list[str]) -> list[Fixture]:
+    """Parse unified 4D FIXTURES.md format.
+
+    Columns: Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes
+    """
     fixtures: list[Fixture] = []
-    # "captured", "needs-request-data", or "needs-access"
+    in_table = False
+    header_seen = False
+
+    for line in lines:
+        if _SURFACE_SECTION_RE.match(line):
+            in_table = True
+            header_seen = False
+            continue
+        if line.startswith("## ") and not _SURFACE_SECTION_RE.match(line):
+            in_table = False
+            header_seen = False
+            continue
+
+        if not in_table:
+            continue
+        if not _FIXTURE_ROW_RE.match(line):
+            continue
+        if "---" in line or "Endpoint Path" in line:
+            header_seen = True
+            continue
+        if not header_seen:
+            continue
+
+        cells = [c.strip() for c in line.split("|")]
+        cells = [c for c in cells if c != ""]
+
+        f = _parse_unified_row(cells)
+        if f:
+            fixtures.append(f)
+
+    return fixtures
+
+
+def _parse_unified_row(cells: list[str]) -> Fixture | None:
+    """Parse a unified 4D row.
+
+    Columns: Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes
+    """
+    if len(cells) < 7:
+        return None
+
+    endpoint_path = cells[0]
+    method = cells[1]
+    req_model = cells[2] if cells[2] != "—" else None
+    req_fixture = cells[3] if cells[3] != "—" else None
+    resp_model = cells[4] if cells[4] != "—" else None
+    resp_fixture = cells[5] if cells[5] != "—" else None
+    status = cells[6]
+    notes = cells[7] if len(cells) > 7 else None
+
+    # Map unified status to legacy status for compatibility
+    if status == "complete":
+        legacy_status = "captured"
+    elif status == "needs-request-data":
+        legacy_status = "needs-request-data"
+    else:
+        legacy_status = "needs-request-data" if resp_fixture == "needs-data" else "captured"
+
+    return Fixture(
+        endpoint_path=endpoint_path,
+        method=method,
+        model_name=resp_model or "",
+        status=legacy_status,
+        blocker=notes,
+        request_model=req_model,
+        request_fixture_status=req_fixture,
+    )
+
+
+def _parse_legacy_fixtures(lines: list[str]) -> list[Fixture]:
+    """Parse legacy two-section FIXTURES.md format."""
+    fixtures: list[Fixture] = []
     section: str | None = None
     header_seen = False
 
@@ -172,23 +265,17 @@ def parse_fixtures(path: Path) -> list[Fixture]:
             section = "needs-access"
             header_seen = False
             continue
-        # Any other ## heading ends the current section
         if line.startswith("## "):
             section = None
             continue
 
         if section is None:
             continue
-
-        # Skip non-table lines
         if not _FIXTURE_ROW_RE.match(line):
             continue
-
-        # Skip header row and separator
         if "---" in line or "Endpoint Path" in line:
             header_seen = True
             continue
-
         if not header_seen:
             continue
 
@@ -207,7 +294,7 @@ def parse_fixtures(path: Path) -> list[Fixture]:
 
 
 def _parse_captured_row(cells: list[str]) -> Fixture | None:
-    """Parse a captured fixture row.
+    """Parse a captured fixture row (legacy format).
 
     Columns: Endpoint Path | Method | Model Name | Date | Source | ABConnectTools Ref
     """
@@ -225,7 +312,7 @@ def _parse_captured_row(cells: list[str]) -> Fixture | None:
 
 
 def _parse_non_captured_row(cells: list[str], status: str) -> Fixture | None:
-    """Parse a needs-request-data or needs-access fixture row.
+    """Parse a needs-request-data or needs-access fixture row (legacy format).
 
     Columns: Endpoint Path | Method | Model Name | What's Missing or Access Required | ABConnectTools Ref
     """
