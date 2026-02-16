@@ -1,4 +1,4 @@
-"""Address API endpoints (2 routes)."""
+"""Address API endpoints (4 routes)."""
 
 from __future__ import annotations
 
@@ -9,6 +9,11 @@ from ab.api.route import Route
 
 _IS_VALID = Route("GET", "/address/isvalid", response_model="AddressIsValidResult")
 _PROPERTY_TYPE = Route("GET", "/address/propertytype", response_model="PropertyType")
+
+
+# Extended address routes (009)
+_POST_AVOID_VALIDATION = Route("POST", "/address/{addressId}/avoidValidation")
+_POST_VALIDATED = Route("POST", "/address/{addressId}/validated")
 
 
 class AddressEndpoint(BaseEndpoint):
@@ -56,3 +61,13 @@ class AddressEndpoint(BaseEndpoint):
         if zip_code:
             params["ZipCode"] = zip_code
         return self._request(_PROPERTY_TYPE, params=params)
+
+    # ---- Extended (009) -----------------------------------------------------
+
+    def avoid_validation(self, address_id: str, **kwargs: Any) -> Any:
+        """POST /address/{addressId}/avoidValidation"""
+        return self._request(_POST_AVOID_VALIDATION.bind(addressId=address_id), json=kwargs or None)
+
+    def mark_validated(self, address_id: str, **kwargs: Any) -> Any:
+        """POST /address/{addressId}/validated"""
+        return self._request(_POST_VALIDATED.bind(addressId=address_id), json=kwargs or None)

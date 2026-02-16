@@ -58,6 +58,17 @@ api/lots
 api/sellers
 api/autoprice
 api/web2lead
+api/company_setup
+api/admin
+api/account
+api/intacct
+api/esign
+api/webhooks
+api/sms_templates
+api/notifications
+api/values
+api/abc_test
+api/abc_reports
 ```
 
 ## Model Reference
@@ -78,6 +89,13 @@ models/lots
 models/sellers
 models/autoprice
 models/web2lead
+models/company_setup
+models/admin
+models/account
+models/intacct
+models/esign
+models/sms_templates
+models/notifications
 ```
 
 ## Guides

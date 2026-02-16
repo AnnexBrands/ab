@@ -192,6 +192,80 @@ from ab.api.models.notes import (
 )
 from ab.api.models.partners import Partner, PartnerSearchRequest
 
+# 009 — new model files
+from ab.api.models.company_setup import (
+    CalendarBaseInfo,
+    CalendarDay,
+    CalendarTimeInfo,
+    CompanySetupData,
+    ContainerThickness,
+    ContainerThicknessRequest,
+    DocumentTemplate,
+    DocumentTemplateRequest,
+    GridSettings,
+    GridSettingsRequest,
+    Material,
+    MaterialRequest,
+    PlannerEntry,
+    StripeCompleteRequest,
+    StripeConnectUrl,
+    StripeConnection,
+    Truck,
+    TruckRequest,
+)
+from ab.api.models.admin import (
+    AdvancedSetting,
+    AdvancedSettingRequest,
+    CarrierErrorMessage,
+    CarrierErrorMessageRequest,
+    CompanyHierarchy,
+    InsuranceException,
+    InsuranceExceptionFilter,
+    IntacctSettings,
+    IntacctSettingsRequest,
+    LogFlushRequest,
+)
+from ab.api.models.account import (
+    AccountPaymentSource,
+    AccountResponse,
+    ConfirmRequest,
+    ForgotRequest,
+    PaymentSourceRequest,
+    RegisterRequest,
+    ResetPasswordRequest,
+    SendConfirmationRequest,
+    SetPasswordRequest,
+    TokenVerification,
+    UserProfile,
+)
+from ab.api.models.jobs import (
+    BookingResult,
+    BookRequest,
+    ChangeAgentRequest,
+    DocumentConfig,
+    FeedbackRequest,
+    JobAccessLevel,
+    JobFeedback,
+    LabelRequest,
+    SubManagementStatus,
+    TrackingInfoV2,
+    TrackingShipment,
+    TransferRequest,
+)
+from ab.api.models.intacct import (
+    ApplyRebateRequest,
+    JobIntacctData,
+    JobIntacctDraftRequest,
+    JobIntacctRequest,
+)
+from ab.api.models.esign import ESignData, ESignResult
+from ab.api.models.sms_templates import (
+    NotificationTokens,
+    SmsTemplate,
+    SmsTemplateRequest,
+)
+from ab.api.models.notifications import Notification
+
 __all__ = [
     # Base
     "ABConnectBaseModel", "RequestModel", "ResponseModel",
@@ -278,4 +352,32 @@ __all__ = [
     "GlobalNote", "GlobalNoteCreateRequest", "GlobalNoteUpdateRequest", "SuggestedUser",
     # Partners
     "Partner", "PartnerSearchRequest",
+    # Company Setup (009)
+    "CalendarDay", "CalendarBaseInfo", "CalendarTimeInfo",
+    "StripeConnectUrl", "StripeConnection", "StripeCompleteRequest",
+    "DocumentTemplate", "DocumentTemplateRequest",
+    "GridSettings", "GridSettingsRequest", "CompanySetupData",
+    "ContainerThickness", "ContainerThicknessRequest",
+    "PlannerEntry", "Material", "MaterialRequest", "Truck", "TruckRequest",
+    # Admin (009)
+    "AdvancedSetting", "AdvancedSettingRequest",
+    "CarrierErrorMessage", "CarrierErrorMessageRequest",
+    "CompanyHierarchy", "InsuranceException", "InsuranceExceptionFilter",
+    "IntacctSettings", "IntacctSettingsRequest", "LogFlushRequest",
+    # Account (009)
+    "AccountResponse", "TokenVerification", "UserProfile", "AccountPaymentSource",
+    "RegisterRequest", "SendConfirmationRequest", "ConfirmRequest",
+    "ForgotRequest", "ResetPasswordRequest", "SetPasswordRequest", "PaymentSourceRequest",
+    # Job Extensions (009)
+    "DocumentConfig", "JobFeedback", "JobAccessLevel", "SubManagementStatus",
+    "BookingResult", "TrackingShipment", "TrackingInfoV2",
+    "FeedbackRequest", "TransferRequest", "ChangeAgentRequest", "BookRequest", "LabelRequest",
+    # Intacct (009)
+    "JobIntacctData", "JobIntacctRequest", "JobIntacctDraftRequest", "ApplyRebateRequest",
+    # E-Sign (009)
+    "ESignResult", "ESignData",
+    # SMS Templates (009)
+    "SmsTemplate", "NotificationTokens", "SmsTemplateRequest",
+    # Notifications (009)
+    "Notification",
 ]

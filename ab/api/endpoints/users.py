@@ -1,4 +1,4 @@
-"""Users API endpoints (4 routes)."""
+"""Users API endpoints (5 routes)."""
 
 from __future__ import annotations
 
@@ -11,6 +11,9 @@ _LIST = Route("POST", "/users/list", request_model="ListRequest", response_model
 _ROLES = Route("GET", "/users/roles", response_model="List[UserRole]")
 _CREATE = Route("POST", "/users/user", request_model="UserCreateRequest")
 _UPDATE = Route("PUT", "/users/user", request_model="UserUpdateRequest")
+
+# Extended users route (009)
+_GET_POC_USERS = Route("GET", "/users/pocusers")
 
 
 class UsersEndpoint(BaseEndpoint):
@@ -31,3 +34,9 @@ class UsersEndpoint(BaseEndpoint):
     def update(self, data: dict | Any) -> Any:
         """PUT /users/user"""
         return self._request(_UPDATE, json=data)
+
+    # ---- Extended (009) -----------------------------------------------------
+
+    def get_poc_users(self) -> Any:
+        """GET /users/pocusers"""
+        return self._request(_GET_POC_USERS)
