@@ -1,4 +1,4 @@
-"""Companies API endpoints (24 routes)."""
+"""Companies API endpoints (31 routes)."""
 
 from __future__ import annotations
 
@@ -49,6 +49,16 @@ _GET_INHERITED_PACKAGING_LABOR = Route(
     "GET", "/companies/{companyId}/inheritedpackaginglabor",
     response_model="PackagingLabor",
 )
+
+
+# Extended companies routes (009)
+_POST_FILTERED_CUSTOMERS = Route("POST", "/companies/filteredCustomers")
+_GET_INFO_FROM_KEY = Route("GET", "/companies/infoFromKey")
+_GET_SEARCH_COMPANIES = Route("GET", "/companies/search")
+_POST_SIMPLE_LIST = Route("POST", "/companies/simplelist")
+_GET_CAPABILITIES = Route("GET", "/companies/{companyId}/capabilities")
+_POST_CAPABILITIES = Route("POST", "/companies/{companyId}/capabilities")
+_GET_FRANCHISEE_ADDRESSES = Route("GET", "/companies/{companyId}/franchiseeAddresses")
 
 
 class CompaniesEndpoint(BaseEndpoint):
@@ -164,3 +174,33 @@ class CompaniesEndpoint(BaseEndpoint):
     def get_inherited_packaging_labor(self, company_id: str) -> Any:
         """GET /companies/{companyId}/inheritedpackaginglabor"""
         return self._request(_GET_INHERITED_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
+
+    # ---- Extended (009) -----------------------------------------------------
+
+    def filtered_customers(self, **kwargs: Any) -> Any:
+        """POST /companies/filteredCustomers"""
+        return self._request(_POST_FILTERED_CUSTOMERS, json=kwargs)
+
+    def info_from_key(self, **params: Any) -> Any:
+        """GET /companies/infoFromKey"""
+        return self._request(_GET_INFO_FROM_KEY, params=params)
+
+    def search_companies(self, **params: Any) -> Any:
+        """GET /companies/search"""
+        return self._request(_GET_SEARCH_COMPANIES, params=params)
+
+    def simple_list(self, **kwargs: Any) -> Any:
+        """POST /companies/simplelist"""
+        return self._request(_POST_SIMPLE_LIST, json=kwargs)
+
+    def get_capabilities(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/capabilities"""
+        return self._request(_GET_CAPABILITIES.bind(companyId=self._resolve(company_id)))
+
+    def save_capabilities(self, company_id: str, **kwargs: Any) -> Any:
+        """POST /companies/{companyId}/capabilities"""
+        return self._request(_POST_CAPABILITIES.bind(companyId=self._resolve(company_id)), json=kwargs)
+
+    def get_franchisee_addresses(self, company_id: str) -> Any:
+        """GET /companies/{companyId}/franchiseeAddresses"""
+        return self._request(_GET_FRANCHISEE_ADDRESSES.bind(companyId=self._resolve(company_id)))

@@ -64,29 +64,40 @@ class ABConnectAPI:
     def _init_endpoints(self) -> None:
         """Instantiate all endpoint groups as attributes."""
         from ab.api.endpoints import (
+            ABCReportsEndpoint,
+            ABCTestEndpoint,
+            AccountEndpoint,
             AddressEndpoint,
+            AdminEndpoint,
             AutoPriceEndpoint,
             CatalogEndpoint,
             CommoditiesEndpoint,
             CommodityMapsEndpoint,
             CompaniesEndpoint,
+            CompanySetupEndpoint,
             ContactsEndpoint,
             DashboardEndpoint,
             DocumentsEndpoint,
+            ESignEndpoint,
             FormsEndpoint,
+            IntacctEndpoint,
             JobsEndpoint,
             LookupEndpoint,
             LotsEndpoint,
             NotesEndpoint,
+            NotificationsEndpoint,
             PartnersEndpoint,
             PaymentsEndpoint,
             ReportsEndpoint,
             RFQEndpoint,
             SellersEndpoint,
             ShipmentsEndpoint,
+            SmsTemplateEndpoint,
             UsersEndpoint,
+            ValuesEndpoint,
             ViewsEndpoint,
             Web2LeadEndpoint,
+            WebhooksEndpoint,
         )
 
         # ACPortal endpoints
@@ -108,6 +119,16 @@ class ABConnectAPI:
         self.commodity_maps = CommodityMapsEndpoint(self._acportal)
         self.notes = NotesEndpoint(self._acportal)
         self.partners = PartnersEndpoint(self._acportal)
+        # 009 — new ACPortal endpoint groups
+        self.company_setup = CompanySetupEndpoint(self._acportal)
+        self.admin = AdminEndpoint(self._acportal)
+        self.account = AccountEndpoint(self._acportal)
+        self.intacct = IntacctEndpoint(self._acportal)
+        self.esign = ESignEndpoint(self._acportal)
+        self.webhooks = WebhooksEndpoint(self._acportal)
+        self.sms_templates = SmsTemplateEndpoint(self._acportal)
+        self.notifications = NotificationsEndpoint(self._acportal)
+        self.values = ValuesEndpoint(self._acportal)
 
         # Catalog endpoints
         self.catalog = CatalogEndpoint(self._catalog)
@@ -117,3 +138,5 @@ class ABConnectAPI:
         # ABC endpoints
         self.autoprice = AutoPriceEndpoint(self._abc)
         self.web2lead = Web2LeadEndpoint(self._abc)
+        self.abc_test = ABCTestEndpoint(self._abc)
+        self.abc_reports = ABCReportsEndpoint(self._abc)

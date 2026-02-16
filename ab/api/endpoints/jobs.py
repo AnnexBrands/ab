@@ -1,4 +1,4 @@
-"""Jobs API endpoints — ACPortal (54 routes) + ABC (1 route).
+"""Jobs API endpoints — ACPortal (66 routes) + ABC (1 route).
 
 This file handles two API surfaces. ACPortal routes use the default
 ``api_surface="acportal"``; the ABC job update route explicitly sets
@@ -92,6 +92,21 @@ _LIST_FREIGHT_PROVIDERS = Route("GET", "/job/{jobDisplayId}/freightproviders", r
 _SAVE_FREIGHT_PROVIDERS = Route("POST", "/job/{jobDisplayId}/freightproviders", request_model="ShipmentPlanProvider")
 _GET_FREIGHT_PROVIDER_RATE_QUOTE = Route("POST", "/job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote")
 _ADD_FREIGHT_ITEMS = Route("POST", "/job/{jobDisplayId}/freightitems")
+
+
+# Job extension routes (009)
+_GET_DOC_CONFIG = Route("GET", "/job/documentConfig", response_model="DocumentConfig")
+_GET_FEEDBACK = Route("GET", "/job/feedback/{jobDisplayId}", response_model="JobFeedback")
+_POST_FEEDBACK = Route("POST", "/job/feedback/{jobDisplayId}", request_model="FeedbackRequest", response_model="JobFeedback")
+_GET_ACCESS_LEVEL = Route("GET", "/job/jobAccessLevel", response_model="JobAccessLevel")
+_POST_TRANSFER = Route("POST", "/job/transfer/{jobDisplayId}", request_model="TransferRequest")
+_POST_CHANGE_AGENT = Route("POST", "/job/{jobDisplayId}/changeAgent", request_model="ChangeAgentRequest")
+_POST_COPY = Route("POST", "/job/{jobDisplayId}/copy/{documentId}")
+_GET_SUB_MGMT_STATUS = Route("GET", "/job/{jobDisplayId}/submanagementstatus", response_model="SubManagementStatus")
+_POST_BOOK = Route("POST", "/job/{jobDisplayId}/book", request_model="BookRequest", response_model="BookingResult")
+_GET_TRACKING_SHIPMENT = Route("GET", "/job/{jobDisplayId}/tracking/shipment/{proNumber}", response_model="TrackingShipment")
+_GET_TRACKING_V2 = Route("GET", "/v2/job/{jobDisplayId}/tracking/{historyAmount}", response_model="TrackingInfoV2")
+_POST_LABEL_REQUEST = Route("POST", "/email/{jobDisplayId}/labelrequest", request_model="LabelRequest")
 
 
 class JobsEndpoint(BaseEndpoint):
@@ -348,3 +363,53 @@ class JobsEndpoint(BaseEndpoint):
     def add_freight_items(self, job_display_id: int, **kwargs: Any) -> Any:
         """POST /job/{jobDisplayId}/freightitems (ACPortal)"""
         return self._request(_ADD_FREIGHT_ITEMS.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    # ---- Job Extensions (009) -----------------------------------------------
+
+    def get_document_config(self) -> Any:
+        """GET /job/documentConfig (ACPortal)"""
+        return self._request(_GET_DOC_CONFIG)
+
+    def get_feedback(self, job_display_id: int) -> Any:
+        """GET /job/feedback/{jobDisplayId} (ACPortal)"""
+        return self._request(_GET_FEEDBACK.bind(jobDisplayId=job_display_id))
+
+    def post_feedback(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/feedback/{jobDisplayId} (ACPortal)"""
+        return self._request(_POST_FEEDBACK.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def get_access_level(self) -> Any:
+        """GET /job/jobAccessLevel (ACPortal)"""
+        return self._request(_GET_ACCESS_LEVEL)
+
+    def transfer(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/transfer/{jobDisplayId} (ACPortal)"""
+        return self._request(_POST_TRANSFER.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def change_agent(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/changeAgent (ACPortal)"""
+        return self._request(_POST_CHANGE_AGENT.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def copy_document(self, job_display_id: int, document_id: str) -> Any:
+        """POST /job/{jobDisplayId}/copy/{documentId} (ACPortal)"""
+        return self._request(_POST_COPY.bind(jobDisplayId=job_display_id, documentId=document_id))
+
+    def get_sub_management_status(self, job_display_id: int) -> Any:
+        """GET /job/{jobDisplayId}/submanagementstatus (ACPortal)"""
+        return self._request(_GET_SUB_MGMT_STATUS.bind(jobDisplayId=job_display_id))
+
+    def book(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /job/{jobDisplayId}/book (ACPortal)"""
+        return self._request(_POST_BOOK.bind(jobDisplayId=job_display_id), json=kwargs)
+
+    def get_tracking_shipment(self, job_display_id: int, pro_number: str) -> Any:
+        """GET /job/{jobDisplayId}/tracking/shipment/{proNumber} (ACPortal)"""
+        return self._request(_GET_TRACKING_SHIPMENT.bind(jobDisplayId=job_display_id, proNumber=pro_number))
+
+    def get_tracking_v2(self, job_display_id: int, history_amount: int = 10) -> Any:
+        """GET /v2/job/{jobDisplayId}/tracking/{historyAmount} (ACPortal)"""
+        return self._request(_GET_TRACKING_V2.bind(jobDisplayId=job_display_id, historyAmount=history_amount))
+
+    def send_label_request(self, job_display_id: int, **kwargs: Any) -> Any:
+        """POST /email/{jobDisplayId}/labelrequest (ACPortal)"""
+        return self._request(_POST_LABEL_REQUEST.bind(jobDisplayId=job_display_id), json=kwargs)

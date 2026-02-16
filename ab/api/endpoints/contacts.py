@@ -1,4 +1,4 @@
-"""Contacts API endpoints (12 routes)."""
+"""Contacts API endpoints (14 routes)."""
 
 from __future__ import annotations
 
@@ -27,6 +27,11 @@ _GET_HISTORY_AGGREGATED = Route(
 _GET_HISTORY_GRAPH_DATA = Route("GET", "/contacts/{contactId}/history/graphdata", response_model="ContactGraphData")
 _MERGE_PREVIEW = Route("POST", "/contacts/{mergeToId}/merge/preview", response_model="ContactMergePreview")
 _MERGE = Route("PUT", "/contacts/{mergeToId}/merge")
+
+
+# Extended contacts routes (009)
+_POST_CUSTOMERS = Route("POST", "/contacts/customers")
+_POST_CONTACTS_SEARCH = Route("POST", "/contacts/search")
 
 
 class ContactsEndpoint(BaseEndpoint):
@@ -81,3 +86,13 @@ class ContactsEndpoint(BaseEndpoint):
     def merge(self, merge_to_id: str, **kwargs: Any) -> Any:
         """PUT /contacts/{mergeToId}/merge"""
         return self._request(_MERGE.bind(mergeToId=merge_to_id), json=kwargs)
+
+    # ---- Extended (009) -----------------------------------------------------
+
+    def get_customers(self, **kwargs: Any) -> Any:
+        """POST /contacts/customers"""
+        return self._request(_POST_CUSTOMERS, json=kwargs)
+
+    def search_contacts(self, **kwargs: Any) -> Any:
+        """POST /contacts/search"""
+        return self._request(_POST_CONTACTS_SEARCH, json=kwargs)

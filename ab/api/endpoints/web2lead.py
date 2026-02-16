@@ -1,4 +1,4 @@
-"""Web2Lead API endpoints (2 routes)."""
+"""Web2Lead API endpoints (3 routes)."""
 
 from __future__ import annotations
 
@@ -9,6 +9,9 @@ from ab.api.route import Route
 
 _GET = Route("GET", "/Web2Lead/get", response_model="Web2LeadResponse", api_surface="abc")
 _POST = Route("POST", "/Web2Lead/post", request_model="Web2LeadRequest", response_model="Web2LeadResponse", api_surface="abc")
+
+# Extended route (009)
+_POST_V2 = Route("POST", "/Web2Lead/postv2", request_model="Web2LeadRequest", response_model="Web2LeadResponse", api_surface="abc")
 
 
 class Web2LeadEndpoint(BaseEndpoint):
@@ -21,3 +24,9 @@ class Web2LeadEndpoint(BaseEndpoint):
     def post(self, data: dict | Any) -> Any:
         """POST /Web2Lead/post"""
         return self._request(_POST, json=data)
+
+    # ---- Extended (009) -----------------------------------------------------
+
+    def post_v2(self, data: dict | Any) -> Any:
+        """POST /Web2Lead/postv2"""
+        return self._request(_POST_V2, json=data)

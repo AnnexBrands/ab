@@ -12,8 +12,9 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 - **Captured (response)**: 24
 - **Captured (request)**: 1
 - **Needs Request Data**: 26
-- **Needs Fixture (new 008)**: 106
-- **Total tracked**: 156
+- **Needs Fixture (008)**: 106
+- **Needs Fixture (009)**: 102
+- **Total tracked**: 263
 
 ## Status Legend
 
@@ -177,6 +178,101 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 | /partner | GET | — | — | List[Partner] | needs-data | needs-fixture | 008 |
 | /partner/{id} | GET | — | — | Partner | needs-data | needs-fixture | 008 |
 | /partner/search | POST | PartnerSearchRequest | — | List[Partner] | needs-data | needs-fixture | 008 |
+| /company/{id}/calendar/{date} | GET | — | — | CalendarDay | needs-data | needs-fixture | 009 |
+| /company/{id}/calendar/{date}/baseinfo | GET | — | — | CalendarBaseInfo | needs-data | needs-fixture | 009 |
+| /company/{id}/calendar/{date}/startofday | GET | — | — | CalendarTimeInfo | needs-data | needs-fixture | 009 |
+| /company/{id}/calendar/{date}/endofday | GET | — | — | CalendarTimeInfo | needs-data | needs-fixture | 009 |
+| /company/{id}/accounts/stripe/connecturl | GET | — | — | StripeConnectUrl | needs-data | needs-fixture | 009 |
+| /company/{id}/accounts/stripe/completeconnection | POST | StripeCompleteRequest | — | StripeConnection | needs-data | needs-fixture | 009 |
+| /company/{id}/accounts/stripe | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /company/{id}/document-templates | GET | — | — | List[DocumentTemplate] | needs-data | needs-fixture | 009 |
+| /company/{id}/document-templates | POST | DocumentTemplateRequest | — | DocumentTemplate | needs-data | needs-fixture | 009 |
+| /company/{id}/document-templates/{docId} | PUT | DocumentTemplateRequest | — | DocumentTemplate | needs-data | needs-fixture | 009 |
+| /company/{id}/document-templates/{docId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /company/{id}/gridsettings | GET | — | — | GridSettings | needs-data | needs-fixture | 009 |
+| /company/{id}/gridsettings | POST | GridSettingsRequest | — | GridSettings | needs-data | needs-fixture | 009 |
+| /company/{id}/setupdata | GET | — | — | CompanySetupData | needs-data | needs-fixture | 009 |
+| /company/{id}/containerthicknessinches | GET | — | — | List[ContainerThickness] | needs-data | needs-fixture | 009 |
+| /company/{id}/containerthicknessinches | POST | ContainerThicknessRequest | — | ContainerThickness | needs-data | needs-fixture | 009 |
+| /company/{id}/containerthicknessinches | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /company/{id}/material | GET | — | — | List[Material] | needs-data | needs-fixture | 009 |
+| /company/{id}/material | POST | MaterialRequest | — | Material | needs-data | needs-fixture | 009 |
+| /company/{id}/material/{materialId} | PUT | MaterialRequest | — | Material | needs-data | needs-fixture | 009 |
+| /company/{id}/material/{materialId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /company/{id}/truck | GET | — | — | List[Truck] | needs-data | needs-fixture | 009 |
+| /company/{id}/truck | POST | TruckRequest | — | Truck | needs-data | needs-fixture | 009 |
+| /company/{id}/truck/{truckId} | PUT | TruckRequest | — | Truck | needs-data | needs-fixture | 009 |
+| /company/{id}/truck/{truckId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /company/{id}/planner | GET | — | — | List[PlannerEntry] | needs-data | needs-fixture | 009 |
+| /admin/advancedsettings/all | GET | — | — | List[AdvancedSetting] | needs-data | needs-fixture | 009 |
+| /admin/advancedsettings/{id} | GET | — | — | AdvancedSetting | needs-data | needs-fixture | 009 |
+| /admin/advancedsettings | POST | AdvancedSettingRequest | — | AdvancedSetting | needs-data | needs-fixture | 009 |
+| /admin/advancedsettings/{id} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /admin/carriererrormessage/all | GET | — | — | List[CarrierErrorMessage] | needs-data | needs-fixture | 009 |
+| /admin/carriererrormessage | POST | CarrierErrorMessageRequest | — | CarrierErrorMessage | needs-data | needs-fixture | 009 |
+| /admin/globalsettings/companyhierarchy | GET | — | — | CompanyHierarchy | needs-data | needs-fixture | 009 |
+| /admin/globalsettings/companyhierarchy/company/{id} | GET | — | — | CompanyHierarchy | needs-data | needs-fixture | 009 |
+| /admin/globalsettings/getinsuranceexceptions | POST | InsuranceExceptionFilter | — | List[InsuranceException] | needs-data | needs-fixture | 009 |
+| /admin/globalsettings/approveinsuranceexception | POST | — | — | — | — | needs-fixture | 009 — uses JobId query param |
+| /admin/globalsettings/intacct | POST | IntacctSettingsRequest | — | IntacctSettings | needs-data | needs-fixture | 009 |
+| /admin/logbuffer/flush | POST | LogFlushRequest | — | — | — | needs-fixture | 009 |
+| /admin/logbuffer/flushAll | POST | — | — | — | — | needs-fixture | 009 |
+| /account/register | POST | RegisterRequest | — | AccountResponse | needs-data | needs-fixture | 009 |
+| /account/sendConfirmation | POST | SendConfirmationRequest | — | — | — | needs-fixture | 009 |
+| /account/confirm | POST | ConfirmRequest | — | — | — | needs-fixture | 009 |
+| /account/forgot | POST | ForgotRequest | — | — | — | needs-fixture | 009 |
+| /account/verifyresettoken | GET | — | — | TokenVerification | needs-data | needs-fixture | 009 |
+| /account/resetpassword | POST | ResetPasswordRequest | — | — | — | needs-fixture | 009 |
+| /account/setpassword | POST | SetPasswordRequest | — | — | — | needs-fixture | 009 |
+| /account/profile | GET | — | — | UserProfile | needs-data | needs-fixture | 009 |
+| /account/paymentsource/{sourceId} | PUT | PaymentSourceRequest | — | AccountPaymentSource | needs-data | needs-fixture | 009 |
+| /account/paymentsource/{sourceId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /job/documentConfig | GET | — | — | DocumentConfig | needs-data | needs-fixture | 009 |
+| /job/feedback/{jobDisplayId} | GET | — | — | JobFeedback | needs-data | needs-fixture | 009 |
+| /job/feedback/{jobDisplayId} | POST | FeedbackRequest | — | JobFeedback | needs-data | needs-fixture | 009 |
+| /job/jobAccessLevel | GET | — | — | JobAccessLevel | needs-data | needs-fixture | 009 |
+| /job/transfer/{jobDisplayId} | POST | TransferRequest | — | — | — | needs-fixture | 009 |
+| /job/{id}/changeAgent | POST | ChangeAgentRequest | — | — | — | needs-fixture | 009 |
+| /job/{id}/copy/{documentId} | POST | — | — | — | — | needs-fixture | 009 |
+| /job/{id}/submanagementstatus | GET | — | — | SubManagementStatus | needs-data | needs-fixture | 009 |
+| /job/{id}/book | POST | BookRequest | — | BookingResult | needs-data | needs-fixture | 009 |
+| /job/{id}/tracking/shipment/{proNumber} | GET | — | — | TrackingShipment | needs-data | needs-fixture | 009 |
+| /v2/job/{id}/tracking/{historyAmount} | GET | — | — | TrackingInfoV2 | needs-data | needs-fixture | 009 |
+| /email/{jobDisplayId}/labelrequest | POST | LabelRequest | — | — | — | needs-fixture | 009 |
+| /jobintacct/{jobDisplayId} | GET | — | — | JobIntacctData | needs-data | needs-fixture | 009 |
+| /jobintacct/{jobDisplayId} | POST | JobIntacctRequest | — | JobIntacctData | needs-data | needs-fixture | 009 |
+| /jobintacct/{jobDisplayId}/draft | POST | JobIntacctDraftRequest | — | JobIntacctData | needs-data | needs-fixture | 009 |
+| /jobintacct/{jobDisplayId}/applyRebate | POST | ApplyRebateRequest | — | — | — | needs-fixture | 009 |
+| /jobintacct/{jobDisplayId}/{franchiseeId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /e-sign/result | GET | — | — | ESignResult | needs-data | needs-fixture | 009 |
+| /e-sign/{jobDisplayId}/{bookingKey} | GET | — | — | ESignData | needs-data | needs-fixture | 009 |
+| /webhooks/stripe/handle | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /webhooks/stripe/connect/handle | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /webhooks/stripe/checkout.session.completed | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /webhooks/twilio/body-sms-inbound | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /webhooks/twilio/form-sms-inbound | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /webhooks/twilio/smsStatusCallback | POST | — | — | — | — | needs-fixture | 009 — server callback |
+| /SmsTemplate/list | GET | — | — | List[SmsTemplate] | needs-data | needs-fixture | 009 |
+| /SmsTemplate/notificationTokens | GET | — | — | NotificationTokens | needs-data | needs-fixture | 009 |
+| /SmsTemplate/save | POST | SmsTemplateRequest | — | SmsTemplate | needs-data | needs-fixture | 009 |
+| /SmsTemplate/{templateId} | GET | — | — | SmsTemplate | needs-data | needs-fixture | 009 |
+| /SmsTemplate/{templateId} | DELETE | — | — | — | — | needs-fixture | 009 — destructive |
+| /notifications | GET | — | — | List[Notification] | needs-data | needs-fixture | 009 |
+| /Values | GET | — | — | List[str] | needs-data | needs-fixture | 009 |
+| /users/pocusers | GET | — | — | — | — | needs-fixture | 009 |
+| /companies/filteredCustomers | POST | — | — | — | — | needs-fixture | 009 |
+| /companies/infoFromKey | GET | — | — | — | — | needs-fixture | 009 |
+| /companies/search | GET | — | — | — | — | needs-fixture | 009 |
+| /companies/simplelist | POST | — | — | — | — | needs-fixture | 009 |
+| /companies/{id}/capabilities | GET | — | — | — | — | needs-fixture | 009 |
+| /companies/{id}/capabilities | POST | — | — | — | — | needs-fixture | 009 |
+| /companies/{id}/franchiseeAddresses | GET | — | — | — | — | needs-fixture | 009 |
+| /contacts/customers | POST | — | — | — | — | needs-fixture | 009 |
+| /contacts/search | POST | — | — | — | — | needs-fixture | 009 |
+| /address/{addressId}/avoidValidation | POST | — | — | — | — | needs-fixture | 009 |
+| /address/{addressId}/validated | POST | — | — | — | — | needs-fixture | 009 |
+| /documents/get/thumbnail/{docPath} | GET | — | — | bytes | needs-data | needs-fixture | 009 |
+| /documents/hide/{docId} | PUT | — | — | — | — | needs-fixture | 009 |
 
 ## Catalog Endpoints
 
@@ -196,6 +292,13 @@ fixture. See Principle II (Example-Driven Fixture Capture).
 | Endpoint Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes |
 |---------------|--------|-----------|-------------|------------|--------------|--------|-------|
 | /Web2Lead | GET | — | — | Web2LeadResponse | captured | complete | 2026-02-13, staging |
+| /Web2Lead | POST | — | — | — | — | needs-fixture | 009 |
+| /autoprice/quoterequest/v1 | POST | — | — | — | — | needs-fixture | 009 |
+| /Test/contact | GET | — | — | — | — | needs-fixture | 009 |
+| /Test/recentestimates | GET | — | — | — | — | needs-fixture | 009 |
+| /Test/renderedtemplate | GET | — | — | — | — | needs-fixture | 009 |
+| /Report/webrevenue | GET | — | — | — | — | needs-fixture | 009 |
+| /logbuffer/flush | POST | — | — | — | — | needs-fixture | 009 |
 
 ## Model Warning Summary
 

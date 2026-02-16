@@ -400,3 +400,87 @@ class ShipmentPlanProvider(RequestModel):
     """Save freight provider selection — POST /job/{jobDisplayId}/freightproviders."""
 
     provider_data: Optional[dict] = Field(None, alias="providerData", description="Provider selection data")
+
+
+# ---- Job extension models (009) ---------------------------------------------
+
+
+class DocumentConfig(ResponseModel):
+    """Document configuration — GET /job/documentConfig."""
+
+    config: Optional[dict] = Field(None, description="Document configuration settings")
+
+
+class JobFeedback(ResponseModel):
+    """Job feedback — GET /job/feedback/{jobDisplayId}."""
+
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID")
+    feedback: Optional[List[dict]] = Field(None, description="Feedback entries")
+
+
+class JobAccessLevel(ResponseModel):
+    """Job access level — GET /job/jobAccessLevel."""
+
+    level: Optional[str] = Field(None, description="Access level")
+    permissions: Optional[List[str]] = Field(None, description="Granted permissions")
+
+
+class SubManagementStatus(ResponseModel):
+    """Sub-management status — GET /job/{jobDisplayId}/submanagementstatus."""
+
+    status: Optional[str] = Field(None, description="Sub-management status")
+    details: Optional[dict] = Field(None, description="Status details")
+
+
+class BookingResult(ResponseModel):
+    """Booking result — POST /job/{jobDisplayId}/book."""
+
+    success: Optional[bool] = Field(None, description="Whether booking succeeded")
+    booking_id: Optional[str] = Field(None, alias="bookingId", description="Booking ID")
+
+
+class TrackingShipment(ResponseModel):
+    """Tracking shipment — GET /job/{jobDisplayId}/tracking/shipment/{proNumber}."""
+
+    pro_number: Optional[str] = Field(None, alias="proNumber", description="PRO number")
+    status: Optional[str] = Field(None, description="Shipment tracking status")
+    events: Optional[List[dict]] = Field(None, description="Tracking events")
+
+
+class TrackingInfoV2(ResponseModel):
+    """Tracking info v2 — GET /v2/job/{jobDisplayId}/tracking/{historyAmount}."""
+
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID")
+    history: Optional[List[dict]] = Field(None, description="Tracking history entries")
+
+
+class FeedbackRequest(RequestModel):
+    """Body for POST /job/feedback/{jobDisplayId}."""
+
+    rating: Optional[int] = Field(None, description="Feedback rating")
+    comment: Optional[str] = Field(None, description="Feedback comment")
+
+
+class TransferRequest(RequestModel):
+    """Body for POST /job/transfer/{jobDisplayId}."""
+
+    target_company_id: Optional[str] = Field(None, alias="targetCompanyId", description="Target company ID")
+    reason: Optional[str] = Field(None, description="Transfer reason")
+
+
+class ChangeAgentRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/changeAgent."""
+
+    agent_id: Optional[str] = Field(None, alias="agentId", description="New agent ID")
+
+
+class BookRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/book."""
+
+    booking_data: Optional[dict] = Field(None, alias="bookingData", description="Booking data")
+
+
+class LabelRequest(RequestModel):
+    """Body for POST /email/{jobDisplayId}/labelrequest."""
+
+    label_data: Optional[dict] = Field(None, alias="labelData", description="Label request data")
