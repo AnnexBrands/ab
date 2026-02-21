@@ -14,13 +14,34 @@ from ab.api.route import Route
 _GET_PAYMENT = Route("GET", "/job/{jobDisplayId}/payment", response_model="PaymentInfo")
 _GET_PAYMENT_CREATE = Route("GET", "/job/{jobDisplayId}/payment/create", response_model="PaymentInfo")
 _GET_SOURCES = Route("GET", "/job/{jobDisplayId}/payment/sources", response_model="List[PaymentSource]")
-_PAY_BY_SOURCE = Route("POST", "/job/{jobDisplayId}/payment/bysource", request_model="PayBySourceRequest", response_model="ServiceBaseResponse")
-_ACH_SESSION = Route("POST", "/job/{jobDisplayId}/payment/ACHPaymentSession", request_model="ACHSessionRequest", response_model="ACHSessionResponse")
-_ACH_CREDIT_TRANSFER = Route("POST", "/job/{jobDisplayId}/payment/ACHCreditTransfer", request_model="ACHCreditTransferRequest", response_model="ServiceBaseResponse")
-_ATTACH_BANK = Route("POST", "/job/{jobDisplayId}/payment/attachCustomerBank", request_model="AttachBankRequest", response_model="ServiceBaseResponse")
-_VERIFY_ACH = Route("POST", "/job/{jobDisplayId}/payment/verifyJobACHSource", request_model="VerifyACHRequest", response_model="ServiceBaseResponse")
-_CANCEL_ACH = Route("POST", "/job/{jobDisplayId}/payment/cancelJobACHVerification", response_model="ServiceBaseResponse")
-_BANK_SOURCE = Route("POST", "/job/{jobDisplayId}/payment/banksource", request_model="BankSourceRequest", response_model="ServiceBaseResponse")
+_PAY_BY_SOURCE = Route(
+    "POST", "/job/{jobDisplayId}/payment/bysource",
+    request_model="PayBySourceRequest", response_model="ServiceBaseResponse",
+)
+_ACH_SESSION = Route(
+    "POST", "/job/{jobDisplayId}/payment/ACHPaymentSession",
+    request_model="ACHSessionRequest", response_model="ACHSessionResponse",
+)
+_ACH_CREDIT_TRANSFER = Route(
+    "POST", "/job/{jobDisplayId}/payment/ACHCreditTransfer",
+    request_model="ACHCreditTransferRequest", response_model="ServiceBaseResponse",
+)
+_ATTACH_BANK = Route(
+    "POST", "/job/{jobDisplayId}/payment/attachCustomerBank",
+    request_model="AttachBankRequest", response_model="ServiceBaseResponse",
+)
+_VERIFY_ACH = Route(
+    "POST", "/job/{jobDisplayId}/payment/verifyJobACHSource",
+    request_model="VerifyACHRequest", response_model="ServiceBaseResponse",
+)
+_CANCEL_ACH = Route(
+    "POST", "/job/{jobDisplayId}/payment/cancelJobACHVerification",
+    response_model="ServiceBaseResponse",
+)
+_BANK_SOURCE = Route(
+    "POST", "/job/{jobDisplayId}/payment/banksource",
+    request_model="BankSourceRequest", response_model="ServiceBaseResponse",
+)
 
 
 class PaymentsEndpoint(BaseEndpoint):

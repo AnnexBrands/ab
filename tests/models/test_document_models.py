@@ -2,9 +2,8 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.documents import Document
+from tests.conftest import require_fixture
 
 
 class TestDocumentModels:

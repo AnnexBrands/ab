@@ -2,11 +2,10 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.catalog import CatalogExpandedDto, CatalogWithSellersDto
 from ab.api.models.lots import LotDataDto, LotDto, LotOverrideDto
 from ab.api.models.sellers import SellerDto, SellerExpandedDto
+from tests.conftest import require_fixture
 
 
 class TestCatalogModels:

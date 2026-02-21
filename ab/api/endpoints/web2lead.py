@@ -8,7 +8,10 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _GET = Route("GET", "/Web2Lead/get", response_model="Web2LeadResponse", api_surface="abc")
-_POST = Route("POST", "/Web2Lead/post", request_model="Web2LeadRequest", response_model="Web2LeadResponse", api_surface="abc")
+_POST = Route(
+    "POST", "/Web2Lead/post",
+    request_model="Web2LeadRequest", response_model="Web2LeadResponse", api_surface="abc",
+)
 
 
 class Web2LeadEndpoint(BaseEndpoint):

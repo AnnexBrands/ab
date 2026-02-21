@@ -1,8 +1,7 @@
 """Fixture validation tests for Tracking models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.jobs import TrackingInfo, TrackingInfoV3
+from tests.conftest import require_fixture
 
 
 class TestTrackingModels:

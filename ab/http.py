@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, BinaryIO, Dict, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Mapping, Optional
 
 import requests
 
@@ -131,7 +131,6 @@ class HttpClient:
         if headers:
             req_headers.update(headers)
 
-        last_exc: Optional[Exception] = None
 
         for attempt in range(1, self._settings.max_attempts + 1):
             logger.debug("%s %s (attempt %d)", method.upper(), url, attempt)
@@ -148,7 +147,6 @@ class HttpClient:
                     timeout=self._settings.timeout,
                 )
             except requests.RequestException as exc:
-                last_exc = exc
                 if attempt < self._settings.max_attempts:
                     self._backoff(attempt)
                     continue

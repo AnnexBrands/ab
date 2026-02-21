@@ -187,7 +187,9 @@ class TrackingInfo(ResponseModel):
 class TrackingInfoV3(ResponseModel):
     """Tracking info v3 — GET /v3/job/{jobDisplayId}/tracking/{historyAmount}."""
 
-    tracking_details: Optional[List[dict]] = Field(None, alias="trackingDetails", description="Detailed tracking entries")
+    tracking_details: Optional[List[dict]] = Field(
+        None, alias="trackingDetails", description="Detailed tracking entries",
+    )
     carrier_info: Optional[List[dict]] = Field(None, alias="carrierInfo", description="Carrier metadata")
     shipment_status: Optional[str] = Field(None, alias="shipmentStatus", description="Overall status")
 

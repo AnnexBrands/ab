@@ -11,9 +11,15 @@ from ab.cache import CodeResolver
 _GET = Route("GET", "/companies/{id}", response_model="CompanySimple")
 _GET_DETAILS = Route("GET", "/companies/{companyId}/details", response_model="CompanyDetails")
 _GET_FULLDETAILS = Route("GET", "/companies/{companyId}/fulldetails", response_model="CompanyDetails")
-_UPDATE_FULLDETAILS = Route("PUT", "/companies/{companyId}/fulldetails", request_model="CompanyDetails", response_model="CompanyDetails")
+_UPDATE_FULLDETAILS = Route(
+    "PUT", "/companies/{companyId}/fulldetails",
+    request_model="CompanyDetails", response_model="CompanyDetails",
+)
 _CREATE = Route("POST", "/companies/fulldetails", request_model="CompanyDetails", response_model="str")
-_SEARCH = Route("POST", "/companies/search/v2", request_model="CompanySearchRequest", response_model="List[SearchCompanyResponse]")
+_SEARCH = Route(
+    "POST", "/companies/search/v2",
+    request_model="CompanySearchRequest", response_model="List[SearchCompanyResponse]",
+)
 _LIST = Route("POST", "/companies/list", request_model="ListRequest", response_model="List[CompanySimple]")
 _AVAILABLE = Route("GET", "/companies/availableByCurrentUser", response_model="List[CompanySimple]")
 

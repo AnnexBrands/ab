@@ -7,7 +7,7 @@ from typing import Generic, List, Optional, TypeVar
 
 from pydantic import Field
 
-from ab.api.models.base import ABConnectBaseModel, RequestModel, ResponseModel
+from ab.api.models.base import RequestModel, ResponseModel
 
 logger = logging.getLogger(__name__)
 

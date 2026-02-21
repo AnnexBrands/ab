@@ -21,7 +21,10 @@ class TestRoute:
         assert bound is not r
 
     def test_bind_preserves_metadata(self):
-        r = Route("PUT", "/catalog/{id}", request_model="UpdateCatalogRequest", response_model="CatalogWithSellersDto", api_surface="catalog")
+        r = Route(
+            "PUT", "/catalog/{id}",
+            request_model="UpdateCatalogRequest", response_model="CatalogWithSellersDto", api_surface="catalog",
+        )
         bound = r.bind(id="42")
         assert bound.method == "PUT"
         assert bound.request_model == "UpdateCatalogRequest"

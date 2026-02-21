@@ -235,12 +235,12 @@ def _render_action_item(item: ActionItem) -> str:
     badge = _blocker_badge(item.blocker_type)
 
     parts = [
-        f"<div class='endpoint-row'>",
+        "<div class='endpoint-row'>",
         f"<span class='ep-method'>{escape(ep.method)}</span>",
         f"<span class='ep-path'>{escape(ep.path)}</span>",
         f"<span class='ep-model'>{escape(ep.response_model)}</span>",
         f"{badge}",
-        f"</div>",
+        "</div>",
     ]
 
     if item.instructions:

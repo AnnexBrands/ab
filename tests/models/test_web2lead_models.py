@@ -2,9 +2,8 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.web2lead import Web2LeadResponse
+from tests.conftest import require_fixture
 
 
 class TestWeb2LeadModels:

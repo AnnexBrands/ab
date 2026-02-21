@@ -1,8 +1,7 @@
 """Fixture validation tests for Payment models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.payments import ACHSessionResponse, PaymentInfo, PaymentSource
+from tests.conftest import require_fixture
 
 
 class TestPaymentModels:

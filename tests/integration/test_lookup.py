@@ -20,4 +20,4 @@ class TestLookupIntegration:
 
     def test_get_items(self, api):
         # May return 204 No Content
-        result = api.lookup.get_items()
+        api.lookup.get_items()

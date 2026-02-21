@@ -2,9 +2,8 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.companies import CompanyDetails, CompanySimple, SearchCompanyResponse
+from tests.conftest import require_fixture
 
 
 class TestCompanyModels:

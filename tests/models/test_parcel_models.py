@@ -1,8 +1,7 @@
 """Fixture validation tests for Parcel models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.jobs import PackagingContainer, ParcelItem, ParcelItemWithMaterials
+from tests.conftest import require_fixture
 
 
 class TestParcelModels:

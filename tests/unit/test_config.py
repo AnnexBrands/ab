@@ -10,7 +10,6 @@ import pytest
 from ab.config import ABConnectSettings, load_settings
 from ab.exceptions import ConfigurationError
 
-
 _VALID_ENV = {
     "ABCONNECT_USERNAME": "testuser",
     "ABCONNECT_PASSWORD": "testpass",

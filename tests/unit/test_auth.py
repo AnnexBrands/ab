@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-import json
 import time
 from unittest.mock import MagicMock
-
-import pytest
 
 from ab.auth.base import Token
 from ab.auth.file import FileTokenStorage

@@ -11,7 +11,6 @@ Provides the model hierarchy:
 from __future__ import annotations
 
 import logging
-import re
 from typing import Any, Dict, List, Type, TypeVar, Union
 
 from pydantic import BaseModel, ConfigDict

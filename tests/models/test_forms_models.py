@@ -1,8 +1,7 @@
 """Fixture validation tests for Forms models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.forms import FormsShipmentPlan
+from tests.conftest import require_fixture
 
 
 class TestFormsModels:

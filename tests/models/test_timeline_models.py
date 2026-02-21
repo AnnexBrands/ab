@@ -1,8 +1,7 @@
 """Fixture validation tests for Timeline models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.jobs import TimelineAgent, TimelineTask
+from tests.conftest import require_fixture
 
 
 class TestTimelineModels:

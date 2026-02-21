@@ -7,8 +7,14 @@ from typing import Any
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
-_QUICK_QUOTE = Route("POST", "/autoprice/quickquote", request_model="QuoteRequestModel", response_model="QuickQuoteResponse", api_surface="abc")
-_QUOTE_REQUEST = Route("POST", "/autoprice/v2/quoterequest", request_model="QuoteRequestModel", response_model="QuoteRequestResponse", api_surface="abc")
+_QUICK_QUOTE = Route(
+    "POST", "/autoprice/quickquote",
+    request_model="QuoteRequestModel", response_model="QuickQuoteResponse", api_surface="abc",
+)
+_QUOTE_REQUEST = Route(
+    "POST", "/autoprice/v2/quoterequest",
+    request_model="QuoteRequestModel", response_model="QuoteRequestResponse", api_surface="abc",
+)
 
 
 class AutoPriceEndpoint(BaseEndpoint):

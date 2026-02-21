@@ -2,14 +2,13 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.contacts import (
     ContactDetailedInfo,
     ContactPrimaryDetails,
     ContactSimple,
     SearchContactEntityResult,
 )
+from tests.conftest import require_fixture
 
 
 class TestContactModels:

@@ -1,8 +1,7 @@
 """Fixture validation tests for Note models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.jobs import JobNote
+from tests.conftest import require_fixture
 
 
 class TestNoteModels:

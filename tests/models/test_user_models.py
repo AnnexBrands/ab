@@ -2,9 +2,8 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.users import User, UserRole
+from tests.conftest import require_fixture
 
 
 class TestUserModels:
@@ -20,4 +19,4 @@ class TestUserModels:
         # Live API returns plain string; wrap if needed
         if isinstance(data, str):
             data = {"name": data}
-        model = UserRole.model_validate(data)
+        UserRole.model_validate(data)

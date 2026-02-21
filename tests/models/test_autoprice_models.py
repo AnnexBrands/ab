@@ -2,9 +2,8 @@
 
 import pytest
 
-from tests.conftest import require_fixture
-
 from ab.api.models.autoprice import QuickQuoteResponse, QuoteRequestResponse
+from tests.conftest import require_fixture
 
 
 class TestAutoPriceModels:
@@ -17,4 +16,4 @@ class TestAutoPriceModels:
 
     def test_quote_request_response(self):
         data = require_fixture("QuoteRequestResponse", "POST", "/AutoPrice/QuoteRequest")
-        model = QuoteRequestResponse.model_validate(data)
+        QuoteRequestResponse.model_validate(data)

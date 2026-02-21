@@ -14,12 +14,26 @@ from ab.api.route import Route
 # Job-scoped shipment routes
 _GET_RATE_QUOTES = Route("GET", "/job/{jobDisplayId}/shipment/ratequotes", response_model="List[RateQuote]")
 _POST_RATE_QUOTES = Route("POST", "/job/{jobDisplayId}/shipment/ratequotes", response_model="List[RateQuote]")
-_BOOK = Route("POST", "/job/{jobDisplayId}/shipment/book", request_model="ShipmentBookRequest", response_model="ServiceBaseResponse")
+_BOOK = Route(
+    "POST", "/job/{jobDisplayId}/shipment/book",
+    request_model="ShipmentBookRequest", response_model="ServiceBaseResponse",
+)
 _DELETE_SHIPMENT = Route("DELETE", "/job/{jobDisplayId}/shipment", response_model="ServiceBaseResponse")
-_GET_ACCESSORIALS = Route("GET", "/job/{jobDisplayId}/shipment/accessorials", response_model="List[Accessorial]")
-_ADD_ACCESSORIAL = Route("POST", "/job/{jobDisplayId}/shipment/accessorial", request_model="AccessorialAddRequest", response_model="ServiceBaseResponse")
-_REMOVE_ACCESSORIAL = Route("DELETE", "/job/{jobDisplayId}/shipment/accessorial/{addOnId}", response_model="ServiceBaseResponse")
-_GET_ORIGIN_DEST = Route("GET", "/job/{jobDisplayId}/shipment/origindestination", response_model="ShipmentOriginDestination")
+_GET_ACCESSORIALS = Route(
+    "GET", "/job/{jobDisplayId}/shipment/accessorials", response_model="List[Accessorial]",
+)
+_ADD_ACCESSORIAL = Route(
+    "POST", "/job/{jobDisplayId}/shipment/accessorial",
+    request_model="AccessorialAddRequest", response_model="ServiceBaseResponse",
+)
+_REMOVE_ACCESSORIAL = Route(
+    "DELETE", "/job/{jobDisplayId}/shipment/accessorial/{addOnId}",
+    response_model="ServiceBaseResponse",
+)
+_GET_ORIGIN_DEST = Route(
+    "GET", "/job/{jobDisplayId}/shipment/origindestination",
+    response_model="ShipmentOriginDestination",
+)
 _GET_EXPORT_DATA = Route("GET", "/job/{jobDisplayId}/shipment/exportdata", response_model="ShipmentExportData")
 _POST_EXPORT_DATA = Route("POST", "/job/{jobDisplayId}/shipment/exportdata", response_model="ServiceBaseResponse")
 _GET_RATES_STATE = Route("GET", "/job/{jobDisplayId}/shipment/ratesstate", response_model="RatesState")
@@ -61,7 +75,9 @@ class ShipmentsEndpoint(BaseEndpoint):
 
     def remove_accessorial(self, job_display_id: int, add_on_id: str) -> Any:
         """DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId} (ACPortal)"""
-        return self._request(_REMOVE_ACCESSORIAL.bind(jobDisplayId=job_display_id, addOnId=add_on_id))
+        return self._request(
+            _REMOVE_ACCESSORIAL.bind(jobDisplayId=job_display_id, addOnId=add_on_id),
+        )
 
     def get_origin_destination(self, job_display_id: int) -> Any:
         """GET /job/{jobDisplayId}/shipment/origindestination (ACPortal)"""

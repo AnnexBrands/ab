@@ -1,7 +1,5 @@
 """Fixture validation tests for Shipment models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.shipments import (
     Accessorial,
     GlobalAccessorial,
@@ -10,6 +8,7 @@ from ab.api.models.shipments import (
     ShipmentInfo,
     ShipmentOriginDestination,
 )
+from tests.conftest import require_fixture
 
 
 class TestShipmentModels:

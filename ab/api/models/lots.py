@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import Field
 
@@ -13,7 +13,7 @@ class LotDataDto(ResponseModel):
     """Nested data payload within a lot."""
 
     qty: Optional[int] = Field(None, description="Quantity")
-    l: Optional[float] = Field(None, description="Length")
+    length: Optional[float] = Field(None, alias="l", description="Length")
     w: Optional[float] = Field(None, description="Width")
     h: Optional[float] = Field(None, description="Height")
     wgt: Optional[float] = Field(None, description="Weight")

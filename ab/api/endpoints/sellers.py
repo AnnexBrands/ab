@@ -10,7 +10,10 @@ from ab.api.route import Route
 _CREATE = Route("POST", "/Seller", request_model="AddSellerRequest", response_model="SellerDto", api_surface="catalog")
 _LIST = Route("GET", "/Seller", response_model="PaginatedList[SellerExpandedDto]", api_surface="catalog")
 _GET = Route("GET", "/Seller/{id}", response_model="SellerExpandedDto", api_surface="catalog")
-_UPDATE = Route("PUT", "/Seller/{id}", request_model="UpdateSellerRequest", response_model="SellerDto", api_surface="catalog")
+_UPDATE = Route(
+    "PUT", "/Seller/{id}",
+    request_model="UpdateSellerRequest", response_model="SellerDto", api_surface="catalog",
+)
 _DELETE = Route("DELETE", "/Seller/{id}", api_surface="catalog")
 
 

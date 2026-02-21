@@ -1,8 +1,7 @@
 """Fixture validation tests for RFQ models."""
 
-from tests.conftest import require_fixture
-
 from ab.api.models.rfq import QuoteRequestDisplayInfo, QuoteRequestStatus
+from tests.conftest import require_fixture
 
 
 class TestRFQModels:

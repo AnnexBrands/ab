@@ -9,7 +9,7 @@ from ab.auth.base import TokenStorage
 from ab.auth.file import FileTokenStorage
 from ab.auth.session import SessionTokenStorage
 from ab.cache import CodeResolver
-from ab.config import ABConnectSettings, load_settings
+from ab.config import load_settings
 from ab.http import HttpClient
 
 logger = logging.getLogger(__name__)

@@ -9,7 +9,6 @@ from pydantic import Field
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.mixins import IdentifiedModel
 
-
 # ---- Response models --------------------------------------------------
 
 
@@ -20,8 +19,12 @@ class RateQuote(ResponseModel):
     service_type: Optional[str] = Field(None, alias="serviceType", description="Service level")
     total_charge: Optional[float] = Field(None, alias="totalCharge", description="Total quoted price")
     transit_days: Optional[int] = Field(None, alias="transitDays", description="Estimated transit time")
-    accessorial_charges: Optional[List[dict]] = Field(None, alias="accessorialCharges", description="Itemized extras")
-    provider_option_index: Optional[int] = Field(None, alias="providerOptionIndex", description="Index for booking selection")
+    accessorial_charges: Optional[List[dict]] = Field(
+        None, alias="accessorialCharges", description="Itemized extras",
+    )
+    provider_option_index: Optional[int] = Field(
+        None, alias="providerOptionIndex", description="Index for booking selection",
+    )
 
 
 class ShipmentOriginDestination(ResponseModel):
@@ -76,7 +79,9 @@ class GlobalAccessorial(ResponseModel):
 class ShipmentBookRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/shipment/book."""
 
-    provider_option_index: Optional[int] = Field(None, alias="providerOptionIndex", description="Selected rate quote index")
+    provider_option_index: Optional[int] = Field(
+        None, alias="providerOptionIndex", description="Selected rate quote index",
+    )
     ship_date: Optional[str] = Field(None, alias="shipDate", description="Requested ship date")
 
 
