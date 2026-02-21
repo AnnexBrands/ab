@@ -1,32 +1,33 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 2.1.0 → 2.2.0
-  Bump rationale: MINOR — New Principle IX (Endpoint Input
-    Validation) added. Codifies that endpoint methods MUST
-    validate inputs against Pydantic models before making HTTP
-    calls. Required params/body fields MUST raise early (TypeError
-    or ValidationError) rather than silently passing bad data.
-    Driven by feature 005 findings: 5 endpoints silently ignored
-    inputs due to unvalidated parameter names and transport.
+  Version change: 2.2.0 → 2.3.0
+  Bump rationale: MINOR — New "Sources of Truth" section added
+    between Core Principles and API Coverage & Scope. Codifies a
+    three-tier hierarchy: (1) API server source at /src/ABConnect/,
+    (2) captured fixtures from real API responses, (3) swagger
+    specifications. Driven by stakeholder input: server source has
+    always been the ground truth but was never documented in the
+    constitution.
   Modified principles:
-    - II. Example-Driven Fixture Capture: Updated stale example
-      (address/isvalid params corrected to Line1, City, State, Zip).
-    - IV. Swagger-Informed, Reality-Validated: Added bullet
-      requiring automated param-name validation via
-      tests/test_example_params.py.
+    - II. Example-Driven Fixture Capture: Added server source as
+      research source (step 0, before ABConnectTools and swagger).
+      Contextualized fixtures as Tier 2 in the hierarchy.
+    - IV. Swagger-Informed, Reality-Validated: Added cross-reference
+      to Sources of Truth hierarchy. Clarified swagger's position
+      as Tier 3 (informational, not authoritative).
   Added sections:
-    - IX. Endpoint Input Validation
+    - Sources of Truth (new top-level section between Core Principles
+      and API Coverage & Scope)
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ no update needed
     - .specify/templates/spec-template.md ✅ no update needed
     - .specify/templates/tasks-template.md ✅ no update needed
-  Follow-up TODOs: None — all files updated in this revision.
+  Follow-up TODOs: None
   Propagated changes:
-    - .claude/workflows/DISCOVER.md ✅ updated (v2.2.0 ref,
-      Phase D swagger note, Phase S validation exit gate,
-      anti-patterns for unvalidated inputs)
+    - .claude/workflows/DISCOVER.md ✅ updated (Phase D server
+      source step, server source path reference table)
 -->
 # ABConnect SDK Constitution
 
@@ -63,8 +64,14 @@ calls the SDK method with correct parameters. Examples are the
 primary mechanism for capturing fixtures.
 
 **Before writing an example**, the developer (human or agent) MUST
-research the endpoint's requirements from two sources:
+research the endpoint's requirements from these sources, in order
+of authority (see Sources of Truth):
 
+0. **API Server Source** (`/src/ABConnect/`) — Read the controller
+   action for the endpoint to understand parameter binding, required
+   fields, and response construction. Read the DTO classes for exact
+   field names and types. This is the definitive source when
+   available.
 1. **ABConnectTools** — Read the legacy endpoint implementation
    (`/usr/src/pkgs/ABConnectTools/ABConnect/api/endpoints/`) and
    examples (`/usr/src/pkgs/ABConnectTools/examples/api/`) to
@@ -144,9 +151,12 @@ merged to main without at least a skip-marked test.
 ### IV. Swagger-Informed, Reality-Validated
 
 The three swagger specs (ACPortal, Catalog-API, ABC-API) are
-reference inputs, not authoritative contracts. ACPortal swagger
-in particular is known to frequently omit fields, declare wrong
-types, or miss entire response models.
+reference inputs, not authoritative contracts (Tier 3 in the
+Sources of Truth hierarchy). ACPortal swagger in particular is
+known to frequently omit fields, declare wrong types, or miss
+entire response models. The API server source code is the ultimate
+authority (Tier 1); captured fixtures are strong evidence of
+actual behavior (Tier 2).
 
 - Route definitions MUST reference swagger operation IDs where
   available.
@@ -325,6 +335,47 @@ endpoint method accepted inputs without validating them against
 the swagger contract. Pydantic validation at the SDK boundary
 catches these errors before the HTTP call is made.
 
+## Sources of Truth
+
+When information about API behavior conflicts across sources, the
+following hierarchy determines which source is authoritative:
+
+1. **API Server Source Code** (`/src/ABConnect/`) — The actual .NET
+   server implementation. Controllers define route behavior, DTOs
+   define response/request shapes, services implement business logic.
+   This is the ultimate authority for what the API does.
+
+   Key paths:
+   - ACPortal controllers: `ACPortal/ABC.ACPortal.WebAPI/Controllers/`
+   - ACPortal DTOs: `ACPortal/ABC.ACPortal.WebAPI/Models/`
+   - ABC controllers: `ABC.WebAPI/Controllers/`
+   - ABC DTOs: `ABC.WebAPI/Models/`
+   - Shared entities: `AB.ABCEntities/`
+   - Business logic: `ABC.Services/`
+
+2. **Captured Fixtures** (`tests/fixtures/`) — Real responses from
+   the live API, captured by running examples against staging. These
+   are validated evidence of actual API behavior at a point in time.
+   Fixtures are strong truth — they reflect what the API actually
+   returned.
+
+3. **Swagger Specifications** — Auto-generated OpenAPI specs served
+   by each API surface. Useful for endpoint discovery, parameter
+   naming, and initial schema research. However, ACPortal swagger
+   is known to frequently omit fields, declare wrong types, or miss
+   entire response models. Swagger is informational, not
+   authoritative.
+
+**Degradation policy**: When a higher-ranked source is unavailable
+(e.g., server source not accessible in CI), use the next available
+source. When no fixtures exist for a new endpoint, swagger is the
+starting reference — track the endpoint as needing validation.
+
+**Conflict resolution**: When sources disagree, the higher-ranked
+source wins. If server source contradicts a fixture, re-capture the
+fixture. If a fixture contradicts swagger, trust the fixture and
+document the swagger deviation.
+
 ## API Coverage & Scope
 
 This SDK covers three ABConnect API surfaces:
@@ -442,4 +493,4 @@ principles.
   instructions for entering mid-flight. Workflows without
   recovery procedures are incomplete.
 
-**Version**: 2.2.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-14
+**Version**: 2.3.0 | **Ratified**: 2026-02-13 | **Last Amended**: 2026-02-21

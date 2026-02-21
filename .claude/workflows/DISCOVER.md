@@ -4,7 +4,7 @@ Phased approach for systematically implementing missing API
 endpoints with example-driven fixture capture and clean context
 recovery.
 
-**Constitution**: `.specify/memory/constitution.md` v2.2.0
+**Constitution**: `.specify/memory/constitution.md` v2.3.0
 **Principles**: II (Example-Driven Fixture Capture),
 III (Four-Way Harmony), V (Endpoint Status Tracking),
 VIII (Phase-Based Context Recovery),
@@ -15,7 +15,7 @@ IX (Endpoint Input Validation)
 
 ```mermaid
 flowchart TD
-    D[D — Determine\nResearch params from\nABConnectTools + swagger]
+    D[D — Determine\nResearch params from\nserver source + ABConnectTools + swagger]
     I[I — Implement models\nPydantic models + skeleton tests]
     S[S — Scaffold endpoints\nEndpoint methods + client wiring]
     C[C — Call & Capture\nExamples call methods\n200 → fixture saved]
@@ -52,6 +52,13 @@ BEFORE writing an example.
 
 For each endpoint in the group:
 
+0. **Server source** (when accessible): Read the controller action
+   at `/src/ABConnect/{project}/Controllers/{Service}Controller.cs`
+   to see exact parameter binding, required fields, response
+   construction, and any validation logic. Read DTOs at
+   `/src/ABConnect/{project}/Models/` for exact field names and
+   types. This is the ultimate source of truth (see constitution
+   Sources of Truth hierarchy).
 1. **Routes**: Read `ABConnectTools/ABConnect/api/routes.py`
    (`SCHEMA["{GROUP}"]`) for method + path.
 2. **Endpoint code**: Read
@@ -420,6 +427,19 @@ resume at phase C).
 
 Pick up from the next incomplete phase. Do NOT restart from
 scratch. All prior phase artifacts are committed and valid.
+
+## ABConnect Server Source Paths
+
+Quick lookup for Phase D step 0 (ultimate source of truth):
+
+| What | Path |
+|------|------|
+| ACPortal controllers | `/src/ABConnect/ACPortal/ABC.ACPortal.WebAPI/Controllers/` |
+| ACPortal DTOs | `/src/ABConnect/ACPortal/ABC.ACPortal.WebAPI/Models/` |
+| ABC controllers | `/src/ABConnect/ABC.WebAPI/Controllers/` |
+| ABC DTOs | `/src/ABConnect/ABC.WebAPI/Models/` |
+| Shared entities | `/src/ABConnect/AB.ABCEntities/` |
+| Business logic | `/src/ABConnect/ABC.Services/` |
 
 ## ABConnectTools Reference Paths
 
