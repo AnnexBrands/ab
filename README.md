@@ -67,6 +67,27 @@ Or use `.env.staging` / `.env.production` files.
 | `api.autoprice` | quick_quote, quote_request | ABC |
 | `api.web2lead` | get, post | ABC |
 
+## Running Examples
+
+The SDK ships with runnable examples for every endpoint group. Use the `ex` console script or `python -m examples`:
+
+```bash
+# List all available example modules
+ex --list
+
+# Run all examples for a module
+ex contacts
+
+# Run a single entry (dot syntax)
+ex contacts.get_details
+
+# Prefix matching and aliases work too
+ex co.get_d          # matches companies.get_details
+ex addr.val          # matches address.validate
+```
+
+Each example authenticates against the configured environment, calls the endpoint, displays the result, and saves response fixtures to `tests/fixtures/`.
+
 ## Documentation
 
 Build Sphinx docs:
