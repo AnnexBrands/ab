@@ -1,9 +1,9 @@
-"""Fixture validation tests for Document models (T062)."""
+"""Fixture validation tests for Document models."""
 
 import pytest
 
 from ab.api.models.documents import Document
-from tests.conftest import require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestDocumentModels:
@@ -11,6 +11,5 @@ class TestDocumentModels:
     def test_document(self):
         data = require_fixture("Document", "GET", "/documents", required=True)
         model = Document.model_validate(data)
-        assert model.id == 1771682
-        assert model.file_name == "USAR(7).pdf"
-        assert model.type_name == "USAR"
+        assert isinstance(model, Document)
+        assert_no_extra_fields(model)

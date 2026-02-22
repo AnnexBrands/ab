@@ -2,7 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.lookup import (
+        AccessKey,
+        ContactTypeEntity,
+        CountryCodeDto,
+        DensityClassEntry,
+        JobStatus,
+        LookupItem,
+        LookupValue,
+        ParcelPackageType,
+    )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -30,67 +42,67 @@ _RESET_CACHE = Route("GET", "/lookup/resetMasterConstantCache")
 class LookupEndpoint(BaseEndpoint):
     """Reference/lookup data (ACPortal API)."""
 
-    def get_contact_types(self) -> Any:
+    def get_contact_types(self) -> list[ContactTypeEntity]:
         """GET /lookup/contactTypes"""
         return self._request(_CONTACT_TYPES)
 
-    def get_countries(self) -> Any:
+    def get_countries(self) -> list[CountryCodeDto]:
         """GET /lookup/countries"""
         return self._request(_COUNTRIES)
 
-    def get_job_statuses(self) -> Any:
+    def get_job_statuses(self) -> list[JobStatus]:
         """GET /lookup/jobStatuses"""
         return self._request(_JOB_STATUSES)
 
-    def get_items(self) -> Any:
+    def get_items(self) -> list[LookupItem]:
         """GET /lookup/items"""
         return self._request(_ITEMS)
 
     # ---- Generic lookup (008) ---------------------------------------------
 
-    def get_by_key(self, key: str) -> Any:
+    def get_by_key(self, key: str) -> list[LookupValue]:
         """GET /lookup/{masterConstantKey}"""
         return self._request(_GET_BY_KEY.bind(masterConstantKey=key))
 
-    def get_by_key_and_id(self, key: str, value_id: str) -> Any:
+    def get_by_key_and_id(self, key: str, value_id: str) -> LookupValue:
         """GET /lookup/{masterConstantKey}/{valueId}"""
         return self._request(_GET_BY_KEY_AND_ID.bind(masterConstantKey=key, valueId=value_id))
 
     # ---- Named convenience methods (008) ----------------------------------
 
-    def get_access_keys(self) -> Any:
+    def get_access_keys(self) -> list[AccessKey]:
         """GET /lookup/accessKeys"""
         return self._request(_ACCESS_KEYS)
 
-    def get_access_key(self, access_key: str) -> Any:
+    def get_access_key(self, access_key: str) -> AccessKey:
         """GET /lookup/accessKey/{accessKey}"""
         return self._request(_ACCESS_KEY.bind(accessKey=access_key))
 
-    def get_ppc_campaigns(self) -> Any:
+    def get_ppc_campaigns(self) -> list[LookupValue]:
         """GET /lookup/PPCCampaigns"""
         return self._request(_PPC_CAMPAIGNS)
 
-    def get_parcel_package_types(self) -> Any:
+    def get_parcel_package_types(self) -> list[ParcelPackageType]:
         """GET /lookup/parcelPackageTypes"""
         return self._request(_PARCEL_PACKAGE_TYPES)
 
-    def get_document_types(self) -> Any:
+    def get_document_types(self) -> list[LookupValue]:
         """GET /lookup/documentTypes"""
         return self._request(_DOCUMENT_TYPES)
 
-    def get_common_insurance(self) -> Any:
+    def get_common_insurance(self) -> list[LookupValue]:
         """GET /lookup/comonInsurance"""
         return self._request(_COMMON_INSURANCE)
 
-    def get_density_class_map(self) -> Any:
+    def get_density_class_map(self) -> list[DensityClassEntry]:
         """GET /lookup/densityClassMap"""
         return self._request(_DENSITY_CLASS_MAP)
 
-    def get_refer_categories(self) -> Any:
+    def get_refer_categories(self) -> list[LookupValue]:
         """GET /lookup/referCategory"""
         return self._request(_REFER_CATEGORIES)
 
-    def get_refer_category_hierarchy(self) -> Any:
+    def get_refer_category_hierarchy(self) -> list[LookupValue]:
         """GET /lookup/referCategoryHeirachy"""
         return self._request(_REFER_CATEGORY_HIERARCHY)
 

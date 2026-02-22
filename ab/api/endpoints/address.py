@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from ab.api.models.address import AddressIsValidResult, PropertyType
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -21,7 +24,7 @@ class AddressEndpoint(BaseEndpoint):
         city: Optional[str] = None,
         state: Optional[str] = None,
         zip: Optional[str] = None,
-    ) -> Any:
+    ) -> AddressIsValidResult:
         """GET /address/isvalid"""
         params: dict[str, str] = {}
         if line1:
@@ -42,7 +45,7 @@ class AddressEndpoint(BaseEndpoint):
         city: Optional[str] = None,
         state: Optional[str] = None,
         zip_code: Optional[str] = None,
-    ) -> Any:
+    ) -> PropertyType:
         """GET /address/propertytype"""
         params: dict[str, str] = {}
         if address1:

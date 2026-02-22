@@ -9,34 +9,48 @@ from ab.api.models.companies import (
     PackagingSettings,
     PackagingTariff,
 )
-from tests.conftest import require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestExtendedCompanyModels:
     def test_company_brand(self):
         data = require_fixture("CompanyBrand", "GET", "/companies/brands")
-        CompanyBrand.model_validate(data)
+        model = CompanyBrand.model_validate(data)
+        assert isinstance(model, CompanyBrand)
+        assert_no_extra_fields(model)
 
     def test_brand_tree(self):
         data = require_fixture("BrandTree", "GET", "/companies/brandstree")
-        BrandTree.model_validate(data)
+        model = BrandTree.model_validate(data)
+        assert isinstance(model, BrandTree)
+        assert_no_extra_fields(model)
 
     def test_geo_settings(self):
         data = require_fixture("GeoSettings", "GET", "/companies/{id}/geosettings")
-        GeoSettings.model_validate(data)
+        model = GeoSettings.model_validate(data)
+        assert isinstance(model, GeoSettings)
+        assert_no_extra_fields(model)
 
     def test_carrier_account(self):
         data = require_fixture("CarrierAccount", "GET", "/companies/{id}/carrierAcounts")
-        CarrierAccount.model_validate(data)
+        model = CarrierAccount.model_validate(data)
+        assert isinstance(model, CarrierAccount)
+        assert_no_extra_fields(model)
 
     def test_packaging_settings(self):
         data = require_fixture("PackagingSettings", "GET", "/companies/{id}/packagingsettings")
-        PackagingSettings.model_validate(data)
+        model = PackagingSettings.model_validate(data)
+        assert isinstance(model, PackagingSettings)
+        assert_no_extra_fields(model)
 
     def test_packaging_labor(self):
         data = require_fixture("PackagingLabor", "GET", "/companies/{id}/packaginglabor")
-        PackagingLabor.model_validate(data)
+        model = PackagingLabor.model_validate(data)
+        assert isinstance(model, PackagingLabor)
+        assert_no_extra_fields(model)
 
     def test_packaging_tariff(self):
         data = require_fixture("PackagingTariff", "GET", "/companies/{id}/inheritedPackagingTariffs")
-        PackagingTariff.model_validate(data)
+        model = PackagingTariff.model_validate(data)
+        assert isinstance(model, PackagingTariff)
+        assert_no_extra_fields(model)

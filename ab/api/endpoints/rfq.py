@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.rfq import QuoteRequestDisplayInfo
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -19,11 +22,11 @@ _ADD_COMMENT = Route("POST", "/rfq/{rfqId}/comment", request_model="AcceptModel"
 class RFQEndpoint(BaseEndpoint):
     """RFQ lifecycle operations (ACPortal API)."""
 
-    def get(self, rfq_id: str) -> Any:
+    def get(self, rfq_id: str) -> QuoteRequestDisplayInfo:
         """GET /rfq/{rfqId}"""
         return self._request(_GET.bind(rfqId=rfq_id))
 
-    def get_for_job(self, job_id: str) -> Any:
+    def get_for_job(self, job_id: str) -> list[QuoteRequestDisplayInfo]:
         """GET /rfq/forjob/{jobId}"""
         return self._request(_GET_FOR_JOB.bind(jobId=job_id))
 

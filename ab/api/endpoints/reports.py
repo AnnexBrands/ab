@@ -2,7 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.reports import (
+        InsuranceReport,
+        ReferredByReport,
+        RevenueCustomer,
+        SalesForecastReport,
+        SalesForecastSummary,
+        Web2LeadReport,
+    )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -44,34 +54,34 @@ _WEB2LEAD = Route(
 class ReportsEndpoint(BaseEndpoint):
     """Report generation (ACPortal API)."""
 
-    def insurance(self, **kwargs: Any) -> Any:
+    def insurance(self, **kwargs: Any) -> InsuranceReport:
         """POST /reports/insurance"""
         return self._request(_INSURANCE, json=kwargs)
 
-    def sales(self, **kwargs: Any) -> Any:
+    def sales(self, **kwargs: Any) -> SalesForecastReport:
         """POST /reports/sales"""
         return self._request(_SALES, json=kwargs)
 
-    def sales_summary(self, **kwargs: Any) -> Any:
+    def sales_summary(self, **kwargs: Any) -> SalesForecastSummary:
         """POST /reports/sales/summary"""
         return self._request(_SALES_SUMMARY, json=kwargs)
 
-    def sales_drilldown(self, **kwargs: Any) -> Any:
+    def sales_drilldown(self, **kwargs: Any) -> list[RevenueCustomer]:
         """POST /reports/salesDrilldown"""
         return self._request(_SALES_DRILLDOWN, json=kwargs)
 
-    def top_revenue_customers(self, **kwargs: Any) -> Any:
+    def top_revenue_customers(self, **kwargs: Any) -> list[RevenueCustomer]:
         """POST /reports/topRevenueCustomers"""
         return self._request(_TOP_REVENUE_CUSTOMERS, json=kwargs)
 
-    def top_revenue_sales_reps(self, **kwargs: Any) -> Any:
+    def top_revenue_sales_reps(self, **kwargs: Any) -> list[RevenueCustomer]:
         """POST /reports/topRevenueSalesReps"""
         return self._request(_TOP_REVENUE_SALES_REPS, json=kwargs)
 
-    def referred_by(self, **kwargs: Any) -> Any:
+    def referred_by(self, **kwargs: Any) -> ReferredByReport:
         """POST /reports/referredBy"""
         return self._request(_REFERRED_BY, json=kwargs)
 
-    def web2lead(self, **kwargs: Any) -> Any:
+    def web2lead(self, **kwargs: Any) -> Web2LeadReport:
         """POST /reports/web2Lead"""
         return self._request(_WEB2LEAD, json=kwargs)

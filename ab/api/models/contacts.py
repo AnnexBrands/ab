@@ -7,6 +7,7 @@ from typing import List, Optional
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+from ab.api.models.common import CompanyAddress
 from ab.api.models.mixins import FullAuditModel, IdentifiedModel
 
 
@@ -54,6 +55,9 @@ class ContactPrimaryDetails(ResponseModel):
     company: Optional[dict] = Field(None, description="Associated company (full object)")
     company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
     company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    cell_phone: Optional[str] = Field(None, alias="cellPhone", description="Cell phone number")
+    fax: Optional[str] = Field(None, description="Fax number")
+    address: Optional[CompanyAddress] = Field(None, description="Contact address")
 
 
 class SearchContactEntityResult(ResponseModel):

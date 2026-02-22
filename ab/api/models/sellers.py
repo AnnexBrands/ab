@@ -24,6 +24,8 @@ class SellerExpandedDto(ResponseModel):
     name: Optional[str] = Field(None, description="Seller name")
     display_id: Optional[str] = Field(None, alias="displayId", description="Display identifier")
     catalogs: Optional[List[dict]] = Field(None, description="Associated catalogs")
+    customer_display_id: Optional[int] = Field(None, alias="customerDisplayId", description="Customer display ID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Whether seller is active")
 
 
 class AddSellerRequest(RequestModel):

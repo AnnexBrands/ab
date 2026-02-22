@@ -73,6 +73,7 @@ class CalendarItem(ResponseModel):
     value: Optional[float] = Field(None, description="Declared value")
     notes: Optional[str] = Field(None, description="Item notes")
     customer_item_id: Optional[str] = Field(None, alias="customerItemId", description="Customer item reference")
+    noted_conditions: Optional[str] = Field(None, alias="notedConditions", description="Noted conditions for item")
 
 
 class JobUpdatePageConfig(ResponseModel):

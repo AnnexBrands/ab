@@ -2,7 +2,19 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.contacts import (
+        ContactDetailedInfo,
+        ContactGraphData,
+        ContactHistory,
+        ContactHistoryAggregated,
+        ContactMergePreview,
+        ContactPrimaryDetails,
+        ContactSimple,
+        SearchContactEntityResult,
+    )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -32,11 +44,11 @@ _MERGE = Route("PUT", "/contacts/{mergeToId}/merge")
 class ContactsEndpoint(BaseEndpoint):
     """Operations on contacts (ACPortal API)."""
 
-    def get(self, contact_id: str) -> Any:
+    def get(self, contact_id: str) -> ContactSimple:
         """GET /contacts/{id}"""
         return self._request(_GET.bind(id=contact_id))
 
-    def get_details(self, contact_id: str) -> Any:
+    def get_details(self, contact_id: str) -> ContactDetailedInfo:
         """GET /contacts/{contactId}/editdetails"""
         return self._request(_GET_DETAILS.bind(contactId=contact_id))
 
@@ -48,33 +60,33 @@ class ContactsEndpoint(BaseEndpoint):
         """POST /contacts/editdetails"""
         return self._request(_CREATE, json=data)
 
-    def search(self, data: dict | Any) -> Any:
+    def search(self, data: dict | Any) -> list[SearchContactEntityResult]:
         """POST /contacts/v2/search"""
         return self._request(_SEARCH, json=data)
 
-    def get_primary_details(self, contact_id: str) -> Any:
+    def get_primary_details(self, contact_id: str) -> ContactPrimaryDetails:
         """GET /contacts/{contactId}/primarydetails"""
         return self._request(_PRIMARY_DETAILS.bind(contactId=contact_id))
 
-    def get_current_user(self) -> Any:
+    def get_current_user(self) -> ContactSimple:
         """GET /contacts/user"""
         return self._request(_CURRENT_USER)
 
     # ---- Extended (008) ---------------------------------------------------
 
-    def post_history(self, contact_id: str, **kwargs: Any) -> Any:
+    def post_history(self, contact_id: str, **kwargs: Any) -> ContactHistory:
         """POST /contacts/{contactId}/history"""
         return self._request(_POST_HISTORY.bind(contactId=contact_id), json=kwargs)
 
-    def get_history_aggregated(self, contact_id: str) -> Any:
+    def get_history_aggregated(self, contact_id: str) -> ContactHistoryAggregated:
         """GET /contacts/{contactId}/history/aggregated"""
         return self._request(_GET_HISTORY_AGGREGATED.bind(contactId=contact_id))
 
-    def get_history_graph_data(self, contact_id: str) -> Any:
+    def get_history_graph_data(self, contact_id: str) -> ContactGraphData:
         """GET /contacts/{contactId}/history/graphdata"""
         return self._request(_GET_HISTORY_GRAPH_DATA.bind(contactId=contact_id))
 
-    def merge_preview(self, merge_to_id: str, **kwargs: Any) -> Any:
+    def merge_preview(self, merge_to_id: str, **kwargs: Any) -> ContactMergePreview:
         """POST /contacts/{mergeToId}/merge/preview"""
         return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=kwargs)
 

@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.sellers import SellerDto, SellerExpandedDto
+    from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -20,22 +24,22 @@ _DELETE = Route("DELETE", "/Seller/{id}", api_surface="catalog")
 class SellersEndpoint(BaseEndpoint):
     """Operations on sellers (Catalog API)."""
 
-    def create(self, data: dict | Any) -> Any:
+    def create(self, data: dict | Any) -> SellerDto:
         """POST /Seller"""
         return self._request(_CREATE, json=data)
 
-    def list(self, *, page: int = 1, page_size: int = 25) -> Any:
+    def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[SellerExpandedDto]:
         """GET /Seller — paginated list."""
         return self._paginated_request(
             _LIST, "SellerExpandedDto",
             params={"pageNumber": page, "pageSize": page_size},
         )
 
-    def get(self, seller_id: int) -> Any:
+    def get(self, seller_id: int) -> SellerExpandedDto:
         """GET /Seller/{id}"""
         return self._request(_GET.bind(id=seller_id))
 
-    def update(self, seller_id: int, data: dict | Any) -> Any:
+    def update(self, seller_id: int, data: dict | Any) -> SellerDto:
         """PUT /Seller/{id}"""
         return self._request(_UPDATE.bind(id=seller_id), json=data)
 

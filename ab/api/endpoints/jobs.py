@@ -7,11 +7,37 @@ This file handles two API surfaces. ACPortal routes use the default
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 from ab.http import HttpClient
+
+if TYPE_CHECKING:
+    from ab.api.models.jobs import (
+        CalendarItem,
+        ExtendedOnHoldInfo,
+        Job,
+        JobNote,
+        JobPrice,
+        JobSearchResult,
+        JobUpdatePageConfig,
+        OnHoldDetails,
+        OnHoldNoteDetails,
+        OnHoldUser,
+        PackagingContainer,
+        ParcelItem,
+        ParcelItemWithMaterials,
+        PricedFreightProvider,
+        ResolveJobOnHoldResponse,
+        SaveOnHoldResponse,
+        TimelineAgent,
+        TimelineTask,
+        TrackingInfo,
+        TrackingInfoV3,
+    )
+    from ab.api.models.rfq import QuoteRequestDisplayInfo, QuoteRequestStatus
+    from ab.api.models.shared import ServiceBaseResponse
 
 # ACPortal routes
 _CREATE = Route("POST", "/job", request_model="JobCreateRequest")
@@ -181,27 +207,27 @@ class JobsEndpoint(BaseEndpoint):
         """PUT /job/save (ACPortal)"""
         return self._request(_SAVE, json=data)
 
-    def get(self, job_display_id: int) -> Any:
+    def get(self, job_display_id: int) -> Job:
         """GET /job/{jobDisplayId} (ACPortal)"""
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
-    def search(self, **params: Any) -> Any:
+    def search(self, **params: Any) -> list[JobSearchResult]:
         """GET /job/search (ACPortal) — query params."""
         return self._request(_SEARCH, params=params)
 
-    def search_by_details(self, data: dict | Any) -> Any:
+    def search_by_details(self, data: dict | Any) -> list[JobSearchResult]:
         """POST /job/searchByDetails (ACPortal)"""
         return self._request(_SEARCH_BY_DETAILS, json=data)
 
-    def get_price(self, job_display_id: int) -> Any:
+    def get_price(self, job_display_id: int) -> JobPrice:
         """GET /job/{jobDisplayId}/price (ACPortal)"""
         return self._request(_GET_PRICE.bind(jobDisplayId=job_display_id))
 
-    def get_calendar_items(self, job_display_id: int) -> Any:
+    def get_calendar_items(self, job_display_id: int) -> list[CalendarItem]:
         """GET /job/{jobDisplayId}/calendaritems (ACPortal)"""
         return self._request(_GET_CALENDAR.bind(jobDisplayId=job_display_id))
 
-    def get_update_page_config(self, job_display_id: int) -> Any:
+    def get_update_page_config(self, job_display_id: int) -> JobUpdatePageConfig:
         """GET /job/{jobDisplayId}/updatePageConfig (ACPortal)"""
         return self._request(_GET_CONFIG.bind(jobDisplayId=job_display_id))
 
@@ -211,63 +237,63 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Timeline & Status ------------------------------------------------
 
-    def get_timeline(self, job_display_id: int) -> Any:
+    def get_timeline(self, job_display_id: int) -> list[TimelineTask]:
         """GET /job/{jobDisplayId}/timeline (ACPortal)"""
         return self._request(_GET_TIMELINE.bind(jobDisplayId=job_display_id))
 
-    def create_timeline_task(self, job_display_id: int, data: dict | Any) -> Any:
+    def create_timeline_task(self, job_display_id: int, data: dict | Any) -> TimelineTask:
         """POST /job/{jobDisplayId}/timeline (ACPortal)"""
         return self._request(_POST_TIMELINE.bind(jobDisplayId=job_display_id), json=data)
 
-    def get_timeline_task(self, job_display_id: int, task_id: str) -> Any:
+    def get_timeline_task(self, job_display_id: int, task_id: str) -> TimelineTask:
         """GET /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} (ACPortal)"""
         return self._request(
             _GET_TIMELINE_TASK.bind(jobDisplayId=job_display_id, timelineTaskIdentifier=task_id),
         )
 
-    def update_timeline_task(self, job_display_id: int, task_id: str, data: dict | Any) -> Any:
+    def update_timeline_task(self, job_display_id: int, task_id: str, data: dict | Any) -> TimelineTask:
         """PATCH /job/{jobDisplayId}/timeline/{timelineTaskId} (ACPortal)"""
         return self._request(
             _PATCH_TIMELINE_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id), json=data,
         )
 
-    def delete_timeline_task(self, job_display_id: int, task_id: str) -> Any:
+    def delete_timeline_task(self, job_display_id: int, task_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/timeline/{timelineTaskId} (ACPortal)"""
         return self._request(
             _DELETE_TIMELINE_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id),
         )
 
-    def get_timeline_agent(self, job_display_id: int, task_code: str) -> Any:
+    def get_timeline_agent(self, job_display_id: int, task_code: str) -> TimelineAgent:
         """GET /job/{jobDisplayId}/timeline/{taskCode}/agent (ACPortal)"""
         return self._request(
             _GET_TIMELINE_AGENT.bind(jobDisplayId=job_display_id, taskCode=task_code),
         )
 
-    def increment_status(self, job_display_id: int, data: dict | Any | None = None) -> Any:
+    def increment_status(self, job_display_id: int, data: dict | Any | None = None) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/timeline/incrementjobstatus (ACPortal)"""
         kwargs: dict[str, Any] = {}
         if data is not None:
             kwargs["json"] = data
         return self._request(_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), **kwargs)
 
-    def undo_increment_status(self, job_display_id: int, data: dict | Any | None = None) -> Any:
+    def undo_increment_status(self, job_display_id: int, data: dict | Any | None = None) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/timeline/undoincrementjobstatus (ACPortal)"""
         kwargs: dict[str, Any] = {}
         if data is not None:
             kwargs["json"] = data
         return self._request(_UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), **kwargs)
 
-    def set_quote_status(self, job_display_id: int) -> Any:
+    def set_quote_status(self, job_display_id: int) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/status/quote (ACPortal)"""
         return self._request(_SET_QUOTE_STATUS.bind(jobDisplayId=job_display_id))
 
     # ---- Tracking ---------------------------------------------------------
 
-    def get_tracking(self, job_display_id: int) -> Any:
+    def get_tracking(self, job_display_id: int) -> TrackingInfo:
         """GET /job/{jobDisplayId}/tracking (ACPortal)"""
         return self._request(_GET_TRACKING.bind(jobDisplayId=job_display_id))
 
-    def get_tracking_v3(self, job_display_id: int, history_amount: int = 10) -> Any:
+    def get_tracking_v3(self, job_display_id: int, history_amount: int = 10) -> TrackingInfoV3:
         """GET /v3/job/{jobDisplayId}/tracking/{historyAmount} (ACPortal)"""
         return self._request(
             _GET_TRACKING_V3.bind(jobDisplayId=job_display_id, historyAmount=history_amount),
@@ -275,63 +301,63 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Notes ------------------------------------------------------------
 
-    def get_notes(self, job_display_id: int, **params: Any) -> Any:
+    def get_notes(self, job_display_id: int, **params: Any) -> list[JobNote]:
         """GET /job/{jobDisplayId}/note (ACPortal) — query params."""
         return self._request(_GET_NOTES.bind(jobDisplayId=job_display_id), params=params or None)
 
-    def create_note(self, job_display_id: int, data: dict | Any) -> Any:
+    def create_note(self, job_display_id: int, data: dict | Any) -> JobNote:
         """POST /job/{jobDisplayId}/note (ACPortal)"""
         return self._request(_POST_NOTE.bind(jobDisplayId=job_display_id), json=data)
 
-    def get_note(self, job_display_id: int, note_id: str) -> Any:
+    def get_note(self, job_display_id: int, note_id: str) -> JobNote:
         """GET /job/{jobDisplayId}/note/{id} (ACPortal)"""
         return self._request(_GET_NOTE.bind(jobDisplayId=job_display_id, id=note_id))
 
-    def update_note(self, job_display_id: int, note_id: str, data: dict | Any) -> Any:
+    def update_note(self, job_display_id: int, note_id: str, data: dict | Any) -> JobNote:
         """PUT /job/{jobDisplayId}/note/{id} (ACPortal)"""
         return self._request(_PUT_NOTE.bind(jobDisplayId=job_display_id, id=note_id), json=data)
 
     # ---- Parcels & Items --------------------------------------------------
 
-    def get_parcel_items(self, job_display_id: int) -> Any:
+    def get_parcel_items(self, job_display_id: int) -> list[ParcelItem]:
         """GET /job/{jobDisplayId}/parcelitems (ACPortal)"""
         return self._request(_GET_PARCEL_ITEMS.bind(jobDisplayId=job_display_id))
 
-    def create_parcel_item(self, job_display_id: int, data: dict | Any) -> Any:
+    def create_parcel_item(self, job_display_id: int, data: dict | Any) -> ParcelItem:
         """POST /job/{jobDisplayId}/parcelitems (ACPortal)"""
         return self._request(_POST_PARCEL_ITEM.bind(jobDisplayId=job_display_id), json=data)
 
-    def delete_parcel_item(self, job_display_id: int, parcel_item_id: str) -> Any:
+    def delete_parcel_item(self, job_display_id: int, parcel_item_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId} (ACPortal)"""
         return self._request(
             _DELETE_PARCEL_ITEM.bind(jobDisplayId=job_display_id, parcelItemId=parcel_item_id),
         )
 
-    def get_parcel_items_with_materials(self, job_display_id: int) -> Any:
+    def get_parcel_items_with_materials(self, job_display_id: int) -> list[ParcelItemWithMaterials]:
         """GET /job/{jobDisplayId}/parcel-items-with-materials (ACPortal)"""
         return self._request(_GET_PARCEL_ITEMS_MATERIALS.bind(jobDisplayId=job_display_id))
 
-    def get_packaging_containers(self, job_display_id: int) -> Any:
+    def get_packaging_containers(self, job_display_id: int) -> list[PackagingContainer]:
         """GET /job/{jobDisplayId}/packagingcontainers (ACPortal)"""
         return self._request(_GET_PACKAGING_CONTAINERS.bind(jobDisplayId=job_display_id))
 
-    def update_item(self, job_display_id: int, item_id: str, data: dict | Any) -> Any:
+    def update_item(self, job_display_id: int, item_id: str, data: dict | Any) -> ServiceBaseResponse:
         """PUT /job/{jobDisplayId}/item/{itemId} (ACPortal)"""
         return self._request(
             _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id), json=data,
         )
 
-    def add_item_notes(self, job_display_id: int, data: dict | Any) -> Any:
+    def add_item_notes(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/item/notes (ACPortal)"""
         return self._request(_POST_ITEM_NOTES.bind(jobDisplayId=job_display_id), json=data)
 
     # ---- RFQ (job-scoped) -------------------------------------------------
 
-    def list_rfqs(self, job_display_id: int) -> Any:
+    def list_rfqs(self, job_display_id: int) -> list[QuoteRequestDisplayInfo]:
         """GET /job/{jobDisplayId}/rfq (ACPortal)"""
         return self._request(_LIST_RFQS.bind(jobDisplayId=job_display_id))
 
-    def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> Any:
+    def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> QuoteRequestStatus:
         """GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} (ACPortal)"""
         return self._request(_GET_RFQ_STATUS.bind(
             jobDisplayId=job_display_id,
@@ -341,11 +367,11 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- On-Hold ----------------------------------------------------------
 
-    def list_on_hold(self, job_display_id: int) -> Any:
+    def list_on_hold(self, job_display_id: int) -> list[ExtendedOnHoldInfo]:
         """GET /job/{jobDisplayId}/onhold (ACPortal)"""
         return self._request(_LIST_ON_HOLD.bind(jobDisplayId=job_display_id))
 
-    def create_on_hold(self, job_display_id: int, **kwargs: Any) -> Any:
+    def create_on_hold(self, job_display_id: int, **kwargs: Any) -> SaveOnHoldResponse:
         """POST /job/{jobDisplayId}/onhold (ACPortal)"""
         return self._request(_CREATE_ON_HOLD.bind(jobDisplayId=job_display_id), json=kwargs)
 
@@ -353,27 +379,27 @@ class JobsEndpoint(BaseEndpoint):
         """DELETE /job/{jobDisplayId}/onhold (ACPortal)"""
         return self._request(_DELETE_ON_HOLD.bind(jobDisplayId=job_display_id))
 
-    def get_on_hold(self, job_display_id: int, on_hold_id: str) -> Any:
+    def get_on_hold(self, job_display_id: int, on_hold_id: str) -> OnHoldDetails:
         """GET /job/{jobDisplayId}/onhold/{id} (ACPortal)"""
         return self._request(_GET_ON_HOLD.bind(jobDisplayId=job_display_id, id=on_hold_id))
 
-    def update_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+    def update_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> SaveOnHoldResponse:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId} (ACPortal)"""
         return self._request(
             _UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs,
         )
 
-    def get_on_hold_followup_user(self, job_display_id: int, contact_id: str) -> Any:
+    def get_on_hold_followup_user(self, job_display_id: int, contact_id: str) -> OnHoldUser:
         """GET /job/{jobDisplayId}/onhold/followupuser/{contactId} (ACPortal)"""
         return self._request(
             _GET_ON_HOLD_FOLLOWUP_USER.bind(jobDisplayId=job_display_id, contactId=contact_id),
         )
 
-    def list_on_hold_followup_users(self, job_display_id: int) -> Any:
+    def list_on_hold_followup_users(self, job_display_id: int) -> list[OnHoldUser]:
         """GET /job/{jobDisplayId}/onhold/followupusers (ACPortal)"""
         return self._request(_LIST_ON_HOLD_FOLLOWUP_USERS.bind(jobDisplayId=job_display_id))
 
-    def add_on_hold_comment(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+    def add_on_hold_comment(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> OnHoldNoteDetails:
         """POST /job/{jobDisplayId}/onhold/{onHoldId}/comment (ACPortal)"""
         return self._request(
             _ADD_ON_HOLD_COMMENT.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs,
@@ -385,7 +411,7 @@ class JobsEndpoint(BaseEndpoint):
             _UPDATE_ON_HOLD_DATES.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs,
         )
 
-    def resolve_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> Any:
+    def resolve_on_hold(self, job_display_id: int, on_hold_id: str, **kwargs: Any) -> ResolveJobOnHoldResponse:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve (ACPortal)"""
         return self._request(
             _RESOLVE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=kwargs,
@@ -435,7 +461,7 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Freight Providers ------------------------------------------------
 
-    def list_freight_providers(self, job_display_id: int, **params: Any) -> Any:
+    def list_freight_providers(self, job_display_id: int, **params: Any) -> list[PricedFreightProvider]:
         """GET /job/{jobDisplayId}/freightproviders (ACPortal)"""
         return self._request(
             _LIST_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id), params=params or None,

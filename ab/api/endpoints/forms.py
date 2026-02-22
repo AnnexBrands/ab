@@ -7,7 +7,10 @@ method returns JSON (List[FormsShipmentPlan]).
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    from ab.api.models.forms import FormsShipmentPlan
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -88,7 +91,7 @@ class FormsEndpoint(BaseEndpoint):
             params["type"] = ops_type
         return self._request(_GET_OPERATIONS.bind(jobDisplayId=job_display_id), params=params or None)
 
-    def get_shipments(self, job_display_id: int) -> Any:
+    def get_shipments(self, job_display_id: int) -> list[FormsShipmentPlan]:
         """GET /job/{jobDisplayId}/form/shipments (ACPortal) — returns List[FormsShipmentPlan]."""
         return self._request(_GET_SHIPMENTS.bind(jobDisplayId=job_display_id))
 

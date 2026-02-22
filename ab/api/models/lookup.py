@@ -15,6 +15,7 @@ class ContactTypeEntity(ResponseModel):
     id: Optional[int] = Field(None, description="Contact type ID")
     name: Optional[str] = Field(None, description="Contact type name")
     description: Optional[str] = Field(None, description="Description")
+    value: Optional[str] = Field(None, description="Contact type value")
 
 
 class CountryCodeDto(ResponseModel):
@@ -22,6 +23,8 @@ class CountryCodeDto(ResponseModel):
 
     code: Optional[str] = Field(None, description="ISO country code")
     name: Optional[str] = Field(None, description="Country name")
+    id: Optional[str] = Field(None, description="Country UUID")
+    iata_code: Optional[str] = Field(None, alias="iataCode", description="IATA country code")
 
 
 class JobStatus(ResponseModel):
@@ -30,6 +33,8 @@ class JobStatus(ResponseModel):
     id: Optional[int] = Field(None, description="Status ID")
     name: Optional[str] = Field(None, description="Status name")
     description: Optional[str] = Field(None, description="Description")
+    key: Optional[str] = Field(None, description="Status key")
+    value: Optional[str] = Field(None, description="Status value")
 
 
 class LookupItem(ResponseModel):

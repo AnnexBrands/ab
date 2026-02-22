@@ -66,6 +66,7 @@ api/web2lead
 :maxdepth: 2
 
 models/base
+models/common
 models/companies
 models/contacts
 models/jobs

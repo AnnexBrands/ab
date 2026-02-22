@@ -17,6 +17,12 @@ class AddressIsValidResult(ResponseModel):
         None, alias="validatedAddress", description="Corrected/validated address"
     )
     suggestions: Optional[List[dict]] = Field(None, description="Alternative suggestions")
+    dont_validate: Optional[bool] = Field(None, alias="dontValidate", description="Skip validation flag")
+    country_id: Optional[str] = Field(None, alias="countryId", description="Country UUID")
+    country_code: Optional[str] = Field(None, alias="countryCode", description="ISO country code")
+    latitude: Optional[float] = Field(None, description="Latitude")
+    longitude: Optional[float] = Field(None, description="Longitude")
+    property_type: Optional[int] = Field(None, alias="propertyType", description="Property type classification")
 
 
 class PropertyType(ResponseModel):

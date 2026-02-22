@@ -23,7 +23,12 @@ def load_fixture(model_name: str) -> dict | list:
         FileNotFoundError: If fixture file does not exist.
     """
     path = FIXTURES_DIR / f"{model_name}.json"
-    return json.loads(path.read_text())
+    try:
+        return json.loads(path.read_text())
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Fixture not found: {path}") from None
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in fixture {model_name}.json: {exc}") from exc
 
 
 def require_fixture(
@@ -59,6 +64,25 @@ def require_fixture(
             msg += f" via {method} {path}"
         pytest.skip(msg)
     return load_fixture(model_name)
+
+
+def assert_no_extra_fields(model: object) -> None:
+    """Assert a Pydantic model has no undeclared extra fields.
+
+    Args:
+        model: A Pydantic model instance (ResponseModel subclass).
+
+    Raises:
+        AssertionError: If ``model.__pydantic_extra__`` is non-empty,
+            with a message listing all undeclared field names.
+    """
+    extra = getattr(model, "__pydantic_extra__", None)
+    if extra:
+        cls_name = model.__class__.__name__
+        fields = ", ".join(sorted(extra.keys()))
+        assert not extra, (
+            f"{cls_name} has {len(extra)} undeclared extra field(s): {fields}"
+        )
 
 
 @pytest.fixture(scope="session")

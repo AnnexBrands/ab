@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.dashboard import DashboardSummary, GridViewInfo, GridViewState
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -21,15 +24,15 @@ _RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates")
 class DashboardEndpoint(BaseEndpoint):
     """Dashboard operations (ACPortal API)."""
 
-    def get(self, **params: Any) -> Any:
+    def get(self, **params: Any) -> DashboardSummary:
         """GET /dashboard"""
         return self._request(_GET, params=params or None)
 
-    def get_grid_views(self) -> Any:
+    def get_grid_views(self) -> list[GridViewInfo]:
         """GET /dashboard/gridviews"""
         return self._request(_GET_GRID_VIEWS)
 
-    def get_grid_view_state(self, view_id: str) -> Any:
+    def get_grid_view_state(self, view_id: str) -> GridViewState:
         """GET /dashboard/gridviewstate/{id}"""
         return self._request(_GET_GRID_VIEW_STATE.bind(id=view_id))
 
