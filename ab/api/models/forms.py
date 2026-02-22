@@ -24,6 +24,18 @@ class OperationsFormParams(RequestModel):
     ops_type: Optional[str] = Field(None, alias="type", description="Operations form type")
 
 
+class FormTypeParams(RequestModel):
+    """Query parameters for form generation with type selection."""
+
+    type: Optional[str] = Field(None, alias="type")
+
+
+class PackagingLabelsParams(RequestModel):
+    """Query parameters for GET packaging labels."""
+
+    shipment_plan_id: Optional[str] = Field(None, alias="shipmentPlanId")
+
+
 class FormsShipmentPlan(ResponseModel):
     """Shipment plan for BOL selection — GET /job/{jobDisplayId}/form/shipments.
 

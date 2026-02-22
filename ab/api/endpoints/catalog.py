@@ -16,7 +16,10 @@ _CREATE = Route(
     "POST", "/Catalog",
     request_model="AddCatalogRequest", response_model="CatalogWithSellersDto", api_surface="catalog",
 )
-_LIST = Route("GET", "/Catalog", response_model="PaginatedList[CatalogExpandedDto]", api_surface="catalog")
+_LIST = Route(
+    "GET", "/Catalog",
+    params_model="CatalogListParams", response_model="PaginatedList[CatalogExpandedDto]", api_surface="catalog",
+)
 _GET = Route("GET", "/Catalog/{id}", response_model="CatalogExpandedDto", api_surface="catalog")
 _UPDATE = Route(
     "PUT", "/Catalog/{id}",

@@ -2,7 +2,7 @@
 
 import pytest
 
-from ab.api.models.users import User, UserRole
+from ab.api.models.users import User
 from tests.conftest import assert_no_extra_fields, require_fixture
 
 
@@ -24,10 +24,8 @@ class TestUserModels:
     def test_user_role(self):
         data = require_fixture("UserRole", "GET", "/users/roles", required=True)
         # Live API returns plain strings, not dicts
-        if isinstance(data, list) and data and isinstance(data[0], str):
-            model = UserRole(name=data[0])
-        elif isinstance(data, str):
-            model = UserRole(name=data)
+        if isinstance(data, list):
+            assert len(data) > 0, "UserRole fixture is empty"
+            assert isinstance(data[0], str), f"Expected str, got {type(data[0])}"
         else:
-            model = UserRole.model_validate(data)
-        assert isinstance(model, UserRole)
+            assert isinstance(data, str), f"Expected str, got {type(data)}"

@@ -5,8 +5,7 @@ shipment info, global accessorials, and document retrieval.
 """
 
 from examples._runner import ExampleRunner
-
-LIVE_JOB_DISPLAY_ID = 2000000
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Shipments", env="staging")
 

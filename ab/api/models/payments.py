@@ -9,6 +9,12 @@ from pydantic import Field
 from ab.api.models.base import RequestModel, ResponseModel
 
 
+class PaymentParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/payment."""
+
+    job_sub_key: Optional[str] = Field(None, alias="jobSubKey")
+
+
 class PaymentInfo(ResponseModel):
     """Payment state for a job — GET /job/{jobDisplayId}/payment."""
 

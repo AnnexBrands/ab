@@ -15,7 +15,7 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 # Payment routes
-_GET_PAYMENT = Route("GET", "/job/{jobDisplayId}/payment", response_model="PaymentInfo")
+_GET_PAYMENT = Route("GET", "/job/{jobDisplayId}/payment", params_model="PaymentParams", response_model="PaymentInfo")
 _GET_PAYMENT_CREATE = Route("GET", "/job/{jobDisplayId}/payment/create", response_model="PaymentInfo")
 _GET_SOURCES = Route("GET", "/job/{jobDisplayId}/payment/sources", response_model="List[PaymentSource]")
 _PAY_BY_SOURCE = Route(

@@ -11,14 +11,14 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _GET = Route("GET", "/dashboard", params_model="DashboardParams", response_model="DashboardSummary")
-_GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", response_model="List[GridViewInfo]")
+_GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", params_model="DashboardCompanyParams", response_model="List[GridViewInfo]")
 _GET_GRID_VIEW_STATE = Route("GET", "/dashboard/gridviewstate/{id}", response_model="GridViewState")
 _SAVE_GRID_VIEW_STATE = Route("POST", "/dashboard/gridviewstate/{id}", request_model="GridViewState")
-_INBOUND = Route("POST", "/dashboard/inbound")
-_IN_HOUSE = Route("POST", "/dashboard/inhouse")
-_OUTBOUND = Route("POST", "/dashboard/outbound")
-_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries")
-_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates")
+_INBOUND = Route("POST", "/dashboard/inbound", params_model="DashboardCompanyParams")
+_IN_HOUSE = Route("POST", "/dashboard/inhouse", params_model="DashboardCompanyParams")
+_OUTBOUND = Route("POST", "/dashboard/outbound", params_model="DashboardCompanyParams")
+_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries", params_model="DashboardCompanyParams")
+_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates", params_model="DashboardCompanyParams")
 
 
 class DashboardEndpoint(BaseEndpoint):

@@ -26,7 +26,7 @@ runner.add(
         state="CO",
         zip_code="80111",
     ),
-    response_model="PropertyType",
+    response_model="int",
     fixture_file="PropertyType.json",
 )
 

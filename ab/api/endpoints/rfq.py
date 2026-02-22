@@ -11,11 +11,11 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _GET = Route("GET", "/rfq/{rfqId}", response_model="QuoteRequestDisplayInfo")
-_GET_FOR_JOB = Route("GET", "/rfq/forjob/{jobId}", response_model="List[QuoteRequestDisplayInfo]")
+_GET_FOR_JOB = Route("GET", "/rfq/forjob/{jobId}", params_model="RfqForJobParams", response_model="List[QuoteRequestDisplayInfo]")
 _ACCEPT = Route("POST", "/rfq/{rfqId}/accept", request_model="AcceptModel")
 _DECLINE = Route("POST", "/rfq/{rfqId}/decline")
 _CANCEL = Route("POST", "/rfq/{rfqId}/cancel")
-_ACCEPT_WINNER = Route("POST", "/rfq/{rfqId}/acceptwinner")
+_ACCEPT_WINNER = Route("POST", "/rfq/{rfqId}/acceptwinner", params_model="RfqAcceptWinnerParams")
 _ADD_COMMENT = Route("POST", "/rfq/{rfqId}/comment", request_model="AcceptModel")
 
 

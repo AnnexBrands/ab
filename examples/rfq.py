@@ -5,10 +5,9 @@ add_comment, get_for_job) plus job-scoped RFQ queries (list_rfqs, get_rfq_status
 """
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("RFQ", env="staging")
-
-LIVE_JOB_DISPLAY_ID = 2000000
 LIVE_RFQ_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════

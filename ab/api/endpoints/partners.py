@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
-_LIST = Route("GET", "/partner", response_model="List[Partner]")
+_LIST = Route("GET", "/partner", params_model="PartnerListParams", response_model="List[Partner]")
 _GET = Route("GET", "/partner/{id}", response_model="Partner")
 _SEARCH = Route("POST", "/partner/search", request_model="PartnerSearchRequest", response_model="List[Partner]")
 

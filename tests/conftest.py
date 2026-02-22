@@ -8,25 +8,48 @@ from pathlib import Path
 import pytest
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+MOCKS_DIR = FIXTURES_DIR / "mocks"
+
+
+def _resolve_fixture_path(model_name: str) -> Path | None:
+    """Find fixture file, checking live directory first then mocks/.
+
+    Returns the path if found, or None if neither exists.
+    """
+    live_path = FIXTURES_DIR / f"{model_name}.json"
+    if live_path.exists():
+        return live_path
+    mock_path = MOCKS_DIR / f"{model_name}.json"
+    if mock_path.exists():
+        return mock_path
+    return None
 
 
 def load_fixture(model_name: str) -> dict | list:
     """Load a JSON fixture by model name.
 
+    Checks ``tests/fixtures/{model_name}.json`` first (live), then falls
+    back to ``tests/fixtures/mocks/{model_name}.json`` (mock). Live
+    fixtures always take precedence.
+
     Args:
         model_name: e.g. ``"CompanySimple"`` loads ``tests/fixtures/CompanySimple.json``
+            or ``tests/fixtures/mocks/CompanySimple.json``
 
     Returns:
         Parsed JSON data.
 
     Raises:
-        FileNotFoundError: If fixture file does not exist.
+        FileNotFoundError: If fixture file does not exist in either location.
     """
-    path = FIXTURES_DIR / f"{model_name}.json"
+    path = _resolve_fixture_path(model_name)
+    if path is None:
+        raise FileNotFoundError(
+            f"Fixture not found: checked {FIXTURES_DIR / f'{model_name}.json'} "
+            f"and {MOCKS_DIR / f'{model_name}.json'}"
+        ) from None
     try:
         return json.loads(path.read_text())
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Fixture not found: {path}") from None
     except json.JSONDecodeError as exc:
         raise ValueError(f"Invalid JSON in fixture {model_name}.json: {exc}") from exc
 
@@ -40,6 +63,9 @@ def require_fixture(
 ) -> dict | list:
     """Load a fixture, or skip/fail when it is missing.
 
+    Checks both live (``tests/fixtures/``) and mock (``tests/fixtures/mocks/``)
+    directories. Live fixtures take precedence.
+
     Args:
         model_name: e.g. ``"CompanySimple"``
         method: HTTP method, e.g. ``"GET"``
@@ -52,12 +78,12 @@ def require_fixture(
     Returns:
         Parsed JSON data (when fixture exists).
     """
-    fixture_path = FIXTURES_DIR / f"{model_name}.json"
-    if not fixture_path.exists():
+    fixture_path = _resolve_fixture_path(model_name)
+    if fixture_path is None:
         if required:
             pytest.fail(
                 f"Required fixture missing: {model_name}.json — "
-                f"this was previously captured and must not be deleted"
+                f"checked {FIXTURES_DIR} and {MOCKS_DIR}"
             )
         msg = f"Fixture needed: capture {model_name}.json"
         if method and path:

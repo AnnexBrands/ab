@@ -16,6 +16,8 @@ if TYPE_CHECKING:
         CompanyDetails,
         CompanySimple,
         GeoSettings,
+        GeoSettingsParams,
+        InheritFromParams,
         PackagingLabor,
         PackagingSettings,
         PackagingTariff,
@@ -45,7 +47,7 @@ _GET_BRANDS_TREE = Route("GET", "/companies/brandstree", response_model="List[Br
 _GET_GEO_AREA_COMPANIES = Route("GET", "/companies/geoAreaCompanies")
 _GET_GEO_SETTINGS = Route("GET", "/companies/{companyId}/geosettings", response_model="GeoSettings")
 _SAVE_GEO_SETTINGS = Route("POST", "/companies/{companyId}/geosettings", request_model="GeoSettingsSaveRequest")
-_GET_GLOBAL_GEO_SETTINGS = Route("GET", "/companies/geosettings", response_model="GeoSettings")
+_GET_GLOBAL_GEO_SETTINGS = Route("GET", "/companies/geosettings", response_model="GeoSettings", params_model="GeoSettingsParams")
 
 # Carrier Accounts (008)
 _SEARCH_CARRIER_ACCOUNTS = Route(
@@ -65,11 +67,11 @@ _GET_PACKAGING_LABOR = Route("GET", "/companies/{companyId}/packaginglabor", res
 _SAVE_PACKAGING_LABOR = Route("POST", "/companies/{companyId}/packaginglabor")
 _GET_INHERITED_PACKAGING_TARIFFS = Route(
     "GET", "/companies/{companyId}/inheritedPackagingTariffs",
-    response_model="List[PackagingTariff]",
+    response_model="List[PackagingTariff]", params_model="InheritFromParams",
 )
 _GET_INHERITED_PACKAGING_LABOR = Route(
     "GET", "/companies/{companyId}/inheritedpackaginglabor",
-    response_model="PackagingLabor",
+    response_model="PackagingLabor", params_model="InheritFromParams",
 )
 
 

@@ -1,10 +1,9 @@
 """Example: Notes operations (4 methods, via api.jobs.*)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Notes", env="staging")
-
-LIVE_JOB_DISPLAY_ID = 2000000
 
 # ── Needs request data ───────────────────────────────────────────────
 

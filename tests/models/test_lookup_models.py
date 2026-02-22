@@ -2,7 +2,7 @@
 
 import pytest
 
-from ab.api.models.address import AddressIsValidResult, PropertyType
+from ab.api.models.address import AddressIsValidResult
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
 from tests.conftest import assert_no_extra_fields, require_fixture
 
@@ -51,6 +51,4 @@ class TestLookupModels:
 
     def test_property_type(self):
         data = require_fixture("PropertyType", "GET", "/address/propertytype")
-        model = PropertyType.model_validate(data)
-        assert isinstance(model, PropertyType)
-        assert_no_extra_fields(model)
+        assert isinstance(data, int)

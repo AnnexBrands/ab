@@ -5,12 +5,11 @@ update dates, resolve, delete, follow-up users.
 """
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_CONTACT_ID, LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("On-Hold", env="staging")
 
-LIVE_JOB_DISPLAY_ID = 2000000
 LIVE_ON_HOLD_ID = "PLACEHOLDER"
-LIVE_CONTACT_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # On-Hold CRUD

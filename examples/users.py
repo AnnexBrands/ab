@@ -17,7 +17,7 @@ runner.add(
 runner.add(
     "get_roles",
     lambda api: api.users.get_roles(),
-    response_model="List[UserRole]",
+    response_model="List[str]",
     fixture_file="UserRole.json",
 )
 

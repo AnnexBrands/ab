@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from ab.api.models.address import AddressIsValidResult, PropertyType
+    from ab.api.models.address import AddressIsValidResult
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -14,7 +14,7 @@ _IS_VALID = Route(
     "GET", "/address/isvalid", params_model="AddressValidateParams", response_model="AddressIsValidResult"
 )
 _PROPERTY_TYPE = Route(
-    "GET", "/address/propertytype", params_model="AddressPropertyTypeParams", response_model="PropertyType"
+    "GET", "/address/propertytype", params_model="AddressPropertyTypeParams", response_model="int"
 )
 
 
@@ -42,7 +42,7 @@ class AddressEndpoint(BaseEndpoint):
         city: Optional[str] = None,
         state: Optional[str] = None,
         zip_code: Optional[str] = None,
-    ) -> PropertyType:
+    ) -> Optional[int]:
         """GET /address/propertytype"""
         return self._request(
             _PROPERTY_TYPE,

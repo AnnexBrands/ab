@@ -1,10 +1,9 @@
 """Example: Document operations (4 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Documents", env="staging")
-
-LIVE_JOB_DISPLAY_ID = 2000000
 
 # ── Captured fixtures ────────────────────────────────────────────────
 

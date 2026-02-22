@@ -18,6 +18,12 @@ class Partner(ResponseModel):
     contact_info: Optional[dict] = Field(None, alias="contactInfo", description="Contact information")
 
 
+class PartnerListParams(RequestModel):
+    """Query parameters for GET /partner."""
+
+    search_text: Optional[str] = Field(None, alias="searchText", description="Filter by search text")
+
+
 class PartnerSearchRequest(RequestModel):
     """Search filter for POST /partner/search."""
 

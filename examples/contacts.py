@@ -1,6 +1,7 @@
 """Example: Contact operations (7 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_CONTACT_ID
 
 runner = ExampleRunner("Contacts", env="staging")
 
@@ -15,14 +16,14 @@ runner.add(
 
 runner.add(
     "get_details",
-    lambda api: api.contacts.get_details("30760"),
+    lambda api: api.contacts.get_details(str(LIVE_CONTACT_ID)),
     response_model="ContactDetailedInfo",
     fixture_file="ContactDetailedInfo.json",
 )
 
 runner.add(
     "get_primary_details",
-    lambda api: api.contacts.get_primary_details("30760"),
+    lambda api: api.contacts.get_primary_details(str(LIVE_CONTACT_ID)),
     response_model="ContactPrimaryDetails",
     fixture_file="ContactPrimaryDetails.json",
 )
@@ -41,7 +42,7 @@ runner.add(
     "get",
     lambda api: api.contacts.get(
         # TODO: capture fixture — needs valid contact ID (string)
-        "30760",
+        str(LIVE_CONTACT_ID),
     ),
     response_model="ContactSimple",
 )
@@ -49,7 +50,7 @@ runner.add(
 runner.add(
     "update_details",
     lambda api: api.contacts.update_details(
-        "30760",
+        str(LIVE_CONTACT_ID),
         # TODO: capture fixture — needs valid ContactEditRequest body
         {},
     ),

@@ -5,10 +5,9 @@ send_template_email, list_sms, send_sms, mark_sms_read, get_sms_template.
 """
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Email & SMS", env="staging")
-
-LIVE_JOB_DISPLAY_ID = 2000000
 
 # ═══════════════════════════════════════════════════════════════════════
 # Email

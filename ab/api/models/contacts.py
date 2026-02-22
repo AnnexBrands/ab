@@ -27,6 +27,40 @@ class ContactSimple(ResponseModel, IdentifiedModel):
     company_id: Optional[str] = Field(None, alias="companyId", description="Associated company UUID")
     company_name: Optional[str] = Field(None, alias="companyName", description="Associated company name")
 
+    # --- extended fields observed in live API responses ---
+    addresses_list: Optional[List[dict]] = Field(None, alias="addressesList", description="Contact addresses list")
+    assistant: Optional[str] = Field(None, description="Assistant name")
+    birth_date: Optional[str] = Field(None, alias="birthDate", description="Birth date")
+    bol_notes: Optional[str] = Field(None, alias="bolNotes", description="BOL notes")
+    care_of: Optional[str] = Field(None, alias="careOf", description="Care-of / attention line")
+    company: Optional[dict] = Field(None, description="Full company object")
+    contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Display ID")
+    contact_type_id: Optional[int] = Field(None, alias="contactTypeId", description="Contact type identifier")
+    department: Optional[str] = Field(None, description="Department name")
+    editable: Optional[bool] = Field(None, description="Whether the contact is editable")
+    emails_list: Optional[List[dict]] = Field(None, alias="emailsList", description="Email addresses list")
+    fax: Optional[str] = Field(None, description="Fax number")
+    full_name_update_required: Optional[bool] = Field(
+        None, alias="fullNameUpdateRequired", description="Whether full name needs update",
+    )
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Whether the contact is active")
+    is_business: Optional[bool] = Field(None, alias="isBusiness", description="Whether this is a business contact")
+    is_empty: Optional[bool] = Field(None, alias="isEmpty", description="Whether the contact record is empty")
+    is_payer: Optional[bool] = Field(None, alias="isPayer", description="Whether this contact is a payer")
+    is_prefered: Optional[bool] = Field(None, alias="isPrefered", description="Whether this contact is preferred")
+    is_primary: Optional[bool] = Field(None, alias="isPrimary", description="Whether this is the primary contact")
+    is_private: Optional[bool] = Field(None, alias="isPrivate", description="Whether this contact is private")
+    job_title: Optional[str] = Field(None, alias="jobTitle", description="Job title")
+    job_title_id: Optional[int] = Field(None, alias="jobTitleId", description="Job title identifier")
+    legacy_guid: Optional[str] = Field(None, alias="legacyGuid", description="Legacy system GUID")
+    owner_franchisee_id: Optional[str] = Field(None, alias="ownerFranchiseeId", description="Owner franchisee UUID")
+    phones_list: Optional[List[dict]] = Field(None, alias="phonesList", description="Phone numbers list")
+    primary_email: Optional[str] = Field(None, alias="primaryEmail", description="Primary email address")
+    primary_phone: Optional[str] = Field(None, alias="primaryPhone", description="Primary phone number")
+    root_contact_id: Optional[int] = Field(None, alias="rootContactId", description="Root contact identifier")
+    tax_id: Optional[str] = Field(None, alias="taxId", description="Tax ID")
+    web_site: Optional[str] = Field(None, alias="webSite", description="Website URL")
+
 
 class ContactDetailedInfo(ResponseModel, FullAuditModel):
     """Full editable contact details — GET /contacts/{id}/editdetails."""
@@ -72,6 +106,18 @@ class SearchContactEntityResult(ResponseModel):
     email: Optional[str] = Field(None, description="Primary email")
     company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
     contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Display ID")
+
+
+class ContactEditParams(RequestModel):
+    """Query parameters for contact edit operations."""
+
+    franchisee_id: Optional[str] = Field(None, alias="franchiseeId")
+
+
+class ContactHistoryParams(RequestModel):
+    """Query parameters for contact history operations."""
+
+    statuses: Optional[str] = Field(None, alias="statuses")
 
 
 class ContactEditRequest(RequestModel):

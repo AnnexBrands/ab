@@ -45,11 +45,13 @@ class User(ResponseModel, IdentifiedModel):
 
 
 class UserRole(ResponseModel):
-    """Role definition — GET /users/roles.
+    """Deprecated — the live API returns roles as plain strings, not objects.
 
-    The live API returns roles as plain strings (e.g. ``"CorporateAccounting"``),
-    not ``{id, name}`` objects as swagger implies.  When the fixture is a
-    string, construct with ``name=value``.
+    The ``GET /users/roles`` endpoint returns ``List[str]`` (e.g.
+    ``["CorporateAccounting", "Admin"]``), not ``List[{id, name}]`` objects
+    as the Swagger spec originally implied.  The route now uses
+    ``response_model="List[str]"`` and this class is retained only for
+    backward compatibility.
     """
 
     id: Optional[str] = Field(None, description="Role ID")

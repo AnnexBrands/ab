@@ -2,7 +2,7 @@
 
 import pytest
 
-from ab.api.models.address import AddressIsValidResult, PropertyType
+from ab.api.models.address import AddressIsValidResult
 from tests.conftest import assert_no_extra_fields
 
 pytestmark = pytest.mark.live
@@ -30,5 +30,4 @@ class TestAddressIntegration:
         )
         # May return 204 No Content
         if result is not None:
-            assert isinstance(result, PropertyType)
-            assert_no_extra_fields(result)
+            assert isinstance(result, int)

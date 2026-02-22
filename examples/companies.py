@@ -1,10 +1,9 @@
 """Example: Company operations (8 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_COMPANY_UUID
 
 runner = ExampleRunner("Companies", env="staging")
-
-LIVE_COMPANY_UUID = "93179b52-3da9-e311-b6f8-000c298b59ee"
 
 # ── Captured fixtures ────────────────────────────────────────────────
 

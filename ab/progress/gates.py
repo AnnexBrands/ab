@@ -132,14 +132,25 @@ def evaluate_g1(model_name: str) -> GateResult:
 # G2: Fixture Status
 # ---------------------------------------------------------------------------
 
+MOCKS_DIR = FIXTURES_DIR / "mocks"
+
+
 def evaluate_g2(model_name: str) -> GateResult:
-    """Check if fixture file exists on disk."""
+    """Check if fixture file exists on disk (live or mock).
+
+    Checks ``tests/fixtures/{model_name}.json`` first (live), then falls
+    back to ``tests/fixtures/mocks/{model_name}.json`` (mock). Live
+    fixtures take precedence; provenance is reported in the reason.
+    """
     if not model_name or model_name == "—":
         return GateResult("G2", False, "No response model specified")
 
-    fixture_path = FIXTURES_DIR / f"{model_name}.json"
-    if fixture_path.exists():
-        return GateResult("G2", True)
+    live_path = FIXTURES_DIR / f"{model_name}.json"
+    if live_path.exists():
+        return GateResult("G2", True, "live fixture")
+    mock_path = MOCKS_DIR / f"{model_name}.json"
+    if mock_path.exists():
+        return GateResult("G2", True, "mock fixture")
     return GateResult("G2", False, f"Fixture {model_name}.json not found")
 
 
