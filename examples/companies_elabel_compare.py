@@ -42,6 +42,5 @@ for label, nv, cv in rows:
     print(fmt(label, nv, cv))
 print(sep)
 
-new_elabel.preferences.carrier_accounts_source_company_id = None
-r = api.companies.update_fulldetails("LA6190", preferences={"carrierAccountsSourceCompanyId": None})
-print(r)
+# new_elabel.preferences.carrier_accounts_source_company_id = None
+# r = api.companies.update_fulldetails("LA6190", preferences={"carrierAccountsSourceCompanyId": None}) ## HTTP500
