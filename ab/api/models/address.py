@@ -6,7 +6,26 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from ab.api.models.base import ResponseModel
+from ab.api.models.base import RequestModel, ResponseModel
+
+
+class AddressValidateParams(RequestModel):
+    """Query parameters for GET /address/isvalid."""
+
+    line1: Optional[str] = Field(None, alias="Line1", description="Street address line 1")
+    city: Optional[str] = Field(None, alias="City", description="City name")
+    state: Optional[str] = Field(None, alias="State", description="State abbreviation")
+    zip: Optional[str] = Field(None, alias="Zip", description="ZIP/postal code")
+
+
+class AddressPropertyTypeParams(RequestModel):
+    """Query parameters for GET /address/propertytype."""
+
+    address1: Optional[str] = Field(None, alias="Address1", description="Street address line 1")
+    address2: Optional[str] = Field(None, alias="Address2", description="Street address line 2")
+    city: Optional[str] = Field(None, alias="City", description="City name")
+    state: Optional[str] = Field(None, alias="State", description="State abbreviation")
+    zip_code: Optional[str] = Field(None, alias="ZipCode", description="ZIP/postal code")
 
 
 class AddressIsValidResult(ResponseModel):

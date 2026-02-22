@@ -12,7 +12,7 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _UPLOAD = Route("POST", "/documents")
-_LIST = Route("GET", "/documents/list", response_model="List[Document]")
+_LIST = Route("GET", "/documents/list", params_model="DocumentListParams", response_model="List[Document]")
 _GET = Route("GET", "/documents/get/{docPath}", response_model="bytes")
 _UPDATE = Route("PUT", "/documents/update/{docId}", request_model="DocumentUpdateRequest")
 
@@ -32,11 +32,9 @@ class DocumentsEndpoint(BaseEndpoint):
             }
             return self._client.request("POST", "/documents", files=files, data=data)
 
-    def list(self, *, job_display_id: Optional[str] = None, **params: Any) -> list[Document]:
+    def list(self, *, job_display_id: Optional[str] = None) -> list[Document]:
         """GET /documents/list"""
-        if job_display_id:
-            params["jobDisplayId"] = job_display_id
-        return self._request(_LIST, params=params)
+        return self._request(_LIST, params=dict(job_display_id=job_display_id))
 
     def get(self, doc_path: str) -> bytes:
         """GET /documents/get/{docPath} — returns raw bytes."""

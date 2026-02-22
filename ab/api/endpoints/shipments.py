@@ -51,7 +51,7 @@ _POST_EXPORT_DATA = Route("POST", "/job/{jobDisplayId}/shipment/exportdata", res
 _GET_RATES_STATE = Route("GET", "/job/{jobDisplayId}/shipment/ratesstate", response_model="RatesState")
 
 # Global shipment routes
-_GET_SHIPMENT = Route("GET", "/shipment", response_model="ShipmentInfo")
+_GET_SHIPMENT = Route("GET", "/shipment", params_model="ShipmentParams", response_model="ShipmentInfo")
 _GET_GLOBAL_ACCESSORIALS = Route("GET", "/shipment/accessorials", response_model="List[GlobalAccessorial]")
 _GET_SHIPMENT_DOCUMENT = Route("GET", "/shipment/document/{docId}", response_model="bytes")
 
@@ -109,9 +109,18 @@ class ShipmentsEndpoint(BaseEndpoint):
 
     # ---- Global shipment methods --------------------------------------
 
-    def get_shipment(self, **params: Any) -> ShipmentInfo:
+    def get_shipment(
+        self,
+        *,
+        franchisee_id: str | None = None,
+        provider_id: str | None = None,
+        pro_number: str | None = None,
+    ) -> ShipmentInfo:
         """GET /shipment (ACPortal)"""
-        return self._request(_GET_SHIPMENT, params=params)
+        return self._request(
+            _GET_SHIPMENT,
+            params=dict(franchisee_id=franchisee_id, provider_id=provider_id, pro_number=pro_number),
+        )
 
     def get_global_accessorials(self) -> list[GlobalAccessorial]:
         """GET /shipment/accessorials (ACPortal)"""

@@ -2,11 +2,30 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+
+
+class NotesListParams(RequestModel):
+    """Query parameters for GET /note."""
+
+    category: Optional[List[str]] = Field(None, description="Filter by category UUIDs")
+    job_id: Optional[str] = Field(None, alias="jobId", description="Filter by job UUID")
+    contact_id: Optional[int] = Field(None, alias="contactId", description="Filter by contact ID")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Filter by company UUID")
+
+
+class NotesSuggestUsersParams(RequestModel):
+    """Query parameters for GET /note/suggestUsers."""
+
+    search_key: str = Field(..., alias="SearchKey", description="User search keyword")
+    job_franchisee_id: Optional[str] = Field(
+        None, alias="JobFranchiseeId", description="Job franchisee UUID"
+    )
+    company_id: Optional[str] = Field(None, alias="CompanyId", description="Company UUID filter")
 
 
 class GlobalNote(ResponseModel):

@@ -36,7 +36,7 @@ runner.add(
 
 runner.add(
     "suggest_users",
-    lambda api: api.notes.suggest_users(),
+    lambda api: api.notes.suggest_users(search_key="test"),
     response_model="List[SuggestedUser]",
     fixture_file="SuggestedUser.json",
 )

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
-_GET = Route("GET", "/dashboard", response_model="DashboardSummary")
+_GET = Route("GET", "/dashboard", params_model="DashboardParams", response_model="DashboardSummary")
 _GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", response_model="List[GridViewInfo]")
 _GET_GRID_VIEW_STATE = Route("GET", "/dashboard/gridviewstate/{id}", response_model="GridViewState")
 _SAVE_GRID_VIEW_STATE = Route("POST", "/dashboard/gridviewstate/{id}", request_model="GridViewState")
@@ -24,9 +24,14 @@ _RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates")
 class DashboardEndpoint(BaseEndpoint):
     """Dashboard operations (ACPortal API)."""
 
-    def get(self, **params: Any) -> DashboardSummary:
+    def get(
+        self,
+        *,
+        view_id: int | None = None,
+        company_id: str | None = None,
+    ) -> DashboardSummary:
         """GET /dashboard"""
-        return self._request(_GET, params=params or None)
+        return self._request(_GET, params=dict(view_id=view_id, company_id=company_id))
 
     def get_grid_views(self) -> list[GridViewInfo]:
         """GET /dashboard/gridviews"""

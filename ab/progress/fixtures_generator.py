@@ -27,8 +27,9 @@ _SECTION_RE = re.compile(r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE)
 def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
     """Parse existing FIXTURES.md into a list of endpoint dicts.
 
-    Supports both the gate-column format (10 cols) and legacy format (8 cols).
-    Gate-column format: Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | Status | Notes
+    Supports gate-column formats (10 or 11 cols) and legacy format (8 cols).
+    G5 format: Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | G5 | Status | Notes
+    G4 format: Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | Status | Notes
     Legacy format: Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes
     """
     path = path or FIXTURES_MD
@@ -62,6 +63,7 @@ def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
             if "G1" in line and "G2" in line:
                 is_gate_format = True
             continue
+        # (is_gate_format covers both 10-col G4 and 11-col G5 layouts)
         if not header_seen:
             continue
 
@@ -69,16 +71,18 @@ def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
         cells = [c for c in cells if c != ""]
 
         if is_gate_format:
-            # Gate format: Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | Status | Notes
+            # G5 format (11 cols): Path | Method | Req | Resp | G1 | G2 | G3 | G4 | G5 | Status | Notes
+            # G4 format (10 cols): Path | Method | Req | Resp | G1 | G2 | G3 | G4 | Status | Notes
             if len(cells) < 9:
                 continue
+            # Status and Notes are always the last two columns
             endpoints.append({
                 "endpoint_path": cells[0],
                 "method": cells[1],
                 "request_model": cells[2] if cells[2] != "—" else "",
                 "response_model": cells[3] if cells[3] != "—" else "",
-                "old_status": cells[8] if len(cells) > 8 else "",
-                "notes": cells[9] if len(cells) > 9 else "",
+                "old_status": cells[-2] if len(cells) >= 2 else "",
+                "notes": cells[-1] if len(cells) >= 1 else "",
             })
         else:
             # Legacy format: Path | Method | Req Model | Req Fixture | Resp Model | Resp Fixture | Status | Notes
@@ -138,6 +142,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
     g2_pass = sum(1 for _, s in gate_results if s.g2_fixture_status and s.g2_fixture_status.passed)
     g3_pass = sum(1 for _, s in gate_results if s.g3_test_quality and s.g3_test_quality.passed)
     g4_pass = sum(1 for _, s in gate_results if s.g4_doc_accuracy and s.g4_doc_accuracy.passed)
+    g5_pass = sum(1 for _, s in gate_results if s.g5_param_routing and s.g5_param_routing.passed)
 
     lines = [
         "# Fixture Tracking",
@@ -145,7 +150,8 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         "Tracks capture status and quality gates for all endpoint fixtures in `tests/fixtures/`.",
         "",
         "**Constitution**: v2.3.0, Principles I–V",
-        "**Quality Gates**: G1 (Model Fidelity), G2 (Fixture Status), G3 (Test Quality), G4 (Doc Accuracy)",
+        "**Quality Gates**: G1 (Model Fidelity), G2 (Fixture Status), "
+        "G3 (Test Quality), G4 (Doc Accuracy), G5 (Param Routing)",
         "**Rule**: Status is \"complete\" only when ALL applicable gates pass.",
         "",
         "## Summary",
@@ -156,6 +162,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         f"- **G2 Fixture Status**: {g2_pass}/{total} pass",
         f"- **G3 Test Quality**: {g3_pass}/{total} pass",
         f"- **G4 Doc Accuracy**: {g4_pass}/{total} pass",
+        f"- **G5 Param Routing**: {g5_pass}/{total} pass",
         "",
         "## Status Legend",
         "",
@@ -165,8 +172,8 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         "",
         "## ACPortal Endpoints",
         "",
-        "| Endpoint Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | Status | Notes |",
-        "|---------------|--------|-----------|------------|----|----|----|----|--------|-------|",
+        "| Endpoint Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | G5 | Status | Notes |",
+        "|---------------|--------|-----------|------------|----|----|----|----|----|--------|-------|",
     ]
 
     for ep, status in gate_results:
@@ -174,6 +181,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         g2 = _gate_badge(status.g2_fixture_status.passed) if status.g2_fixture_status else "—"
         g3 = _gate_badge(status.g3_test_quality.passed) if status.g3_test_quality else "—"
         g4 = _gate_badge(status.g4_doc_accuracy.passed) if status.g4_doc_accuracy else "—"
+        g5 = _gate_badge(status.g5_param_routing.passed) if status.g5_param_routing else "—"
 
         req_model = ep.get("request_model", "") or "—"
         resp_model = ep.get("response_model", "") or "—"
@@ -181,7 +189,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
 
         lines.append(
             f"| {ep['endpoint_path']} | {ep['method']} | {req_model} | {resp_model} "
-            f"| {g1} | {g2} | {g3} | {g4} | {status.overall_status} | {notes} |"
+            f"| {g1} | {g2} | {g3} | {g4} | {g5} | {status.overall_status} | {notes} |"
         )
 
     # Add Model Warning Summary

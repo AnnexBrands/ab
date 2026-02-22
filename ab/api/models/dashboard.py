@@ -6,7 +6,14 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from ab.api.models.base import ResponseModel
+from ab.api.models.base import RequestModel, ResponseModel
+
+
+class DashboardParams(RequestModel):
+    """Query parameters for GET /dashboard."""
+
+    view_id: Optional[int] = Field(None, alias="viewId", description="Grid view ID")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID filter")
 
 
 class DashboardSummary(ResponseModel):

@@ -9,6 +9,15 @@ from pydantic import Field
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.mixins import IdentifiedModel
 
+
+class ShipmentParams(RequestModel):
+    """Query parameters for GET /shipment."""
+
+    franchisee_id: Optional[str] = Field(None, alias="franchiseeId", description="Franchisee UUID")
+    provider_id: Optional[str] = Field(None, alias="providerId", description="Provider UUID")
+    pro_number: Optional[str] = Field(None, alias="proNumber", description="PRO/tracking number")
+
+
 # ---- Response models --------------------------------------------------
 
 

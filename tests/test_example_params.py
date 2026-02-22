@@ -236,8 +236,59 @@ def _collect_transport_cases() -> list[tuple[str, str, str, str, bool]]:
 
 _SWAGGER_PARAMS = _load_swagger_params()
 _SWAGGER_BODIES = _load_swagger_request_bodies()
+def _collect_params_model_cases() -> list[tuple[str, str, str, str, bool]]:
+    """Collect Routes with swagger query params and check params_model is set.
+
+    Returns ``(ep_file, route_var, http_method, swagger_path, has_params_model)``.
+    """
+    cases = []
+    for ep_file in sorted(ENDPOINTS_DIR.glob("*.py")):
+        if ep_file.name.startswith("_") or ep_file.name == "base.py":
+            continue
+        source = ep_file.read_text()
+        routes = _parse_routes(source)
+
+        for var_name, (http_method, api_path, _surface) in routes.items():
+            swagger_path = f"/api{api_path}"
+            key = (http_method, swagger_path)
+            swagger_params = _SWAGGER_PARAMS.get(key)
+
+            if swagger_params is None:
+                # Try normalized path param matching
+                import re as _re
+                normalized = _re.sub(r"\{[^}]+\}", "{}", swagger_path)
+                for (m, p), names in _SWAGGER_PARAMS.items():
+                    p_norm = _re.sub(r"\{[^}]+\}", "{}", p)
+                    if m == http_method and p_norm == normalized:
+                        swagger_params = names
+                        break
+
+            if not swagger_params:
+                continue  # No query params in swagger — skip
+
+            # Check if Route definition has params_model
+            has_pm = "params_model=" in source and var_name in source
+            # More precise: find the Route(...) call for this var and check
+            route_re = re.compile(
+                rf"{re.escape(var_name)}\s*=\s*Route\([^)]*?"
+                r"params_model\s*=",
+                re.DOTALL,
+            )
+            has_pm = bool(route_re.search(source))
+
+            cases.append((
+                ep_file.name,
+                var_name,
+                http_method,
+                swagger_path,
+                has_pm,
+            ))
+    return cases
+
+
 _PARAM_CASES = _collect_test_cases()
 _TRANSPORT_CASES = _collect_transport_cases()
+_PARAMS_MODEL_CASES = _collect_params_model_cases()
 
 
 @pytest.mark.parametrize(
@@ -299,3 +350,27 @@ def test_post_methods_use_json_transport(
         f"{ep_file}::{method_name} should use json= for {http_method} {swagger_path} "
         f"(swagger defines a requestBody)"
     )
+
+
+@pytest.mark.parametrize(
+    "ep_file,route_var,http_method,swagger_path,has_params_model",
+    _PARAMS_MODEL_CASES,
+    ids=[f"{c[0]}::{c[1]}" for c in _PARAMS_MODEL_CASES],
+)
+def test_query_param_routes_have_params_model(
+    ep_file: str,
+    route_var: str,
+    http_method: str,
+    swagger_path: str,
+    has_params_model: bool,
+) -> None:
+    """Routes with swagger query params must set params_model for dispatch.
+
+    Tier 1+2 endpoints are fully converted; remaining Tier 3 endpoints
+    are tracked here as xfail until converted in a future PR.
+    """
+    if not has_params_model:
+        pytest.xfail(
+            f"{ep_file}::{route_var} ({http_method} {swagger_path}) needs "
+            f"params_model — Tier 3 conversion pending"
+        )

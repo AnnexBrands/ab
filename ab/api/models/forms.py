@@ -6,7 +6,22 @@ from typing import Optional
 
 from pydantic import Field
 
-from ab.api.models.base import ResponseModel
+from ab.api.models.base import RequestModel, ResponseModel
+
+
+class BillOfLadingParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/form/bill-of-lading."""
+
+    shipment_plan_id: Optional[str] = Field(None, alias="shipmentPlanId", description="Shipment plan identifier")
+    provider_option_index: Optional[int] = Field(
+        None, alias="providerOptionIndex", description="Provider option index"
+    )
+
+
+class OperationsFormParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/form/operations."""
+
+    ops_type: Optional[str] = Field(None, alias="type", description="Operations form type")
 
 
 class FormsShipmentPlan(ResponseModel):

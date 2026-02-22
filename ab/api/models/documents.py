@@ -10,6 +10,12 @@ from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.mixins import IdentifiedModel
 
 
+class DocumentListParams(RequestModel):
+    """Query parameters for GET /documents/list."""
+
+    job_display_id: Optional[str] = Field(None, alias="jobDisplayId", description="Job display identifier")
+
+
 class Document(ResponseModel, IdentifiedModel):
     """Document record — GET /documents/list and embedded in Job response.
 

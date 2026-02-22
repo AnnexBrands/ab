@@ -43,7 +43,7 @@ if TYPE_CHECKING:
 _CREATE = Route("POST", "/job", request_model="JobCreateRequest")
 _SAVE = Route("PUT", "/job/save", request_model="JobSaveRequest")
 _GET = Route("GET", "/job/{jobDisplayId}", response_model="Job")
-_SEARCH = Route("GET", "/job/search", response_model="List[JobSearchResult]")
+_SEARCH = Route("GET", "/job/search", params_model="JobSearchParams", response_model="List[JobSearchResult]")
 _SEARCH_BY_DETAILS = Route(
     "POST", "/job/searchByDetails",
     request_model="JobSearchRequest", response_model="List[JobSearchResult]",
@@ -181,7 +181,8 @@ _GET_SMS_TEMPLATE = Route("GET", "/job/{jobDisplayId}/sms/templatebased/{templat
 
 # Freight routes
 _LIST_FREIGHT_PROVIDERS = Route(
-    "GET", "/job/{jobDisplayId}/freightproviders", response_model="List[PricedFreightProvider]",
+    "GET", "/job/{jobDisplayId}/freightproviders",
+    params_model="FreightProvidersParams", response_model="List[PricedFreightProvider]",
 )
 _SAVE_FREIGHT_PROVIDERS = Route(
     "POST", "/job/{jobDisplayId}/freightproviders", request_model="ShipmentPlanProvider",
@@ -211,9 +212,9 @@ class JobsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId} (ACPortal)"""
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
-    def search(self, **params: Any) -> list[JobSearchResult]:
+    def search(self, *, job_display_id: int | None = None) -> list[JobSearchResult]:
         """GET /job/search (ACPortal) — query params."""
-        return self._request(_SEARCH, params=params)
+        return self._request(_SEARCH, params=dict(job_display_id=job_display_id))
 
     def search_by_details(self, data: dict | Any) -> list[JobSearchResult]:
         """POST /job/searchByDetails (ACPortal)"""
@@ -461,10 +462,22 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Freight Providers ------------------------------------------------
 
-    def list_freight_providers(self, job_display_id: int, **params: Any) -> list[PricedFreightProvider]:
+    def list_freight_providers(
+        self,
+        job_display_id: int,
+        *,
+        provider_indexes: list[int] | None = None,
+        shipment_types: list[str] | None = None,
+        only_active: bool | None = None,
+    ) -> list[PricedFreightProvider]:
         """GET /job/{jobDisplayId}/freightproviders (ACPortal)"""
         return self._request(
-            _LIST_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id), params=params or None,
+            _LIST_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id),
+            params=dict(
+                provider_indexes=provider_indexes,
+                shipment_types=shipment_types,
+                only_active=only_active,
+            ),
         )
 
     def save_freight_providers(self, job_display_id: int, **kwargs: Any) -> Any:

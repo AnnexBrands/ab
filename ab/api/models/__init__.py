@@ -1,6 +1,11 @@
 """Re-export all model classes for lazy resolution by Route."""
 
-from ab.api.models.address import AddressIsValidResult, PropertyType
+from ab.api.models.address import (
+    AddressIsValidResult,
+    AddressPropertyTypeParams,
+    AddressValidateParams,
+    PropertyType,
+)
 from ab.api.models.autoprice import (
     QuickQuotePriceBreakdown,
     QuickQuoteResponse,
@@ -37,6 +42,7 @@ from ab.api.models.companies import (
     BTXAccount,
     CarrierAccount,
     CarrierAccountSaveRequest,
+    CarrierAccountSearchParams,
     CompanyBrand,
     CompanyDetails,
     CompanyDetailsInfo,
@@ -64,6 +70,7 @@ from ab.api.models.companies import (
     RoadRunnerAccount,
     Royalties,
     SearchCompanyResponse,
+    SuggestCarriersParams,
     TariffGroup,
     TaxCategory,
     TeamWWAccount,
@@ -83,13 +90,18 @@ from ab.api.models.contacts import (
     ContactSimple,
     SearchContactEntityResult,
 )
-from ab.api.models.dashboard import DashboardSummary, GridViewInfo, GridViewState
-from ab.api.models.documents import Document, DocumentUpdateRequest
+from ab.api.models.dashboard import DashboardParams, DashboardSummary, GridViewInfo, GridViewState
+from ab.api.models.documents import Document, DocumentListParams, DocumentUpdateRequest
 from ab.api.models.enums import CarrierAPI, DocumentType
-from ab.api.models.forms import FormsShipmentPlan
+from ab.api.models.forms import (
+    BillOfLadingParams,
+    FormsShipmentPlan,
+    OperationsFormParams,
+)
 from ab.api.models.jobs import (
     CalendarItem,
     ExtendedOnHoldInfo,
+    FreightProvidersParams,
     IncrementStatusRequest,
     ItemNotesRequest,
     ItemUpdateRequest,
@@ -100,6 +112,7 @@ from ab.api.models.jobs import (
     JobNoteUpdateRequest,
     JobPrice,
     JobSaveRequest,
+    JobSearchParams,
     JobSearchRequest,
     JobSearchResult,
     JobUpdatePageConfig,
@@ -158,6 +171,8 @@ from ab.api.models.notes import (
     GlobalNote,
     GlobalNoteCreateRequest,
     GlobalNoteUpdateRequest,
+    NotesListParams,
+    NotesSuggestUsersParams,
     SuggestedUser,
 )
 from ab.api.models.partners import Partner, PartnerSearchRequest
@@ -211,6 +226,7 @@ from ab.api.models.shipments import (
     ShipmentExportData,
     ShipmentInfo,
     ShipmentOriginDestination,
+    ShipmentParams,
     ShipmentWeight,
 )
 from ab.api.models.users import User, UserCreateRequest, UserRole, UserUpdateRequest
@@ -220,7 +236,7 @@ from ab.api.models.views import (
     GridViewDetails,
     StoredProcedureColumn,
 )
-from ab.api.models.web2lead import Web2LeadGETResult, Web2LeadRequest, Web2LeadResponse
+from ab.api.models.web2lead import Web2LeadGetParams, Web2LeadGETResult, Web2LeadRequest, Web2LeadResponse
 
 __all__ = [
     # Base
@@ -243,6 +259,7 @@ __all__ = [
     # Sellers
     "SellerDto", "SellerExpandedDto", "AddSellerRequest", "UpdateSellerRequest",
     # Companies
+    "CarrierAccountSearchParams", "SuggestCarriersParams",
     "CompanySimple", "CompanyDetails", "SearchCompanyResponse", "CompanySearchRequest",
     "CompanyDetailsInfo", "FileInfo", "CompanyPreferences",
     "FedExAccount", "UPSAccount", "RoadRunnerAccount", "MaerskAccount",
@@ -260,6 +277,7 @@ __all__ = [
     "SearchContactEntityResult", "ContactEditRequest", "ContactSearchRequest",
     "ContactHistory", "ContactHistoryAggregated", "ContactGraphData", "ContactMergePreview",
     # Jobs
+    "JobSearchParams", "FreightProvidersParams",
     "Job", "JobSearchResult", "JobPrice", "CalendarItem", "JobUpdatePageConfig",
     "JobCreateRequest", "JobSaveRequest", "JobSearchRequest", "JobUpdateRequest",
     "TimelineTask", "TimelineAgent",
@@ -273,14 +291,15 @@ __all__ = [
     "SendDocumentEmailModel", "SendSMSModel", "MarkSmsAsReadModel",
     "PricedFreightProvider", "ShipmentPlanProvider",
     # Shipments
+    "ShipmentParams",
     "RateQuote", "ShipmentOriginDestination", "Accessorial",
     "ShipmentExportData", "RatesState", "ShipmentInfo", "ShipmentWeight",
     "GlobalAccessorial", "AccessorialOption", "RadioButtonOption",
     "ShipmentBookRequest", "AccessorialAddRequest",
     # Documents
-    "Document", "DocumentUpdateRequest",
+    "Document", "DocumentListParams", "DocumentUpdateRequest",
     # Address
-    "AddressIsValidResult", "PropertyType",
+    "AddressValidateParams", "AddressPropertyTypeParams", "AddressIsValidResult", "PropertyType",
     # Lookup
     "ContactTypeEntity", "CountryCodeDto", "JobStatus", "LookupItem",
     "LookupValue", "AccessKey", "ParcelPackageType", "DensityClassEntry",
@@ -294,9 +313,9 @@ __all__ = [
     "PayBySourceRequest", "ACHSessionRequest", "ACHCreditTransferRequest",
     "AttachBankRequest", "VerifyACHRequest", "BankSourceRequest",
     # Forms
-    "FormsShipmentPlan",
+    "BillOfLadingParams", "OperationsFormParams", "FormsShipmentPlan",
     # Web2Lead
-    "Web2LeadResponse", "Web2LeadGETResult", "Web2LeadRequest",
+    "Web2LeadGetParams", "Web2LeadResponse", "Web2LeadGETResult", "Web2LeadRequest",
     # RFQ
     "QuoteRequestDisplayInfo", "QuoteRequestStatus", "AcceptModel",
     # Reports
@@ -307,7 +326,7 @@ __all__ = [
     "ReferredByReport", "ReferredByReportRequest",
     "Web2LeadReport", "Web2LeadV2RequestModel",
     # Dashboard
-    "DashboardSummary", "GridViewState", "GridViewInfo",
+    "DashboardParams", "DashboardSummary", "GridViewState", "GridViewInfo",
     # Views
     "GridViewDetails", "GridViewAccess", "StoredProcedureColumn", "GridViewCreateRequest",
     # Commodities
@@ -316,6 +335,7 @@ __all__ = [
     "CommodityMap", "CommodityMapCreateRequest", "CommodityMapUpdateRequest",
     "CommodityMapSearchRequest",
     # Notes
+    "NotesListParams", "NotesSuggestUsersParams",
     "GlobalNote", "GlobalNoteCreateRequest", "GlobalNoteUpdateRequest", "SuggestedUser",
     # Partners
     "Partner", "PartnerSearchRequest",
