@@ -7,8 +7,8 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Commodities", env="staging")
 
-LIVE_COMMODITY_ID = "PLACEHOLDER"
-LIVE_MAP_ID = "PLACEHOLDER"
+TEST_COMMODITY_ID = "PLACEHOLDER"
+TEST_MAP_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Commodities
@@ -33,7 +33,7 @@ runner.add(
 
 runner.add(
     "commodity_get",
-    lambda api: api.commodities.get(LIVE_COMMODITY_ID),
+    lambda api: api.commodities.get(TEST_COMMODITY_ID),
     response_model="Commodity",
 )
 
@@ -47,7 +47,7 @@ runner.add(
 
 runner.add(
     "commodity_update",
-    lambda api, data=None: api.commodities.update(LIVE_COMMODITY_ID, **(data or {})),
+    lambda api, data=None: api.commodities.update(TEST_COMMODITY_ID, **(data or {})),
     request_model="CommodityUpdateRequest",
     request_fixture_file="CommodityUpdateRequest.json",
     response_model="Commodity",
@@ -68,7 +68,7 @@ runner.add(
 
 runner.add(
     "commodity_map_get",
-    lambda api: api.commodity_maps.get(LIVE_MAP_ID),
+    lambda api: api.commodity_maps.get(TEST_MAP_ID),
     response_model="CommodityMap",
 )
 
@@ -82,7 +82,7 @@ runner.add(
 
 runner.add(
     "commodity_map_update",
-    lambda api, data=None: api.commodity_maps.update(LIVE_MAP_ID, **(data or {})),
+    lambda api, data=None: api.commodity_maps.update(TEST_MAP_ID, **(data or {})),
     request_model="CommodityMapUpdateRequest",
     request_fixture_file="CommodityMapUpdateRequest.json",
     response_model="CommodityMap",
@@ -90,7 +90,7 @@ runner.add(
 
 runner.add(
     "commodity_map_delete",
-    lambda api: api.commodity_maps.delete(LIVE_MAP_ID),
+    lambda api: api.commodity_maps.delete(TEST_MAP_ID),
     response_model="ServiceBaseResponse",
 )
 

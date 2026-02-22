@@ -62,7 +62,7 @@ Represents a test constant from `tests/constants.py`.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| name | str | Constant name (e.g., "LIVE_COMPANY_UUID") |
+| name | str | Constant name (e.g., "TEST_COMPANY_UUID") |
 | value | str | String representation of the value |
 | value_type | str | Inferred type: "uuid", "int", "str" |
 

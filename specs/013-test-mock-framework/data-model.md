@@ -12,13 +12,13 @@
 
 | Field | Type | Value | Source | Description |
 |-------|------|-------|--------|-------------|
-| LIVE_COMPANY_UUID | str | `"93179b52-3da9-e311-b6f8-000c298b59ee"` | Staging | Existing — company with populated details |
-| LIVE_CONTACT_ID | int | `30760` | Staging | Existing — contact with detailed info |
-| LIVE_USER_CONTACT_ID | int | `1271` | Staging | Existing — contact linked to test user |
-| LIVE_JOB_DISPLAY_ID | int | `2000000` | Staging | Existing — job with shipments, documents, timeline |
-| LIVE_SELLER_ID | int | `1` | Staging | Existing — seller with expanded details |
-| LIVE_CATALOG_ID | int | `1` | Staging | Existing — catalog with lots |
-| LIVE_COMPANY_CODE | str | `"14004OH"` | Staging | Existing — company code for lookup |
+| TEST_COMPANY_UUID | str | `"93179b52-3da9-e311-b6f8-000c298b59ee"` | Staging | Existing — company with populated details |
+| TEST_CONTACT_ID | int | `30760` | Staging | Existing — contact with detailed info |
+| TEST_USER_CONTACT_ID | int | `1271` | Staging | Existing — contact linked to test user |
+| TEST_JOB_DISPLAY_ID | int | `2000000` | Staging | Existing — job with shipments, documents, timeline |
+| TEST_SELLER_ID | int | `1` | Staging | Existing — seller with expanded details |
+| TEST_CATALOG_ID | int | `1` | Staging | Existing — catalog with lots |
+| TEST_COMPANY_CODE | str | `"14004OH"` | Staging | Existing — company code for lookup |
 
 **Rules**:
 - All consumers (tests, examples, docs) MUST import from this module

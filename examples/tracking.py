@@ -1,7 +1,7 @@
 """Example: Tracking operations (2 methods, via api.jobs.*)."""
 
 from examples._runner import ExampleRunner
-from tests.constants import LIVE_JOB_DISPLAY_ID
+from tests.constants import TEST_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Tracking", env="staging")
 
@@ -11,7 +11,7 @@ runner.add(
     "get_tracking",
     lambda api: api.jobs.get_tracking(
         # TODO: capture fixture — needs shipped job ID with tracking data
-        LIVE_JOB_DISPLAY_ID,
+        TEST_JOB_DISPLAY_ID,
     ),
     response_model="TrackingInfo",
 )
@@ -20,7 +20,7 @@ runner.add(
     "get_tracking_v3",
     lambda api: api.jobs.get_tracking_v3(
         # TODO: capture fixture — needs shipped job ID with tracking history
-        LIVE_JOB_DISPLAY_ID,
+        TEST_JOB_DISPLAY_ID,
         history_amount=10,
     ),
     response_model="TrackingInfoV3",

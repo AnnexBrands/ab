@@ -8,7 +8,7 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Dashboard", env="staging")
 
-LIVE_VIEW_ID = "PLACEHOLDER"
+TEST_VIEW_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Dashboard
@@ -30,14 +30,14 @@ runner.add(
 
 runner.add(
     "get_grid_view_state",
-    lambda api: api.dashboard.get_grid_view_state(LIVE_VIEW_ID),
+    lambda api: api.dashboard.get_grid_view_state(TEST_VIEW_ID),
     response_model="GridViewState",
     fixture_file="GridViewState.json",
 )
 
 runner.add(
     "save_grid_view_state",
-    lambda api: api.dashboard.save_grid_view_state(LIVE_VIEW_ID, columns=[], filters=[]),
+    lambda api: api.dashboard.save_grid_view_state(TEST_VIEW_ID, columns=[], filters=[]),
 )
 
 runner.add(

@@ -106,7 +106,7 @@ After the reviewer captures a fixture or adds a constant, they regenerate the re
 
 - **Endpoint**: An API route with method, path, response model, and implementation status (done/pending/not started).
 - **Fixture**: A captured JSON API response stored in `tests/fixtures/`. Can be captured (file exists) or pending (file missing, needs human action).
-- **Constant**: A test identifier in `tests/constants.py` (e.g., `LIVE_COMPANY_UUID`) needed to call certain endpoints during fixture capture.
+- **Constant**: A test identifier in `tests/constants.py` (e.g., `TEST_COMPANY_UUID`) needed to call certain endpoints during fixture capture.
 - **Blocker**: The reason a pending fixture cannot be captured automatically — environment limitation, missing constant, or entity-state dependency.
 
 ## Success Criteria *(mandatory)*
@@ -125,5 +125,5 @@ After the reviewer captures a fixture or adds a constant, they regenerate the re
 - `specs/api-surface.md` follows the current table format with `| AB |` column values of `done`, `pending`, or `—`.
 - `FIXTURES.md` follows the current two-table format (Captured Fixtures, Pending Fixtures) with consistent column headers.
 - The reviewer has staging API credentials configured (`.env.staging`) to capture fixtures.
-- Constants in `tests/constants.py` follow the `LIVE_*` naming convention.
+- Constants in `tests/constants.py` follow the `TEST_*` naming convention.
 - Test skip/error status is inferred from file presence (a missing fixture file means the corresponding test would skip via `require_fixture`), not from pytest execution.

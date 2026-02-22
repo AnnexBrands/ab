@@ -5,7 +5,7 @@ import pytest
 from ab.api.models.catalog import CatalogExpandedDto
 from ab.api.models.shared import PaginatedList
 from tests.conftest import assert_no_extra_fields
-from tests.constants import LIVE_CATALOG_ID
+from tests.constants import TEST_CATALOG_ID
 
 pytestmark = pytest.mark.live
 
@@ -19,7 +19,7 @@ class TestCatalogIntegration:
             assert_no_extra_fields(result.items[0])
 
     def test_get_catalog(self, api):
-        result = api.catalog.get(LIVE_CATALOG_ID)
+        result = api.catalog.get(TEST_CATALOG_ID)
         # May return None if no catalog data in staging
         if result is not None:
             assert isinstance(result, CatalogExpandedDto)

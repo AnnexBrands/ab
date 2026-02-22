@@ -7,7 +7,7 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Extended Companies", env="staging")
 
-LIVE_COMPANY_ID = "PLACEHOLDER"
+TEST_COMPANY_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Brands
@@ -38,14 +38,14 @@ runner.add(
 
 runner.add(
     "get_geo_settings",
-    lambda api: api.companies.get_geo_settings(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_geo_settings(TEST_COMPANY_ID),
     response_model="GeoSettings",
     fixture_file="GeoSettings.json",
 )
 
 runner.add(
     "save_geo_settings",
-    lambda api, data=None: api.companies.save_geo_settings(LIVE_COMPANY_ID, **(data or {})),
+    lambda api, data=None: api.companies.save_geo_settings(TEST_COMPANY_ID, **(data or {})),
     request_model="GeoSettingsSaveRequest",
     request_fixture_file="GeoSettingsSaveRequest.json",
 )
@@ -72,14 +72,14 @@ runner.add(
 
 runner.add(
     "get_carrier_accounts",
-    lambda api: api.companies.get_carrier_accounts(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_carrier_accounts(TEST_COMPANY_ID),
     response_model="List[CarrierAccount]",
     fixture_file="CarrierAccount.json",
 )
 
 runner.add(
     "save_carrier_accounts",
-    lambda api, data=None: api.companies.save_carrier_accounts(LIVE_COMPANY_ID, **(data or {})),
+    lambda api, data=None: api.companies.save_carrier_accounts(TEST_COMPANY_ID, **(data or {})),
     request_model="CarrierAccountSaveRequest",
     request_fixture_file="CarrierAccountSaveRequest.json",
 )
@@ -90,38 +90,38 @@ runner.add(
 
 runner.add(
     "get_packaging_settings",
-    lambda api: api.companies.get_packaging_settings(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_packaging_settings(TEST_COMPANY_ID),
     response_model="PackagingSettings",
     fixture_file="PackagingSettings.json",
 )
 
 runner.add(
     "save_packaging_settings",
-    lambda api: api.companies.save_packaging_settings(LIVE_COMPANY_ID, settings={}),
+    lambda api: api.companies.save_packaging_settings(TEST_COMPANY_ID, settings={}),
 )
 
 runner.add(
     "get_packaging_labor",
-    lambda api: api.companies.get_packaging_labor(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_packaging_labor(TEST_COMPANY_ID),
     response_model="PackagingLabor",
     fixture_file="PackagingLabor.json",
 )
 
 runner.add(
     "save_packaging_labor",
-    lambda api: api.companies.save_packaging_labor(LIVE_COMPANY_ID, laborRates=[]),
+    lambda api: api.companies.save_packaging_labor(TEST_COMPANY_ID, laborRates=[]),
 )
 
 runner.add(
     "get_inherited_packaging_tariffs",
-    lambda api: api.companies.get_inherited_packaging_tariffs(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_inherited_packaging_tariffs(TEST_COMPANY_ID),
     response_model="List[PackagingTariff]",
     fixture_file="PackagingTariff.json",
 )
 
 runner.add(
     "get_inherited_packaging_labor",
-    lambda api: api.companies.get_inherited_packaging_labor(LIVE_COMPANY_ID),
+    lambda api: api.companies.get_inherited_packaging_labor(TEST_COMPANY_ID),
     response_model="PackagingLabor",
 )
 

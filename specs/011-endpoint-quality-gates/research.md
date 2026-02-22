@@ -84,7 +84,7 @@
 **Pattern**:
 ```python
 def test_get_fulldetails(self, api):
-    result = api.companies.get_fulldetails(LIVE_COMPANY_UUID)
+    result = api.companies.get_fulldetails(TEST_COMPANY_UUID)
     assert isinstance(result, CompanyDetails)
     assert not result.__pydantic_extra__, (
         f"Undeclared fields: {list(result.__pydantic_extra__)}"

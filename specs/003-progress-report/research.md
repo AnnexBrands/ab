@@ -41,14 +41,14 @@ Both use consistent column headers. Parse each section independently.
 
 ## R3: Constants Detection
 
-**Decision**: Regex scan of `tests/constants.py` for `LIVE_*` assignments.
+**Decision**: Regex scan of `tests/constants.py` for `TEST_*` assignments.
 
-**Rationale**: Constants file is simple — flat module with `NAME = value` assignments. Pattern: `^(LIVE_\w+)\s*=`. No need to import or execute the file.
+**Rationale**: Constants file is simple — flat module with `NAME = value` assignments. Pattern: `^(TEST_\w++)\s*=`. No need to import or execute the file.
 
 **Cross-reference strategy**: The pending fixtures in `FIXTURES.md` describe blockers like "Needs job with shipment tracking". Map these to required constants:
-- Endpoint paths containing `{id}` or `{jobDisplayId}` → need `LIVE_JOB_DISPLAY_ID`
-- Endpoint paths containing `{companyId}` → need `LIVE_COMPANY_UUID`
-- Endpoint paths containing `{contactId}` → need `LIVE_CONTACT_ID`
+- Endpoint paths containing `{id}` or `{jobDisplayId}` → need `TEST_JOB_DISPLAY_ID`
+- Endpoint paths containing `{companyId}` → need `TEST_COMPANY_UUID`
+- Endpoint paths containing `{contactId}` → need `TEST_CONTACT_ID`
 - Endpoint paths containing `{sourceId}`, `{shipmentId}`, etc. → need new constant (flag in instructions)
 
 ## R4: HTML Generation Approach
@@ -79,7 +79,7 @@ Both use consistent column headers. Parse each section independently.
 
 Each category gets a distinct instruction template:
 - Category 1: "Run `api.{service}.{method}(...)`, save to `tests/fixtures/{Model}.json`, run `pytest tests/... -k test_{model}`"
-- Category 2: Same as 1, but prepend "Add `LIVE_{NAME} = <value>` to `tests/constants.py`"
+- Category 2: Same as 1, but prepend "Add `TEST_{NAME} = <value>` to `tests/constants.py`"
 - Category 3: "Blocked: {reason}. Options: capture from production, request data setup, or defer."
 - Category 4: "Implementation needed: create model in `ab/api/models/`, endpoint in `ab/api/endpoints/`, skeleton test. Then capture fixture."
 

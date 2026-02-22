@@ -9,7 +9,7 @@
 
 ### User Story 1 - Centralized Test Constants and Mock Data (Priority: P1)
 
-A developer working on the SDK needs a single, authoritative source of realistic test identifiers and mock data values that can be used consistently across unit tests, integration tests, example scripts, and Sphinx documentation. Currently, identifiers like `LIVE_COMPANY_UUID` are duplicated between `tests/constants.py` and individual example files (e.g., `examples/companies.py`). The developer needs one shared constants module that all consumers import from, eliminating drift and providing acceptable placeholder values for every entity type the SDK covers.
+A developer working on the SDK needs a single, authoritative source of realistic test identifiers and mock data values that can be used consistently across unit tests, integration tests, example scripts, and Sphinx documentation. Currently, identifiers like `TEST_COMPANY_UUID` are duplicated between `tests/constants.py` and individual example files (e.g., `examples/companies.py`). The developer needs one shared constants module that all consumers import from, eliminating drift and providing acceptable placeholder values for every entity type the SDK covers.
 
 **Why this priority**: Without consistent, centralized test data, every other improvement (offline testing, fixture generation, documentation) is built on a fragile foundation. This is the prerequisite for all subsequent stories.
 
