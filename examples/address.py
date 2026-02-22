@@ -4,28 +4,22 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Address", env="staging")
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "validate",
-    lambda api: api.address.validate(
-        line1="12742 E Caley Av",
-        city="Centennial",
-        state="CO",
-        zip="80111",
-    ),
+    lambda api, data=None: api.address.validate(**(data or {})),
+    request_model="AddressValidateParams",
+    request_fixture_file="AddressValidateParams.json",
     response_model="AddressIsValidResult",
     fixture_file="AddressIsValidResult.json",
 )
 
 runner.add(
     "get_property_type",
-    lambda api: api.address.get_property_type(
-        address1="12742 E Caley Av",
-        city="Centennial",
-        state="CO",
-        zip_code="80111",
-    ),
+    lambda api, data=None: api.address.get_property_type(**(data or {})),
+    request_model="AddressPropertyTypeParams",
+    request_fixture_file="AddressPropertyTypeParams.json",
     response_model="int",
     fixture_file="PropertyType.json",
 )

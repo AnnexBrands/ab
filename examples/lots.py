@@ -4,63 +4,46 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Lots", env="staging")
 
-# ── Captured fixtures ────────────────────────────────────────────────
-
-# (none — all lot methods need request data or valid IDs)
-
 # ── Needs request data ───────────────────────────────────────────────
 
 runner.add(
     "list",
     lambda api: api.lots.list(page=1, page_size=25),
-    # TODO: capture fixture — needs valid catalog ID param to return results
     response_model="PaginatedList[LotDto]",
 )
 
 runner.add(
     "get",
-    lambda api: api.lots.get(
-        # TODO: capture fixture — needs valid lot ID
-        1,
-    ),
+    lambda api: api.lots.get(1),
     response_model="LotDto",
 )
 
+# ── Uses request fixtures ────────────────────────────────────────────
+
 runner.add(
     "create",
-    lambda api: api.lots.create(
-        # TODO: capture fixture — needs valid AddLotRequest body
-        {},
-    ),
+    lambda api, data=None: api.lots.create(data or {}),
     request_model="AddLotRequest",
+    request_fixture_file="AddLotRequest.json",
     response_model="LotDto",
 )
 
 runner.add(
     "update",
-    lambda api: api.lots.update(
-        1,
-        # TODO: capture fixture — needs valid UpdateLotRequest body
-        {},
-    ),
+    lambda api, data=None: api.lots.update(1, data or {}),
     request_model="UpdateLotRequest",
+    request_fixture_file="UpdateLotRequest.json",
     response_model="LotDto",
 )
 
 runner.add(
     "delete",
-    lambda api: api.lots.delete(
-        # TODO: destructive — no fixture needed
-        1,
-    ),
+    lambda api: api.lots.delete(1),
 )
 
 runner.add(
     "get_overrides",
-    lambda api: api.lots.get_overrides(
-        # TODO: capture fixture — needs valid customer item IDs
-        [],
-    ),
+    lambda api: api.lots.get_overrides([]),
     response_model="List[LotOverrideDto]",
 )
 

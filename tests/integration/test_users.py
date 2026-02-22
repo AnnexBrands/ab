@@ -2,12 +2,15 @@
 
 import pytest
 
+from tests.conftest import load_request_fixture
+
 pytestmark = pytest.mark.live
 
 
 class TestUsersIntegration:
     def test_list_users(self, api):
-        result = api.users.list({"page": 1, "pageSize": 5})
+        data = load_request_fixture("ListRequest")
+        result = api.users.list(data)
         # /users/list returns {totalCount, data} paginated wrapper;
         # _request with List[User] falls through to raw dict when
         # response is not a plain list.

@@ -53,86 +53,58 @@ runner.add(
     fixture_file="GlobalAccessorial.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "request_rate_quotes",
-    lambda api: api.shipments.request_rate_quotes(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs TransportationRatesRequestModel body
-        data={},
-    ),
+    lambda api: api.shipments.request_rate_quotes(LIVE_JOB_DISPLAY_ID, data={}),
     response_model="List[RateQuote]",
 )
 
 runner.add(
     "book",
-    lambda api: api.shipments.book(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs ShipmentBookRequest body
-        {},
-    ),
+    lambda api, data=None: api.shipments.book(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="ShipmentBookRequest",
+    request_fixture_file="ShipmentBookRequest.json",
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "delete_shipment",
-    lambda api: api.shipments.delete_shipment(
-        # TODO: capture fixture — needs job with active shipment
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.shipments.delete_shipment(LIVE_JOB_DISPLAY_ID),
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "add_accessorial",
-    lambda api: api.shipments.add_accessorial(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs AccessorialAddRequest body
-        {},
-    ),
+    lambda api, data=None: api.shipments.add_accessorial(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="AccessorialAddRequest",
+    request_fixture_file="AccessorialAddRequest.json",
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "remove_accessorial",
-    lambda api: api.shipments.remove_accessorial(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid add_on_id
-        "ADD_ON_ID",
-    ),
+    lambda api: api.shipments.remove_accessorial(LIVE_JOB_DISPLAY_ID, "ADD_ON_ID"),
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "get_export_data",
-    lambda api: api.shipments.get_export_data(
-        # TODO: capture fixture — needs job with shipment export data
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.shipments.get_export_data(LIVE_JOB_DISPLAY_ID),
     response_model="ShipmentExportData",
 )
 
 runner.add(
     "post_export_data",
-    lambda api: api.shipments.post_export_data(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs export data body
-        {},
-    ),
+    lambda api: api.shipments.post_export_data(LIVE_JOB_DISPLAY_ID, {}),
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "get_shipment_document",
-    lambda api: api.shipments.get_shipment_document(
-        # TODO: capture fixture — needs valid document ID
-        "DOC_ID",
-    ),
+    lambda api: api.shipments.get_shipment_document("DOC_ID"),
     response_model="bytes",
-    # binary response — fixture save N/A
 )
 
 if __name__ == "__main__":

@@ -4,34 +4,22 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("AutoPrice", env="staging")
 
-# ── Captured fixtures ────────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "quick_quote",
-    lambda api: api.autoprice.quick_quote({
-        "originZip": "43213",
-        "destinationZip": "90210",
-        "weight": 150,
-    }),
+    lambda api, data=None: api.autoprice.quick_quote(data or {}),
     request_model="QuoteRequestModel",
+    request_fixture_file="QuoteRequestModel.json",
     response_model="QuickQuoteResponse",
     fixture_file="QuickQuoteResponse.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
-
 runner.add(
     "quote_request",
-    lambda api: api.autoprice.quote_request(
-        # TODO: capture fixture — needs items array with weight, class fields
-        #       and valid origin/destination
-        {
-            "originZip": "43213",
-            "destinationZip": "90210",
-            "items": [{"weight": 150, "class": "70"}],
-        },
-    ),
+    lambda api, data=None: api.autoprice.quote_request(data or {}),
     request_model="QuoteRequestModel",
+    request_fixture_file="QuoteRequestModel.json",
     response_model="QuoteRequestResponse",
 )
 

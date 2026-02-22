@@ -29,8 +29,9 @@ runner.add(
 
 runner.add(
     "accept",
-    lambda api: api.rfq.accept(LIVE_RFQ_ID, notes="Accepted via SDK"),
+    lambda api, data=None: api.rfq.accept(LIVE_RFQ_ID, **(data or {})),
     request_model="AcceptModel",
+    request_fixture_file="AcceptModel.json",
 )
 
 runner.add(
@@ -50,8 +51,9 @@ runner.add(
 
 runner.add(
     "add_comment",
-    lambda api: api.rfq.add_comment(LIVE_RFQ_ID, notes="Comment via SDK"),
+    lambda api, data=None: api.rfq.add_comment(LIVE_RFQ_ID, **(data or {})),
     request_model="AcceptModel",
+    request_fixture_file="AcceptModel.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════

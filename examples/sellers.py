@@ -20,35 +20,27 @@ runner.add(
     fixture_file="SellerExpandedDto_detail.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "create",
-    lambda api: api.sellers.create(
-        # TODO: capture fixture — needs valid AddSellerRequest body
-        {},
-    ),
+    lambda api, data=None: api.sellers.create(data or {}),
     request_model="AddSellerRequest",
+    request_fixture_file="AddSellerRequest.json",
     response_model="SellerDto",
 )
 
 runner.add(
     "update",
-    lambda api: api.sellers.update(
-        1,
-        # TODO: capture fixture — needs valid UpdateSellerRequest body
-        {},
-    ),
+    lambda api, data=None: api.sellers.update(1, data or {}),
     request_model="UpdateSellerRequest",
+    request_fixture_file="UpdateSellerRequest.json",
     response_model="SellerDto",
 )
 
 runner.add(
     "delete",
-    lambda api: api.sellers.delete(
-        # TODO: destructive — no fixture needed
-        1,
-    ),
+    lambda api: api.sellers.delete(1),
 )
 
 if __name__ == "__main__":

@@ -5,47 +5,33 @@ from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Notes", env="staging")
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "get_notes",
-    lambda api: api.jobs.get_notes(
-        # TODO: capture fixture — needs job ID with existing notes
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_notes(LIVE_JOB_DISPLAY_ID),
     response_model="List[JobNote]",
 )
 
 runner.add(
     "create_note",
-    lambda api: api.jobs.create_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid JobNoteCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.create_note(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="JobNoteCreateRequest",
+    request_fixture_file="JobNoteCreateRequest.json",
     response_model="JobNote",
 )
 
 runner.add(
     "get_note",
-    lambda api: api.jobs.get_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid note ID from get_notes response
-        "note-id-placeholder",
-    ),
+    lambda api: api.jobs.get_note(LIVE_JOB_DISPLAY_ID, "note-id-placeholder"),
     response_model="JobNote",
 )
 
 runner.add(
     "update_note",
-    lambda api: api.jobs.update_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid note ID and JobNoteUpdateRequest body
-        "note-id-placeholder",
-        {},
-    ),
+    lambda api, data=None: api.jobs.update_note(LIVE_JOB_DISPLAY_ID, "note-id-placeholder", data or {}),
     request_model="JobNoteUpdateRequest",
+    request_fixture_file="JobNoteUpdateRequest.json",
     response_model="JobNote",
 )
 

@@ -1,0 +1,12 @@
+{
+  "Id": null,
+  "CustomerCatalogId": null,
+  "Agent": null,
+  "Title": null,
+  "StartDate": null,
+  "EndDate": null,
+  "IsCompleted": null,
+  "SellerIds": null,
+  "PageSize": null,
+  "PageNumber": null
+}

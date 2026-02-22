@@ -22,15 +22,17 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api: api.notes.create(comment="Test note from SDK", category="General"),
+    lambda api, data=None: api.notes.create(**(data or {})),
     request_model="GlobalNoteCreateRequest",
+    request_fixture_file="GlobalNoteCreateRequest.json",
     response_model="GlobalNote",
 )
 
 runner.add(
     "update",
-    lambda api: api.notes.update(LIVE_NOTE_ID, comment="Updated note"),
+    lambda api, data=None: api.notes.update(LIVE_NOTE_ID, **(data or {})),
     request_model="GlobalNoteUpdateRequest",
+    request_fixture_file="GlobalNoteUpdateRequest.json",
     response_model="GlobalNote",
 )
 
