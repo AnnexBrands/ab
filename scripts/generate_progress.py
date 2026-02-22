@@ -84,9 +84,12 @@ def _generate_html_report() -> int:
 
     # Evaluate quality gates for all endpoints in FIXTURES.md
     fixtures_data = parse_existing_fixtures(FIXTURES_MD)
-    logging.disable(logging.WARNING)
-    gate_results = evaluate_all_gates(fixtures_data)
-    logging.disable(logging.NOTSET)
+    prev_level = logging.root.level
+    logging.root.setLevel(logging.ERROR)
+    try:
+        gate_results = evaluate_all_gates(fixtures_data)
+    finally:
+        logging.root.setLevel(prev_level)
 
     # Classify action items
     action_items = classify_action_items(groups, fixtures, fixture_files, constants)

@@ -110,7 +110,7 @@ def evaluate_g1(model_name: str) -> GateResult:
 
     try:
         instance = model_cls.model_validate(data)
-    except Exception as exc:
+    except (ValueError, TypeError, KeyError) as exc:
         return GateResult("G1", False, f"Validation error: {exc}")
 
     extra = getattr(instance, "__pydantic_extra__", None) or {}

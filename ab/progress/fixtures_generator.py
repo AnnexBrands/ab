@@ -113,23 +113,23 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
     if not endpoints:
         return "# Fixture Tracking\n\nNo endpoints found.\n"
 
-    # Suppress warnings during gate evaluation
-    logging.disable(logging.WARNING)
-
-    # Evaluate gates for all endpoints
-    gate_results = []
-    for ep in endpoints:
-        resp_model = ep.get("response_model", "")
-        status = evaluate_endpoint_gates(
-            endpoint_path=ep["endpoint_path"],
-            method=ep["method"],
-            response_model=resp_model if resp_model else None,
-            request_model=ep.get("request_model") or None,
-            notes=ep.get("notes", ""),
-        )
-        gate_results.append((ep, status))
-
-    logging.disable(logging.NOTSET)
+    # Evaluate gates for all endpoints (suppress noisy import warnings)
+    prev_level = logging.root.level
+    logging.root.setLevel(logging.ERROR)
+    try:
+        gate_results = []
+        for ep in endpoints:
+            resp_model = ep.get("response_model", "")
+            status = evaluate_endpoint_gates(
+                endpoint_path=ep["endpoint_path"],
+                method=ep["method"],
+                response_model=resp_model if resp_model else None,
+                request_model=ep.get("request_model") or None,
+                notes=ep.get("notes", ""),
+            )
+            gate_results.append((ep, status))
+    finally:
+        logging.root.setLevel(prev_level)
 
     # Compute summary stats
     total = len(gate_results)
@@ -215,5 +215,9 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
     lines.append("")
 
     content = "\n".join(lines)
-    output_path.write_text(content)
+    try:
+        output_path.write_text(content)
+    except OSError as exc:
+        logger.error("Failed to write %s: %s", output_path, exc)
+        raise
     return content
