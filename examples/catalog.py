@@ -4,64 +4,48 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Catalog", env="staging")
 
-# ── Captured fixtures ────────────────────────────────────────────────
-
-# (none — all catalog methods need request data or return empty results)
-
 # ── Needs request data ───────────────────────────────────────────────
 
 runner.add(
     "list",
     lambda api: api.catalog.list(page=1, page_size=25),
-    # TODO: capture fixture — returns empty on staging
     response_model="PaginatedList[CatalogExpandedDto]",
 )
 
 runner.add(
     "get",
-    lambda api: api.catalog.get(
-        # TODO: capture fixture — needs valid catalog ID
-        1,
-    ),
+    lambda api: api.catalog.get(1),
     response_model="CatalogExpandedDto",
 )
 
+# ── Uses request fixtures ────────────────────────────────────────────
+
 runner.add(
     "create",
-    lambda api: api.catalog.create(
-        # TODO: capture fixture — needs valid AddCatalogRequest body
-        {},
-    ),
+    lambda api, data=None: api.catalog.create(data or {}),
     request_model="AddCatalogRequest",
+    request_fixture_file="AddCatalogRequest.json",
     response_model="CatalogWithSellersDto",
 )
 
 runner.add(
     "update",
-    lambda api: api.catalog.update(
-        1,
-        # TODO: capture fixture — needs valid UpdateCatalogRequest body
-        {},
-    ),
+    lambda api, data=None: api.catalog.update(1, data or {}),
     request_model="UpdateCatalogRequest",
+    request_fixture_file="UpdateCatalogRequest.json",
     response_model="CatalogWithSellersDto",
 )
 
 runner.add(
     "delete",
-    lambda api: api.catalog.delete(
-        # TODO: destructive — no fixture needed
-        1,
-    ),
+    lambda api: api.catalog.delete(1),
 )
 
 runner.add(
     "bulk_insert",
-    lambda api: api.catalog.bulk_insert(
-        # TODO: capture fixture — needs valid BulkInsertRequest body
-        {},
-    ),
+    lambda api, data=None: api.catalog.bulk_insert(data or {}),
     request_model="BulkInsertRequest",
+    request_fixture_file="BulkInsertRequest.json",
 )
 
 if __name__ == "__main__":

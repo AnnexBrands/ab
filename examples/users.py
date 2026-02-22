@@ -8,8 +8,9 @@ runner = ExampleRunner("Users", env="staging")
 
 runner.add(
     "list",
-    lambda api: api.users.list({}),
+    lambda api, data=None: api.users.list(data or {}),
     request_model="ListRequest",
+    request_fixture_file="ListRequest.json",
     response_model="List[User]",
     fixture_file="User.json",
 )
@@ -21,26 +22,20 @@ runner.add(
     fixture_file="UserRole.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "create",
-    lambda api: api.users.create(
-        # TODO: capture fixture — needs UserCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.users.create(data or {}),
     request_model="UserCreateRequest",
-    # no response model
+    request_fixture_file="UserCreateRequest.json",
 )
 
 runner.add(
     "update",
-    lambda api: api.users.update(
-        # TODO: capture fixture — needs UserUpdateRequest body
-        {},
-    ),
+    lambda api, data=None: api.users.update(data or {}),
     request_model="UserUpdateRequest",
-    # no response model
+    request_fixture_file="UserUpdateRequest.json",
 )
 
 if __name__ == "__main__":

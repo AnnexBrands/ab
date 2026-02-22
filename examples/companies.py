@@ -28,54 +28,43 @@ runner.add(
     fixture_file="SearchCompanyResponse.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "get_details",
-    lambda api: api.companies.get_details(
-        # TODO: capture fixture — needs company UUID with populated details
-        LIVE_COMPANY_UUID,
-    ),
+    lambda api: api.companies.get_details(LIVE_COMPANY_UUID),
     response_model="CompanyDetails",
 )
 
 runner.add(
     "update_fulldetails",
-    lambda api: api.companies.update_fulldetails(
-        LIVE_COMPANY_UUID,
-        # TODO: capture fixture — needs valid CompanyDetails kwargs
-    ),
+    lambda api, data=None: api.companies.update_fulldetails(LIVE_COMPANY_UUID, **(data or {})),
     request_model="CompanyDetails",
+    request_fixture_file="CompanyDetails.json",
     response_model="CompanyDetails",
 )
 
 runner.add(
     "create",
-    lambda api: api.companies.create(
-        # TODO: capture fixture — needs valid CompanyDetails kwargs for new company
-    ),
+    lambda api, data=None: api.companies.create(**(data or {})),
     request_model="CompanyDetails",
+    request_fixture_file="CompanyDetails.json",
     response_model="str",
 )
 
 runner.add(
     "search",
-    lambda api: api.companies.search(
-        # TODO: capture fixture — needs valid CompanySearchRequest kwargs
-        search_text="test",
-        page=1,
-        page_size=25,
-    ),
+    lambda api, data=None: api.companies.search(**(data or {})),
     request_model="CompanySearchRequest",
+    request_fixture_file="CompanySearchRequest.json",
     response_model="List[SearchCompanyResponse]",
 )
 
 runner.add(
     "list",
-    lambda api: api.companies.list(
-        # TODO: capture fixture — needs valid ListRequest kwargs
-    ),
+    lambda api, data=None: api.companies.list(data or {}),
     request_model="ListRequest",
+    request_fixture_file="ListRequest.json",
     response_model="List[CompanySimple]",
 )
 

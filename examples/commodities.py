@@ -16,16 +16,18 @@ LIVE_MAP_ID = "PLACEHOLDER"
 
 runner.add(
     "commodity_search",
-    lambda api: api.commodities.search(searchText="furniture"),
+    lambda api, data=None: api.commodities.search(**(data or {})),
     request_model="CommoditySearchRequest",
+    request_fixture_file="CommoditySearchRequest.json",
     response_model="List[Commodity]",
     fixture_file="Commodity.json",
 )
 
 runner.add(
     "commodity_suggestions",
-    lambda api: api.commodities.suggestions(searchText="chair"),
+    lambda api, data=None: api.commodities.suggestions(**(data or {})),
     request_model="CommoditySuggestionRequest",
+    request_fixture_file="CommoditySuggestionRequest.json",
     response_model="List[Commodity]",
 )
 
@@ -37,22 +39,17 @@ runner.add(
 
 runner.add(
     "commodity_create",
-    lambda api: api.commodities.create(
-        description="Test Commodity",
-        freightClass="70",
-        nmfcCode="12345",
-    ),
+    lambda api, data=None: api.commodities.create(**(data or {})),
     request_model="CommodityCreateRequest",
+    request_fixture_file="CommodityCreateRequest.json",
     response_model="Commodity",
 )
 
 runner.add(
     "commodity_update",
-    lambda api: api.commodities.update(
-        LIVE_COMMODITY_ID,
-        description="Updated Commodity",
-    ),
+    lambda api, data=None: api.commodities.update(LIVE_COMMODITY_ID, **(data or {})),
     request_model="CommodityUpdateRequest",
+    request_fixture_file="CommodityUpdateRequest.json",
     response_model="Commodity",
 )
 
@@ -62,8 +59,9 @@ runner.add(
 
 runner.add(
     "commodity_map_search",
-    lambda api: api.commodity_maps.search(searchText="test"),
+    lambda api, data=None: api.commodity_maps.search(**(data or {})),
     request_model="CommodityMapSearchRequest",
+    request_fixture_file="CommodityMapSearchRequest.json",
     response_model="List[CommodityMap]",
     fixture_file="CommodityMap.json",
 )
@@ -76,21 +74,17 @@ runner.add(
 
 runner.add(
     "commodity_map_create",
-    lambda api: api.commodity_maps.create(
-        customName="Test Map",
-        commodityId=LIVE_COMMODITY_ID,
-    ),
+    lambda api, data=None: api.commodity_maps.create(**(data or {})),
     request_model="CommodityMapCreateRequest",
+    request_fixture_file="CommodityMapCreateRequest.json",
     response_model="CommodityMap",
 )
 
 runner.add(
     "commodity_map_update",
-    lambda api: api.commodity_maps.update(
-        LIVE_MAP_ID,
-        customName="Updated Map",
-    ),
+    lambda api, data=None: api.commodity_maps.update(LIVE_MAP_ID, **(data or {})),
     request_model="CommodityMapUpdateRequest",
+    request_fixture_file="CommodityMapUpdateRequest.json",
     response_model="CommodityMap",
 )
 

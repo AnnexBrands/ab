@@ -29,40 +29,35 @@ runner.add(
     fixture_file="JobSearchResult.json",
 )
 
+# ── Uses request fixtures ────────────────────────────────────────────
+
 runner.add(
     "search_by_details",
-    lambda api: api.jobs.search_by_details({"searchText": "test"}),
+    lambda api, data=None: api.jobs.search_by_details(data or {}),
     request_model="JobSearchRequest",
+    request_fixture_file="JobSearchRequest.json",
     response_model="List[JobSearchResult]",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
-
 runner.add(
     "create",
-    lambda api: api.jobs.create(
-        # TODO: capture fixture — needs JobCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.create(data or {}),
     request_model="JobCreateRequest",
+    request_fixture_file="JobCreateRequest.json",
 )
 
 runner.add(
     "save",
-    lambda api: api.jobs.save(
-        # TODO: capture fixture — needs JobSaveRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.save(data or {}),
     request_model="JobSaveRequest",
+    request_fixture_file="JobSaveRequest.json",
 )
 
 runner.add(
     "update",
-    lambda api: api.jobs.update(
-        # TODO: capture fixture — needs JobUpdateRequest body (ABC API)
-        {},
-    ),
+    lambda api, data=None: api.jobs.update(data or {}),
     request_model="JobUpdateRequest",
+    request_fixture_file="JobUpdateRequest.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -91,34 +86,25 @@ runner.add(
     fixture_file="JobUpdatePageConfig.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "increment_status",
-    lambda api: api.jobs.increment_status(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — mutates job status; run with caution
-    ),
+    lambda api: api.jobs.increment_status(LIVE_JOB_DISPLAY_ID),
     request_model="IncrementStatusRequest",
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "undo_increment_status",
-    lambda api: api.jobs.undo_increment_status(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — mutates job status; run with caution
-    ),
+    lambda api: api.jobs.undo_increment_status(LIVE_JOB_DISPLAY_ID),
     request_model="IncrementStatusRequest",
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "set_quote_status",
-    lambda api: api.jobs.set_quote_status(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — mutates job status; run with caution
-    ),
+    lambda api: api.jobs.set_quote_status(LIVE_JOB_DISPLAY_ID),
     response_model="ServiceBaseResponse",
 )
 
@@ -139,63 +125,41 @@ runner.add(
 
 runner.add(
     "get_timeline",
-    lambda api: api.jobs.get_timeline(
-        # TODO: capture fixture — needs job ID with active timeline
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_timeline(LIVE_JOB_DISPLAY_ID),
     response_model="List[TimelineTask]",
 )
 
 runner.add(
     "create_timeline_task",
-    lambda api: api.jobs.create_timeline_task(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs TimelineTaskCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.create_timeline_task(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="TimelineTaskCreateRequest",
+    request_fixture_file="TimelineTaskCreateRequest.json",
     response_model="TimelineTask",
 )
 
 runner.add(
     "get_timeline_task",
-    lambda api: api.jobs.get_timeline_task(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid task_id
-        "TASK_ID",
-    ),
+    lambda api: api.jobs.get_timeline_task(LIVE_JOB_DISPLAY_ID, "TASK_ID"),
     response_model="TimelineTask",
 )
 
 runner.add(
     "update_timeline_task",
-    lambda api: api.jobs.update_timeline_task(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid task_id and TimelineTaskUpdateRequest body
-        "TASK_ID",
-        {},
-    ),
+    lambda api, data=None: api.jobs.update_timeline_task(LIVE_JOB_DISPLAY_ID, "TASK_ID", data or {}),
     request_model="TimelineTaskUpdateRequest",
+    request_fixture_file="TimelineTaskUpdateRequest.json",
     response_model="TimelineTask",
 )
 
 runner.add(
     "delete_timeline_task",
-    lambda api: api.jobs.delete_timeline_task(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: destructive — no fixture needed
-        "TASK_ID",
-    ),
+    lambda api: api.jobs.delete_timeline_task(LIVE_JOB_DISPLAY_ID, "TASK_ID"),
     # destructive — no fixture
 )
 
 runner.add(
     "get_timeline_agent",
-    lambda api: api.jobs.get_timeline_agent(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid task code
-        "SCH",
-    ),
+    lambda api: api.jobs.get_timeline_agent(LIVE_JOB_DISPLAY_ID, "SCH"),
     response_model="TimelineAgent",
 )
 
@@ -207,20 +171,13 @@ runner.add(
 
 runner.add(
     "get_tracking",
-    lambda api: api.jobs.get_tracking(
-        # TODO: capture fixture — needs shipped job ID
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_tracking(LIVE_JOB_DISPLAY_ID),
     response_model="TrackingInfo",
 )
 
 runner.add(
     "get_tracking_v3",
-    lambda api: api.jobs.get_tracking_v3(
-        # TODO: capture fixture — needs shipped job ID
-        LIVE_JOB_DISPLAY_ID,
-        history_amount=10,
-    ),
+    lambda api: api.jobs.get_tracking_v3(LIVE_JOB_DISPLAY_ID, history_amount=10),
     response_model="TrackingInfoV3",
 )
 
@@ -228,47 +185,33 @@ runner.add(
 # Notes
 # ═══════════════════════════════════════════════════════════════════════
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "get_notes",
-    lambda api: api.jobs.get_notes(
-        # TODO: capture fixture — needs job ID with notes
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_notes(LIVE_JOB_DISPLAY_ID),
     response_model="List[JobNote]",
 )
 
 runner.add(
     "create_note",
-    lambda api: api.jobs.create_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs JobNoteCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.create_note(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="JobNoteCreateRequest",
+    request_fixture_file="JobNoteCreateRequest.json",
     response_model="JobNote",
 )
 
 runner.add(
     "get_note",
-    lambda api: api.jobs.get_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid note_id
-        "NOTE_ID",
-    ),
+    lambda api: api.jobs.get_note(LIVE_JOB_DISPLAY_ID, "NOTE_ID"),
     response_model="JobNote",
 )
 
 runner.add(
     "update_note",
-    lambda api: api.jobs.update_note(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid note_id and JobNoteUpdateRequest body
-        "NOTE_ID",
-        {},
-    ),
+    lambda api, data=None: api.jobs.update_note(LIVE_JOB_DISPLAY_ID, "NOTE_ID", data or {}),
     request_model="JobNoteUpdateRequest",
+    request_fixture_file="JobNoteUpdateRequest.json",
     response_model="JobNote",
 )
 
@@ -276,52 +219,36 @@ runner.add(
 # Parcels
 # ═══════════════════════════════════════════════════════════════════════
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "get_parcel_items",
-    lambda api: api.jobs.get_parcel_items(
-        # TODO: capture fixture — needs job ID with parcel items
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_parcel_items(LIVE_JOB_DISPLAY_ID),
     response_model="List[ParcelItem]",
 )
 
 runner.add(
     "create_parcel_item",
-    lambda api: api.jobs.create_parcel_item(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs ParcelItemCreateRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.create_parcel_item(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="ParcelItemCreateRequest",
+    request_fixture_file="ParcelItemCreateRequest.json",
     response_model="ParcelItem",
 )
 
 runner.add(
     "delete_parcel_item",
-    lambda api: api.jobs.delete_parcel_item(
-        LIVE_JOB_DISPLAY_ID,
-        # destructive — no fixture
-        "PARCEL_ITEM_ID",
-    ),
+    lambda api: api.jobs.delete_parcel_item(LIVE_JOB_DISPLAY_ID, "PARCEL_ITEM_ID"),
 )
 
 runner.add(
     "get_parcel_items_with_materials",
-    lambda api: api.jobs.get_parcel_items_with_materials(
-        # TODO: capture fixture — needs job ID with parcel items
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_parcel_items_with_materials(LIVE_JOB_DISPLAY_ID),
     response_model="List[ParcelItemWithMaterials]",
 )
 
 runner.add(
     "get_packaging_containers",
-    lambda api: api.jobs.get_packaging_containers(
-        # TODO: capture fixture — needs job ID with packaging containers
-        LIVE_JOB_DISPLAY_ID,
-    ),
+    lambda api: api.jobs.get_packaging_containers(LIVE_JOB_DISPLAY_ID),
     response_model="List[PackagingContainer]",
 )
 
@@ -329,28 +256,21 @@ runner.add(
 # Items
 # ═══════════════════════════════════════════════════════════════════════
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "update_item",
-    lambda api: api.jobs.update_item(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs valid item_id and ItemUpdateRequest body
-        "ITEM_ID",
-        {},
-    ),
+    lambda api, data=None: api.jobs.update_item(LIVE_JOB_DISPLAY_ID, "ITEM_ID", data or {}),
     request_model="ItemUpdateRequest",
+    request_fixture_file="ItemUpdateRequest.json",
     response_model="ServiceBaseResponse",
 )
 
 runner.add(
     "add_item_notes",
-    lambda api: api.jobs.add_item_notes(
-        LIVE_JOB_DISPLAY_ID,
-        # TODO: capture fixture — needs ItemNotesRequest body
-        {},
-    ),
+    lambda api, data=None: api.jobs.add_item_notes(LIVE_JOB_DISPLAY_ID, data or {}),
     request_model="ItemNotesRequest",
+    request_fixture_file="ItemNotesRequest.json",
     response_model="ServiceBaseResponse",
 )
 

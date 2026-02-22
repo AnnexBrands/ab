@@ -1,7 +1,6 @@
 """Example: Document operations (4 methods)."""
 
 from examples._runner import ExampleRunner
-from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Documents", env="staging")
 
@@ -19,7 +18,6 @@ runner.add(
 runner.add(
     "upload",
     lambda api: api.documents.upload(
-        # TODO: capture fixture — needs valid job ID and local file path
         job_id="2000000",
         file_path="/tmp/test-upload.pdf",
         document_type=6,
@@ -29,21 +27,14 @@ runner.add(
 
 runner.add(
     "get",
-    lambda api: api.documents.get(
-        # TODO: capture fixture — needs valid document path from list response
-        #       binary response — fixture save N/A
-        "path/to/document.pdf",
-    ),
+    lambda api: api.documents.get("path/to/document.pdf"),
 )
 
 runner.add(
     "update",
-    lambda api: api.documents.update(
-        # TODO: capture fixture — needs valid document ID and DocumentUpdateRequest body
-        "doc-id-placeholder",
-        {},
-    ),
+    lambda api, data=None: api.documents.update("doc-id-placeholder", data or {}),
     request_model="DocumentUpdateRequest",
+    request_fixture_file="DocumentUpdateRequest.json",
 )
 
 if __name__ == "__main__":

@@ -25,13 +25,9 @@ runner.add(
 
 runner.add(
     "send_document_email",
-    lambda api: api.jobs.send_document_email(
-        LIVE_JOB_DISPLAY_ID,
-        to=["test@example.com"],
-        subject="Document email",
-        documentType="BOL",
-    ),
+    lambda api, data=None: api.jobs.send_document_email(LIVE_JOB_DISPLAY_ID, **(data or {})),
     request_model="SendDocumentEmailModel",
+    request_fixture_file="SendDocumentEmailModel.json",
 )
 
 runner.add(
@@ -55,21 +51,16 @@ runner.add(
 
 runner.add(
     "send_sms",
-    lambda api: api.jobs.send_sms(
-        LIVE_JOB_DISPLAY_ID,
-        phoneNumber="5551234567",
-        message="Test SMS via SDK",
-    ),
+    lambda api, data=None: api.jobs.send_sms(LIVE_JOB_DISPLAY_ID, **(data or {})),
     request_model="SendSMSModel",
+    request_fixture_file="SendSMSModel.json",
 )
 
 runner.add(
     "mark_sms_read",
-    lambda api: api.jobs.mark_sms_read(
-        LIVE_JOB_DISPLAY_ID,
-        smsIds=["SMS_ID"],
-    ),
+    lambda api, data=None: api.jobs.mark_sms_read(LIVE_JOB_DISPLAY_ID, **(data or {})),
     request_model="MarkSmsAsReadModel",
+    request_fixture_file="MarkSmsAsReadModel.json",
 )
 
 runner.add(

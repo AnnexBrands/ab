@@ -9,6 +9,7 @@ import pytest
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 MOCKS_DIR = FIXTURES_DIR / "mocks"
+REQUESTS_DIR = FIXTURES_DIR / "requests"
 
 
 def _resolve_fixture_path(model_name: str) -> Path | None:
@@ -90,6 +91,53 @@ def require_fixture(
             msg += f" via {method} {path}"
         pytest.skip(msg)
     return load_fixture(model_name)
+
+
+def load_request_fixture(model_name: str) -> dict:
+    """Load a request fixture by model name from ``tests/fixtures/requests/``.
+
+    Args:
+        model_name: e.g. ``"AddressValidateParams"`` loads
+            ``tests/fixtures/requests/AddressValidateParams.json``
+
+    Returns:
+        Parsed JSON data as a dict.
+
+    Raises:
+        FileNotFoundError: If fixture file does not exist.
+    """
+    path = REQUESTS_DIR / f"{model_name}.json"
+    if not path.exists():
+        raise FileNotFoundError(f"Request fixture not found: {path}") from None
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"Invalid JSON in request fixture {model_name}.json: {exc}") from exc
+
+
+def load_request_kwargs(model_name: str) -> dict:
+    """Load a request fixture and convert alias keys to Python field names.
+
+    Useful for GET params_model fixtures where the endpoint method expects
+    snake_case keyword arguments but the fixture has camelCase alias keys.
+
+    Args:
+        model_name: e.g. ``"AddressValidateParams"``
+
+    Returns:
+        Dict with snake_case field names as keys.
+    """
+    import ab.api.models as models_pkg
+
+    raw = load_request_fixture(model_name)
+    model_cls = getattr(models_pkg, model_name, None)
+    if model_cls is None:
+        return raw
+    alias_map: dict[str, str] = {}
+    for field_name, field_info in model_cls.model_fields.items():
+        alias = field_info.alias if field_info.alias else field_name
+        alias_map[alias] = field_name
+    return {alias_map.get(k, k): v for k, v in raw.items()}
 
 
 def assert_no_extra_fields(model: object) -> None:

@@ -29,8 +29,9 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api: api.views.create(name="SDK Test View"),
+    lambda api, data=None: api.views.create(**(data or {})),
     request_model="GridViewCreateRequest",
+    request_fixture_file="GridViewCreateRequest.json",
     response_model="GridViewDetails",
 )
 

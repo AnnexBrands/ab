@@ -24,12 +24,9 @@ runner.add(
 
 runner.add(
     "create_on_hold",
-    lambda api: api.jobs.create_on_hold(
-        LIVE_JOB_DISPLAY_ID,
-        reason="SDK Test",
-        description="Testing on-hold creation",
-    ),
+    lambda api, data=None: api.jobs.create_on_hold(LIVE_JOB_DISPLAY_ID, **(data or {})),
     request_model="SaveOnHoldRequest",
+    request_fixture_file="SaveOnHoldRequest.json",
     response_model="SaveOnHoldResponse",
     fixture_file="SaveOnHoldResponse.json",
 )
@@ -43,34 +40,24 @@ runner.add(
 
 runner.add(
     "update_on_hold",
-    lambda api: api.jobs.update_on_hold(
-        LIVE_JOB_DISPLAY_ID,
-        LIVE_ON_HOLD_ID,
-        description="Updated description",
-    ),
+    lambda api, data=None: api.jobs.update_on_hold(LIVE_JOB_DISPLAY_ID, LIVE_ON_HOLD_ID, **(data or {})),
     request_model="SaveOnHoldRequest",
+    request_fixture_file="SaveOnHoldRequest.json",
     response_model="SaveOnHoldResponse",
 )
 
 runner.add(
     "add_on_hold_comment",
-    lambda api: api.jobs.add_on_hold_comment(
-        LIVE_JOB_DISPLAY_ID,
-        LIVE_ON_HOLD_ID,
-        comment="Comment via SDK",
-    ),
+    lambda api: api.jobs.add_on_hold_comment(LIVE_JOB_DISPLAY_ID, LIVE_ON_HOLD_ID, comment="Comment via SDK"),
     response_model="OnHoldNoteDetails",
     fixture_file="OnHoldNoteDetails.json",
 )
 
 runner.add(
     "update_on_hold_dates",
-    lambda api: api.jobs.update_on_hold_dates(
-        LIVE_JOB_DISPLAY_ID,
-        LIVE_ON_HOLD_ID,
-        followUpDate="2026-03-01",
-    ),
+    lambda api, data=None: api.jobs.update_on_hold_dates(LIVE_JOB_DISPLAY_ID, LIVE_ON_HOLD_ID, **(data or {})),
     request_model="SaveOnHoldDatesModel",
+    request_fixture_file="SaveOnHoldDatesModel.json",
 )
 
 runner.add(

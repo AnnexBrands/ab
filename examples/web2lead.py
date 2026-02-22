@@ -13,15 +13,13 @@ runner.add(
     fixture_file="Web2LeadResponse.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
+# ── Uses request fixtures ────────────────────────────────────────────
 
 runner.add(
     "post",
-    lambda api: api.web2lead.post(
-        # TODO: capture fixture — needs valid Web2LeadRequest body
-        {},
-    ),
+    lambda api, data=None: api.web2lead.post(data or {}),
     request_model="Web2LeadRequest",
+    request_fixture_file="Web2LeadRequest.json",
     response_model="Web2LeadResponse",
 )
 

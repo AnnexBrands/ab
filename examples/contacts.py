@@ -28,42 +28,35 @@ runner.add(
     fixture_file="ContactPrimaryDetails.json",
 )
 
+# ── Uses request fixtures ────────────────────────────────────────────
+
 runner.add(
     "search",
-    lambda api: api.contacts.search({"searchText": "Justine"}),
+    lambda api, data=None: api.contacts.search(data or {}),
     request_model="ContactSearchRequest",
+    request_fixture_file="ContactSearchRequest.json",
     response_model="List[SearchContactEntityResult]",
     fixture_file="SearchContactEntityResult.json",
 )
 
-# ── Needs request data ───────────────────────────────────────────────
-
 runner.add(
     "get",
-    lambda api: api.contacts.get(
-        # TODO: capture fixture — needs valid contact ID (string)
-        str(LIVE_CONTACT_ID),
-    ),
+    lambda api: api.contacts.get(str(LIVE_CONTACT_ID)),
     response_model="ContactSimple",
 )
 
 runner.add(
     "update_details",
-    lambda api: api.contacts.update_details(
-        str(LIVE_CONTACT_ID),
-        # TODO: capture fixture — needs valid ContactEditRequest body
-        {},
-    ),
+    lambda api, data=None: api.contacts.update_details(str(LIVE_CONTACT_ID), data or {}),
     request_model="ContactEditRequest",
+    request_fixture_file="ContactEditRequest.json",
 )
 
 runner.add(
     "create",
-    lambda api: api.contacts.create(
-        # TODO: capture fixture — needs valid ContactEditRequest body for new contact
-        {},
-    ),
+    lambda api, data=None: api.contacts.create(data or {}),
     request_model="ContactEditRequest",
+    request_fixture_file="ContactEditRequest.json",
 )
 
 if __name__ == "__main__":

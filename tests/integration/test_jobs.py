@@ -4,7 +4,7 @@ import pytest
 
 from ab.api.models.jobs import CalendarItem, Job, JobPrice, JobSearchResult, JobUpdatePageConfig
 from ab.exceptions import RequestError
-from tests.conftest import assert_no_extra_fields
+from tests.conftest import assert_no_extra_fields, load_request_fixture
 from tests.constants import LIVE_JOB_DISPLAY_ID
 
 pytestmark = pytest.mark.live
@@ -28,13 +28,9 @@ class TestJobsIntegration:
             assert result.get("jobDisplayId") == LIVE_JOB_DISPLAY_ID
 
     def test_search_by_details(self, api):
+        data = load_request_fixture("JobSearchRequest")
         try:
-            result = api.jobs.search_by_details({
-                "searchText": "test",
-                "pageNo": 1,
-                "pageSize": 25,
-                "sortBy": {"sortByField": 1, "sortDir": True},
-            })
+            result = api.jobs.search_by_details(data)
         except RequestError as exc:
             if exc.status_code >= 500:
                 pytest.skip(f"Staging server error: {exc}")

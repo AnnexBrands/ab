@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Any, Callable, Optional
 
 FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
+REQUESTS_DIR = FIXTURES_DIR / "requests"
 
 
 @dataclass
@@ -141,6 +142,26 @@ class ExampleRunner:
             )
         print()
 
+    @staticmethod
+    def _load_request_data(filename: str) -> dict:
+        """Load a request fixture JSON file from ``tests/fixtures/requests/``."""
+        path = REQUESTS_DIR / filename
+        return json.loads(path.read_text())
+
+    @staticmethod
+    def _fixture_to_kwargs(model_name: str, data: dict) -> dict:
+        """Convert fixture alias keys to Python field names using model metadata."""
+        import ab.api.models as models_pkg
+
+        model_cls = getattr(models_pkg, model_name, None)
+        if model_cls is None:
+            return data
+        alias_map: dict[str, str] = {}
+        for field_name, field_info in model_cls.model_fields.items():
+            alias = field_info.alias if field_info.alias else field_name
+            alias_map[alias] = field_name
+        return {alias_map.get(k, k): v for k, v in data.items()}
+
     def _run_entry(self, entry: ExampleEntry) -> None:
         """Execute a single entry: call → display → save fixture."""
         print(f"\n{'=' * 64}")
@@ -152,11 +173,19 @@ class ExampleRunner:
         if entry.fixture_file:
             print(f"  Fixture        : tests/fixtures/{entry.fixture_file}")
         if entry.request_fixture_file:
-            print(f"  Req Fixture    : tests/fixtures/{entry.request_fixture_file}")
+            print(f"  Req Fixture    : tests/fixtures/requests/{entry.request_fixture_file}")
         print(f"{'=' * 64}\n")
 
         try:
-            result = entry.call(self.api)
+            if entry.request_fixture_file:
+                raw = self._load_request_data(entry.request_fixture_file)
+                if entry.request_model:
+                    data = self._fixture_to_kwargs(entry.request_model, raw)
+                else:
+                    data = raw
+                result = entry.call(self.api, data)
+            else:
+                result = entry.call(self.api)
         except Exception as exc:
             print(f"  ERROR: {exc}")
             return
