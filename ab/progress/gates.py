@@ -1,14 +1,16 @@
 """Quality gate evaluation for endpoint status tracking.
 
-Four gates determine endpoint completion:
+Five gates determine endpoint completion:
 - G1: Model Fidelity — response model declares all fixture fields
 - G2: Fixture Status — fixture file exists on disk
 - G3: Test Quality — tests assert isinstance + zero __pydantic_extra__
 - G4: Documentation Accuracy — return type is not Any, docs exist
+- G5: Parameter Routing — query params use params_model dispatch
 """
 
 from __future__ import annotations
 
+import functools
 import importlib
 import json
 import re
@@ -45,6 +47,7 @@ class EndpointGateStatus:
     g2_fixture_status: GateResult | None = None
     g3_test_quality: GateResult | None = None
     g4_doc_accuracy: GateResult | None = None
+    g5_param_routing: GateResult | None = None
     overall_status: str = "incomplete"
     notes: str = ""
 
@@ -55,6 +58,7 @@ class EndpointGateStatus:
             self.g2_fixture_status,
             self.g3_test_quality,
             self.g4_doc_accuracy,
+            self.g5_param_routing,
         ]
         applicable = [g for g in gates if g is not None]
         if not applicable:
@@ -258,6 +262,123 @@ def evaluate_g4(model_name: str, endpoint_module: str | None = None) -> GateResu
 
 
 # ---------------------------------------------------------------------------
+# G5: Parameter Routing
+# ---------------------------------------------------------------------------
+
+SCHEMAS_DIR = REPO_ROOT / "ab" / "api" / "schemas"
+
+
+@functools.lru_cache(maxsize=4)
+def _load_swagger(schema_file: str = "acportal.json") -> dict:
+    """Load a swagger/OpenAPI spec (cached)."""
+    path = SCHEMAS_DIR / schema_file
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text())
+
+
+def _get_swagger_query_params(
+    endpoint_path: str, method: str,
+) -> list[dict] | None:
+    """Get query parameters from swagger for the given endpoint.
+
+    Returns list of param dicts, empty list if no query params, or None
+    if the endpoint is not found in any swagger spec.
+    """
+    # Our Route paths omit the /api/ prefix that swagger uses
+    swagger_path = f"/api{endpoint_path}"
+    method_lower = method.lower()
+
+    for schema_file in ("acportal.json", "catalog.json", "abc.json"):
+        spec = _load_swagger(schema_file)
+        if not spec:
+            continue
+        paths = spec.get("paths", {})
+
+        # Try exact match
+        if swagger_path in paths:
+            op = paths[swagger_path].get(method_lower, {})
+            params = op.get("parameters", [])
+            return [p for p in params if p.get("in") == "query"]
+
+        # Try matching with normalized path params (swagger may use
+        # different param names like {jobId} vs our {jobDisplayId})
+        normalized = re.sub(r"\{[^}]+\}", "{}", swagger_path)
+        for spec_path, methods in paths.items():
+            spec_normalized = re.sub(r"\{[^}]+\}", "{}", spec_path)
+            if spec_normalized == normalized and method_lower in methods:
+                params = methods[method_lower].get("parameters", [])
+                return [p for p in params if p.get("in") == "query"]
+
+    return None
+
+
+_ROUTE_PARAMS_MODEL_RE = re.compile(
+    r"Route\([^)]*?"
+    r"params_model\s*=\s*[\"'](\w+)[\"']"
+    r"[^)]*?\)",
+    re.DOTALL,
+)
+
+
+def _route_has_params_model(file_content: str, endpoint_path: str) -> bool:
+    """Check if any Route definition for the given path has params_model set."""
+    # Find all Route(...) definitions that contain this endpoint path
+    # Route paths may be bound, so match the static portion
+    path_escaped = re.escape(endpoint_path)
+    # Handle path params: /job/{jobDisplayId}/... -> /job/\{[^}]+\}/...
+    path_pattern = re.sub(r"\\{[^}]+\\}", r"\\{[^}]+\\}", path_escaped)
+    route_pattern = re.compile(
+        r"Route\([^)]*?" + path_pattern + r"[^)]*?\)",
+        re.DOTALL,
+    )
+
+    for match in route_pattern.finditer(file_content):
+        route_text = match.group(0)
+        if "params_model" in route_text:
+            return True
+    return False
+
+
+def evaluate_g5(endpoint_path: str, method: str) -> GateResult:
+    """Check if query params are routed through params_model dispatch.
+
+    Auto-passes if swagger defines no query parameters for this endpoint.
+    """
+    query_params = _get_swagger_query_params(endpoint_path, method)
+
+    if query_params is None:
+        return GateResult("G5", True, "Not in swagger — auto-pass")
+
+    if not query_params:
+        return GateResult("G5", True, "No query parameters — auto-pass")
+
+    # Query params exist in swagger → Route must have params_model
+    endpoint_module = _infer_endpoint_module(endpoint_path)
+    if not endpoint_module:
+        return GateResult("G5", False, "Cannot infer endpoint module")
+
+    ep_file = ENDPOINTS_DIR / f"{endpoint_module}.py"
+    if not ep_file.exists():
+        return GateResult(
+            "G5", False, f"Endpoint file {endpoint_module}.py not found",
+        )
+
+    content = ep_file.read_text()
+    if _route_has_params_model(content, endpoint_path):
+        return GateResult(
+            "G5", True,
+            f"params_model set for {len(query_params)} query param(s)",
+        )
+
+    param_names = ", ".join(p["name"] for p in query_params)
+    return GateResult(
+        "G5", False,
+        f"{len(query_params)} query param(s) ({param_names}) but no params_model",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -338,6 +459,7 @@ def evaluate_endpoint_gates(
         status.g2_fixture_status = GateResult("G2", False, "No response model")
         status.g3_test_quality = GateResult("G3", False, "No response model")
         status.g4_doc_accuracy = GateResult("G4", False, "No response model")
+        status.g5_param_routing = evaluate_g5(endpoint_path, method)
         status.compute_overall()
         return status
 
@@ -354,6 +476,7 @@ def evaluate_endpoint_gates(
     status.g2_fixture_status = evaluate_g2(clean_model)
     status.g3_test_quality = evaluate_g3(clean_model)
     status.g4_doc_accuracy = evaluate_g4(clean_model, endpoint_module)
+    status.g5_param_routing = evaluate_g5(endpoint_path, method)
     status.compute_overall()
 
     return status

@@ -48,8 +48,10 @@ _SAVE_GEO_SETTINGS = Route("POST", "/companies/{companyId}/geosettings", request
 _GET_GLOBAL_GEO_SETTINGS = Route("GET", "/companies/geosettings", response_model="GeoSettings")
 
 # Carrier Accounts (008)
-_SEARCH_CARRIER_ACCOUNTS = Route("GET", "/companies/search/carrier-accounts")
-_SUGGEST_CARRIERS = Route("GET", "/companies/suggest-carriers")
+_SEARCH_CARRIER_ACCOUNTS = Route(
+    "GET", "/companies/search/carrier-accounts", params_model="CarrierAccountSearchParams",
+)
+_SUGGEST_CARRIERS = Route("GET", "/companies/suggest-carriers", params_model="SuggestCarriersParams")
 _GET_CARRIER_ACCOUNTS = Route("GET", "/companies/{companyId}/carrierAcounts", response_model="List[CarrierAccount]")
 _SAVE_CARRIER_ACCOUNTS = Route(
     "POST", "/companies/{companyId}/carrierAcounts",
@@ -143,13 +145,21 @@ class CompaniesEndpoint(BaseEndpoint):
 
     # ---- Carrier Accounts (008) -------------------------------------------
 
-    def search_carrier_accounts(self, **params: Any) -> Any:
+    def search_carrier_accounts(
+        self,
+        *,
+        current_company_id: str | None = None,
+        query: str | None = None,
+    ) -> Any:
         """GET /companies/search/carrier-accounts"""
-        return self._request(_SEARCH_CARRIER_ACCOUNTS, params=params or None)
+        return self._request(
+            _SEARCH_CARRIER_ACCOUNTS,
+            params=dict(current_company_id=current_company_id, query=query),
+        )
 
-    def suggest_carriers(self, **params: Any) -> Any:
+    def suggest_carriers(self, *, tracking_number: str) -> Any:
         """GET /companies/suggest-carriers"""
-        return self._request(_SUGGEST_CARRIERS, params=params or None)
+        return self._request(_SUGGEST_CARRIERS, params=dict(tracking_number=tracking_number))
 
     def get_carrier_accounts(self, company_id: str) -> list[CarrierAccount]:
         """GET /companies/{companyId}/carrierAcounts"""

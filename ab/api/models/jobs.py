@@ -10,6 +10,24 @@ from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.mixins import FullAuditModel, IdentifiedModel
 
 
+class JobSearchParams(RequestModel):
+    """Query parameters for GET /job/search."""
+
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID to search for")
+
+
+class FreightProvidersParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/freightproviders."""
+
+    provider_indexes: Optional[List[int]] = Field(
+        None, alias="ProviderIndexes", description="Filter by provider option indexes"
+    )
+    shipment_types: Optional[List[str]] = Field(
+        None, alias="ShipmentTypes", description="Filter by shipment type UUIDs"
+    )
+    only_active: Optional[bool] = Field(None, alias="OnlyActive", description="Show only active providers")
+
+
 class Job(ResponseModel, FullAuditModel):
     """Full job record — GET /job/{jobDisplayId}."""
 

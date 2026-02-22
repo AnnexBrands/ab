@@ -10,6 +10,21 @@ from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
 
 
+class CarrierAccountSearchParams(RequestModel):
+    """Query parameters for GET /companies/search/carrier-accounts."""
+
+    current_company_id: Optional[str] = Field(
+        None, alias="currentCompanyId", description="Current company UUID"
+    )
+    query: Optional[str] = Field(None, description="Search query string")
+
+
+class SuggestCarriersParams(RequestModel):
+    """Query parameters for GET /companies/suggest-carriers."""
+
+    tracking_number: str = Field(..., alias="trackingNumber", description="Tracking number (min 5 chars)")
+
+
 class CompanySimple(ResponseModel):
     """Lightweight company record — GET /companies/{id}."""
 

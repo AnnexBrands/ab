@@ -34,7 +34,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 012-fix-param-routing: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 011-endpoint-quality-gates: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing)
 - 010-update-constitution: Added N/A — documentation-only change (Markdown files) + N/A — no code dependencies
-- 007-request-model-methodology: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

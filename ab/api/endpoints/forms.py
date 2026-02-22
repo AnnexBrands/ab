@@ -18,11 +18,15 @@ from ab.api.route import Route
 # Form routes — 14 return bytes, 1 returns JSON
 _GET_INVOICE = Route("GET", "/job/{jobDisplayId}/form/invoice", response_model="bytes")
 _GET_INVOICE_EDITABLE = Route("GET", "/job/{jobDisplayId}/form/invoice/editable", response_model="bytes")
-_GET_BOL = Route("GET", "/job/{jobDisplayId}/form/bill-of-lading", response_model="bytes")
+_GET_BOL = Route(
+    "GET", "/job/{jobDisplayId}/form/bill-of-lading", params_model="BillOfLadingParams", response_model="bytes"
+)
 _GET_PACKING_SLIP = Route("GET", "/job/{jobDisplayId}/form/packing-slip", response_model="bytes")
 _GET_CUSTOMER_QUOTE = Route("GET", "/job/{jobDisplayId}/form/customer-quote", response_model="bytes")
 _GET_QUICK_SALE = Route("GET", "/job/{jobDisplayId}/form/quick-sale", response_model="bytes")
-_GET_OPERATIONS = Route("GET", "/job/{jobDisplayId}/form/operations", response_model="bytes")
+_GET_OPERATIONS = Route(
+    "GET", "/job/{jobDisplayId}/form/operations", params_model="OperationsFormParams", response_model="bytes"
+)
 _GET_SHIPMENTS = Route("GET", "/job/{jobDisplayId}/form/shipments", response_model="List[FormsShipmentPlan]")
 _GET_ADDRESS_LABEL = Route("GET", "/job/{jobDisplayId}/form/address-label", response_model="bytes")
 _GET_ITEM_LABELS = Route("GET", "/job/{jobDisplayId}/form/item-labels", response_model="bytes")
@@ -61,12 +65,10 @@ class FormsEndpoint(BaseEndpoint):
             shipment_plan_id: Optional shipment plan to render.
             provider_option_index: Optional provider index.
         """
-        params: dict[str, Any] = {}
-        if shipment_plan_id is not None:
-            params["shipmentPlanId"] = shipment_plan_id
-        if provider_option_index is not None:
-            params["providerOptionIndex"] = provider_option_index
-        return self._request(_GET_BOL.bind(jobDisplayId=job_display_id), params=params or None)
+        return self._request(
+            _GET_BOL.bind(jobDisplayId=job_display_id),
+            params=dict(shipment_plan_id=shipment_plan_id, provider_option_index=provider_option_index),
+        )
 
     def get_packing_slip(self, job_display_id: int) -> Any:
         """GET /job/{jobDisplayId}/form/packing-slip (ACPortal) — returns bytes."""
@@ -86,10 +88,10 @@ class FormsEndpoint(BaseEndpoint):
         Args:
             ops_type: Optional operations type filter.
         """
-        params: dict[str, Any] = {}
-        if ops_type is not None:
-            params["type"] = ops_type
-        return self._request(_GET_OPERATIONS.bind(jobDisplayId=job_display_id), params=params or None)
+        return self._request(
+            _GET_OPERATIONS.bind(jobDisplayId=job_display_id),
+            params=dict(ops_type=ops_type),
+        )
 
     def get_shipments(self, job_display_id: int) -> list[FormsShipmentPlan]:
         """GET /job/{jobDisplayId}/form/shipments (ACPortal) — returns List[FormsShipmentPlan]."""
