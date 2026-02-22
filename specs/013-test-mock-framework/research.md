@@ -43,7 +43,7 @@ The developer (user) manually authors all mock fixtures — no auto-generation.
 
 **Decision**: Expand `tests/constants.py` to be the single source of truth. Update all 15 example files to import from `tests.constants` instead of defining local copies.
 
-**Rationale**: `tests/constants.py` already exists with the right values. The 15 example files that duplicate constants (11 with `LIVE_JOB_DISPLAY_ID`, 1 with `LIVE_COMPANY_UUID`, 1 with hardcoded contact IDs) should import from this module. No new module needed.
+**Rationale**: `tests/constants.py` already exists with the right values. The 15 example files that duplicate constants (11 with `TEST_JOB_DISPLAY_ID`, 1 with `TEST_COMPANY_UUID`, 1 with hardcoded contact IDs) should import from this module. No new module needed.
 
 **Alternatives considered**:
 - **New shared module** (`ab/testing/constants.py`) — Over-engineering; `tests/constants.py` already serves this purpose and examples can import from it.

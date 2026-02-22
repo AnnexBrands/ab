@@ -7,7 +7,7 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Global Notes", env="staging")
 
-LIVE_NOTE_ID = "PLACEHOLDER"
+TEST_NOTE_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Notes CRUD
@@ -30,7 +30,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.notes.update(LIVE_NOTE_ID, **(data or {})),
+    lambda api, data=None: api.notes.update(TEST_NOTE_ID, **(data or {})),
     request_model="GlobalNoteUpdateRequest",
     request_fixture_file="GlobalNoteUpdateRequest.json",
     response_model="GlobalNote",

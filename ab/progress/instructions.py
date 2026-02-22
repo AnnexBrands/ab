@@ -10,12 +10,12 @@ if TYPE_CHECKING:
 
 # Map path parameters to known constants
 _PARAM_CONSTANT_MAP: dict[str, str] = {
-    "companyId": "LIVE_COMPANY_UUID",
-    "id": "LIVE_JOB_DISPLAY_ID",
-    "jobDisplayId": "LIVE_JOB_DISPLAY_ID",
-    "contactId": "LIVE_CONTACT_ID",
-    "sellerId": "LIVE_SELLER_ID",
-    "catalogId": "LIVE_CATALOG_ID",
+    "companyId": "TEST_COMPANY_UUID",
+    "id": "TEST_JOB_DISPLAY_ID",
+    "jobDisplayId": "TEST_JOB_DISPLAY_ID",
+    "contactId": "TEST_CONTACT_ID",
+    "sellerId": "TEST_SELLER_ID",
+    "catalogId": "TEST_CATALOG_ID",
 }
 
 _PATH_PARAM_RE = re.compile(r"\{(\w+)\}")
@@ -37,7 +37,7 @@ def detect_required_constants(endpoint: Endpoint) -> list[str]:
             seen.add(const)
         elif not const:
             # Unknown param — suggest a new constant name
-            suggested = f"LIVE_{param.upper()}"
+            suggested = f"TEST_{param.upper()}"
             if suggested not in seen:
                 constants.append(suggested)
                 seen.add(suggested)
@@ -99,7 +99,7 @@ def _instructions_constant_needed(item: ActionItem) -> list[str]:
     steps = []
 
     for const in item.missing_constants:
-        param = const.replace("LIVE_", "").lower()
+        param = const.replace("TEST_", "").lower()
         steps.append(
             f"Find a valid <code>{param}</code> in the staging environment "
             f"(check the ABConnect portal or database)"

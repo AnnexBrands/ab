@@ -367,6 +367,166 @@ class CompanyTaxes(ResponseModel):
     packaging_labor: Optional[TaxCategory] = Field(None, alias="packagingLabor", description="Packaging labor tax")
 
 
+# ---- Deep nested models (016) --------------------------------------------
+
+
+class OverridableField(ResponseModel):
+    """Overridable field wrapper — models C# Overridable<T>."""
+
+    default_value: Optional[str] = Field(None, alias="defaultValue", description="Default value")
+    override_value: Optional[str] = Field(None, alias="overrideValue", description="Override value")
+    force_empty: Optional[bool] = Field(None, alias="forceEmpty", description="Force empty flag")
+    value: Optional[str] = Field(None, description="Computed value")
+
+
+class CompanyInfo(ResponseModel):
+    """Company info summary — nested in CompanyDetails.companyInfo."""
+
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    company_type_id: Optional[str] = Field(None, alias="companyTypeId", description="Company type UUID")
+    company_display_id: Optional[str] = Field(None, alias="companyDisplayId", description="Display ID")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    company_code: Optional[str] = Field(None, alias="companyCode", description="Company code")
+    company_email: Optional[str] = Field(None, alias="companyEmail", description="Company email")
+    company_phone: Optional[str] = Field(None, alias="companyPhone", description="Company phone")
+    thumbnail_logo: Optional[str] = Field(None, alias="thumbnailLogo", description="Thumbnail logo")
+    company_logo: Optional[str] = Field(None, alias="companyLogo", description="Company logo")
+    maps_marker_image: Optional[str] = Field(None, alias="mapsMarkerImage", description="Maps marker image")
+    main_address: Optional[CompanyAddress] = Field(None, alias="mainAddress", description="Main address")
+    is_third_party: Optional[bool] = Field(None, alias="isThirdParty", description="Third-party flag")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    is_hidden: Optional[bool] = Field(None, alias="isHidden", description="Hidden flag")
+
+
+class AddressData(ResponseModel):
+    """Flat address data — nested in CompanyDetails.addressData."""
+
+    company: Optional[str] = Field(None, description="Company name")
+    first_last_name: Optional[str] = Field(None, alias="firstLastName", description="Contact name")
+    address_line1: Optional[str] = Field(None, alias="addressLine1", description="Address line 1")
+    address_line2: Optional[str] = Field(None, alias="addressLine2", description="Address line 2")
+    contact_bol_note: Optional[str] = Field(None, alias="contactBOLNote", description="Contact BOL note")
+    city: Optional[str] = Field(None, description="City")
+    state: Optional[str] = Field(None, description="State")
+    state_code: Optional[str] = Field(None, alias="stateCode", description="State code")
+    zip_code: Optional[str] = Field(None, alias="zipCode", description="ZIP code")
+    country_name: Optional[str] = Field(None, alias="countryName", description="Country name")
+    property_type: Optional[str] = Field(None, alias="propertyType", description="Property type")
+    full_city_line: Optional[str] = Field(None, alias="fullCityLine", description="Full city line")
+    phone: Optional[str] = Field(None, description="Phone")
+    cell_phone: Optional[str] = Field(None, alias="cellPhone", description="Cell phone")
+    fax: Optional[str] = Field(None, description="Fax")
+    email: Optional[str] = Field(None, description="Email")
+    address_line2_visible: Optional[bool] = Field(
+        None, alias="addressLine2Visible", description="Address line 2 visible"
+    )
+    company_visible: Optional[bool] = Field(None, alias="companyVisible", description="Company visible")
+    country_name_visible: Optional[bool] = Field(
+        None, alias="countryNameVisible", description="Country name visible"
+    )
+    phone_visible: Optional[bool] = Field(None, alias="phoneVisible", description="Phone visible")
+    email_visible: Optional[bool] = Field(None, alias="emailVisible", description="Email visible")
+    full_address_line: Optional[str] = Field(None, alias="fullAddressLine", description="Full address line")
+    full_address: Optional[str] = Field(None, alias="fullAddress", description="Full address")
+    country_id: Optional[str] = Field(None, alias="countryId", description="Country UUID")
+
+
+class OverridableAddressData(ResponseModel):
+    """Overridable address data — fields wrapped in OverridableField."""
+
+    company: Optional[OverridableField] = Field(None, description="Company name (overridable)")
+    first_last_name: Optional[OverridableField] = Field(
+        None, alias="firstLastName", description="Contact name (overridable)"
+    )
+    address_line1: Optional[OverridableField] = Field(
+        None, alias="addressLine1", description="Address line 1 (overridable)"
+    )
+    address_line2: Optional[OverridableField] = Field(
+        None, alias="addressLine2", description="Address line 2 (overridable)"
+    )
+    city: Optional[OverridableField] = Field(None, description="City (overridable)")
+    state: Optional[OverridableField] = Field(None, description="State (overridable)")
+    zip_code: Optional[OverridableField] = Field(None, alias="zipCode", description="ZIP code (overridable)")
+    phone: Optional[OverridableField] = Field(None, description="Phone (overridable)")
+    email: Optional[OverridableField] = Field(None, description="Email (overridable)")
+    full_address_line: Optional[str] = Field(None, alias="fullAddressLine", description="Full address line")
+    full_address: Optional[OverridableField] = Field(
+        None, alias="fullAddress", description="Full address (overridable)"
+    )
+    full_city_line: Optional[OverridableField] = Field(
+        None, alias="fullCityLine", description="Full city line (overridable)"
+    )
+
+
+class CompanyInsurancePricing(ResponseModel):
+    """Company insurance pricing — nested in CompanyDetails."""
+
+    insurance_slab_id: Optional[str] = Field(None, alias="insuranceSlabID", description="Insurance slab UUID")
+    deductible_amount: Optional[float] = Field(None, alias="deductibleAmount", description="Deductible amount")
+    rate: Optional[float] = Field(None, description="Rate")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    transp_type_id: Optional[str] = Field(None, alias="transpTypeID", description="Transportation type UUID")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    created_by: Optional[str] = Field(None, alias="createdby", description="Created by UUID")
+    modified_by: Optional[str] = Field(None, alias="modifiedby", description="Modified by UUID")
+    revision: Optional[int] = Field(None, description="Revision number")
+    insurance_type: Optional[str] = Field(None, alias="insuranceType", description="Insurance type")
+    whole_sale_markup: Optional[float] = Field(None, alias="wholeSaleMarkup", description="Wholesale markup")
+    base_markup: Optional[float] = Field(None, alias="baseMarkup", description="Base markup")
+    medium_markup: Optional[float] = Field(None, alias="mediumMarkup", description="Medium markup")
+    high_markup: Optional[float] = Field(None, alias="highMarkup", description="High markup")
+
+
+class CompanyServicePricing(ResponseModel):
+    """Company service pricing — nested in CompanyDetails."""
+
+    service_pricing_id: Optional[str] = Field(None, alias="servicePricingId", description="Service pricing UUID")
+    user_id: Optional[str] = Field(None, alias="userID", description="User UUID")
+    company_id: Optional[str] = Field(None, alias="companyID", description="Company UUID")
+    service_category_id: Optional[str] = Field(
+        None, alias="serviceCategoryID", description="Service category UUID"
+    )
+    category_value: Optional[float] = Field(None, alias="categoryValue", description="Category value")
+    whole_sale_markup: Optional[float] = Field(None, alias="wholeSaleMarkup", description="Wholesale markup")
+    base_markup: Optional[float] = Field(None, alias="baseMarkup", description="Base markup")
+    medium_markup: Optional[float] = Field(None, alias="mediumMarkup", description="Medium markup")
+    high_markup: Optional[float] = Field(None, alias="highMarkup", description="High markup")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    is_taxable: Optional[bool] = Field(None, alias="isTaxable", description="Taxable flag")
+    tax_percent: Optional[float] = Field(None, alias="taxPercent", description="Tax percentage")
+    created_by: Optional[str] = Field(None, alias="createdBy", description="Created by UUID")
+    modified_by: Optional[str] = Field(None, alias="modifiedBy", description="Modified by UUID")
+    created_date: Optional[str] = Field(None, alias="createdDate", description="Created date")
+    modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Modified date")
+    company_code: Optional[str] = Field(None, alias="companyCode", description="Company code")
+    service_category_name: Optional[str] = Field(
+        None, alias="serviceCategoryName", description="Service category name"
+    )
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    company_type_id: Optional[str] = Field(None, alias="companyTypeId", description="Company type UUID")
+    parent_category_id: Optional[str] = Field(None, alias="parentCategoryID", description="Parent category UUID")
+    zip_code: Optional[str] = Field(None, alias="zipCode", description="ZIP code")
+
+
+class CompanyTaxPricing(ResponseModel):
+    """Company tax pricing — nested in CompanyDetails."""
+
+    job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
+    service_category_id: Optional[str] = Field(
+        None, alias="serviceCategoryID", description="Service category UUID"
+    )
+    tax_slab_id: Optional[str] = Field(None, alias="taxSlabID", description="Tax slab UUID")
+    is_taxable: Optional[bool] = Field(None, alias="isTaxable", description="Taxable flag")
+    tax_percent: Optional[float] = Field(None, alias="taxPercent", description="Tax percentage")
+    company_id: Optional[str] = Field(None, alias="companyID", description="Company UUID")
+    service_category_name: Optional[str] = Field(
+        None, alias="serviceCategotyName", description="Service category name"
+    )
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+
+
 class CompanyDetails(ResponseModel):
     """Full company details — GET /companies/{id}/fulldetails and /details.
 
@@ -435,13 +595,13 @@ class CompanyDetails(ResponseModel):
     )
     pricing_to_use: Optional[str] = Field(None, alias="pricingToUse", description="Pricing UUID")
     total_rows: Optional[int] = Field(None, alias="totalRows", description="Total rows count")
-    company_insurance_pricing: Optional[dict] = Field(
+    company_insurance_pricing: Optional[CompanyInsurancePricing] = Field(
         None, alias="companyInsurancePricing", description="Company insurance pricing data"
     )
-    company_service_pricing: Optional[dict] = Field(
+    company_service_pricing: Optional[CompanyServicePricing] = Field(
         None, alias="companyServicePricing", description="Company service pricing data"
     )
-    company_tax_pricing: Optional[dict] = Field(
+    company_tax_pricing: Optional[CompanyTaxPricing] = Field(
         None, alias="companyTaxPricing", description="Company tax pricing data"
     )
     whole_sale_markup: Optional[float] = Field(None, alias="wholeSaleMarkup", description="Wholesale markup")
@@ -503,11 +663,11 @@ class CompanyDetails(ResponseModel):
         None, alias="totalSalesRevenue", description="Total sales revenue"
     )
     is_readonly: Optional[bool] = Field(None, alias="isReadonly", description="Read-only flag")
-    address_data: Optional[dict] = Field(None, alias="addressData", description="Address data")
-    overridable_address_data: Optional[dict] = Field(
+    address_data: Optional[AddressData] = Field(None, alias="addressData", description="Address data")
+    overridable_address_data: Optional[OverridableAddressData] = Field(
         None, alias="overridableAddressData", description="Overridable address data"
     )
-    company_info: Optional[dict] = Field(None, alias="companyInfo", description="Company info summary")
+    company_info: Optional[CompanyInfo] = Field(None, alias="companyInfo", description="Company info summary")
     company_id_flat: Optional[str] = Field(
         None, alias="companyID", description="Company UUID (flat details response)"
     )

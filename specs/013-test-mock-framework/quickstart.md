@@ -41,10 +41,10 @@ tests/fixtures/mocks/     # New directory for manually-authored mocks
 
 ```python
 # examples/jobs.py — BEFORE
-LIVE_JOB_DISPLAY_ID = 2000000  # duplicated in 11 files
+TEST_JOB_DISPLAY_ID = 2000000  # duplicated in 11 files
 
 # examples/jobs.py — AFTER
-from tests.constants import LIVE_JOB_DISPLAY_ID
+from tests.constants import TEST_JOB_DISPLAY_ID
 ```
 
 ### 4. Model Fixes

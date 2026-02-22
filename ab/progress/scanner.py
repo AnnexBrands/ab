@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ab.progress.models import Constant
 
-_CONSTANT_RE = re.compile(r"^(LIVE_\w+)\s*=\s*(.+)", re.MULTILINE)
+_CONSTANT_RE = re.compile(r"^(TEST_\w+)\s*=\s*(.+)", re.MULTILINE)
 
 
 def scan_fixture_files(directory: Path) -> set[str]:
@@ -22,7 +22,7 @@ def scan_fixture_files(directory: Path) -> set[str]:
 
 
 def parse_constants(path: Path) -> list[Constant]:
-    """Parse tests/constants.py for LIVE_* assignments.
+    """Parse tests/constants.py for TEST_* assignments.
 
     Returns:
         List of Constant objects with name, value, and inferred type.

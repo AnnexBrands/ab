@@ -7,7 +7,7 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Partners", env="staging")
 
-LIVE_PARTNER_ID = "PLACEHOLDER"
+TEST_PARTNER_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Partners
@@ -22,7 +22,7 @@ runner.add(
 
 runner.add(
     "get",
-    lambda api: api.partners.get(LIVE_PARTNER_ID),
+    lambda api: api.partners.get(TEST_PARTNER_ID),
     response_model="Partner",
 )
 

@@ -43,13 +43,13 @@
 
 **Goal**: Eliminate all duplicated test identifiers across example files. All consumers import from `tests/constants.py`.
 
-**Independent Test**: Run `grep -rn "LIVE_JOB_DISPLAY_ID\|LIVE_COMPANY_UUID\|LIVE_CONTACT_ID\|LIVE_SELLER_ID\|LIVE_CATALOG_ID" examples/` and verify zero local definitions — only `from tests.constants import` lines appear.
+**Independent Test**: Run `grep -rn "TEST_JOB_DISPLAY_ID\|TEST_COMPANY_UUID\|TEST_CONTACT_ID\|TEST_SELLER_ID\|TEST_CATALOG_ID" examples/` and verify zero local definitions — only `from tests.constants import` lines appear.
 
 - [X] T005 [P] [US1] Add docstring comments to each constant in `tests/constants.py` documenting what the identifier represents, its provenance (staging), and which example/test files use it. No value changes needed — just documentation.
 
-- [X] T006 [P] [US1] Replace hardcoded `LIVE_JOB_DISPLAY_ID = 2000000` in 11 example files with `from tests.constants import LIVE_JOB_DISPLAY_ID`. Files: `examples/notes.py`, `examples/shipments.py`, `examples/onhold.py`, `examples/rfq.py`, `examples/tracking.py`, `examples/documents.py`, `examples/forms.py`, `examples/parcels.py`, `examples/freight_providers.py`, `examples/timeline.py`, `examples/email_sms.py`. Also update `examples/payments.py` and `examples/jobs.py` if they duplicate this constant.
+- [X] T006 [P] [US1] Replace hardcoded `TEST_JOB_DISPLAY_ID = 2000000` in 11 example files with `from tests.constants import TEST_JOB_DISPLAY_ID`. Files: `examples/notes.py`, `examples/shipments.py`, `examples/onhold.py`, `examples/rfq.py`, `examples/tracking.py`, `examples/documents.py`, `examples/forms.py`, `examples/parcels.py`, `examples/freight_providers.py`, `examples/timeline.py`, `examples/email_sms.py`. Also update `examples/payments.py` and `examples/jobs.py` if they duplicate this constant.
 
-- [X] T007 [P] [US1] Replace hardcoded `LIVE_COMPANY_UUID` in `examples/companies.py` (line 7) with `from tests.constants import LIVE_COMPANY_UUID`. Replace hardcoded contact ID `30760` in `examples/contacts.py` (3 locations in lambda calls) with `from tests.constants import LIVE_CONTACT_ID`. Replace any other hardcoded `LIVE_SELLER_ID` or `LIVE_CATALOG_ID` duplicates found in example files.
+- [X] T007 [P] [US1] Replace hardcoded `TEST_COMPANY_UUID` in `examples/companies.py` (line 7) with `from tests.constants import TEST_COMPANY_UUID`. Replace hardcoded contact ID `30760` in `examples/contacts.py` (3 locations in lambda calls) with `from tests.constants import TEST_CONTACT_ID`. Replace any other hardcoded `TEST_SELLER_ID` or `TEST_CATALOG_ID` duplicates found in example files.
 
 **Checkpoint**: All test identifiers sourced from `tests/constants.py`. No duplicates remain in `examples/`.
 

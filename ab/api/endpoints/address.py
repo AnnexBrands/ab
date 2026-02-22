@@ -24,10 +24,10 @@ class AddressEndpoint(BaseEndpoint):
     def validate(
         self,
         *,
-        line1: Optional[str] = None,
-        city: Optional[str] = None,
-        state: Optional[str] = None,
-        zip: Optional[str] = None,
+        line1: str,
+        city: str,
+        state: str,
+        zip: str
     ) -> AddressIsValidResult:
         """GET /address/isvalid"""
         return self._request(
@@ -37,11 +37,11 @@ class AddressEndpoint(BaseEndpoint):
     def get_property_type(
         self,
         *,
-        address1: Optional[str] = None,
+        address1: str,
         address2: Optional[str] = None,
-        city: Optional[str] = None,
-        state: Optional[str] = None,
-        zip_code: Optional[str] = None,
+        city: str,
+        state: str,
+        zip_code: str,
     ) -> Optional[int]:
         """GET /address/propertytype"""
         return self._request(

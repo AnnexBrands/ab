@@ -32,7 +32,7 @@
 - [x] T002 [P] Define dataclasses (`Endpoint`, `EndpointGroup`, `Fixture`, `Constant`, `ActionItem`) in `ab/progress/models.py` per data-model.md entity definitions
 - [x] T003 [P] Implement `parse_api_surface(path) -> list[EndpointGroup]` in `ab/progress/parsers.py` — regex-based parser for `specs/api-surface.md` tables extracting all endpoint groups across ACPortal, Catalog, and ABC surfaces with per-row status (`done`/`pending`/`—` → `not_started`) and group-level summary metadata (`ab_file`, `ref_file`, `priority`)
 - [x] T004 [P] Implement `parse_fixtures(path) -> list[Fixture]` in `ab/progress/parsers.py` — parse both `## Captured Fixtures` and `## Pending Fixtures` tables from `FIXTURES.md`, extracting model name, endpoint path, method, blocker reason, and capture instructions
-- [x] T005 [P] Implement `scan_fixture_files(dir) -> set[str]` and `parse_constants(path) -> list[Constant]` in `ab/progress/scanner.py` — scan `tests/fixtures/*.json` for existing fixture filenames and regex-parse `tests/constants.py` for `LIVE_*` assignments
+- [x] T005 [P] Implement `scan_fixture_files(dir) -> set[str]` and `parse_constants(path) -> list[Constant]` in `ab/progress/scanner.py` — scan `tests/fixtures/*.json` for existing fixture filenames and regex-parse `tests/constants.py` for `TEST_*` assignments
 
 **Checkpoint**: All data sources can be parsed — user story implementation can begin
 
@@ -72,7 +72,7 @@
 **Independent Test**: Pick any pending fixture item, follow its instructions, and confirm the test passes
 
 - [x] T011 [US3] Implement `build_instructions(action_item, constants) -> list[str]` in `ab/progress/instructions.py` — template-based instruction builder with 4 templates keyed on `blocker_type`: (1) `capture`: SDK method call + fixture save path + pytest command, (2) `constant_needed`: add constant to `tests/constants.py` + then capture, (3) `env_blocked`: explain staging limitation + suggest alternatives, (4) `not_implemented`: list required artifacts (model, endpoint, test, fixture)
-- [x] T012 [US3] Implement `detect_required_constants(endpoint) -> list[str]` in `ab/progress/instructions.py` — map path parameters (`{companyId}` → `LIVE_COMPANY_UUID`, `{jobDisplayId}` / `{id}` → `LIVE_JOB_DISPLAY_ID`, `{contactId}` → `LIVE_CONTACT_ID`) and flag unknown params as needing new constants
+- [x] T012 [US3] Implement `detect_required_constants(endpoint) -> list[str]` in `ab/progress/instructions.py` — map path parameters (`{companyId}` → `TEST_COMPANY_UUID`, `{jobDisplayId}` / `{id}` → `TEST_JOB_DISPLAY_ID`, `{contactId}` → `TEST_CONTACT_ID`) and flag unknown params as needing new constants
 - [x] T013 [US3] Integrate instructions into action items and renderer — call `build_instructions()` during `classify_action_items()` to populate `ActionItem.instructions`, render as `<ol>` within each endpoint's `<details>` element in `ab/progress/renderer.py`
 
 **Checkpoint**: Every action-required item has clear, tailored instructions rendered in the HTML

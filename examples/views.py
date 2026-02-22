@@ -8,7 +8,7 @@ from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Views", env="staging")
 
-LIVE_VIEW_ID = "PLACEHOLDER"
+TEST_VIEW_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Views CRUD
@@ -23,7 +23,7 @@ runner.add(
 
 runner.add(
     "get",
-    lambda api: api.views.get(LIVE_VIEW_ID),
+    lambda api: api.views.get(TEST_VIEW_ID),
     response_model="GridViewDetails",
 )
 
@@ -37,7 +37,7 @@ runner.add(
 
 runner.add(
     "delete",
-    lambda api: api.views.delete(LIVE_VIEW_ID),
+    lambda api: api.views.delete(TEST_VIEW_ID),
     response_model="ServiceBaseResponse",
 )
 
@@ -47,14 +47,14 @@ runner.add(
 
 runner.add(
     "get_access_info",
-    lambda api: api.views.get_access_info(LIVE_VIEW_ID),
+    lambda api: api.views.get_access_info(TEST_VIEW_ID),
     response_model="GridViewAccess",
     fixture_file="GridViewAccess.json",
 )
 
 runner.add(
     "update_access",
-    lambda api: api.views.update_access(LIVE_VIEW_ID, users=[], roles=[]),
+    lambda api: api.views.update_access(TEST_VIEW_ID, users=[], roles=[]),
 )
 
 # ═══════════════════════════════════════════════════════════════════════
