@@ -30,6 +30,8 @@ classifiers = [
 
 [project.scripts]
 ex = "examples.__main__:main"
+ab = "ab.cli:main_prod"
+abs = "ab.cli:main_staging"
 
 [project.urls]
 "Repository" = "https://github.com/AnnexBrands/ABConnnect"
