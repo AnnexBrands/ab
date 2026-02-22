@@ -60,6 +60,7 @@ _GET_TIMELINE = Route("GET", "/job/{jobDisplayId}/timeline", response_model="Lis
 _POST_TIMELINE = Route(
     "POST", "/job/{jobDisplayId}/timeline",
     request_model="TimelineTaskCreateRequest", response_model="TimelineTask",
+    params_model="TimelineCreateParams",
 )
 _GET_TIMELINE_TASK = Route(
     "GET", "/job/{jobDisplayId}/timeline/{timelineTaskIdentifier}", response_model="TimelineTask",
@@ -90,10 +91,11 @@ _SET_QUOTE_STATUS = Route("POST", "/job/{jobDisplayId}/status/quote", response_m
 _GET_TRACKING = Route("GET", "/job/{jobDisplayId}/tracking", response_model="TrackingInfo")
 _GET_TRACKING_V3 = Route(
     "GET", "/v3/job/{jobDisplayId}/tracking/{historyAmount}", response_model="TrackingInfoV3",
+    params_model="TrackingV3Params",
 )
 
 # Note routes
-_GET_NOTES = Route("GET", "/job/{jobDisplayId}/note", response_model="List[JobNote]")
+_GET_NOTES = Route("GET", "/job/{jobDisplayId}/note", params_model="JobNoteListParams", response_model="List[JobNote]")
 _POST_NOTE = Route(
     "POST", "/job/{jobDisplayId}/note",
     request_model="JobNoteCreateRequest", response_model="JobNote",
@@ -131,7 +133,7 @@ _POST_ITEM_NOTES = Route(
 
 
 # RFQ routes (job-scoped)
-_LIST_RFQS = Route("GET", "/job/{jobDisplayId}/rfq", response_model="List[QuoteRequestDisplayInfo]")
+_LIST_RFQS = Route("GET", "/job/{jobDisplayId}/rfq", params_model="JobRfqListParams", response_model="List[QuoteRequestDisplayInfo]")
 _GET_RFQ_STATUS = Route(
     "GET", "/job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}",
     response_model="QuoteRequestStatus",

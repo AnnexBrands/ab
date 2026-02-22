@@ -4,8 +4,7 @@ Most methods return binary PDF data. Only get_shipments returns JSON.
 """
 
 from examples._runner import ExampleRunner
-
-LIVE_JOB_DISPLAY_ID = 2000000
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Forms", env="staging")
 

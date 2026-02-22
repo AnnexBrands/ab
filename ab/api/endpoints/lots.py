@@ -12,7 +12,10 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _CREATE = Route("POST", "/Lot", request_model="AddLotRequest", response_model="LotDto", api_surface="catalog")
-_LIST = Route("GET", "/Lot", response_model="PaginatedList[LotDto]", api_surface="catalog")
+_LIST = Route(
+    "GET", "/Lot",
+    params_model="LotListParams", response_model="PaginatedList[LotDto]", api_surface="catalog",
+)
 _GET = Route("GET", "/Lot/{id}", response_model="LotDto", api_surface="catalog")
 _UPDATE = Route("PUT", "/Lot/{id}", request_model="UpdateLotRequest", response_model="LotDto", api_surface="catalog")
 _DELETE = Route("DELETE", "/Lot/{id}", api_surface="catalog")

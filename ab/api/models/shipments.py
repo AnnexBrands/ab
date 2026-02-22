@@ -18,6 +18,20 @@ class ShipmentParams(RequestModel):
     pro_number: Optional[str] = Field(None, alias="proNumber", description="PRO/tracking number")
 
 
+class RateQuotesParams(RequestModel):
+    """Query parameters for GET rate quotes."""
+
+    ship_out_date: Optional[str] = Field(None, alias="ShipOutDate")
+    rates_sources: Optional[str] = Field(None, alias="RatesSources")
+    settings_key: Optional[str] = Field(None, alias="SettingsKey")
+
+
+class ShipmentDocumentParams(RequestModel):
+    """Query parameters for GET shipment document."""
+
+    franchisee_id: Optional[str] = Field(None, alias="franchiseeId")
+
+
 # ---- Response models --------------------------------------------------
 
 

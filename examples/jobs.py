@@ -5,8 +5,7 @@ Core CRUD, Pricing, Status, Timeline, Tracking, Notes, Parcels, Items.
 """
 
 from examples._runner import ExampleRunner
-
-LIVE_JOB_DISPLAY_ID = 2000000
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Jobs", env="staging")
 

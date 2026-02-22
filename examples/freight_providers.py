@@ -4,10 +4,9 @@ Covers list, save, rate quote, and add freight items.
 """
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Freight Providers", env="staging")
-
-LIVE_JOB_DISPLAY_ID = 2000000
 
 # ═══════════════════════════════════════════════════════════════════════
 # Freight Providers

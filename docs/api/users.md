@@ -25,12 +25,12 @@ users = api.users.list({"page": 1, "pageSize": 10})
 
 `GET /users/roles` — List all user roles.
 
-**Returns:** `list[`{class}`~ab.api.models.users.UserRole`]`
+**Returns:** `list[str]`
 
 ```python
 roles = api.users.get_roles()
 for role in roles:
-    print(role.name)
+    print(role)
 ```
 
 ### create

@@ -12,9 +12,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 - **Complete (all gates pass)**: 24
 - **G1 Model Fidelity**: 30/161 pass
 - **G2 Fixture Status**: 35/161 pass
-- **G3 Test Quality**: 125/161 pass
-- **G4 Doc Accuracy**: 118/161 pass
-- **G5 Param Routing**: 134/161 pass
+- **G3 Test Quality**: 123/161 pass
+- **G4 Doc Accuracy**: 116/161 pass
+- **G5 Param Routing**: 153/161 pass
 
 ## Status Legend
 
@@ -40,13 +40,13 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /contacts/v2/search | POST | SearchContactEntityResult | SearchContactEntityResult | FAIL | PASS | PASS | PASS | PASS | incomplete | HTTP 400 — needs PageSize (1-32767) and PageNumber (1-32767) in request body |
 | /documents | GET | — | Document | PASS | PASS | PASS | PASS | PASS | complete | HTTP 500 on staging — was previously captured but now fails |
 | /address/isvalid | GET | — | AddressIsValidResult | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
-| /address/propertytype | GET | — | PropertyType | FAIL | FAIL | PASS | PASS | PASS | incomplete | Query params: needs valid address1, city, state, zip_code for a real address |
+| /address/propertytype | GET | — | PropertyType | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | Query params: needs valid address1, city, state, zip_code for a real address |
 | /lookup/contacttypes | GET | — | ContactTypeEntity | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /lookup/countries | GET | — | CountryCodeDto | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /lookup/jobstatuses | GET | — | JobStatus | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
-| /lookup/items | GET | — | LookupItem | FAIL | FAIL | PASS | PASS | FAIL | incomplete | Returns 204 — research ABConnectTools for required query params |
+| /lookup/items | GET | — | LookupItem | FAIL | FAIL | PASS | PASS | PASS | incomplete | Returns 204 — research ABConnectTools for required query params |
 | /users/list | POST | — | User | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging. Model warning: response is paginated wrapper (totalCount, data) |
-| /users/roles | GET | — | UserRole | FAIL | PASS | PASS | PASS | PASS | incomplete | Model mismatch — API returns list of strings, model expects dict |
+| /users/roles | GET | — | UserRole | FAIL | PASS | FAIL | FAIL | PASS | incomplete | Fixed — route uses List[str]; API returns plain strings, not UserRole objects |
 | /job/{id} | GET | — | Job | FAIL | PASS | PASS | PASS | PASS | incomplete | HTTP 500 on staging |
 | /job/{id}/price | GET | — | JobPrice | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{id}/calendaritems | GET | — | CalendarItem | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
@@ -55,11 +55,11 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{id}/timeline | GET | — | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | incomplete | Needs job ID with active timeline |
 | /job/{id}/timeline/{taskCode}/agent | GET | — | TimelineAgent | FAIL | FAIL | PASS | PASS | PASS | incomplete | Needs job ID + task code |
 | /job/{id}/tracking | GET | — | TrackingInfo | FAIL | FAIL | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
-| /v3/job/{id}/tracking/{historyAmount} | GET | — | TrackingInfoV3 | FAIL | FAIL | PASS | PASS | FAIL | incomplete | Works but no fixture_file set in example |
+| /v3/job/{id}/tracking/{historyAmount} | GET | — | TrackingInfoV3 | FAIL | FAIL | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{id}/payment | GET | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | FAIL | incomplete | Works but no fixture_file set in example |
 | /job/{id}/payment/sources | GET | — | PaymentSource | FAIL | FAIL | PASS | FAIL | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{id}/payment/ACHPaymentSession | POST | ACHSessionResponse | ACHSessionResponse | FAIL | FAIL | PASS | FAIL | PASS | incomplete | Needs ACH session params |
-| /job/{id}/note | GET | — | JobNote | FAIL | FAIL | PASS | PASS | FAIL | incomplete | Model bug — id field typed as str but API returns int |
+| /job/{id}/note | GET | — | JobNote | FAIL | FAIL | PASS | PASS | PASS | incomplete | Model bug — id field typed as str but API returns int |
 | /job/{id}/parcelitems | GET | — | ParcelItem | FAIL | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with parcel items |
 | /job/{id}/parcel-items-with-materials | GET | — | ParcelItemWithMaterials | FAIL | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with packed items |
 | /job/{id}/packagingcontainers | GET | — | PackagingContainer | FAIL | FAIL | PASS | PASS | PASS | incomplete | Model has warning fields — works but model incomplete |
@@ -73,13 +73,13 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /AutoPrice/QuickQuote | POST | QuoteRequestModel | QuickQuoteResponse | PASS | PASS | PASS | PASS | PASS | complete | Request model validation error — field names don't match (originZip vs OriginZip) |
 | /AutoPrice/QuoteRequest | POST | QuoteRequestModel | QuoteRequestResponse | FAIL | FAIL | PASS | PASS | PASS | incomplete | Needs items array with weight, class fields and valid origin/destination |
 | /rfq/{rfqId} | GET | — | QuoteRequestDisplayInfo | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 — run examples/rfq.py |
-| /rfq/forjob/{jobId} | GET | — | List[QuoteRequestDisplayInfo] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /rfq/forjob/{jobId} | GET | — | List[QuoteRequestDisplayInfo] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /rfq/{rfqId}/accept | POST | AcceptModel | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — mutating |
 | /rfq/{rfqId}/decline | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — mutating |
 | /rfq/{rfqId}/cancel | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — mutating |
-| /rfq/{rfqId}/acceptwinner | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 — mutating |
+| /rfq/{rfqId}/acceptwinner | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — mutating |
 | /rfq/{rfqId}/comment | POST | AcceptModel | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
-| /job/{id}/rfq | GET | — | List[QuoteRequestDisplayInfo] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /job/{id}/rfq | GET | — | List[QuoteRequestDisplayInfo] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /job/{id}/rfq/statusof/{type}/forcompany/{id} | GET | — | QuoteRequestStatus | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /job/{id}/onhold | GET | — | List[ExtendedOnHoldInfo] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /job/{id}/onhold | POST | SaveOnHoldRequest | SaveOnHoldResponse | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
@@ -113,9 +113,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /lookup/accessKey/{accessKey} | GET | — | AccessKey | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/PPCCampaigns | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/parcelPackageTypes | GET | — | List[ParcelPackageType] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/documentTypes | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /lookup/documentTypes | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/comonInsurance | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/densityClassMap | GET | — | List[DensityClassEntry] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /lookup/densityClassMap | GET | — | List[DensityClassEntry] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/referCategory | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/referCategoryHeirachy | GET | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /lookup/resetMasterConstantCache | GET | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — mutating |
@@ -130,14 +130,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /commodity-map | POST | CommodityMapCreateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/search | POST | CommodityMapSearchRequest | List[CommodityMap] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard | GET | — | DashboardSummary | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
-| /dashboard/gridviews | GET | — | List[GridViewInfo] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /dashboard/gridviews | GET | — | List[GridViewInfo] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard/gridviewstate/{id} | GET | — | GridViewState | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard/gridviewstate/{id} | POST | GridViewState | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
-| /dashboard/inbound | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 |
-| /dashboard/inhouse | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 |
-| /dashboard/outbound | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 |
-| /dashboard/local-deliveries | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 |
-| /dashboard/recentestimates | POST | — | — | FAIL | FAIL | FAIL | FAIL | FAIL | incomplete | 008 |
+| /dashboard/inbound | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
+| /dashboard/inhouse | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
+| /dashboard/outbound | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
+| /dashboard/local-deliveries | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
+| /dashboard/recentestimates | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
 | /views/all | GET | — | List[GridViewDetails] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId} | GET | — | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /views | POST | GridViewCreateRequest | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
@@ -151,7 +151,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /companies/geoAreaCompanies | GET | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
 | /companies/{id}/geosettings | GET | — | GeoSettings | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /companies/{id}/geosettings | POST | GeoSettingsSaveRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
-| /companies/geosettings | GET | — | GeoSettings | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /companies/geosettings | GET | — | GeoSettings | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /companies/search/carrier-accounts | GET | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
 | /companies/suggest-carriers | GET | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
 | /companies/{id}/carrierAcounts | GET | — | List[CarrierAccount] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
@@ -160,11 +160,11 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /companies/{id}/packagingsettings | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
 | /companies/{id}/packaginglabor | GET | — | PackagingLabor | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /companies/{id}/packaginglabor | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 |
-| /companies/{id}/inheritedPackagingTariffs | GET | — | List[PackagingTariff] | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
-| /companies/{id}/inheritedpackaginglabor | GET | — | PackagingLabor | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /companies/{id}/inheritedPackagingTariffs | GET | — | List[PackagingTariff] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /companies/{id}/inheritedpackaginglabor | GET | — | PackagingLabor | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /contacts/{contactId}/history | POST | — | ContactHistory | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
-| /contacts/{contactId}/history/aggregated | GET | — | ContactHistoryAggregated | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
-| /contacts/{contactId}/history/graphdata | GET | — | ContactGraphData | FAIL | FAIL | PASS | PASS | FAIL | incomplete | 008 |
+| /contacts/{contactId}/history/aggregated | GET | — | ContactHistoryAggregated | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /contacts/{contactId}/history/graphdata | GET | — | ContactGraphData | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /contacts/{mergeToId}/merge/preview | POST | — | ContactMergePreview | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /contacts/{mergeToId}/merge | PUT | — | — | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | 008 — destructive |
 | /job/{id}/freightproviders | GET | — | List[PricedFreightProvider] | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |

@@ -15,6 +15,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - N/A — documentation-only change (Markdown files) + N/A — no code dependencies (010-update-constitution)
 - Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing) (011-endpoint-quality-gates)
 - Filesystem (fixture JSON files in `tests/fixtures/`, generated Markdown/HTML) (011-endpoint-quality-gates)
+- Filesystem (fixture JSON files in `tests/fixtures/` and `tests/fixtures/mocks/`) (013-test-mock-framework)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -34,7 +35,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 013-test-mock-framework: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 012-fix-param-routing: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 011-endpoint-quality-gates: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing)
-- 010-update-constitution: Added N/A — documentation-only change (Markdown files) + N/A — no code dependencies
 

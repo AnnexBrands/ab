@@ -22,7 +22,7 @@ class TestUsersIntegration:
     def test_get_roles(self, api):
         result = api.users.get_roles()
         assert result is not None
-        # API returns list of strings; result type depends on
-        # UserRole model_validate behavior with string input.
+        # API returns a plain list of role-name strings.
         assert isinstance(result, list)
         assert len(result) > 0
+        assert isinstance(result[0], str)

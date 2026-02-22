@@ -13,6 +13,7 @@ import re
 from pathlib import Path
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+MOCKS_DIR = FIXTURES_DIR / "mocks"
 FIXTURES_MD = Path(__file__).parent.parent / "FIXTURES.md"
 
 _SECTION_RE = re.compile(r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE)
@@ -120,8 +121,10 @@ class TestFixtureCoverage:
         assert FIXTURES_MD.exists(), "FIXTURES.md not found at repository root"
 
     def test_all_fixture_files_tracked(self):
-        """Every fixture file on disk must appear in FIXTURES.md."""
+        """Every fixture file on disk (live or mock) must appear in FIXTURES.md."""
         all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        if MOCKS_DIR.exists():
+            all_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
         content = FIXTURES_MD.read_text()
 
         gate_data = _extract_from_gate_table(content)
@@ -151,6 +154,8 @@ class TestFixtureCoverage:
             captured = _extract_models_from_section(content, "## Captured Fixtures")
 
         all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        if MOCKS_DIR.exists():
+            all_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
         missing = captured - all_files
         assert not missing, (
             f"FIXTURES.md lists as captured but file missing: {missing}"
@@ -166,6 +171,8 @@ class TestFixtureCoverage:
             pending = _extract_models_from_section(content, "## Pending Fixtures")
 
         all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        if MOCKS_DIR.exists():
+            all_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
         present = pending & all_files
         if present:
             assert not present, (

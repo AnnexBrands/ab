@@ -40,3 +40,16 @@ class UpdateSellerRequest(RequestModel):
 
     name: Optional[str] = Field(None, description="Updated name")
     display_id: Optional[str] = Field(None, alias="displayId", description="Updated display ID")
+
+
+class SellerListParams(RequestModel):
+    """Query parameters for GET /Seller."""
+
+    id: Optional[int] = Field(None, alias="Id", description="Filter by seller ID")
+    name: Optional[str] = Field(None, alias="Name", description="Filter by seller name")
+    customer_display_id: Optional[int] = Field(
+        None, alias="CustomerDisplayId", description="Filter by customer display ID",
+    )
+    is_active: Optional[bool] = Field(None, alias="IsActive", description="Filter by active status")
+    page_size: Optional[int] = Field(None, alias="PageSize", description="Number of items per page")
+    page_number: Optional[int] = Field(None, alias="PageNumber", description="Page number")

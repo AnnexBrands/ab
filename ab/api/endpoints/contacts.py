@@ -21,8 +21,8 @@ from ab.api.route import Route
 
 _GET = Route("GET", "/contacts/{id}", response_model="ContactSimple")
 _GET_DETAILS = Route("GET", "/contacts/{contactId}/editdetails", response_model="ContactDetailedInfo")
-_UPDATE_DETAILS = Route("PUT", "/contacts/{contactId}/editdetails", request_model="ContactEditRequest")
-_CREATE = Route("POST", "/contacts/editdetails", request_model="ContactEditRequest")
+_UPDATE_DETAILS = Route("PUT", "/contacts/{contactId}/editdetails", request_model="ContactEditRequest", params_model="ContactEditParams")
+_CREATE = Route("POST", "/contacts/editdetails", request_model="ContactEditRequest", params_model="ContactEditParams")
 _SEARCH = Route(
     "POST", "/contacts/v2/search",
     request_model="ContactSearchRequest", response_model="List[SearchContactEntityResult]",
@@ -34,9 +34,9 @@ _CURRENT_USER = Route("GET", "/contacts/user", response_model="ContactSimple")
 _POST_HISTORY = Route("POST", "/contacts/{contactId}/history", response_model="ContactHistory")
 _GET_HISTORY_AGGREGATED = Route(
     "GET", "/contacts/{contactId}/history/aggregated",
-    response_model="ContactHistoryAggregated",
+    params_model="ContactHistoryParams", response_model="ContactHistoryAggregated",
 )
-_GET_HISTORY_GRAPH_DATA = Route("GET", "/contacts/{contactId}/history/graphdata", response_model="ContactGraphData")
+_GET_HISTORY_GRAPH_DATA = Route("GET", "/contacts/{contactId}/history/graphdata", params_model="ContactHistoryParams", response_model="ContactGraphData")
 _MERGE_PREVIEW = Route("POST", "/contacts/{mergeToId}/merge/preview", response_model="ContactMergePreview")
 _MERGE = Route("PUT", "/contacts/{mergeToId}/merge")
 

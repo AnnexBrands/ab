@@ -6,7 +6,26 @@ from typing import Optional
 
 from pydantic import Field
 
-from ab.api.models.base import ResponseModel
+from ab.api.models.base import RequestModel, ResponseModel
+
+
+class LookupItemsParams(RequestModel):
+    """Query parameters for GET /lookup/items."""
+
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId")
+    job_item_id: Optional[int] = Field(None, alias="jobItemId")
+
+
+class LookupDocumentTypesParams(RequestModel):
+    """Query parameters for GET /lookup/documentTypes."""
+
+    document_source: Optional[str] = Field(None, alias="documentSource")
+
+
+class LookupDensityClassMapParams(RequestModel):
+    """Query parameters for GET /lookup/densityClassMap."""
+
+    carrier_api: Optional[str] = Field(None, alias="carrierApi")
 
 
 class ContactTypeEntity(ResponseModel):

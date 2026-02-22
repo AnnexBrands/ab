@@ -24,7 +24,7 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 # Job-scoped shipment routes
-_GET_RATE_QUOTES = Route("GET", "/job/{jobDisplayId}/shipment/ratequotes", response_model="List[RateQuote]")
+_GET_RATE_QUOTES = Route("GET", "/job/{jobDisplayId}/shipment/ratequotes", params_model="RateQuotesParams", response_model="List[RateQuote]")
 _POST_RATE_QUOTES = Route("POST", "/job/{jobDisplayId}/shipment/ratequotes", response_model="List[RateQuote]")
 _BOOK = Route(
     "POST", "/job/{jobDisplayId}/shipment/book",
@@ -53,7 +53,7 @@ _GET_RATES_STATE = Route("GET", "/job/{jobDisplayId}/shipment/ratesstate", respo
 # Global shipment routes
 _GET_SHIPMENT = Route("GET", "/shipment", params_model="ShipmentParams", response_model="ShipmentInfo")
 _GET_GLOBAL_ACCESSORIALS = Route("GET", "/shipment/accessorials", response_model="List[GlobalAccessorial]")
-_GET_SHIPMENT_DOCUMENT = Route("GET", "/shipment/document/{docId}", response_model="bytes")
+_GET_SHIPMENT_DOCUMENT = Route("GET", "/shipment/document/{docId}", params_model="ShipmentDocumentParams", response_model="bytes")
 
 
 class ShipmentsEndpoint(BaseEndpoint):

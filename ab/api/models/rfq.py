@@ -9,6 +9,18 @@ from pydantic import Field
 from ab.api.models.base import RequestModel, ResponseModel
 
 
+class RfqForJobParams(RequestModel):
+    """Query parameters for GET /rfq/forjob/{jobId}."""
+
+    company_id: Optional[str] = Field(None, alias="companyId")
+
+
+class RfqAcceptWinnerParams(RequestModel):
+    """Query parameters for POST /rfq/{rfqId}/acceptwinner."""
+
+    final_amount: Optional[float] = Field(None, alias="finalAmount")
+
+
 class QuoteRequestDisplayInfo(ResponseModel):
     """RFQ listing entry — GET /rfq/{rfqId} and GET /job/{jobDisplayId}/rfq."""
 

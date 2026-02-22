@@ -28,6 +28,31 @@ class FreightProvidersParams(RequestModel):
     only_active: Optional[bool] = Field(None, alias="OnlyActive", description="Show only active providers")
 
 
+class TimelineCreateParams(RequestModel):
+    """Query parameters for POST /job/{jobDisplayId}/timeline."""
+
+    create_email: Optional[bool] = Field(None, alias="createEmail")
+
+
+class TrackingV3Params(RequestModel):
+    """Query parameters for GET /v3/job/{jobDisplayId}/tracking."""
+
+    history_amount: Optional[int] = Field(None, alias="historyAmount")
+
+
+class JobNoteListParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/note."""
+
+    category: Optional[str] = Field(None, alias="category")
+    task_code: Optional[str] = Field(None, alias="taskCode")
+
+
+class JobRfqListParams(RequestModel):
+    """Query parameters for GET /job/{jobDisplayId}/rfq."""
+
+    rfq_service_type: Optional[str] = Field(None, alias="rfqServiceType")
+
+
 class Job(ResponseModel, FullAuditModel):
     """Full job record — GET /job/{jobDisplayId}."""
 
@@ -123,12 +148,24 @@ class JobSaveRequest(RequestModel):
     items: Optional[List[dict]] = Field(None)
 
 
+class SortByModel(RequestModel):
+    """Sort configuration for POST /job/searchByDetails."""
+
+    sort_by_field: int = Field(1, alias="sortByField", description="Sort field enum value")
+    sort_dir: bool = Field(True, alias="sortDir", description="Sort direction (true=asc)")
+
+
 class JobSearchRequest(RequestModel):
     """Body for POST /job/searchByDetails."""
 
     search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
-    page: int = Field(1, description="Page number")
+    page_no: int = Field(1, alias="pageNo", description="Page number")
     page_size: int = Field(25, alias="pageSize", description="Results per page")
+    sort_by: SortByModel = Field(
+        default_factory=lambda: SortByModel(sort_by_field=1, sort_dir=True),
+        alias="sortBy",
+        description="Sort configuration",
+    )
 
 
 class JobUpdateRequest(RequestModel):

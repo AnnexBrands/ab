@@ -4,10 +4,9 @@ Covers history, aggregated history, graph data, merge preview, and merge.
 """
 
 from examples._runner import ExampleRunner
+from tests.constants import LIVE_CONTACT_ID
 
 runner = ExampleRunner("Extended Contacts", env="staging")
-
-LIVE_CONTACT_ID = "PLACEHOLDER"
 MERGE_FROM_ID = "PLACEHOLDER"
 
 # ═══════════════════════════════════════════════════════════════════════

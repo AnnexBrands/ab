@@ -16,7 +16,7 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 # Form routes — 14 return bytes, 1 returns JSON
-_GET_INVOICE = Route("GET", "/job/{jobDisplayId}/form/invoice", response_model="bytes")
+_GET_INVOICE = Route("GET", "/job/{jobDisplayId}/form/invoice", params_model="FormTypeParams", response_model="bytes")
 _GET_INVOICE_EDITABLE = Route("GET", "/job/{jobDisplayId}/form/invoice/editable", response_model="bytes")
 _GET_BOL = Route(
     "GET", "/job/{jobDisplayId}/form/bill-of-lading", params_model="BillOfLadingParams", response_model="bytes"
@@ -30,10 +30,12 @@ _GET_OPERATIONS = Route(
 _GET_SHIPMENTS = Route("GET", "/job/{jobDisplayId}/form/shipments", response_model="List[FormsShipmentPlan]")
 _GET_ADDRESS_LABEL = Route("GET", "/job/{jobDisplayId}/form/address-label", response_model="bytes")
 _GET_ITEM_LABELS = Route("GET", "/job/{jobDisplayId}/form/item-labels", response_model="bytes")
-_GET_PACKAGING_LABELS = Route("GET", "/job/{jobDisplayId}/form/packaging-labels", response_model="bytes")
+_GET_PACKAGING_LABELS = Route(
+    "GET", "/job/{jobDisplayId}/form/packaging-labels", params_model="PackagingLabelsParams", response_model="bytes"
+)
 _GET_PACKAGING_SPEC = Route("GET", "/job/{jobDisplayId}/form/packaging-specification", response_model="bytes")
 _GET_CC_AUTH = Route("GET", "/job/{jobDisplayId}/form/credit-card-authorization", response_model="bytes")
-_GET_USAR = Route("GET", "/job/{jobDisplayId}/form/usar", response_model="bytes")
+_GET_USAR = Route("GET", "/job/{jobDisplayId}/form/usar", params_model="FormTypeParams", response_model="bytes")
 _GET_USAR_EDITABLE = Route("GET", "/job/{jobDisplayId}/form/usar/editable", response_model="bytes")
 
 
@@ -44,9 +46,16 @@ class FormsEndpoint(BaseEndpoint):
     :meth:`get_shipments` to get JSON shipment plan data for BOL selection.
     """
 
-    def get_invoice(self, job_display_id: int) -> Any:
-        """GET /job/{jobDisplayId}/form/invoice (ACPortal) — returns bytes."""
-        return self._request(_GET_INVOICE.bind(jobDisplayId=job_display_id))
+    def get_invoice(self, job_display_id: int, *, type: Optional[str] = None) -> Any:
+        """GET /job/{jobDisplayId}/form/invoice (ACPortal) — returns bytes.
+
+        Args:
+            type: Optional form type selection.
+        """
+        return self._request(
+            _GET_INVOICE.bind(jobDisplayId=job_display_id),
+            params=dict(type=type),
+        )
 
     def get_invoice_editable(self, job_display_id: int) -> Any:
         """GET /job/{jobDisplayId}/form/invoice/editable (ACPortal) — returns bytes."""
@@ -105,9 +114,21 @@ class FormsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/form/item-labels (ACPortal) — returns bytes."""
         return self._request(_GET_ITEM_LABELS.bind(jobDisplayId=job_display_id))
 
-    def get_packaging_labels(self, job_display_id: int) -> Any:
-        """GET /job/{jobDisplayId}/form/packaging-labels (ACPortal) — returns bytes."""
-        return self._request(_GET_PACKAGING_LABELS.bind(jobDisplayId=job_display_id))
+    def get_packaging_labels(
+        self,
+        job_display_id: int,
+        *,
+        shipment_plan_id: Optional[str] = None,
+    ) -> Any:
+        """GET /job/{jobDisplayId}/form/packaging-labels (ACPortal) — returns bytes.
+
+        Args:
+            shipment_plan_id: Optional shipment plan identifier.
+        """
+        return self._request(
+            _GET_PACKAGING_LABELS.bind(jobDisplayId=job_display_id),
+            params=dict(shipment_plan_id=shipment_plan_id),
+        )
 
     def get_packaging_specification(self, job_display_id: int) -> Any:
         """GET /job/{jobDisplayId}/form/packaging-specification (ACPortal) — returns bytes."""
@@ -117,9 +138,16 @@ class FormsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/form/credit-card-authorization (ACPortal) — returns bytes."""
         return self._request(_GET_CC_AUTH.bind(jobDisplayId=job_display_id))
 
-    def get_usar(self, job_display_id: int) -> Any:
-        """GET /job/{jobDisplayId}/form/usar (ACPortal) — returns bytes."""
-        return self._request(_GET_USAR.bind(jobDisplayId=job_display_id))
+    def get_usar(self, job_display_id: int, *, type: Optional[str] = None) -> Any:
+        """GET /job/{jobDisplayId}/form/usar (ACPortal) — returns bytes.
+
+        Args:
+            type: Optional form type selection.
+        """
+        return self._request(
+            _GET_USAR.bind(jobDisplayId=job_display_id),
+            params=dict(type=type),
+        )
 
     def get_usar_editable(self, job_display_id: int) -> Any:
         """GET /job/{jobDisplayId}/form/usar/editable (ACPortal) — returns bytes."""
