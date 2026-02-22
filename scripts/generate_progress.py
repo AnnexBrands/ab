@@ -2,10 +2,12 @@
 """Generate progress.html report for ABConnect SDK coverage.
 
 Usage:
-    python scripts/generate_progress.py
+    python scripts/generate_progress.py             # HTML report only
+    python scripts/generate_progress.py --fixtures   # Regenerate FIXTURES.md with gates
 
 Output:
     progress.html in the repository root.
+    FIXTURES.md (with --fixtures flag) regenerated with per-gate columns.
 """
 
 from __future__ import annotations
@@ -25,6 +27,29 @@ OUTPUT = REPO_ROOT / "progress.html"
 
 
 def main() -> int:
+    generate_fixtures = "--fixtures" in sys.argv
+
+    if generate_fixtures:
+        return _generate_fixtures()
+
+    return _generate_html_report()
+
+
+def _generate_fixtures() -> int:
+    """Regenerate FIXTURES.md with per-gate quality columns."""
+    if not FIXTURES_MD.exists():
+        print("Error: FIXTURES.md not found", file=sys.stderr)
+        return 1
+
+    from ab.progress.fixtures_generator import generate_fixtures_md
+
+    generate_fixtures_md(FIXTURES_MD)
+    print(f"FIXTURES.md regenerated with quality gate columns at {FIXTURES_MD.relative_to(REPO_ROOT)}")
+    return 0
+
+
+def _generate_html_report() -> int:
+    """Generate progress.html report."""
     # Validate required files exist
     missing = []
     for path, label in [
@@ -42,6 +67,10 @@ def main() -> int:
         return 1
 
     # Import here to keep validation fast
+    import logging
+
+    from ab.progress.fixtures_generator import parse_existing_fixtures
+    from ab.progress.gates import evaluate_all_gates
     from ab.progress.models import classify_action_items
     from ab.progress.parsers import parse_api_surface, parse_fixtures
     from ab.progress.renderer import render_report
@@ -53,11 +82,20 @@ def main() -> int:
     fixture_files = scan_fixture_files(FIXTURES_DIR)
     constants = parse_constants(CONSTANTS_PY)
 
+    # Evaluate quality gates for all endpoints in FIXTURES.md
+    fixtures_data = parse_existing_fixtures(FIXTURES_MD)
+    logging.disable(logging.WARNING)
+    gate_results = evaluate_all_gates(fixtures_data)
+    logging.disable(logging.NOTSET)
+
     # Classify action items
     action_items = classify_action_items(groups, fixtures, fixture_files, constants)
 
     # Render and write
-    html = render_report(groups, fixtures, constants, fixture_files, action_items)
+    html = render_report(
+        groups, fixtures, constants, fixture_files, action_items,
+        gate_results=gate_results,
+    )
     OUTPUT.write_text(html)
 
     # Print summary
@@ -68,11 +106,17 @@ def main() -> int:
     tier1 = sum(1 for i in action_items if i.tier == 1)
     tier2 = sum(1 for i in action_items if i.tier == 2)
 
+    # Gate summary
+    gate_total = len(gate_results)
+    gate_complete = sum(1 for s in gate_results if s.overall_status == "complete")
+
     print(f"Progress report written to {OUTPUT.relative_to(REPO_ROOT)}")
     print(f"  Endpoints: {total} total, {done} done, {pending} pending, {ns} not started")
     print(f"  Action items: {len(action_items)} ({tier1} tier 1, {tier2} tier 2)")
     print(f"  Fixtures on disk: {len(fixture_files)}")
     print(f"  Constants defined: {len(constants)}")
+    if gate_total:
+        print(f"  Quality gates: {gate_complete}/{gate_total} endpoints pass all gates")
 
     return 0
 

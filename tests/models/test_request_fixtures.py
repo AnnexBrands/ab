@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from ab.api import models
+from tests.conftest import assert_no_extra_fields
 
 REQUESTS_DIR = Path(__file__).parent.parent / "fixtures" / "requests"
 
@@ -47,8 +48,10 @@ def test_request_fixture_validates(model_name: str, fixture_path: Path) -> None:
 
     data = json.loads(fixture_path.read_text())
     instance = model_cls.model_validate(data)
-    assert instance is not None, f"{model_name}.model_validate() returned None"
+    assert isinstance(instance, model_cls)
+    assert_no_extra_fields(instance)
 
     # Round-trip: serialized output must also validate
     serialized = instance.model_dump(by_alias=True, exclude_none=True, mode="json")
-    model_cls.model_validate(serialized)
+    round_trip = model_cls.model_validate(serialized)
+    assert isinstance(round_trip, model_cls)

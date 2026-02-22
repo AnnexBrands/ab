@@ -61,6 +61,25 @@ def require_fixture(
     return load_fixture(model_name)
 
 
+def assert_no_extra_fields(model: object) -> None:
+    """Assert a Pydantic model has no undeclared extra fields.
+
+    Args:
+        model: A Pydantic model instance (ResponseModel subclass).
+
+    Raises:
+        AssertionError: If ``model.__pydantic_extra__`` is non-empty,
+            with a message listing all undeclared field names.
+    """
+    extra = getattr(model, "__pydantic_extra__", None)
+    if extra:
+        cls_name = model.__class__.__name__
+        fields = ", ".join(sorted(extra.keys()))
+        raise AssertionError(
+            f"{cls_name} has {len(extra)} undeclared extra field(s): {fields}"
+        )
+
+
 @pytest.fixture(scope="session")
 def fixture_loader():
     """Provide a fixture loader callable to tests."""

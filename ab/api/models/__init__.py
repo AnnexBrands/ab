@@ -29,20 +29,47 @@ from ab.api.models.commodities import (
     CommoditySuggestionRequest,
     CommodityUpdateRequest,
 )
+from ab.api.models.common import CompanyAddress, Coordinates
 from ab.api.models.companies import (
+    AccessorialCharge,
+    AccountInformation,
     BrandTree,
+    BTXAccount,
     CarrierAccount,
     CarrierAccountSaveRequest,
     CompanyBrand,
     CompanyDetails,
+    CompanyDetailsInfo,
+    CompanyInsurance,
+    CompanyPreferences,
+    CompanyPricing,
     CompanySearchRequest,
     CompanySimple,
+    CompanyTaxes,
+    EstesAccount,
+    FedExAccount,
+    FileInfo,
+    ForwardAirAccount,
     GeoSettings,
     GeoSettingsSaveRequest,
+    GlobalTranzAccount,
+    InsuranceOption,
+    LaborCharge,
+    MaerskAccount,
+    MarkupTier,
     PackagingLabor,
     PackagingSettings,
     PackagingTariff,
+    PaymentSettings,
+    RoadRunnerAccount,
+    Royalties,
     SearchCompanyResponse,
+    TariffGroup,
+    TaxCategory,
+    TeamWWAccount,
+    TransportationCharge,
+    UPSAccount,
+    USPSAccount,
 )
 from ab.api.models.contacts import (
     ContactDetailedInfo,
@@ -175,13 +202,16 @@ from ab.api.models.shared import (
 from ab.api.models.shipments import (
     Accessorial,
     AccessorialAddRequest,
+    AccessorialOption,
     GlobalAccessorial,
+    RadioButtonOption,
     RateQuote,
     RatesState,
     ShipmentBookRequest,
     ShipmentExportData,
     ShipmentInfo,
     ShipmentOriginDestination,
+    ShipmentWeight,
 )
 from ab.api.models.users import User, UserCreateRequest, UserRole, UserUpdateRequest
 from ab.api.models.views import (
@@ -199,6 +229,8 @@ __all__ = [
     "IdentifiedModel", "TimestampedModel", "ActiveModel",
     "CompanyRelatedModel", "JobRelatedModel",
     "FullAuditModel", "CompanyAuditModel", "JobAuditModel",
+    # Common (shared sub-models)
+    "Coordinates", "CompanyAddress",
     # Shared
     "ServiceBaseResponse", "ServiceWarningResponse", "PaginatedList", "ListRequest",
     # Enums
@@ -212,6 +244,14 @@ __all__ = [
     "SellerDto", "SellerExpandedDto", "AddSellerRequest", "UpdateSellerRequest",
     # Companies
     "CompanySimple", "CompanyDetails", "SearchCompanyResponse", "CompanySearchRequest",
+    "CompanyDetailsInfo", "FileInfo", "CompanyPreferences",
+    "FedExAccount", "UPSAccount", "RoadRunnerAccount", "MaerskAccount",
+    "TeamWWAccount", "EstesAccount", "ForwardAirAccount", "BTXAccount",
+    "GlobalTranzAccount", "USPSAccount", "AccountInformation",
+    "TransportationCharge", "MarkupTier", "LaborCharge", "AccessorialCharge",
+    "Royalties", "PaymentSettings", "CompanyPricing",
+    "InsuranceOption", "CompanyInsurance", "TariffGroup",
+    "TaxCategory", "CompanyTaxes",
     "CompanyBrand", "BrandTree", "GeoSettings", "GeoSettingsSaveRequest",
     "CarrierAccount", "CarrierAccountSaveRequest",
     "PackagingSettings", "PackagingLabor", "PackagingTariff",
@@ -234,7 +274,8 @@ __all__ = [
     "PricedFreightProvider", "ShipmentPlanProvider",
     # Shipments
     "RateQuote", "ShipmentOriginDestination", "Accessorial",
-    "ShipmentExportData", "RatesState", "ShipmentInfo", "GlobalAccessorial",
+    "ShipmentExportData", "RatesState", "ShipmentInfo", "ShipmentWeight",
+    "GlobalAccessorial", "AccessorialOption", "RadioButtonOption",
     "ShipmentBookRequest", "AccessorialAddRequest",
     # Documents
     "Document", "DocumentUpdateRequest",

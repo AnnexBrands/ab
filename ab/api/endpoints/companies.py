@@ -2,11 +2,25 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 from ab.cache import CodeResolver
+
+if TYPE_CHECKING:
+    from ab.api.models.companies import (
+        BrandTree,
+        CarrierAccount,
+        CompanyBrand,
+        CompanyDetails,
+        CompanySimple,
+        GeoSettings,
+        PackagingLabor,
+        PackagingSettings,
+        PackagingTariff,
+        SearchCompanyResponse,
+    )
 
 _GET = Route("GET", "/companies/{id}", response_model="CompanySimple")
 _GET_DETAILS = Route("GET", "/companies/{companyId}/details", response_model="CompanyDetails")
@@ -67,45 +81,45 @@ class CompaniesEndpoint(BaseEndpoint):
     def _resolve(self, code_or_id: str) -> str:
         return self._resolver.resolve(code_or_id)
 
-    def get_by_id(self, company_id: str) -> Any:
+    def get_by_id(self, company_id: str) -> CompanySimple:
         """GET /companies/{id}"""
         return self._request(_GET.bind(id=self._resolve(company_id)))
 
-    def get_details(self, company_id: str) -> Any:
+    def get_details(self, company_id: str) -> CompanyDetails:
         """GET /companies/{companyId}/details"""
         return self._request(_GET_DETAILS.bind(companyId=self._resolve(company_id)))
 
-    def get_fulldetails(self, company_id: str) -> Any:
+    def get_fulldetails(self, company_id: str) -> CompanyDetails:
         """GET /companies/{companyId}/fulldetails"""
         return self._request(_GET_FULLDETAILS.bind(companyId=self._resolve(company_id)))
 
-    def update_fulldetails(self, company_id: str, **kwargs: Any) -> Any:
+    def update_fulldetails(self, company_id: str, **kwargs: Any) -> CompanyDetails:
         """PUT /companies/{companyId}/fulldetails"""
         return self._request(_UPDATE_FULLDETAILS.bind(companyId=self._resolve(company_id)), json=kwargs)
 
-    def create(self, **kwargs: Any) -> Any:
+    def create(self, **kwargs: Any) -> str:
         """POST /companies/fulldetails — returns new company ID string."""
         return self._request(_CREATE, json=kwargs)
 
-    def search(self, **kwargs: Any) -> Any:
+    def search(self, **kwargs: Any) -> list[SearchCompanyResponse]:
         """POST /companies/search/v2"""
         return self._request(_SEARCH, json=kwargs)
 
-    def list(self, **kwargs: Any) -> Any:
+    def list(self, **kwargs: Any) -> list[CompanySimple]:
         """POST /companies/list"""
         return self._request(_LIST, json=kwargs)
 
-    def available_by_current_user(self) -> Any:
+    def available_by_current_user(self) -> list[CompanySimple]:
         """GET /companies/availableByCurrentUser"""
         return self._request(_AVAILABLE)
 
     # ---- Brands (008) -----------------------------------------------------
 
-    def get_brands(self) -> Any:
+    def get_brands(self) -> list[CompanyBrand]:
         """GET /companies/brands"""
         return self._request(_GET_BRANDS)
 
-    def get_brands_tree(self) -> Any:
+    def get_brands_tree(self) -> list[BrandTree]:
         """GET /companies/brandstree"""
         return self._request(_GET_BRANDS_TREE)
 
@@ -115,7 +129,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/geoAreaCompanies"""
         return self._request(_GET_GEO_AREA_COMPANIES, params=params or None)
 
-    def get_geo_settings(self, company_id: str) -> Any:
+    def get_geo_settings(self, company_id: str) -> GeoSettings:
         """GET /companies/{companyId}/geosettings"""
         return self._request(_GET_GEO_SETTINGS.bind(companyId=self._resolve(company_id)))
 
@@ -123,7 +137,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """POST /companies/{companyId}/geosettings"""
         return self._request(_SAVE_GEO_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
 
-    def get_global_geo_settings(self) -> Any:
+    def get_global_geo_settings(self) -> GeoSettings:
         """GET /companies/geosettings"""
         return self._request(_GET_GLOBAL_GEO_SETTINGS)
 
@@ -137,7 +151,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/suggest-carriers"""
         return self._request(_SUGGEST_CARRIERS, params=params or None)
 
-    def get_carrier_accounts(self, company_id: str) -> Any:
+    def get_carrier_accounts(self, company_id: str) -> list[CarrierAccount]:
         """GET /companies/{companyId}/carrierAcounts"""
         return self._request(_GET_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)))
 
@@ -147,7 +161,7 @@ class CompaniesEndpoint(BaseEndpoint):
 
     # ---- Packaging (008) --------------------------------------------------
 
-    def get_packaging_settings(self, company_id: str) -> Any:
+    def get_packaging_settings(self, company_id: str) -> PackagingSettings:
         """GET /companies/{companyId}/packagingsettings"""
         return self._request(_GET_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)))
 
@@ -155,7 +169,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """POST /companies/{companyId}/packagingsettings"""
         return self._request(_SAVE_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
 
-    def get_packaging_labor(self, company_id: str) -> Any:
+    def get_packaging_labor(self, company_id: str) -> PackagingLabor:
         """GET /companies/{companyId}/packaginglabor"""
         return self._request(_GET_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
 
@@ -163,10 +177,10 @@ class CompaniesEndpoint(BaseEndpoint):
         """POST /companies/{companyId}/packaginglabor"""
         return self._request(_SAVE_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)), json=kwargs)
 
-    def get_inherited_packaging_tariffs(self, company_id: str) -> Any:
+    def get_inherited_packaging_tariffs(self, company_id: str) -> list[PackagingTariff]:
         """GET /companies/{companyId}/inheritedPackagingTariffs"""
         return self._request(_GET_INHERITED_PACKAGING_TARIFFS.bind(companyId=self._resolve(company_id)))
 
-    def get_inherited_packaging_labor(self, company_id: str) -> Any:
+    def get_inherited_packaging_labor(self, company_id: str) -> PackagingLabor:
         """GET /companies/{companyId}/inheritedpackaginglabor"""
         return self._request(_GET_INHERITED_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))

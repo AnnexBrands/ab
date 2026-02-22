@@ -5,7 +5,11 @@ Covers payment info, payment sources, ACH operations, and pay-by-source.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.payments import ACHSessionResponse, PaymentInfo, PaymentSource
+    from ab.api.models.shared import ServiceBaseResponse
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -47,42 +51,42 @@ _BANK_SOURCE = Route(
 class PaymentsEndpoint(BaseEndpoint):
     """Payment operations (ACPortal API)."""
 
-    def get(self, job_display_id: int) -> Any:
+    def get(self, job_display_id: int) -> PaymentInfo:
         """GET /job/{jobDisplayId}/payment (ACPortal)"""
         return self._request(_GET_PAYMENT.bind(jobDisplayId=job_display_id))
 
-    def get_create(self, job_display_id: int) -> Any:
+    def get_create(self, job_display_id: int) -> PaymentInfo:
         """GET /job/{jobDisplayId}/payment/create (ACPortal)"""
         return self._request(_GET_PAYMENT_CREATE.bind(jobDisplayId=job_display_id))
 
-    def get_sources(self, job_display_id: int) -> Any:
+    def get_sources(self, job_display_id: int) -> list[PaymentSource]:
         """GET /job/{jobDisplayId}/payment/sources (ACPortal)"""
         return self._request(_GET_SOURCES.bind(jobDisplayId=job_display_id))
 
-    def pay_by_source(self, job_display_id: int, data: dict | Any) -> Any:
+    def pay_by_source(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/bysource (ACPortal)"""
         return self._request(_PAY_BY_SOURCE.bind(jobDisplayId=job_display_id), json=data)
 
-    def create_ach_session(self, job_display_id: int, data: dict | Any) -> Any:
+    def create_ach_session(self, job_display_id: int, data: dict | Any) -> ACHSessionResponse:
         """POST /job/{jobDisplayId}/payment/ACHPaymentSession (ACPortal)"""
         return self._request(_ACH_SESSION.bind(jobDisplayId=job_display_id), json=data)
 
-    def ach_credit_transfer(self, job_display_id: int, data: dict | Any) -> Any:
+    def ach_credit_transfer(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/ACHCreditTransfer (ACPortal)"""
         return self._request(_ACH_CREDIT_TRANSFER.bind(jobDisplayId=job_display_id), json=data)
 
-    def attach_customer_bank(self, job_display_id: int, data: dict | Any) -> Any:
+    def attach_customer_bank(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/attachCustomerBank (ACPortal)"""
         return self._request(_ATTACH_BANK.bind(jobDisplayId=job_display_id), json=data)
 
-    def verify_ach_source(self, job_display_id: int, data: dict | Any) -> Any:
+    def verify_ach_source(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/verifyJobACHSource (ACPortal)"""
         return self._request(_VERIFY_ACH.bind(jobDisplayId=job_display_id), json=data)
 
-    def cancel_ach_verification(self, job_display_id: int) -> Any:
+    def cancel_ach_verification(self, job_display_id: int) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/cancelJobACHVerification (ACPortal)"""
         return self._request(_CANCEL_ACH.bind(jobDisplayId=job_display_id))
 
-    def set_bank_source(self, job_display_id: int, data: dict | Any) -> Any:
+    def set_bank_source(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/banksource (ACPortal)"""
         return self._request(_BANK_SOURCE.bind(jobDisplayId=job_display_id), json=data)

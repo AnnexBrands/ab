@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.catalog import CatalogExpandedDto, CatalogWithSellersDto
+    from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -25,22 +29,22 @@ _BULK_INSERT = Route("POST", "/Bulk/insert", request_model="BulkInsertRequest", 
 class CatalogEndpoint(BaseEndpoint):
     """Operations on catalogs (Catalog API)."""
 
-    def create(self, data: dict | Any) -> Any:
+    def create(self, data: dict | Any) -> CatalogWithSellersDto:
         """POST /Catalog — create a new catalog."""
         return self._request(_CREATE, json=data)
 
-    def list(self, *, page: int = 1, page_size: int = 25) -> Any:
+    def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[CatalogExpandedDto]:
         """GET /Catalog — paginated list of catalogs."""
         return self._paginated_request(
             _LIST, "CatalogExpandedDto",
             params={"pageNumber": page, "pageSize": page_size},
         )
 
-    def get(self, catalog_id: int) -> Any:
+    def get(self, catalog_id: int) -> CatalogExpandedDto:
         """GET /Catalog/{id}"""
         return self._request(_GET.bind(id=catalog_id))
 
-    def update(self, catalog_id: int, data: dict | Any) -> Any:
+    def update(self, catalog_id: int, data: dict | Any) -> CatalogWithSellersDto:
         """PUT /Catalog/{id}"""
         return self._request(_UPDATE.bind(id=catalog_id), json=data)
 

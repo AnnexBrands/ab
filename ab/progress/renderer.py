@@ -6,12 +6,13 @@ from datetime import datetime, timezone
 from html import escape
 from itertools import groupby
 
+from ab.progress.gates import EndpointGateStatus
 from ab.progress.models import ActionItem, Constant, EndpointGroup, Fixture
 
 CSS = """\
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-       max-width: 1100px; margin: 0 auto; padding: 20px; color: #1a1a1a;
+       max-width: 1200px; margin: 0 auto; padding: 20px; color: #1a1a1a;
        background: #fafafa; line-height: 1.5; }
 h1 { font-size: 1.6rem; margin-bottom: 4px; }
 .subtitle { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
@@ -33,6 +34,24 @@ tr:hover { background: #f9f9f9; }
 .badge-ns { background: #6c757d; color: #fff; }
 .badge-request { background: #17a2b8; color: #fff; }
 .badge-constant { background: #fd7e14; color: #fff; }
+.gate-pass { background: #d4edda; color: #155724; font-weight: 600;
+             text-align: center; }
+.gate-fail { background: #f8d7da; color: #721c24; font-weight: 600;
+             text-align: center; }
+.gate-na { background: #e9ecef; color: #6c757d; text-align: center; }
+.gate-cards { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.gate-card { flex: 1; min-width: 140px; padding: 16px; border-radius: 8px;
+             border: 1px solid #ddd; text-align: center; background: #fff; }
+.gate-card h4 { font-size: 0.8rem; color: #666; margin-bottom: 4px;
+                text-transform: uppercase; letter-spacing: 0.5px; }
+.gate-card .count { font-size: 1.8rem; font-weight: 700; }
+.gate-card .label { font-size: 0.75rem; color: #888; }
+.gate-card.card-pass { border-color: #28a745; }
+.gate-card.card-pass .count { color: #28a745; }
+.gate-card.card-fail { border-color: #dc3545; }
+.gate-card.card-fail .count { color: #dc3545; }
+.gate-card.card-overall { border-color: #007bff; }
+.gate-card.card-overall .count { color: #007bff; }
 details { margin: 6px 0; border: 1px solid #ddd; border-radius: 4px; }
 details[open] { border-color: #aaa; }
 summary { padding: 8px 12px; cursor: pointer; font-size: 0.9rem;
@@ -56,6 +75,17 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 .progress-bar .seg-done { background: #28a745; }
 .progress-bar .seg-pending { background: #ffc107; }
 .progress-bar .seg-ns { background: #6c757d; }
+.gate-table { font-size: 0.85rem; }
+.gate-table th { font-size: 0.8rem; white-space: nowrap; }
+.gate-table td { padding: 6px 8px; }
+.gate-table .col-path { font-family: monospace; max-width: 280px;
+                        overflow: hidden; text-overflow: ellipsis; }
+.gate-table .col-method { font-family: monospace; font-weight: 600;
+                          width: 50px; }
+.gate-table .col-model { font-size: 0.8rem; color: #555; max-width: 160px;
+                         overflow: hidden; text-overflow: ellipsis; }
+.gate-table .col-gate { width: 50px; text-align: center; }
+.gate-table .col-status { width: 80px; }
 """
 
 
@@ -65,6 +95,7 @@ def render_report(
     constants: list[Constant],
     fixture_files: set[str],
     action_items: list[ActionItem],
+    gate_results: list[EndpointGateStatus] | None = None,
 ) -> str:
     """Render the complete progress report as self-contained HTML."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -82,10 +113,17 @@ def render_report(
         "<h1>ABConnect SDK — Progress Report</h1>",
         f"<p class='subtitle'>Generated {now}</p>",
         render_summary(groups),
+    ]
+
+    if gate_results:
+        parts.append(render_gate_summary(gate_results))
+        parts.append(render_gate_details(gate_results))
+
+    parts.extend([
         render_action_required(action_items),
         "</body>",
         "</html>",
-    ]
+    ])
     return "\n".join(parts)
 
 
@@ -166,6 +204,109 @@ def _progress_bar(d: dict[str, int]) -> str:
         f"<div class='seg-pending' style='width:{pending_pct:.1f}%'></div>"
         f"<div class='seg-ns' style='width:{ns_pct:.1f}%'></div>"
         f"</div>"
+    )
+
+
+def render_gate_summary(gate_results: list[EndpointGateStatus]) -> str:
+    """Render gate pass-rate summary cards."""
+    total = len(gate_results)
+    if total == 0:
+        return ""
+
+    complete = sum(1 for s in gate_results if s.overall_status == "complete")
+    g1_pass = sum(
+        1 for s in gate_results
+        if s.g1_model_fidelity and s.g1_model_fidelity.passed
+    )
+    g2_pass = sum(
+        1 for s in gate_results
+        if s.g2_fixture_status and s.g2_fixture_status.passed
+    )
+    g3_pass = sum(
+        1 for s in gate_results
+        if s.g3_test_quality and s.g3_test_quality.passed
+    )
+    g4_pass = sum(
+        1 for s in gate_results
+        if s.g4_doc_accuracy and s.g4_doc_accuracy.passed
+    )
+
+    pct = f"{complete / total * 100:.0f}%" if total else "0%"
+
+    def _card(title: str, count: int, label: str, card_cls: str) -> str:
+        return (
+            f"<div class='gate-card {card_cls}'>"
+            f"<h4>{escape(title)}</h4>"
+            f"<div class='count'>{count}/{total}</div>"
+            f"<div class='label'>{escape(label)}</div>"
+            f"</div>"
+        )
+
+    cards = [
+        f"<div class='gate-card card-overall'>"
+        f"<h4>Overall</h4>"
+        f"<div class='count'>{pct}</div>"
+        f"<div class='label'>{complete} of {total} complete</div>"
+        f"</div>",
+        _card("G1: Model Fidelity", g1_pass, "Zero extra fields", "card-pass" if g1_pass > total // 2 else "card-fail"),
+        _card("G2: Fixture Status", g2_pass, "Fixture on disk", "card-pass" if g2_pass > total // 2 else "card-fail"),
+        _card("G3: Test Quality", g3_pass, "isinstance + extra", "card-pass" if g3_pass > total // 2 else "card-fail"),
+        _card("G4: Doc Accuracy", g4_pass, "Correct return type", "card-pass" if g4_pass > total // 2 else "card-fail"),
+    ]
+
+    return (
+        "<h2>Quality Gate Status</h2>"
+        "<div class='gate-cards'>"
+        + "\n".join(cards)
+        + "</div>"
+    )
+
+
+def render_gate_details(gate_results: list[EndpointGateStatus]) -> str:
+    """Render per-endpoint gate status table."""
+    if not gate_results:
+        return ""
+
+    def _gate_cell(gate_result) -> str:
+        if gate_result is None:
+            return "<td class='col-gate gate-na'>—</td>"
+        if gate_result.passed:
+            return "<td class='col-gate gate-pass'>PASS</td>"
+        return (
+            f"<td class='col-gate gate-fail' title='{escape(gate_result.reason)}'>"
+            f"FAIL</td>"
+        )
+
+    def _status_badge(status: str) -> str:
+        if status == "complete":
+            return "<span class='badge badge-done'>complete</span>"
+        return "<span class='badge badge-ns'>incomplete</span>"
+
+    rows = []
+    for s in gate_results:
+        resp = escape(s.response_model or "—")
+        rows.append(
+            f"<tr>"
+            f"<td class='col-method'>{escape(s.method)}</td>"
+            f"<td class='col-path'>{escape(s.endpoint_path)}</td>"
+            f"<td class='col-model'>{resp}</td>"
+            f"{_gate_cell(s.g1_model_fidelity)}"
+            f"{_gate_cell(s.g2_fixture_status)}"
+            f"{_gate_cell(s.g3_test_quality)}"
+            f"{_gate_cell(s.g4_doc_accuracy)}"
+            f"<td class='col-status'>{_status_badge(s.overall_status)}</td>"
+            f"</tr>"
+        )
+
+    return (
+        "<h2>Per-Endpoint Gate Details</h2>"
+        "<table class='gate-table'>"
+        "<tr>"
+        "<th>Method</th><th>Endpoint</th><th>Model</th>"
+        "<th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>Status</th>"
+        "</tr>"
+        + "\n".join(rows)
+        + "</table>"
     )
 
 

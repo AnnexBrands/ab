@@ -6,7 +6,19 @@ and global shipment endpoints (shipment lookup, accessorial catalog, documents).
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.shared import ServiceBaseResponse
+    from ab.api.models.shipments import (
+        Accessorial,
+        GlobalAccessorial,
+        RateQuote,
+        RatesState,
+        ShipmentExportData,
+        ShipmentInfo,
+        ShipmentOriginDestination,
+    )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -49,59 +61,59 @@ class ShipmentsEndpoint(BaseEndpoint):
 
     # ---- Job-scoped shipment methods ----------------------------------
 
-    def get_rate_quotes(self, job_display_id: int) -> Any:
+    def get_rate_quotes(self, job_display_id: int) -> list[RateQuote]:
         """GET /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
         return self._request(_GET_RATE_QUOTES.bind(jobDisplayId=job_display_id))
 
-    def request_rate_quotes(self, job_display_id: int, data: dict | None = None) -> Any:
+    def request_rate_quotes(self, job_display_id: int, data: dict | None = None) -> list[RateQuote]:
         """POST /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
         return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), json=data)
 
-    def book(self, job_display_id: int, data: dict | Any) -> Any:
+    def book(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/book (ACPortal)"""
         return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=data)
 
-    def delete_shipment(self, job_display_id: int) -> Any:
+    def delete_shipment(self, job_display_id: int) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment (ACPortal)"""
         return self._request(_DELETE_SHIPMENT.bind(jobDisplayId=job_display_id))
 
-    def get_accessorials(self, job_display_id: int) -> Any:
+    def get_accessorials(self, job_display_id: int) -> list[Accessorial]:
         """GET /job/{jobDisplayId}/shipment/accessorials (ACPortal)"""
         return self._request(_GET_ACCESSORIALS.bind(jobDisplayId=job_display_id))
 
-    def add_accessorial(self, job_display_id: int, data: dict | Any) -> Any:
+    def add_accessorial(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/accessorial (ACPortal)"""
         return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=data)
 
-    def remove_accessorial(self, job_display_id: int, add_on_id: str) -> Any:
+    def remove_accessorial(self, job_display_id: int, add_on_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId} (ACPortal)"""
         return self._request(
             _REMOVE_ACCESSORIAL.bind(jobDisplayId=job_display_id, addOnId=add_on_id),
         )
 
-    def get_origin_destination(self, job_display_id: int) -> Any:
+    def get_origin_destination(self, job_display_id: int) -> ShipmentOriginDestination:
         """GET /job/{jobDisplayId}/shipment/origindestination (ACPortal)"""
         return self._request(_GET_ORIGIN_DEST.bind(jobDisplayId=job_display_id))
 
-    def get_export_data(self, job_display_id: int) -> Any:
+    def get_export_data(self, job_display_id: int) -> ShipmentExportData:
         """GET /job/{jobDisplayId}/shipment/exportdata (ACPortal)"""
         return self._request(_GET_EXPORT_DATA.bind(jobDisplayId=job_display_id))
 
-    def post_export_data(self, job_display_id: int, data: dict | Any) -> Any:
+    def post_export_data(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/exportdata (ACPortal)"""
         return self._request(_POST_EXPORT_DATA.bind(jobDisplayId=job_display_id), json=data)
 
-    def get_rates_state(self, job_display_id: int) -> Any:
+    def get_rates_state(self, job_display_id: int) -> RatesState:
         """GET /job/{jobDisplayId}/shipment/ratesstate (ACPortal)"""
         return self._request(_GET_RATES_STATE.bind(jobDisplayId=job_display_id))
 
     # ---- Global shipment methods --------------------------------------
 
-    def get_shipment(self, **params: Any) -> Any:
+    def get_shipment(self, **params: Any) -> ShipmentInfo:
         """GET /shipment (ACPortal)"""
         return self._request(_GET_SHIPMENT, params=params)
 
-    def get_global_accessorials(self) -> Any:
+    def get_global_accessorials(self) -> list[GlobalAccessorial]:
         """GET /shipment/accessorials (ACPortal)"""
         return self._request(_GET_GLOBAL_ACCESSORIALS)
 

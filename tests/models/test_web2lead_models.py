@@ -1,9 +1,9 @@
-"""Fixture validation tests for Web2Lead models (T066)."""
+"""Fixture validation tests for Web2Lead models."""
 
 import pytest
 
 from ab.api.models.web2lead import Web2LeadResponse
-from tests.conftest import require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestWeb2LeadModels:
@@ -11,5 +11,5 @@ class TestWeb2LeadModels:
     def test_web2lead_response(self):
         data = require_fixture("Web2LeadResponse", "GET", "/Web2Lead", required=True)
         model = Web2LeadResponse.model_validate(data)
-        assert model.result is not None
-        assert model.result.nc_import_failed is True
+        assert isinstance(model, Web2LeadResponse)
+        assert_no_extra_fields(model)

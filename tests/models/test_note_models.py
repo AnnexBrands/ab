@@ -1,13 +1,12 @@
 """Fixture validation tests for Note models."""
 
 from ab.api.models.jobs import JobNote
-from tests.conftest import require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestNoteModels:
     def test_job_note(self):
         data = require_fixture("JobNote", "GET", "/job/{id}/note")
         model = JobNote.model_validate(data)
-        assert model.id is not None
-        assert model.comment is not None
-        assert model.modify_date is not None
+        assert isinstance(model, JobNote)
+        assert_no_extra_fields(model)

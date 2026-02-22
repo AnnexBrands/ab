@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.shared import ServiceBaseResponse
+    from ab.api.models.views import GridViewAccess, GridViewDetails, StoredProcedureColumn
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -20,23 +24,23 @@ _GET_DATASET_SP = Route("GET", "/views/datasetsp/{spName}", response_model="List
 class ViewsEndpoint(BaseEndpoint):
     """Saved view management (ACPortal API)."""
 
-    def list(self) -> Any:
+    def list(self) -> list[GridViewDetails]:
         """GET /views/all"""
         return self._request(_LIST)
 
-    def get(self, view_id: str) -> Any:
+    def get(self, view_id: str) -> GridViewDetails:
         """GET /views/{viewId}"""
         return self._request(_GET.bind(viewId=view_id))
 
-    def create(self, **kwargs: Any) -> Any:
+    def create(self, **kwargs: Any) -> GridViewDetails:
         """POST /views"""
         return self._request(_CREATE, json=kwargs)
 
-    def delete(self, view_id: str) -> Any:
+    def delete(self, view_id: str) -> ServiceBaseResponse:
         """DELETE /views/{viewId}"""
         return self._request(_DELETE.bind(viewId=view_id))
 
-    def get_access_info(self, view_id: str) -> Any:
+    def get_access_info(self, view_id: str) -> GridViewAccess:
         """GET /views/{viewId}/accessinfo"""
         return self._request(_GET_ACCESS_INFO.bind(viewId=view_id))
 
@@ -44,10 +48,10 @@ class ViewsEndpoint(BaseEndpoint):
         """PUT /views/{viewId}/access"""
         return self._request(_UPDATE_ACCESS.bind(viewId=view_id), json=kwargs)
 
-    def get_dataset_sps(self) -> Any:
+    def get_dataset_sps(self) -> list[StoredProcedureColumn]:
         """GET /views/datasetsps"""
         return self._request(_GET_DATASET_SPS)
 
-    def get_dataset_sp(self, sp_name: str) -> Any:
+    def get_dataset_sp(self, sp_name: str) -> list[StoredProcedureColumn]:
         """GET /views/datasetsp/{spName}"""
         return self._request(_GET_DATASET_SP.bind(spName=sp_name))

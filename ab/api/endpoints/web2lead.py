@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.web2lead import Web2LeadResponse
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -17,10 +20,10 @@ _POST = Route(
 class Web2LeadEndpoint(BaseEndpoint):
     """Web-to-lead capture (ABC API)."""
 
-    def get(self, **params: Any) -> Any:
+    def get(self, **params: Any) -> Web2LeadResponse:
         """GET /Web2Lead/get"""
         return self._request(_GET, params=params)
 
-    def post(self, data: dict | Any) -> Any:
+    def post(self, data: dict | Any) -> Web2LeadResponse:
         """POST /Web2Lead/post"""
         return self._request(_POST, json=data)

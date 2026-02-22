@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ab.api.models.users import User, UserRole
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -16,11 +19,11 @@ _UPDATE = Route("PUT", "/users/user", request_model="UserUpdateRequest")
 class UsersEndpoint(BaseEndpoint):
     """User management (ACPortal API)."""
 
-    def list(self, data: dict | Any) -> Any:
+    def list(self, data: dict | Any) -> list[User]:
         """POST /users/list"""
         return self._request(_LIST, json=data)
 
-    def get_roles(self) -> Any:
+    def get_roles(self) -> list[UserRole]:
         """GET /users/roles"""
         return self._request(_ROLES)
 

@@ -1,23 +1,24 @@
 """Fixture validation tests for Payment models."""
 
 from ab.api.models.payments import ACHSessionResponse, PaymentInfo, PaymentSource
-from tests.conftest import require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestPaymentModels:
     def test_payment_info(self):
         data = require_fixture("PaymentInfo", "GET", "/job/{id}/payment")
         model = PaymentInfo.model_validate(data)
-        assert model.total_amount is not None
-        assert model.payment_status is not None
+        assert isinstance(model, PaymentInfo)
+        assert_no_extra_fields(model)
 
     def test_payment_source(self):
         data = require_fixture("PaymentSource", "GET", "/job/{id}/payment/sources")
         model = PaymentSource.model_validate(data)
-        assert model.source_id is not None
-        assert model.type is not None
+        assert isinstance(model, PaymentSource)
+        assert_no_extra_fields(model)
 
     def test_ach_session_response(self):
         data = require_fixture("ACHSessionResponse", "POST", "/job/{id}/payment/ACHPaymentSession")
         model = ACHSessionResponse.model_validate(data)
-        assert model.session_id is not None
+        assert isinstance(model, ACHSessionResponse)
+        assert_no_extra_fields(model)
