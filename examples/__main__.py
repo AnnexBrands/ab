@@ -15,27 +15,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-ALIASES: dict[str, str] = {
-    "addr": "address",
-    "q": "autoprice",
-    "cat": "catalog",
-    "co": "companies",
-    "ct": "contacts",
-    "doc": "documents",
-    "form": "forms",
-    "job": "jobs",
-    "lu": "lookup",
-    "lot": "lots",
-    "note": "notes",
-    "parc": "parcels",
-    "pay": "payments",
-    "sell": "sellers",
-    "ship": "shipments",
-    "tk": "timeline",
-    "track": "tracking",
-    "u": "users",
-    "lead": "web2lead",
-}
+from ab.cli.aliases import ALIASES
 
 
 def _discover_runners() -> dict[str, object]:
