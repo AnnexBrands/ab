@@ -14,7 +14,7 @@ class TestJobsIntegration:
     def test_get_job(self, api):
         result = api.jobs.get(TEST_JOB_DISPLAY_ID)
         assert isinstance(result, Job)
-        # Job not yet fully typed — skip extra_fields check
+        assert_no_extra_fields(result)
 
     def test_search(self, api):
         result = api.jobs.search(job_display_id=TEST_JOB_DISPLAY_ID)
