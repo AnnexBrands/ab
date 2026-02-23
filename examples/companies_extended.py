@@ -54,6 +54,7 @@ runner.add(
     "get_global_geo_settings",
     lambda api: api.companies.get_global_geo_settings(),
     response_model="GeoSettings",
+    fixture_file="GeoSettings.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -123,6 +124,7 @@ runner.add(
     "get_inherited_packaging_labor",
     lambda api: api.companies.get_inherited_packaging_labor(TEST_COMPANY_ID),
     response_model="PackagingLabor",
+    fixture_file="PackagingLabor.json",
 )
 
 if __name__ == "__main__":

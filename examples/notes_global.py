@@ -26,6 +26,7 @@ runner.add(
     request_model="GlobalNoteCreateRequest",
     request_fixture_file="GlobalNoteCreateRequest.json",
     response_model="GlobalNote",
+    fixture_file="GlobalNote.json",
 )
 
 runner.add(
@@ -34,6 +35,7 @@ runner.add(
     request_model="GlobalNoteUpdateRequest",
     request_fixture_file="GlobalNoteUpdateRequest.json",
     response_model="GlobalNote",
+    fixture_file="GlobalNote.json",
 )
 
 runner.add(

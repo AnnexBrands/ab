@@ -25,6 +25,7 @@ runner.add(
     "get_for_job",
     lambda api: api.rfq.get_for_job(str(TEST_JOB_DISPLAY_ID)),
     response_model="List[QuoteRequestDisplayInfo]",
+    fixture_file="QuoteRequestDisplayInfo.json",
 )
 
 runner.add(
@@ -64,6 +65,7 @@ runner.add(
     "list_rfqs",
     lambda api: api.jobs.list_rfqs(TEST_JOB_DISPLAY_ID),
     response_model="List[QuoteRequestDisplayInfo]",
+    fixture_file="QuoteRequestDisplayInfo.json",
 )
 
 runner.add(

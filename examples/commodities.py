@@ -29,12 +29,14 @@ runner.add(
     request_model="CommoditySuggestionRequest",
     request_fixture_file="CommoditySuggestionRequest.json",
     response_model="List[Commodity]",
+    fixture_file="Commodity.json",
 )
 
 runner.add(
     "commodity_get",
     lambda api: api.commodities.get(TEST_COMMODITY_ID),
     response_model="Commodity",
+    fixture_file="Commodity.json",
 )
 
 runner.add(
@@ -43,6 +45,7 @@ runner.add(
     request_model="CommodityCreateRequest",
     request_fixture_file="CommodityCreateRequest.json",
     response_model="Commodity",
+    fixture_file="Commodity.json",
 )
 
 runner.add(
@@ -51,6 +54,7 @@ runner.add(
     request_model="CommodityUpdateRequest",
     request_fixture_file="CommodityUpdateRequest.json",
     response_model="Commodity",
+    fixture_file="Commodity.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -70,6 +74,7 @@ runner.add(
     "commodity_map_get",
     lambda api: api.commodity_maps.get(TEST_MAP_ID),
     response_model="CommodityMap",
+    fixture_file="CommodityMap.json",
 )
 
 runner.add(
@@ -78,6 +83,7 @@ runner.add(
     request_model="CommodityMapCreateRequest",
     request_fixture_file="CommodityMapCreateRequest.json",
     response_model="CommodityMap",
+    fixture_file="CommodityMap.json",
 )
 
 runner.add(
@@ -86,12 +92,14 @@ runner.add(
     request_model="CommodityMapUpdateRequest",
     request_fixture_file="CommodityMapUpdateRequest.json",
     response_model="CommodityMap",
+    fixture_file="CommodityMap.json",
 )
 
 runner.add(
     "commodity_map_delete",
     lambda api: api.commodity_maps.delete(TEST_MAP_ID),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 if __name__ == "__main__":

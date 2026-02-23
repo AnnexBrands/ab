@@ -43,6 +43,7 @@ runner.add(
     "get",
     lambda api: api.contacts.get(str(TEST_CONTACT_ID)),
     response_model="ContactSimple",
+    fixture_file="ContactSimple.json",
 )
 
 runner.add(

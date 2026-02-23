@@ -11,6 +11,7 @@ runner.add(
     "get_timeline",
     lambda api: api.jobs.get_timeline(TEST_JOB_DISPLAY_ID),
     response_model="List[TimelineTask]",
+    fixture_file="TimelineTask.json",
 )
 
 runner.add(
@@ -19,12 +20,14 @@ runner.add(
     request_model="TimelineTaskCreateRequest",
     request_fixture_file="TimelineTaskCreateRequest.json",
     response_model="TimelineTask",
+    fixture_file="TimelineTask.json",
 )
 
 runner.add(
     "get_timeline_task",
     lambda api: api.jobs.get_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder"),
     response_model="TimelineTask",
+    fixture_file="TimelineTask.json",
 )
 
 runner.add(
@@ -33,6 +36,7 @@ runner.add(
     request_model="TimelineTaskUpdateRequest",
     request_fixture_file="TimelineTaskUpdateRequest.json",
     response_model="TimelineTask",
+    fixture_file="TimelineTask.json",
 )
 
 runner.add(
@@ -44,6 +48,7 @@ runner.add(
     "get_timeline_agent",
     lambda api: api.jobs.get_timeline_agent(TEST_JOB_DISPLAY_ID, "SCH"),
     response_model="TimelineAgent",
+    fixture_file="TimelineAgent.json",
 )
 
 runner.add(
@@ -51,6 +56,7 @@ runner.add(
     lambda api: api.jobs.increment_status(TEST_JOB_DISPLAY_ID),
     request_model="IncrementStatusRequest",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -58,6 +64,7 @@ runner.add(
     lambda api: api.jobs.undo_increment_status(TEST_JOB_DISPLAY_ID),
     request_model="IncrementStatusRequest",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 if __name__ == "__main__":

@@ -44,6 +44,7 @@ runner.add(
     request_model="SaveOnHoldRequest",
     request_fixture_file="SaveOnHoldRequest.json",
     response_model="SaveOnHoldResponse",
+    fixture_file="SaveOnHoldResponse.json",
 )
 
 runner.add(
@@ -87,6 +88,7 @@ runner.add(
     "list_on_hold_followup_users",
     lambda api: api.jobs.list_on_hold_followup_users(TEST_JOB_DISPLAY_ID),
     response_model="List[OnHoldUser]",
+    fixture_file="OnHoldUser.json",
 )
 
 if __name__ == "__main__":

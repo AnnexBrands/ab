@@ -1,46 +1,59 @@
-from ab import ABConnectAPI
-
-api = ABConnectAPI(env="staging")
-
-new_elabel = api.companies.get_fulldetails("LA6190")
-curr_elabel = api.companies.get_fulldetails(
-    "78a6b105-b59b-ec11-822e-a4aa13c701a3"
-)  # LA5636
+"""Example: Company operations 
+    update_fulldetails will alwasys HTTP500 for now
+    this example prepares for the backend to be fixed
+"""
 
 
-fields = [
-    # (row_label,                                   accessor)
-    ("details.parentId",                             lambda c: c.details and c.details.parent_id),
-    ("details.companyTypeId",                        lambda c: c.details and c.details.company_type_id),
-    ("preferences.pricingToUse",                     lambda c: c.preferences and c.preferences.pricing_to_use),
-    ("preferences.carrierAccountsSourceCompanyId",   lambda c: c.preferences and c.preferences.carrier_accounts_source_company_id),
-    ("preferences.copyMaterials",                    lambda c: c.preferences and c.preferences.copy_materials),
-    ("capabilities",                                 lambda c: c.capabilities),
-]
+# from examples._runner import ExampleRunner
+# runner = ExampleRunner("Companies", env="staging")
 
-# ── build rows ──────────────────────────────────────────────────────
-rows = []
-for label, fn in fields:
-    nv = str(fn(new_elabel) or "—")
-    cv = str(fn(curr_elabel) or "—")
-    rows.append((label, nv, cv))
 
-# ── column widths ───────────────────────────────────────────────────
-hdr_field, hdr_new, hdr_curr = "Field", "LA6190 (new)", "LA5636 (curr)"
-w0 = max(len(hdr_field), *(len(r[0]) for r in rows))
-w1 = max(len(hdr_new),   *(len(r[1]) for r in rows))
-w2 = max(len(hdr_curr),  *(len(r[2]) for r in rows))
+def demo():
+    from ab import ABConnectAPI
 
-sep = f"+-{'-'*w0}-+-{'-'*w1}-+-{'-'*w2}-+"
-fmt = lambda a, b, c: f"| {a:<{w0}} | {b:<{w1}} | {c:<{w2}} |"
+    api = ABConnectAPI(env="staging")
 
-# ── print ───────────────────────────────────────────────────────────
-print(sep)
-print(fmt(hdr_field, hdr_new, hdr_curr))
-print(sep)
-for label, nv, cv in rows:
-    print(fmt(label, nv, cv))
-print(sep)
+    new_elabel = api.companies.get_fulldetails(
+        "8a8000e4-91a9-ed11-abaa-0a1acf9519cf"
+    )  # LA6190
+    curr_elabel = api.companies.get_fulldetails(
+        "78a6b105-b59b-ec11-822e-a4aa13c701a3"
+    )  # LA5636
 
-# new_elabel.preferences.carrier_accounts_source_company_id = None
-# r = api.companies.update_fulldetails("LA6190", preferences={"carrierAccountsSourceCompanyId": None}) ## HTTP500
+
+    fields = [
+        # (row_label,                                   accessor)
+        ("details.parentId",                             lambda c: c.details and c.details.parent_id),
+        ("details.companyTypeId",                        lambda c: c.details and c.details.company_type_id),
+        ("preferences.pricingToUse",                     lambda c: c.preferences and c.preferences.pricing_to_use),
+        ("preferences.carrierAccountsSourceCompanyId",   lambda c: c.preferences and c.preferences.carrier_accounts_source_company_id),
+        ("preferences.copyMaterials",                    lambda c: c.preferences and c.preferences.copy_materials),
+        ("capabilities",                                 lambda c: c.capabilities),
+    ]
+
+    # ── build rows ──────────────────────────────────────────────────────
+    rows = []
+    for label, fn in fields:
+        nv = str(fn(new_elabel) or "—")
+        cv = str(fn(curr_elabel) or "—")
+        rows.append((label, nv, cv))
+
+    # ── column widths ───────────────────────────────────────────────────
+    hdr_field, hdr_new, hdr_curr = "Field", "LA6190 (new)", "LA5636 (curr)"
+    w0 = max(len(hdr_field), *(len(r[0]) for r in rows))
+    w1 = max(len(hdr_new),   *(len(r[1]) for r in rows))
+    w2 = max(len(hdr_curr),  *(len(r[2]) for r in rows))
+
+    sep = f"+-{'-'*w0}-+-{'-'*w1}-+-{'-'*w2}-+"
+    fmt = lambda a, b, c: f"| {a:<{w0}} | {b:<{w1}} | {c:<{w2}} |"
+
+    # ── print ───────────────────────────────────────────────────────────
+    print(sep)
+    print(fmt(hdr_field, hdr_new, hdr_curr))
+    print(sep)
+    for label, nv, cv in rows:
+        print(fmt(label, nv, cv))
+    print(sep)
+
+    # new_elabel.preferences.carrier_accounts_source_company_id = None
+    # r = api.companies.update_fulldetails("LA6190", preferences={"carrierAccountsSourceCompanyId": None}) ## HTTP500

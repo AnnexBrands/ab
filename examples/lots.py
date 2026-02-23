@@ -10,12 +10,14 @@ runner.add(
     "list",
     lambda api: api.lots.list(page=1, page_size=25),
     response_model="PaginatedList[LotDto]",
+    fixture_file="LotDto.json",
 )
 
 runner.add(
     "get",
     lambda api: api.lots.get(1),
     response_model="LotDto",
+    fixture_file="LotDto.json",
 )
 
 # ── Uses request fixtures ────────────────────────────────────────────
@@ -26,6 +28,7 @@ runner.add(
     request_model="AddLotRequest",
     request_fixture_file="AddLotRequest.json",
     response_model="LotDto",
+    fixture_file="LotDto.json",
 )
 
 runner.add(
@@ -34,6 +37,7 @@ runner.add(
     request_model="UpdateLotRequest",
     request_fixture_file="UpdateLotRequest.json",
     response_model="LotDto",
+    fixture_file="LotDto.json",
 )
 
 runner.add(
@@ -45,6 +49,7 @@ runner.add(
     "get_overrides",
     lambda api: api.lots.get_overrides([]),
     response_model="List[LotOverrideDto]",
+    fixture_file="LotOverrideDto.json",
 )
 
 if __name__ == "__main__":

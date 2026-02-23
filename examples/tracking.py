@@ -14,6 +14,7 @@ runner.add(
         TEST_JOB_DISPLAY_ID,
     ),
     response_model="TrackingInfo",
+    fixture_file="TrackingInfo.json",
 )
 
 runner.add(
@@ -24,6 +25,7 @@ runner.add(
         history_amount=10,
     ),
     response_model="TrackingInfoV3",
+    fixture_file="TrackingInfoV3.json",
 )
 
 if __name__ == "__main__":

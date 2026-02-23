@@ -10,12 +10,14 @@ runner.add(
     "list",
     lambda api: api.catalog.list(page=1, page_size=25),
     response_model="PaginatedList[CatalogExpandedDto]",
+    fixture_file="CatalogExpandedDto.json",
 )
 
 runner.add(
     "get",
     lambda api: api.catalog.get(1),
     response_model="CatalogExpandedDto",
+    fixture_file="CatalogExpandedDto.json",
 )
 
 # ── Uses request fixtures ────────────────────────────────────────────
@@ -26,6 +28,7 @@ runner.add(
     request_model="AddCatalogRequest",
     request_fixture_file="AddCatalogRequest.json",
     response_model="CatalogWithSellersDto",
+    fixture_file="CatalogWithSellersDto.json",
 )
 
 runner.add(
@@ -34,6 +37,7 @@ runner.add(
     request_model="UpdateCatalogRequest",
     request_fixture_file="UpdateCatalogRequest.json",
     response_model="CatalogWithSellersDto",
+    fixture_file="CatalogWithSellersDto.json",
 )
 
 runner.add(

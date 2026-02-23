@@ -24,6 +24,7 @@ runner.add(
     "get",
     lambda api: api.partners.get(TEST_PARTNER_ID),
     response_model="Partner",
+    fixture_file="Partner.json",
 )
 
 runner.add(
@@ -32,6 +33,7 @@ runner.add(
     request_model="PartnerSearchRequest",
     request_fixture_file="PartnerSearchRequest.json",
     response_model="List[Partner]",
+    fixture_file="Partner.json",
 )
 
 if __name__ == "__main__":

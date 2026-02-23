@@ -59,6 +59,7 @@ runner.add(
     "request_rate_quotes",
     lambda api: api.shipments.request_rate_quotes(TEST_JOB_DISPLAY_ID, data={}),
     response_model="List[RateQuote]",
+    fixture_file="RateQuote.json",
 )
 
 runner.add(
@@ -67,12 +68,14 @@ runner.add(
     request_model="ShipmentBookRequest",
     request_fixture_file="ShipmentBookRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
     "delete_shipment",
     lambda api: api.shipments.delete_shipment(TEST_JOB_DISPLAY_ID),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -81,24 +84,28 @@ runner.add(
     request_model="AccessorialAddRequest",
     request_fixture_file="AccessorialAddRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
     "remove_accessorial",
     lambda api: api.shipments.remove_accessorial(TEST_JOB_DISPLAY_ID, "ADD_ON_ID"),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
     "get_export_data",
     lambda api: api.shipments.get_export_data(TEST_JOB_DISPLAY_ID),
     response_model="ShipmentExportData",
+    fixture_file="ShipmentExportData.json",
 )
 
 runner.add(
     "post_export_data",
     lambda api: api.shipments.post_export_data(TEST_JOB_DISPLAY_ID, {}),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(

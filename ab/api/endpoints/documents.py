@@ -32,9 +32,9 @@ class DocumentsEndpoint(BaseEndpoint):
             }
             return self._client.request("POST", "/documents", files=files, data=data)
 
-    def list(self, *, job_display_id: Optional[str] = None) -> list[Document]:
+    def list(self, job_display_id: str | int) -> list[Document]:
         """GET /documents/list"""
-        return self._request(_LIST, params=dict(job_display_id=job_display_id))
+        return self._request(_LIST, params=dict(job_display_id=str(job_display_id)))
 
     def get(self, doc_path: str) -> bytes:
         """GET /documents/get/{docPath} — returns raw bytes."""

@@ -25,6 +25,7 @@ runner.add(
     "get",
     lambda api: api.views.get(TEST_VIEW_ID),
     response_model="GridViewDetails",
+    fixture_file="GridViewDetails.json",
 )
 
 runner.add(
@@ -33,12 +34,14 @@ runner.add(
     request_model="GridViewCreateRequest",
     request_fixture_file="GridViewCreateRequest.json",
     response_model="GridViewDetails",
+    fixture_file="GridViewDetails.json",
 )
 
 runner.add(
     "delete",
     lambda api: api.views.delete(TEST_VIEW_ID),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -72,6 +75,7 @@ runner.add(
     "get_dataset_sp",
     lambda api: api.views.get_dataset_sp("spName"),
     response_model="List[StoredProcedureColumn]",
+    fixture_file="StoredProcedureColumn.json",
 )
 
 if __name__ == "__main__":

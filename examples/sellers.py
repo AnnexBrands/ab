@@ -28,6 +28,7 @@ runner.add(
     request_model="AddSellerRequest",
     request_fixture_file="AddSellerRequest.json",
     response_model="SellerDto",
+    fixture_file="SellerDto.json",
 )
 
 runner.add(
@@ -36,6 +37,7 @@ runner.add(
     request_model="UpdateSellerRequest",
     request_fixture_file="UpdateSellerRequest.json",
     response_model="SellerDto",
+    fixture_file="SellerDto.json",
 )
 
 runner.add(

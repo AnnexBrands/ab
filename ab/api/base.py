@@ -43,6 +43,46 @@ class BaseEndpoint:
             return True, m.group(1)
         return False, type_str
 
+    @staticmethod
+    def _unwrap_list_from_dict(
+        response: dict, model_name: str, path: str
+    ) -> list:
+        """Extract a list from a dict wrapper when the API wraps arrays.
+
+        Some API endpoints return ``{"modifiedDate": "...", "items": [...]}``
+        instead of a bare ``[...]``.  This helper finds the list-valued key
+        and returns its value so callers get the expected ``list``.
+        """
+        list_keys = [k for k, v in response.items() if isinstance(v, list)]
+
+        if len(list_keys) == 0:
+            logger.error(
+                "List[%s] response is a dict with no list-valued keys. "
+                "Route: %s",
+                model_name,
+                path,
+            )
+            return []
+
+        if len(list_keys) == 1:
+            key = list_keys[0]
+        else:
+            # Multiple list keys — prefer the one matching the model name
+            lower_model = model_name.lower()
+            key = next(
+                (k for k in list_keys if lower_model in k.lower()),
+                list_keys[0],
+            )
+
+        logger.warning(
+            "List[%s] response wrapped in dict; unwrapped from key '%s'. "
+            "Route: %s",
+            model_name,
+            key,
+            path,
+        )
+        return response[key]
+
     def _request(
         self, route: Route, *, client: Optional[HttpClient] = None, **kwargs: Any
     ) -> Any:
@@ -93,8 +133,20 @@ class BaseEndpoint:
 
         if is_list:
             if isinstance(response, list):
-                return [model_cls.model_validate(item) for item in response]
-            return response
+                items = response
+            elif isinstance(response, dict):
+                items = self._unwrap_list_from_dict(
+                    response, model_name, route.path
+                )
+            else:
+                logger.error(
+                    "List[%s] expected list or dict, got %s. Route: %s",
+                    model_name,
+                    type(response).__name__,
+                    route.path,
+                )
+                return response
+            return [model_cls.model_validate(item) for item in items]
         else:
             return model_cls.model_validate(response)
 

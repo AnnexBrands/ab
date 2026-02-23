@@ -54,6 +54,7 @@ runner.add(
     request_model="Web2LeadRevenueFilter",
     request_fixture_file="Web2LeadRevenueFilter.json",
     response_model="List[RevenueCustomer]",
+    fixture_file="RevenueCustomer.json",
 )
 
 runner.add(
@@ -62,6 +63,7 @@ runner.add(
     request_model="Web2LeadRevenueFilter",
     request_fixture_file="Web2LeadRevenueFilter.json",
     response_model="List[RevenueCustomer]",
+    fixture_file="RevenueCustomer.json",
 )
 
 runner.add(
