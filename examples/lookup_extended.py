@@ -24,6 +24,7 @@ runner.add(
     "get_by_key_and_id",
     lambda api: api.lookup.get_by_key_and_id("contactTypes", "1"),
     response_model="LookupValue",
+    fixture_file="LookupValue.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -41,12 +42,14 @@ runner.add(
     "get_access_key",
     lambda api: api.lookup.get_access_key("someKey"),
     response_model="AccessKey",
+    fixture_file="AccessKey.json",
 )
 
 runner.add(
     "get_ppc_campaigns",
     lambda api: api.lookup.get_ppc_campaigns(),
     response_model="List[LookupValue]",
+    fixture_file="LookupValue.json",
 )
 
 runner.add(
@@ -60,12 +63,14 @@ runner.add(
     "get_document_types",
     lambda api: api.lookup.get_document_types(),
     response_model="List[LookupValue]",
+    fixture_file="LookupValue.json",
 )
 
 runner.add(
     "get_common_insurance",
     lambda api: api.lookup.get_common_insurance(),
     response_model="List[LookupValue]",
+    fixture_file="LookupValue.json",
 )
 
 runner.add(
@@ -79,12 +84,14 @@ runner.add(
     "get_refer_categories",
     lambda api: api.lookup.get_refer_categories(),
     response_model="List[LookupValue]",
+    fixture_file="LookupValue.json",
 )
 
 runner.add(
     "get_refer_category_hierarchy",
     lambda api: api.lookup.get_refer_category_hierarchy(),
     response_model="List[LookupValue]",
+    fixture_file="LookupValue.json",
 )
 
 runner.add(

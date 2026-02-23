@@ -287,33 +287,60 @@ class JobNoteUpdateRequest(RequestModel):
 
 
 class ParcelItem(ResponseModel):
-    """Parcel item — GET /job/{jobDisplayId}/parcelitems."""
+    """Parcel item — GET /job/{jobDisplayId}/parcelitems.
 
-    parcel_item_id: Optional[str] = Field(None, alias="parcelItemId", description="Parcel item ID")
+    Maps to C# ParcelItemWithPackage entity.
+    """
+
+    id: Optional[int] = Field(None, description="Parcel item ID")
+    job_item_id: Optional[str] = Field(None, alias="jobItemId", description="Job item UUID")
     description: Optional[str] = Field(None, description="Item description")
-    length: Optional[float] = Field(None, description="Length (inches)")
-    width: Optional[float] = Field(None, description="Width (inches)")
-    height: Optional[float] = Field(None, description="Height (inches)")
-    weight: Optional[float] = Field(None, description="Weight (lbs)")
     quantity: Optional[int] = Field(None, description="Number of pieces")
-    packaging_type: Optional[str] = Field(None, alias="packagingType", description="Package type")
+    job_item_pkd_length: Optional[float] = Field(None, alias="jobItemPkdLength", description="Packed length")
+    job_item_pkd_width: Optional[float] = Field(None, alias="jobItemPkdWidth", description="Packed width")
+    job_item_pkd_height: Optional[float] = Field(None, alias="jobItemPkdHeight", description="Packed height")
+    job_item_pkd_weight: Optional[float] = Field(None, alias="jobItemPkdWeight", description="Packed weight")
+    job_item_parcel_value: Optional[float] = Field(None, alias="jobItemParcelValue", description="Declared value")
+    parcel_package_type_id: Optional[int] = Field(None, alias="parcelPackageTypeId", description="Package type ID")
+    insure_key: Optional[str] = Field(None, alias="insureKey", description="Insurance key")
+    package_type_code: Optional[str] = Field(None, alias="packageTypeCode", description="Package type code")
 
 
-class ParcelItemWithMaterials(ResponseModel):
+class JobParcelItemMaterial(ResponseModel):
+    """Material used in a parcel item — nested in ParcelItemWithMaterials."""
+
+    name: Optional[str] = Field(None, description="Material name")
+    description: Optional[str] = Field(None, description="Material description")
+    code: Optional[str] = Field(None, description="Material code")
+    type: Optional[str] = Field(None, description="Material type")
+    weight: Optional[float] = Field(None, description="Weight")
+    length: Optional[float] = Field(None, description="Length")
+    width: Optional[float] = Field(None, description="Width")
+    height: Optional[float] = Field(None, description="Height")
+    cost: Optional[float] = Field(None, description="Cost")
+    price: Optional[float] = Field(None, description="Price")
+    quantity: Optional[float] = Field(None, description="Quantity")
+
+
+class ParcelItemWithMaterials(ParcelItem):
     """Parcel item with materials — GET /job/{jobDisplayId}/parcel-items-with-materials."""
 
-    parcel_item_id: Optional[str] = Field(None, alias="parcelItemId", description="Parcel item ID")
-    description: Optional[str] = Field(None, description="Item description")
-    materials: Optional[List[dict]] = Field(None, description="Associated materials")
-    dimensions: Optional[dict] = Field(None, description="Packed dimensions")
+    materials: Optional[List[JobParcelItemMaterial]] = Field(None, description="Associated materials")
 
 
 class PackagingContainer(ResponseModel):
-    """Packaging container — GET /job/{jobDisplayId}/packagingcontainers."""
+    """Packaging container — GET /job/{jobDisplayId}/packagingcontainers.
 
-    container_id: Optional[str] = Field(None, alias="containerId", description="Container ID")
+    Maps to C# Packaging entity.
+    """
+
     name: Optional[str] = Field(None, description="Container name")
-    dimensions: Optional[dict] = Field(None, description="Container dimensions")
+    description: Optional[str] = Field(None, description="Container description")
+    length: Optional[float] = Field(None, description="Length")
+    width: Optional[float] = Field(None, description="Width")
+    height: Optional[float] = Field(None, description="Height")
+    weight: Optional[float] = Field(None, description="Weight")
+    total_cost: Optional[float] = Field(None, alias="totalCost", description="Total cost")
 
 
 class ParcelItemCreateRequest(RequestModel):

@@ -21,6 +21,7 @@ runner.add(
     request_model="QuoteRequestModel",
     request_fixture_file="QuoteRequestModel.json",
     response_model="QuoteRequestResponse",
+    fixture_file="QuoteRequestResponse.json",
 )
 
 if __name__ == "__main__":

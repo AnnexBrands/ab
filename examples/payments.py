@@ -11,18 +11,21 @@ runner.add(
     "get",
     lambda api: api.payments.get(TEST_JOB_DISPLAY_ID),
     response_model="PaymentInfo",
+    fixture_file="PaymentInfo.json",
 )
 
 runner.add(
     "get_create",
     lambda api: api.payments.get_create(TEST_JOB_DISPLAY_ID),
     response_model="PaymentInfo",
+    fixture_file="PaymentInfo.json",
 )
 
 runner.add(
     "get_sources",
     lambda api: api.payments.get_sources(TEST_JOB_DISPLAY_ID),
     response_model="List[PaymentSource]",
+    fixture_file="PaymentSource.json",
 )
 
 # ── Uses request fixtures ────────────────────────────────────────────
@@ -33,6 +36,7 @@ runner.add(
     request_model="PayBySourceRequest",
     request_fixture_file="PayBySourceRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -41,6 +45,7 @@ runner.add(
     request_model="ACHSessionRequest",
     request_fixture_file="ACHSessionRequest.json",
     response_model="ACHSessionResponse",
+    fixture_file="ACHSessionResponse.json",
 )
 
 runner.add(
@@ -49,6 +54,7 @@ runner.add(
     request_model="ACHCreditTransferRequest",
     request_fixture_file="ACHCreditTransferRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -57,6 +63,7 @@ runner.add(
     request_model="AttachBankRequest",
     request_fixture_file="AttachBankRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -65,12 +72,14 @@ runner.add(
     request_model="VerifyACHRequest",
     request_fixture_file="VerifyACHRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
     "cancel_ach_verification",
     lambda api: api.payments.cancel_ach_verification(TEST_JOB_DISPLAY_ID),
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 runner.add(
@@ -79,6 +88,7 @@ runner.add(
     request_model="BankSourceRequest",
     request_fixture_file="BankSourceRequest.json",
     response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 if __name__ == "__main__":

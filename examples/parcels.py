@@ -14,6 +14,7 @@ runner.add(
     "get_parcel_items",
     lambda api: api.jobs.get_parcel_items(TEST_JOB_DISPLAY_ID),
     response_model="List[ParcelItem]",
+    fixture_file="ParcelItem.json",
 )
 
 runner.add(
@@ -22,6 +23,7 @@ runner.add(
     request_model="ParcelItemCreateRequest",
     request_fixture_file="ParcelItemCreateRequest.json",
     response_model="ParcelItem",
+    fixture_file="ParcelItem.json",
 )
 
 runner.add(
@@ -33,12 +35,14 @@ runner.add(
     "get_parcel_items_with_materials",
     lambda api: api.jobs.get_parcel_items_with_materials(TEST_JOB_DISPLAY_ID),
     response_model="List[ParcelItemWithMaterials]",
+    fixture_file="ParcelItemWithMaterials.json",
 )
 
 runner.add(
     "get_packaging_containers",
     lambda api: api.jobs.get_packaging_containers(TEST_JOB_DISPLAY_ID),
     response_model="List[PackagingContainer]",
+    fixture_file="PackagingContainer.json",
 )
 
 if __name__ == "__main__":

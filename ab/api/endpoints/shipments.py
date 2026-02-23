@@ -129,3 +129,13 @@ class ShipmentsEndpoint(BaseEndpoint):
     def get_shipment_document(self, doc_id: str) -> Any:
         """GET /shipment/document/{docId} (ACPortal)"""
         return self._request(_GET_SHIPMENT_DOCUMENT.bind(docId=doc_id))
+
+    # ---- Backwards Compatibility Aliases --------------------------------
+
+    def delete(self, job_display_id: int) -> ServiceBaseResponse:
+        """Alias for :meth:`delete_shipment`."""
+        return self.delete_shipment(job_display_id)
+
+    def get_origin_dest(self, job_display_id: int) -> ShipmentOriginDestination:
+        """Alias for :meth:`get_origin_destination`."""
+        return self.get_origin_destination(job_display_id)

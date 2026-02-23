@@ -21,6 +21,7 @@ runner.add(
     request_model="Web2LeadRequest",
     request_fixture_file="Web2LeadRequest.json",
     response_model="Web2LeadResponse",
+    fixture_file="Web2LeadResponse.json",
 )
 
 if __name__ == "__main__":

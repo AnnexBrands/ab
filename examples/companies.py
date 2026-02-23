@@ -34,6 +34,7 @@ runner.add(
     "get_details",
     lambda api: api.companies.get_details(TEST_COMPANY_UUID),
     response_model="CompanyDetails",
+    fixture_file="CompanyDetails.json",
 )
 
 runner.add(
@@ -42,6 +43,7 @@ runner.add(
     request_model="CompanyDetails",
     request_fixture_file="CompanyDetails.json",
     response_model="CompanyDetails",
+    fixture_file="CompanyDetails.json",
 )
 
 runner.add(
@@ -58,6 +60,7 @@ runner.add(
     request_model="CompanySearchRequest",
     request_fixture_file="CompanySearchRequest.json",
     response_model="List[SearchCompanyResponse]",
+    fixture_file="SearchCompanyResponse.json",
 )
 
 runner.add(
@@ -66,6 +69,7 @@ runner.add(
     request_model="ListRequest",
     request_fixture_file="ListRequest.json",
     response_model="List[CompanySimple]",
+    fixture_file="CompanySimple.json",
 )
 
 if __name__ == "__main__":

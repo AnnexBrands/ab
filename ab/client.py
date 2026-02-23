@@ -117,3 +117,8 @@ class ABConnectAPI:
         # ABC endpoints
         self.autoprice = AutoPriceEndpoint(self._abc)
         self.web2lead = Web2LeadEndpoint(self._abc)
+
+        # ---- Backwards Compatibility Aliases --------------------------------
+
+        self.docs = self.documents
+        self.cmaps = self.commodity_maps

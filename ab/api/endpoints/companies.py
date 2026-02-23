@@ -196,3 +196,13 @@ class CompaniesEndpoint(BaseEndpoint):
     def get_inherited_packaging_labor(self, company_id: str) -> PackagingLabor:
         """GET /companies/{companyId}/inheritedpackaginglabor"""
         return self._request(_GET_INHERITED_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
+
+    # ---- Backwards Compatibility Aliases ------------------------------------
+
+    def get(self, company_id: str) -> CompanyDetails:
+        """Alias for :meth:`get_fulldetails`."""
+        return self.get_fulldetails(company_id)
+
+    def available(self) -> list[CompanySimple]:
+        """Alias for :meth:`available_by_current_user`."""
+        return self.available_by_current_user()
