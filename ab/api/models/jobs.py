@@ -440,6 +440,12 @@ class JobFreightItem(ResponseModel):
 # ---- Job primary response model -------------------------------------------
 
 
+class TransferModel(RequestModel):
+    """Body for POST /job/transfer/{jobDisplayId}."""
+
+    franchisee_id: str = Field(..., alias="franchiseeId", description="Target franchisee company UUID")
+
+
 class JobSearchParams(RequestModel):
     """Query parameters for GET /job/search."""
 

@@ -92,7 +92,7 @@ class ABConnectAPI:
         # ACPortal endpoints
         self.companies = CompaniesEndpoint(self._acportal, self._resolver)
         self.contacts = ContactsEndpoint(self._acportal)
-        self.jobs = JobsEndpoint(self._acportal, self._abc)
+        self.jobs = JobsEndpoint(self._acportal, self._abc, self._resolver)
         self.documents = DocumentsEndpoint(self._acportal)
         self.address = AddressEndpoint(self._acportal)
         self.lookup = LookupEndpoint(self._acportal)

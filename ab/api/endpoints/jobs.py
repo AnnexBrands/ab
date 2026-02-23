@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
+from ab.cache import CodeResolver
 from ab.http import HttpClient
 
 if TYPE_CHECKING:
@@ -51,6 +52,9 @@ _SEARCH_BY_DETAILS = Route(
 _GET_PRICE = Route("GET", "/job/{jobDisplayId}/price", response_model="JobPrice")
 _GET_CALENDAR = Route("GET", "/job/{jobDisplayId}/calendaritems", response_model="List[CalendarItem]")
 _GET_CONFIG = Route("GET", "/job/{jobDisplayId}/updatePageConfig", response_model="JobUpdatePageConfig")
+
+# Transfer route
+_TRANSFER = Route("POST", "/job/transfer/{jobDisplayId}", request_model="TransferModel")
 
 # ABC route (different API surface)
 _ABC_UPDATE = Route("POST", "/job/update", request_model="JobUpdateRequest", api_surface="abc")
@@ -198,9 +202,10 @@ _ADD_FREIGHT_ITEMS = Route("POST", "/job/{jobDisplayId}/freightitems")
 class JobsEndpoint(BaseEndpoint):
     """Operations on jobs (ACPortal + ABC APIs)."""
 
-    def __init__(self, acportal_client: HttpClient, abc_client: HttpClient) -> None:
+    def __init__(self, acportal_client: HttpClient, abc_client: HttpClient, resolver: CodeResolver) -> None:
         super().__init__(acportal_client)
         self._abc_client = abc_client
+        self._resolver = resolver
 
     def create(self, data: dict | Any) -> Any:
         """POST /job (ACPortal)"""
@@ -237,6 +242,20 @@ class JobsEndpoint(BaseEndpoint):
     def update(self, data: dict | Any) -> Any:
         """POST /job/update (ABC API surface)"""
         return self._request(_ABC_UPDATE, client=self._abc_client, json=data)
+
+    def transfer(self, job_display_id: int, franchisee_id: str) -> Any:
+        """POST /job/transfer/{jobDisplayId} (ACPortal)
+
+        Args:
+            job_display_id: Job to transfer.
+            franchisee_id: Target franchisee — accepts a company code
+                (e.g. ``"9999AZ"``) or UUID.
+        """
+        resolved = self._resolver.resolve(franchisee_id)
+        return self._request(
+            _TRANSFER.bind(jobDisplayId=job_display_id),
+            json={"franchiseeId": resolved},
+        )
 
     # ---- Timeline & Status ------------------------------------------------
 
