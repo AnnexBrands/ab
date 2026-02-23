@@ -159,6 +159,7 @@ from ab.api.models.jobs import (
     TrackingInfo,
     TrackingInfoV3,
     TrackingV3Params,
+    TransferModel,
 )
 from ab.api.models.lookup import (
     AccessKey,
