@@ -12,20 +12,20 @@ from ab.api.models.base import RequestModel, ResponseModel
 class LookupItemsParams(RequestModel):
     """Query parameters for GET /lookup/items."""
 
-    job_display_id: Optional[int] = Field(None, alias="jobDisplayId")
-    job_item_id: Optional[int] = Field(None, alias="jobItemId")
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID for item lookup")
+    job_item_id: Optional[int] = Field(None, alias="jobItemId", description="Job item ID filter")
 
 
 class LookupDocumentTypesParams(RequestModel):
     """Query parameters for GET /lookup/documentTypes."""
 
-    document_source: Optional[str] = Field(None, alias="documentSource")
+    document_source: Optional[str] = Field(None, alias="documentSource", description="Document source filter")
 
 
 class LookupDensityClassMapParams(RequestModel):
     """Query parameters for GET /lookup/densityClassMap."""
 
-    carrier_api: Optional[str] = Field(None, alias="carrierApi")
+    carrier_api: Optional[str] = Field(None, alias="carrierApi", description="Carrier API identifier")
 
 
 class ContactTypeEntity(ResponseModel):

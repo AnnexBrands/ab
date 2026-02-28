@@ -8,7 +8,7 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
-from ab.api.models.mixins import FullAuditModel, IdentifiedModel
+from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin
 
 
 # ---- Job GET response sub-models (018) ------------------------------------
@@ -467,26 +467,26 @@ class FreightProvidersParams(RequestModel):
 class TimelineCreateParams(RequestModel):
     """Query parameters for POST /job/{jobDisplayId}/timeline."""
 
-    create_email: Optional[bool] = Field(None, alias="createEmail")
+    create_email: Optional[bool] = Field(None, alias="createEmail", description="Send status notification email")
 
 
 class TrackingV3Params(RequestModel):
     """Query parameters for GET /v3/job/{jobDisplayId}/tracking."""
 
-    history_amount: Optional[int] = Field(None, alias="historyAmount")
+    history_amount: Optional[int] = Field(None, alias="historyAmount", description="Number of tracking history entries to return")
 
 
 class JobNoteListParams(RequestModel):
     """Query parameters for GET /job/{jobDisplayId}/note."""
 
-    category: Optional[str] = Field(None, alias="category")
-    task_code: Optional[str] = Field(None, alias="taskCode")
+    category: Optional[str] = Field(None, alias="category", description="Note category filter")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Task code filter")
 
 
 class JobRfqListParams(RequestModel):
     """Query parameters for GET /job/{jobDisplayId}/rfq."""
 
-    rfq_service_type: Optional[str] = Field(None, alias="rfqServiceType")
+    rfq_service_type: Optional[str] = Field(None, alias="rfqServiceType", description="RFQ service type filter")
 
 
 class Job(ResponseModel, FullAuditModel):
@@ -637,12 +637,11 @@ class JobCreateRequest(RequestModel):
 class JobSaveRequest(RequestModel):
     """Body for PUT /job/save."""
 
-    job_display_id: Optional[int] = Field(None, alias="jobDisplayId")
-    # Additional fields from job data
-    customer: Optional[dict] = Field(None)
-    pickup: Optional[dict] = Field(None)
-    delivery: Optional[dict] = Field(None)
-    items: Optional[List[dict]] = Field(None)
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID")
+    customer: Optional[dict] = Field(None, description="Customer details object")
+    pickup: Optional[dict] = Field(None, description="Pickup location and schedule")
+    delivery: Optional[dict] = Field(None, description="Delivery location and schedule")
+    items: Optional[List[dict]] = Field(None, description="Job line items")
 
 
 class SortByModel(RequestModel):
@@ -652,16 +651,15 @@ class SortByModel(RequestModel):
     sort_dir: bool = Field(True, alias="sortDir", description="Sort direction (true=asc)")
 
 
-class JobSearchRequest(RequestModel):
+class JobSearchRequest(PaginatedRequestMixin, SearchableRequestMixin):
     """Body for POST /job/searchByDetails."""
 
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
-    page_no: int = Field(1, alias="pageNo", description="Page number")
-    page_size: int = Field(25, alias="pageSize", description="Results per page")
-    sort_by: SortByModel = Field(
-        default_factory=lambda: SortByModel(sort_by_field=1, sort_dir=True),
+    # Override PaginatedRequestMixin.page → pageNo (API-specific alias)
+    page: Optional[int] = Field(None, alias="pageNo", description="Page number (1-based)")
+    sort_by: Optional[SortByModel] = Field(
+        None,
         alias="sortBy",
-        description="Sort configuration",
+        description="Sort configuration (field index + direction)",
     )
 
 
@@ -702,7 +700,7 @@ class TimelineAgent(ResponseModel):
 class TimelineTaskCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/timeline."""
 
-    task_code: str = Field(..., alias="taskCode", description="Task type code")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Task type code")
     scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Scheduled date")
     comments: Optional[str] = Field(None, description="Notes")
     agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
@@ -765,8 +763,8 @@ class JobNote(ResponseModel, IdentifiedModel):
 class JobNoteCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/note."""
 
-    comments: str = Field(..., description="Note content (max 8000 chars)")
-    task_code: str = Field(..., alias="taskCode", description="Associated timeline task code")
+    comments: Optional[str] = Field(None, description="Note content (max 8000 chars)")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Associated timeline task code")
     is_important: Optional[bool] = Field(None, alias="isImportant", description="Flag as important")
     send_notification: Optional[bool] = Field(None, alias="sendNotification", description="Notify assigned users")
     due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
@@ -843,7 +841,7 @@ class PackagingContainer(ResponseModel):
 class ParcelItemCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/parcelitems."""
 
-    description: str = Field(..., description="Item description")
+    description: Optional[str] = Field(None, description="Item description")
     length: Optional[float] = Field(None, description="Length")
     width: Optional[float] = Field(None, description="Width")
     height: Optional[float] = Field(None, description="Height")
@@ -854,7 +852,7 @@ class ParcelItemCreateRequest(RequestModel):
 class ItemNotesRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/item/notes."""
 
-    notes: str = Field(..., description="Item notes content")
+    notes: Optional[str] = Field(None, description="Item notes content")
 
 
 class ItemUpdateRequest(RequestModel):

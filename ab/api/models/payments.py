@@ -12,7 +12,7 @@ from ab.api.models.base import RequestModel, ResponseModel
 class PaymentParams(RequestModel):
     """Query parameters for GET /job/{jobDisplayId}/payment."""
 
-    job_sub_key: Optional[str] = Field(None, alias="jobSubKey")
+    job_sub_key: Optional[str] = Field(None, alias="jobSubKey", description="Job subscription key")
 
 
 class PaymentInfo(ResponseModel):
@@ -44,7 +44,7 @@ class ACHSessionResponse(ResponseModel):
 class PayBySourceRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/payment/bysource."""
 
-    source_id: str = Field(..., alias="sourceId", description="Payment source to charge")
+    source_id: Optional[str] = Field(None, alias="sourceId", description="Payment source to charge")
     amount: Optional[float] = Field(None, description="Amount (or full balance)")
 
 
@@ -57,22 +57,22 @@ class ACHSessionRequest(RequestModel):
 class ACHCreditTransferRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/payment/ACHCreditTransfer."""
 
-    amount: float = Field(..., description="Transfer amount")
+    amount: Optional[float] = Field(None, description="Transfer amount")
 
 
 class AttachBankRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/payment/attachCustomerBank."""
 
-    token: str = Field(..., description="Bank account token")
+    token: Optional[str] = Field(None, description="Bank account token")
 
 
 class VerifyACHRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/payment/verifyJobACHSource."""
 
-    amounts: List[int] = Field(..., description="Micro-deposit verification amounts")
+    amounts: Optional[List[int]] = Field(None, description="Micro-deposit verification amounts")
 
 
 class BankSourceRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/payment/banksource."""
 
-    source_id: str = Field(..., alias="sourceId", description="Bank source ID")
+    source_id: Optional[str] = Field(None, alias="sourceId", description="Bank source ID")

@@ -27,9 +27,22 @@ _DELETE = Route("DELETE", "/Seller/{id}", api_surface="catalog")
 class SellersEndpoint(BaseEndpoint):
     """Operations on sellers (Catalog API)."""
 
-    def create(self, data: dict | Any) -> SellerDto:
-        """POST /Seller"""
-        return self._request(_CREATE, json=data)
+    def create(
+        self,
+        *,
+        name: str | None = None,
+        display_id: str | None = None,
+    ) -> SellerDto:
+        """POST /Seller.
+
+        Args:
+            name: Seller name.
+            display_id: Display identifier.
+
+        Request model: :class:`AddSellerRequest`
+        """
+        body = dict(name=name, display_id=display_id)
+        return self._request(_CREATE, json=body)
 
     def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[SellerExpandedDto]:
         """GET /Seller — paginated list."""
@@ -42,9 +55,24 @@ class SellersEndpoint(BaseEndpoint):
         """GET /Seller/{id}"""
         return self._request(_GET.bind(id=seller_id))
 
-    def update(self, seller_id: int, data: dict | Any) -> SellerDto:
-        """PUT /Seller/{id}"""
-        return self._request(_UPDATE.bind(id=seller_id), json=data)
+    def update(
+        self,
+        seller_id: int,
+        *,
+        name: str | None = None,
+        display_id: str | None = None,
+    ) -> SellerDto:
+        """PUT /Seller/{id}.
+
+        Args:
+            seller_id: Seller identifier.
+            name: Updated name.
+            display_id: Updated display ID.
+
+        Request model: :class:`UpdateSellerRequest`
+        """
+        body = dict(name=name, display_id=display_id)
+        return self._request(_UPDATE.bind(id=seller_id), json=body)
 
     def delete(self, seller_id: int) -> None:
         """DELETE /Seller/{id}"""

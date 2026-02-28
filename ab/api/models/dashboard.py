@@ -19,7 +19,7 @@ class DashboardParams(RequestModel):
 class DashboardCompanyParams(RequestModel):
     """Query parameters for dashboard operations (company filter)."""
 
-    company_id: Optional[str] = Field(None, alias="companyId")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID filter")
 
 
 class DashboardSummary(ResponseModel):

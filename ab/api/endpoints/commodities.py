@@ -27,18 +27,77 @@ class CommoditiesEndpoint(BaseEndpoint):
         """GET /commodity/{id}"""
         return self._request(_GET.bind(id=commodity_id))
 
-    def update(self, commodity_id: str, **kwargs: Any) -> Commodity:
-        """PUT /commodity/{id}"""
-        return self._request(_UPDATE.bind(id=commodity_id), json=kwargs)
+    def update(
+        self,
+        commodity_id: str,
+        *,
+        description: str | None = None,
+        freight_class: str | None = None,
+        nmfc_code: str | None = None,
+    ) -> Commodity:
+        """PUT /commodity/{id}.
 
-    def create(self, **kwargs: Any) -> Commodity:
-        """POST /commodity"""
-        return self._request(_CREATE, json=kwargs)
+        Args:
+            commodity_id: Commodity identifier.
+            description: Commodity description.
+            freight_class: Freight class.
+            nmfc_code: NMFC code.
 
-    def search(self, **kwargs: Any) -> list[Commodity]:
-        """POST /commodity/search"""
-        return self._request(_SEARCH, json=kwargs)
+        Request model: :class:`CommodityUpdateRequest`
+        """
+        body = dict(description=description, freight_class=freight_class, nmfc_code=nmfc_code)
+        return self._request(_UPDATE.bind(id=commodity_id), json=body)
 
-    def suggestions(self, **kwargs: Any) -> list[Commodity]:
-        """POST /commodity/suggestions"""
-        return self._request(_SUGGESTIONS, json=kwargs)
+    def create(
+        self,
+        *,
+        description: str | None = None,
+        freight_class: str | None = None,
+        nmfc_code: str | None = None,
+        weight_min: float | None = None,
+        weight_max: float | None = None,
+    ) -> Commodity:
+        """POST /commodity.
+
+        Args:
+            description: Commodity description.
+            freight_class: Freight class.
+            nmfc_code: NMFC code.
+            weight_min: Minimum weight.
+            weight_max: Maximum weight.
+
+        Request model: :class:`CommodityCreateRequest`
+        """
+        body = dict(description=description, freight_class=freight_class,
+                     nmfc_code=nmfc_code, weight_min=weight_min, weight_max=weight_max)
+        return self._request(_CREATE, json=body)
+
+    def search(
+        self,
+        *,
+        search_text: str | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+    ) -> list[Commodity]:
+        """POST /commodity/search.
+
+        Args:
+            search_text: Search query.
+            page: Page number.
+            page_size: Results per page.
+
+        Request model: :class:`CommoditySearchRequest`
+        """
+        body = dict(search_text=search_text, page=page, page_size=page_size)
+        return self._request(_SEARCH, json=body)
+
+    def suggestions(self, *, search_text: str | None = None) -> list[Commodity]:
+        """POST /commodity/suggestions.
+
+        Args:
+            search_text: Search query for suggestions.
+
+        Request model: :class:`CommoditySuggestionRequest`
+        """
+        body = dict(search_text=search_text)
+        return self._request(_SUGGESTIONS, json=body)

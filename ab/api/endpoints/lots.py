@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, List
 
 if TYPE_CHECKING:
-    from ab.api.models.lots import LotDto, LotOverrideDto
+    from ab.api.models.lots import AddLotRequest, LotDto, LotOverrideDto, UpdateLotRequest
     from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint
@@ -25,8 +25,15 @@ _GET_OVERRIDES = Route("POST", "/Lot/get-overrides", response_model="List[LotOve
 class LotsEndpoint(BaseEndpoint):
     """Operations on lots (Catalog API)."""
 
-    def create(self, data: dict | Any) -> LotDto:
-        """POST /Lot"""
+    def create(self, *, data: AddLotRequest | dict) -> LotDto:
+        """POST /Lot.
+
+        Args:
+            data: Lot creation payload with catalog_id, lot_number, and data.
+                Accepts an :class:`AddLotRequest` instance or a dict.
+
+        Request model: :class:`AddLotRequest`
+        """
         return self._request(_CREATE, json=data)
 
     def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[LotDto]:
@@ -40,8 +47,16 @@ class LotsEndpoint(BaseEndpoint):
         """GET /Lot/{id}"""
         return self._request(_GET.bind(id=lot_id))
 
-    def update(self, lot_id: int, data: dict | Any) -> LotDto:
-        """PUT /Lot/{id}"""
+    def update(self, lot_id: int, *, data: UpdateLotRequest | dict) -> LotDto:
+        """PUT /Lot/{id}.
+
+        Args:
+            lot_id: Lot identifier.
+            data: Lot update payload with lot_number and data.
+                Accepts an :class:`UpdateLotRequest` instance or a dict.
+
+        Request model: :class:`UpdateLotRequest`
+        """
         return self._request(_UPDATE.bind(id=lot_id), json=data)
 
     def delete(self, lot_id: int) -> None:

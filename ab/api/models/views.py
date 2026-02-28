@@ -39,6 +39,6 @@ class StoredProcedureColumn(ResponseModel):
 class GridViewCreateRequest(RequestModel):
     """Body for POST /views."""
 
-    name: str = Field(..., description="View name")
+    name: Optional[str] = Field(None, description="View name")
     dataset_sp: Optional[str] = Field(None, alias="datasetSp", description="Dataset stored procedure")
     columns: Optional[List[dict]] = Field(None, description="Column definitions")

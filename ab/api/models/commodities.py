@@ -7,6 +7,7 @@ from typing import Optional
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+from ab.api.models.mixins import SearchableRequestMixin
 
 
 class Commodity(ResponseModel):
@@ -23,7 +24,7 @@ class Commodity(ResponseModel):
 class CommodityCreateRequest(RequestModel):
     """Body for POST /commodity."""
 
-    description: str = Field(..., description="Commodity description")
+    description: Optional[str] = Field(None, description="Commodity description")
     freight_class: Optional[str] = Field(None, alias="freightClass", description="Freight class")
     nmfc_code: Optional[str] = Field(None, alias="nmfcCode", description="NMFC code")
     weight_min: Optional[float] = Field(None, alias="weightMin", description="Minimum weight")
@@ -38,18 +39,15 @@ class CommodityUpdateRequest(RequestModel):
     nmfc_code: Optional[str] = Field(None, alias="nmfcCode", description="NMFC code")
 
 
-class CommoditySearchRequest(RequestModel):
+class CommoditySearchRequest(SearchableRequestMixin):
     """Search filter for POST /commodity/search."""
 
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
     page: Optional[int] = Field(None, description="Page number")
     page_size: Optional[int] = Field(None, alias="pageSize", description="Results per page")
 
 
-class CommoditySuggestionRequest(RequestModel):
+class CommoditySuggestionRequest(SearchableRequestMixin):
     """Suggestion filter for POST /commodity/suggestions."""
-
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
 
 
 class CommodityMap(ResponseModel):
@@ -63,7 +61,7 @@ class CommodityMap(ResponseModel):
 class CommodityMapCreateRequest(RequestModel):
     """Body for POST /commodity-map."""
 
-    custom_name: str = Field(..., alias="customName", description="Custom commodity name")
+    custom_name: Optional[str] = Field(None, alias="customName", description="Custom commodity name")
     commodity_id: Optional[str] = Field(None, alias="commodityId", description="Linked commodity ID")
 
 
@@ -74,9 +72,8 @@ class CommodityMapUpdateRequest(RequestModel):
     commodity_id: Optional[str] = Field(None, alias="commodityId", description="Linked commodity ID")
 
 
-class CommodityMapSearchRequest(RequestModel):
+class CommodityMapSearchRequest(SearchableRequestMixin):
     """Search filter for POST /commodity-map/search."""
 
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
     page: Optional[int] = Field(None, description="Page number")
     page_size: Optional[int] = Field(None, alias="pageSize", description="Results per page")

@@ -35,13 +35,50 @@ class NotesEndpoint(BaseEndpoint):
             params=dict(category=category, job_id=job_id, contact_id=contact_id, company_id=company_id),
         )
 
-    def create(self, **kwargs: Any) -> GlobalNote:
-        """POST /note"""
-        return self._request(_CREATE, json=kwargs)
+    def create(
+        self,
+        *,
+        comment: str | None = None,
+        category: str | None = None,
+        job_id: str | None = None,
+        contact_id: str | None = None,
+        company_id: str | None = None,
+    ) -> GlobalNote:
+        """POST /note.
 
-    def update(self, note_id: str, **kwargs: Any) -> GlobalNote:
-        """PUT /note/{id}"""
-        return self._request(_UPDATE.bind(id=note_id), json=kwargs)
+        Args:
+            comment: Note content.
+            category: Note category.
+            job_id: Associated job ID.
+            contact_id: Associated contact ID.
+            company_id: Associated company ID.
+
+        Request model: :class:`GlobalNoteCreateRequest`
+        """
+        body = dict(comment=comment, category=category, job_id=job_id,
+                     contact_id=contact_id, company_id=company_id)
+        return self._request(_CREATE, json=body)
+
+    def update(
+        self,
+        note_id: str,
+        *,
+        comment: str | None = None,
+        is_important: bool | None = None,
+        is_completed: bool | None = None,
+    ) -> GlobalNote:
+        """PUT /note/{id}.
+
+        Args:
+            note_id: Note identifier.
+            comment: Updated content.
+            is_important: Updated importance flag.
+            is_completed: Mark complete.
+
+        Request model: :class:`GlobalNoteUpdateRequest`
+        """
+        body = dict(comment=comment, is_important=is_important, is_completed=is_completed)
+        return self._request(_UPDATE.bind(id=note_id), json=body)
 
     def suggest_users(
         self,

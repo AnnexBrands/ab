@@ -38,7 +38,7 @@ class CatalogExpandedDto(ResponseModel):
 class AddCatalogRequest(RequestModel):
     """Body for POST /Catalog."""
 
-    title: str = Field(..., description="Catalog title")
+    title: Optional[str] = Field(None, description="Catalog title")
     agent_id: Optional[str] = Field(None, alias="agentId", description="Assigned agent ID")
     seller_ids: Optional[List[int]] = Field(None, alias="sellerIds", description="Seller IDs to attach")
 
@@ -71,5 +71,5 @@ class CatalogListParams(RequestModel):
 class BulkInsertRequest(RequestModel):
     """Body for POST /Bulk/insert."""
 
-    catalog_id: int = Field(..., alias="catalogId", description="Target catalog ID")
-    items: List[dict] = Field(default_factory=list, description="Items to insert")
+    catalog_id: Optional[int] = Field(None, alias="catalogId", description="Target catalog ID")
+    items: Optional[List[dict]] = Field(None, description="Items to insert")

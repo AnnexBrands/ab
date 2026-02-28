@@ -21,7 +21,7 @@ class NotesListParams(RequestModel):
 class NotesSuggestUsersParams(RequestModel):
     """Query parameters for GET /note/suggestUsers."""
 
-    search_key: str = Field(..., alias="SearchKey", description="User search keyword")
+    search_key: Optional[str] = Field(None, alias="SearchKey", description="User search keyword")
     job_franchisee_id: Optional[str] = Field(
         None, alias="JobFranchiseeId", description="Job franchisee UUID"
     )
@@ -46,7 +46,7 @@ class GlobalNote(ResponseModel):
 class GlobalNoteCreateRequest(RequestModel):
     """Body for POST /note."""
 
-    comment: str = Field(..., description="Note content")
+    comment: Optional[str] = Field(None, description="Note content")
     category: Optional[str] = Field(None, description="Note category")
     job_id: Optional[str] = Field(None, alias="jobId", description="Associated job ID")
     contact_id: Optional[str] = Field(None, alias="contactId", description="Associated contact ID")

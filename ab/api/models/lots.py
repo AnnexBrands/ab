@@ -47,7 +47,7 @@ class LotOverrideDto(ResponseModel):
 class AddLotRequest(RequestModel):
     """Body for POST /Lot."""
 
-    catalog_id: int = Field(..., alias="catalogId", description="Parent catalog ID")
+    catalog_id: Optional[int] = Field(None, alias="catalogId", description="Parent catalog ID")
     lot_number: Optional[str] = Field(None, alias="lotNumber", description="Lot number")
     data: Optional[dict] = Field(None, description="Lot data payload")
 

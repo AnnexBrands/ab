@@ -41,26 +41,64 @@ class DashboardEndpoint(BaseEndpoint):
         """GET /dashboard/gridviewstate/{id}"""
         return self._request(_GET_GRID_VIEW_STATE.bind(id=view_id))
 
-    def save_grid_view_state(self, view_id: str, **kwargs: Any) -> Any:
-        """POST /dashboard/gridviewstate/{id}"""
-        return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=kwargs)
+    def save_grid_view_state(self, view_id: str, *, data: GridViewState | dict) -> Any:
+        """POST /dashboard/gridviewstate/{id}.
 
-    def inbound(self, **kwargs: Any) -> Any:
-        """POST /dashboard/inbound"""
-        return self._request(_INBOUND, json=kwargs)
+        Args:
+            view_id: View state identifier.
+            data: Grid view state with columns, filters, and sort_order.
+                Accepts a :class:`GridViewState` instance or a dict.
 
-    def in_house(self, **kwargs: Any) -> Any:
-        """POST /dashboard/inhouse"""
-        return self._request(_IN_HOUSE, json=kwargs)
+        Request model: :class:`GridViewState`
+        """
+        return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=data)
 
-    def outbound(self, **kwargs: Any) -> Any:
-        """POST /dashboard/outbound"""
-        return self._request(_OUTBOUND, json=kwargs)
+    def inbound(self, *, company_id: str | None = None) -> Any:
+        """POST /dashboard/inbound.
 
-    def local_deliveries(self, **kwargs: Any) -> Any:
-        """POST /dashboard/local-deliveries"""
-        return self._request(_LOCAL_DELIVERIES, json=kwargs)
+        Args:
+            company_id: Company UUID filter.
 
-    def recent_estimates(self, **kwargs: Any) -> Any:
-        """POST /dashboard/recentestimates"""
-        return self._request(_RECENT_ESTIMATES, json=kwargs)
+        Params model: :class:`DashboardCompanyParams`
+        """
+        return self._request(_INBOUND, json=dict(company_id=company_id))
+
+    def in_house(self, *, company_id: str | None = None) -> Any:
+        """POST /dashboard/inhouse.
+
+        Args:
+            company_id: Company UUID filter.
+
+        Params model: :class:`DashboardCompanyParams`
+        """
+        return self._request(_IN_HOUSE, json=dict(company_id=company_id))
+
+    def outbound(self, *, company_id: str | None = None) -> Any:
+        """POST /dashboard/outbound.
+
+        Args:
+            company_id: Company UUID filter.
+
+        Params model: :class:`DashboardCompanyParams`
+        """
+        return self._request(_OUTBOUND, json=dict(company_id=company_id))
+
+    def local_deliveries(self, *, company_id: str | None = None) -> Any:
+        """POST /dashboard/local-deliveries.
+
+        Args:
+            company_id: Company UUID filter.
+
+        Params model: :class:`DashboardCompanyParams`
+        """
+        return self._request(_LOCAL_DELIVERIES, json=dict(company_id=company_id))
+
+    def recent_estimates(self, *, company_id: str | None = None) -> Any:
+        """POST /dashboard/recentestimates.
+
+        Args:
+            company_id: Company UUID filter.
+
+        Params model: :class:`DashboardCompanyParams`
+        """
+        return self._request(_RECENT_ESTIMATES, json=dict(company_id=company_id))

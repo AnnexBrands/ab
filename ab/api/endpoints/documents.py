@@ -40,6 +40,21 @@ class DocumentsEndpoint(BaseEndpoint):
         """GET /documents/get/{docPath} — returns raw bytes."""
         return self._client.request("GET", f"/documents/get/{doc_path}", raw=True).content
 
-    def update(self, doc_id: str, data: dict | Any) -> Any:
-        """PUT /documents/update/{docId}"""
-        return self._request(_UPDATE.bind(docId=doc_id), json=data)
+    def update(
+        self,
+        doc_id: str,
+        *,
+        doc_type: int | None = None,
+        sharing_level: int | None = None,
+    ) -> Any:
+        """PUT /documents/update/{docId}.
+
+        Args:
+            doc_id: Document identifier.
+            doc_type: Updated document type.
+            sharing_level: Updated sharing level.
+
+        Request model: :class:`DocumentUpdateRequest`
+        """
+        body = dict(doc_type=doc_type, sharing_level=sharing_level)
+        return self._request(_UPDATE.bind(docId=doc_id), json=body)

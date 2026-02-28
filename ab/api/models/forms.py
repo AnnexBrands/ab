@@ -27,13 +27,13 @@ class OperationsFormParams(RequestModel):
 class FormTypeParams(RequestModel):
     """Query parameters for form generation with type selection."""
 
-    type: Optional[str] = Field(None, alias="type")
+    type: Optional[str] = Field(None, alias="type", description="Form type identifier")
 
 
 class PackagingLabelsParams(RequestModel):
     """Query parameters for GET packaging labels."""
 
-    shipment_plan_id: Optional[str] = Field(None, alias="shipmentPlanId")
+    shipment_plan_id: Optional[str] = Field(None, alias="shipmentPlanId", description="Shipment plan identifier")
 
 
 class FormsShipmentPlan(ResponseModel):

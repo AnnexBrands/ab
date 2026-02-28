@@ -8,6 +8,7 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
+from ab.api.models.mixins import PaginatedRequestMixin, SearchableRequestMixin
 
 
 class CarrierAccountSearchParams(RequestModel):
@@ -22,7 +23,7 @@ class CarrierAccountSearchParams(RequestModel):
 class SuggestCarriersParams(RequestModel):
     """Query parameters for GET /companies/suggest-carriers."""
 
-    tracking_number: str = Field(..., alias="trackingNumber", description="Tracking number (min 5 chars)")
+    tracking_number: Optional[str] = Field(None, alias="trackingNumber", description="Tracking number (min 5 chars)")
 
 
 class GeoSettingsParams(RequestModel):
@@ -724,12 +725,9 @@ class SearchCompanyResponse(ResponseModel):
     company_type: Optional[str] = Field(None, alias="companyType", description="Company type")
 
 
-class CompanySearchRequest(RequestModel):
+class CompanySearchRequest(PaginatedRequestMixin, SearchableRequestMixin):
     """Body for POST /companies/search/v2."""
 
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
-    page: int = Field(1, description="Page number")
-    page_size: int = Field(25, alias="pageSize", description="Results per page")
     filters: Optional[dict] = Field(None, description="Filter criteria")
 
 

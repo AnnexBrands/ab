@@ -28,18 +28,61 @@ class CommodityMapsEndpoint(BaseEndpoint):
         """GET /commodity-map/{id}"""
         return self._request(_GET.bind(id=map_id))
 
-    def update(self, map_id: str, **kwargs: Any) -> CommodityMap:
-        """PUT /commodity-map/{id}"""
-        return self._request(_UPDATE.bind(id=map_id), json=kwargs)
+    def update(
+        self,
+        map_id: str,
+        *,
+        custom_name: str | None = None,
+        commodity_id: str | None = None,
+    ) -> CommodityMap:
+        """PUT /commodity-map/{id}.
+
+        Args:
+            map_id: Commodity map identifier.
+            custom_name: Custom commodity name.
+            commodity_id: Linked commodity ID.
+
+        Request model: :class:`CommodityMapUpdateRequest`
+        """
+        body = dict(custom_name=custom_name, commodity_id=commodity_id)
+        return self._request(_UPDATE.bind(id=map_id), json=body)
 
     def delete(self, map_id: str) -> ServiceBaseResponse:
         """DELETE /commodity-map/{id}"""
         return self._request(_DELETE.bind(id=map_id))
 
-    def create(self, **kwargs: Any) -> CommodityMap:
-        """POST /commodity-map"""
-        return self._request(_CREATE, json=kwargs)
+    def create(
+        self,
+        *,
+        custom_name: str | None = None,
+        commodity_id: str | None = None,
+    ) -> CommodityMap:
+        """POST /commodity-map.
 
-    def search(self, **kwargs: Any) -> list[CommodityMap]:
-        """POST /commodity-map/search"""
-        return self._request(_SEARCH, json=kwargs)
+        Args:
+            custom_name: Custom commodity name.
+            commodity_id: Linked commodity ID.
+
+        Request model: :class:`CommodityMapCreateRequest`
+        """
+        body = dict(custom_name=custom_name, commodity_id=commodity_id)
+        return self._request(_CREATE, json=body)
+
+    def search(
+        self,
+        *,
+        search_text: str | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+    ) -> list[CommodityMap]:
+        """POST /commodity-map/search.
+
+        Args:
+            search_text: Search query.
+            page: Page number.
+            page_size: Results per page.
+
+        Request model: :class:`CommodityMapSearchRequest`
+        """
+        body = dict(search_text=search_text, page=page, page_size=page_size)
+        return self._request(_SEARCH, json=body)
