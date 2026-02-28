@@ -74,7 +74,9 @@ from ab.api.models.companies import (
     OverridableAddressData,
     OverridableField,
     PackagingLabor,
+    PackagingLaborSaveRequest,
     PackagingSettings,
+    PackagingSettingsSaveRequest,
     PackagingTariff,
     PaymentSettings,
     RoadRunnerAccount,
@@ -104,7 +106,7 @@ from ab.api.models.contacts import (
     ContactSimple,
     SearchContactEntityResult,
 )
-from ab.api.models.dashboard import DashboardCompanyParams, DashboardParams, DashboardSummary, GridViewInfo, GridViewState
+from ab.api.models.dashboard import DashboardCompanyParams, DashboardCompanyRequest, DashboardParams, DashboardSummary, GridViewInfo, GridViewState
 from ab.api.models.documents import Document, DocumentListParams, DocumentUpdateRequest
 from ab.api.models.enums import CarrierAPI, DocumentType
 from ab.api.models.forms import (
@@ -321,7 +323,8 @@ __all__ = [
     "CompanyInsurancePricing", "CompanyServicePricing", "CompanyTaxPricing",
     "CompanyBrand", "BrandTree", "GeoSettings", "GeoSettingsSaveRequest",
     "CarrierAccount", "CarrierAccountSaveRequest",
-    "PackagingSettings", "PackagingLabor", "PackagingTariff",
+    "PackagingSettings", "PackagingSettingsSaveRequest",
+    "PackagingLabor", "PackagingLaborSaveRequest", "PackagingTariff",
     # Contacts
     "ContactEditParams", "ContactHistoryParams",
     "ContactSimple", "ContactDetailedInfo", "ContactPrimaryDetails",
@@ -384,7 +387,8 @@ __all__ = [
     "ReferredByReport", "ReferredByReportRequest",
     "Web2LeadReport", "Web2LeadV2RequestModel",
     # Dashboard
-    "DashboardCompanyParams", "DashboardParams", "DashboardSummary", "GridViewState", "GridViewInfo",
+    "DashboardCompanyParams", "DashboardCompanyRequest", "DashboardParams",
+    "DashboardSummary", "GridViewState", "GridViewInfo",
     # Views
     "GridViewDetails", "GridViewAccess", "StoredProcedureColumn", "GridViewCreateRequest",
     # Commodities

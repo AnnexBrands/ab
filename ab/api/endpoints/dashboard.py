@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.dashboard import DashboardCompanyParams, DashboardSummary, GridViewInfo, GridViewState
+    from ab.api.models.dashboard import DashboardCompanyRequest, DashboardSummary, GridViewInfo, GridViewState
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -14,11 +14,11 @@ _GET = Route("GET", "/dashboard", params_model="DashboardParams", response_model
 _GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", params_model="DashboardCompanyParams", response_model="List[GridViewInfo]")
 _GET_GRID_VIEW_STATE = Route("GET", "/dashboard/gridviewstate/{id}", response_model="GridViewState")
 _SAVE_GRID_VIEW_STATE = Route("POST", "/dashboard/gridviewstate/{id}", request_model="GridViewState")
-_INBOUND = Route("POST", "/dashboard/inbound", request_model="DashboardCompanyParams")
-_IN_HOUSE = Route("POST", "/dashboard/inhouse", request_model="DashboardCompanyParams")
-_OUTBOUND = Route("POST", "/dashboard/outbound", request_model="DashboardCompanyParams")
-_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries", request_model="DashboardCompanyParams")
-_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates", request_model="DashboardCompanyParams")
+_INBOUND = Route("POST", "/dashboard/inbound", request_model="DashboardCompanyRequest")
+_IN_HOUSE = Route("POST", "/dashboard/inhouse", request_model="DashboardCompanyRequest")
+_OUTBOUND = Route("POST", "/dashboard/outbound", request_model="DashboardCompanyRequest")
+_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries", request_model="DashboardCompanyRequest")
+_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates", request_model="DashboardCompanyRequest")
 
 
 class DashboardEndpoint(BaseEndpoint):
@@ -53,57 +53,57 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=data)
 
-    def inbound(self, *, data: DashboardCompanyParams | dict) -> Any:
+    def inbound(self, *, data: DashboardCompanyRequest | dict) -> Any:
         """POST /dashboard/inbound.
 
         Args:
             data: Dashboard company filter payload.
-                Accepts a :class:`DashboardCompanyParams` instance or a dict.
+                Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
-        Request model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyRequest`
         """
         return self._request(_INBOUND, json=data)
 
-    def in_house(self, *, data: DashboardCompanyParams | dict) -> Any:
+    def in_house(self, *, data: DashboardCompanyRequest | dict) -> Any:
         """POST /dashboard/inhouse.
 
         Args:
             data: Dashboard company filter payload.
-                Accepts a :class:`DashboardCompanyParams` instance or a dict.
+                Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
-        Request model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyRequest`
         """
         return self._request(_IN_HOUSE, json=data)
 
-    def outbound(self, *, data: DashboardCompanyParams | dict) -> Any:
+    def outbound(self, *, data: DashboardCompanyRequest | dict) -> Any:
         """POST /dashboard/outbound.
 
         Args:
             data: Dashboard company filter payload.
-                Accepts a :class:`DashboardCompanyParams` instance or a dict.
+                Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
-        Request model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyRequest`
         """
         return self._request(_OUTBOUND, json=data)
 
-    def local_deliveries(self, *, data: DashboardCompanyParams | dict) -> Any:
+    def local_deliveries(self, *, data: DashboardCompanyRequest | dict) -> Any:
         """POST /dashboard/local-deliveries.
 
         Args:
             data: Dashboard company filter payload.
-                Accepts a :class:`DashboardCompanyParams` instance or a dict.
+                Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
-        Request model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyRequest`
         """
         return self._request(_LOCAL_DELIVERIES, json=data)
 
-    def recent_estimates(self, *, data: DashboardCompanyParams | dict) -> Any:
+    def recent_estimates(self, *, data: DashboardCompanyRequest | dict) -> Any:
         """POST /dashboard/recentestimates.
 
         Args:
             data: Dashboard company filter payload.
-                Accepts a :class:`DashboardCompanyParams` instance or a dict.
+                Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
-        Request model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyRequest`
         """
         return self._request(_RECENT_ESTIMATES, json=data)
