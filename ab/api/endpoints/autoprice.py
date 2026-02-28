@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.autoprice import QuickQuoteResponse, QuoteRequestResponse
+    from ab.api.models.autoprice import QuoteRequestModel, QuickQuoteResponse, QuoteRequestResponse
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -23,10 +23,26 @@ _QUOTE_REQUEST = Route(
 class AutoPriceEndpoint(BaseEndpoint):
     """Quoting/pricing (ABC API)."""
 
-    def quick_quote(self, data: dict | Any) -> QuickQuoteResponse:
-        """POST /autoprice/quickquote"""
+    def quick_quote(self, *, data: QuoteRequestModel | dict) -> QuickQuoteResponse:
+        """POST /autoprice/quickquote.
+
+        Args:
+            data: Quote request with job_info, contact_info, service_info,
+                and items. Accepts a :class:`QuoteRequestModel` instance
+                or a dict.
+
+        Request model: :class:`QuoteRequestModel`
+        """
         return self._request(_QUICK_QUOTE, json=data)
 
-    def quote_request(self, data: dict | Any) -> QuoteRequestResponse:
-        """POST /autoprice/v2/quoterequest"""
+    def quote_request(self, *, data: QuoteRequestModel | dict) -> QuoteRequestResponse:
+        """POST /autoprice/v2/quoterequest.
+
+        Args:
+            data: Quote request with job_info, contact_info, service_info,
+                and items. Accepts a :class:`QuoteRequestModel` instance
+                or a dict.
+
+        Request model: :class:`QuoteRequestModel`
+        """
         return self._request(_QUOTE_REQUEST, json=data)

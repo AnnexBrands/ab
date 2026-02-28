@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 from pydantic import Field
 
-from ab.api.models.base import ABConnectBaseModel
+from ab.api.models.base import ABConnectBaseModel, RequestModel
 
 
 class IdentifiedModel(ABConnectBaseModel):
@@ -57,3 +57,33 @@ class CompanyAuditModel(FullAuditModel, CompanyRelatedModel):
 
 class JobAuditModel(FullAuditModel, JobRelatedModel):
     """Full audit trail + job association."""
+
+
+# --- Request mixins ---
+
+
+class PaginatedRequestMixin(RequestModel):
+    """Reusable pagination fields for request models."""
+
+    page: Optional[int] = Field(None, description="Page number (1-based)")
+    page_size: Optional[int] = Field(None, alias="pageSize", description="Items per page")
+
+
+class SortableRequestMixin(RequestModel):
+    """Reusable sort fields for request models."""
+
+    sort_by: Optional[str] = Field(None, alias="sortBy", description="Field name to sort by")
+    sort_dir: Optional[bool] = Field(None, alias="sortDir", description="Sort direction (true=ascending)")
+
+
+class SearchableRequestMixin(RequestModel):
+    """Reusable search text field for request models."""
+
+    search_text: Optional[str] = Field(None, alias="searchText", description="Free-text search query")
+
+
+class DateRangeRequestMixin(RequestModel):
+    """Reusable date range fields for request models."""
+
+    start_date: Optional[str] = Field(None, alias="startDate", description="Range start date (ISO 8601)")
+    end_date: Optional[str] = Field(None, alias="endDate", description="Range end date (ISO 8601)")

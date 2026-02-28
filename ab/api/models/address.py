@@ -12,10 +12,10 @@ from ab.api.models.base import RequestModel, ResponseModel
 class AddressValidateParams(RequestModel):
     """Query parameters for GET /address/isvalid."""
 
-    line1: str = Field(..., alias="Line1", description="Street address line 1")
-    city: str = Field(..., alias="City", description="City name")
-    state: str = Field(..., alias="State", description="State abbreviation")
-    zip: str = Field(..., alias="Zip", description="ZIP/postal code")
+    line1: Optional[str] = Field(None, alias="Line1", description="Street address line 1")
+    city: Optional[str] = Field(None, alias="City", description="City name")
+    state: Optional[str] = Field(None, alias="State", description="State abbreviation")
+    zip: Optional[str] = Field(None, alias="Zip", description="ZIP/postal code")
 
 
 class AddressPropertyTypeParams(RequestModel):

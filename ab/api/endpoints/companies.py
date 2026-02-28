@@ -14,15 +14,18 @@ if TYPE_CHECKING:
         CarrierAccount,
         CompanyBrand,
         CompanyDetails,
+        CompanySearchRequest,
         CompanySimple,
         GeoSettings,
         GeoSettingsParams,
+        GeoSettingsSaveRequest,
         InheritFromParams,
         PackagingLabor,
         PackagingSettings,
         PackagingTariff,
         SearchCompanyResponse,
     )
+    from ab.api.models.shared import ListRequest
 
 _GET = Route("GET", "/companies/{id}", response_model="CompanySimple")
 _GET_DETAILS = Route("GET", "/companies/{companyId}/details", response_model="CompanyDetails")
@@ -97,21 +100,52 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/fulldetails"""
         return self._request(_GET_FULLDETAILS.bind(companyId=self._resolve(company_id)))
 
-    def update_fulldetails(self, company_id: str, **kwargs: Any) -> CompanyDetails:
-        """PUT /companies/{companyId}/fulldetails"""
-        return self._request(_UPDATE_FULLDETAILS.bind(companyId=self._resolve(company_id)), json=kwargs)
+    def update_fulldetails(self, company_id: str, *, data: CompanyDetails | dict) -> CompanyDetails:
+        """PUT /companies/{companyId}/fulldetails.
 
-    def create(self, **kwargs: Any) -> str:
-        """POST /companies/fulldetails — returns new company ID string."""
-        return self._request(_CREATE, json=kwargs)
+        Args:
+            company_id: Company ID or code.
+            data: Full company details payload.
+                Accepts a :class:`CompanyDetails` instance or a dict.
 
-    def search(self, **kwargs: Any) -> list[SearchCompanyResponse]:
-        """POST /companies/search/v2"""
-        return self._request(_SEARCH, json=kwargs)
+        Request model: :class:`CompanyDetails`
+        """
+        return self._request(
+            _UPDATE_FULLDETAILS.bind(companyId=self._resolve(company_id)), json=data,
+        )
 
-    def list(self, **kwargs: Any) -> list[CompanySimple]:
-        """POST /companies/list"""
-        return self._request(_LIST, json=kwargs)
+    def create(self, *, data: CompanyDetails | dict) -> str:
+        """POST /companies/fulldetails.
+
+        Args:
+            data: Full company details payload.
+                Accepts a :class:`CompanyDetails` instance or a dict.
+
+        Request model: :class:`CompanyDetails`
+        """
+        return self._request(_CREATE, json=data)
+
+    def search(self, *, data: CompanySearchRequest | dict) -> list[SearchCompanyResponse]:
+        """POST /companies/search/v2.
+
+        Args:
+            data: Search filter with pagination, search text, and filters.
+                Accepts a :class:`CompanySearchRequest` instance or a dict.
+
+        Request model: :class:`CompanySearchRequest`
+        """
+        return self._request(_SEARCH, json=data)
+
+    def list(self, *, data: ListRequest | dict) -> list[CompanySimple]:
+        """POST /companies/list.
+
+        Args:
+            data: List filter with pagination, sorting, and filters.
+                Accepts a :class:`ListRequest` instance or a dict.
+
+        Request model: :class:`ListRequest`
+        """
+        return self._request(_LIST, json=data)
 
     def available_by_current_user(self) -> list[CompanySimple]:
         """GET /companies/availableByCurrentUser"""
@@ -129,17 +163,33 @@ class CompaniesEndpoint(BaseEndpoint):
 
     # ---- Geo Settings (008) -----------------------------------------------
 
-    def get_geo_area_companies(self, **params: Any) -> Any:
-        """GET /companies/geoAreaCompanies"""
-        return self._request(_GET_GEO_AREA_COMPANIES, params=params or None)
+    def get_geo_area_companies(self, *, params: dict | None = None) -> Any:
+        """GET /companies/geoAreaCompanies.
+
+        Args:
+            params: Optional query parameters as a dict.
+        """
+        return self._request(_GET_GEO_AREA_COMPANIES, params=params)
 
     def get_geo_settings(self, company_id: str) -> GeoSettings:
         """GET /companies/{companyId}/geosettings"""
         return self._request(_GET_GEO_SETTINGS.bind(companyId=self._resolve(company_id)))
 
-    def save_geo_settings(self, company_id: str, **kwargs: Any) -> Any:
-        """POST /companies/{companyId}/geosettings"""
-        return self._request(_SAVE_GEO_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
+    def save_geo_settings(
+        self, company_id: str, *, data: GeoSettingsSaveRequest | dict,
+    ) -> Any:
+        """POST /companies/{companyId}/geosettings.
+
+        Args:
+            company_id: Company ID or code.
+            data: Geo settings payload with service_areas and restrictions.
+                Accepts a :class:`GeoSettingsSaveRequest` instance or a dict.
+
+        Request model: :class:`GeoSettingsSaveRequest`
+        """
+        return self._request(
+            _SAVE_GEO_SETTINGS.bind(companyId=self._resolve(company_id)), json=data,
+        )
 
     def get_global_geo_settings(self) -> GeoSettings:
         """GET /companies/geosettings"""
@@ -167,9 +217,26 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/carrierAcounts"""
         return self._request(_GET_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)))
 
-    def save_carrier_accounts(self, company_id: str, **kwargs: Any) -> Any:
-        """POST /companies/{companyId}/carrierAcounts"""
-        return self._request(_SAVE_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)), json=kwargs)
+    def save_carrier_accounts(
+        self,
+        company_id: str,
+        *,
+        carrier_name: str | None = None,
+        account_number: str | None = None,
+    ) -> Any:
+        """POST /companies/{companyId}/carrierAcounts.
+
+        Args:
+            company_id: Company ID or code.
+            carrier_name: Carrier name.
+            account_number: Account number.
+
+        Request model: :class:`CarrierAccountSaveRequest`
+        """
+        body = dict(carrier_name=carrier_name, account_number=account_number)
+        return self._request(
+            _SAVE_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)), json=body,
+        )
 
     # ---- Packaging (008) --------------------------------------------------
 
@@ -177,17 +244,31 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/packagingsettings"""
         return self._request(_GET_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_settings(self, company_id: str, **kwargs: Any) -> Any:
-        """POST /companies/{companyId}/packagingsettings"""
-        return self._request(_SAVE_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)), json=kwargs)
+    def save_packaging_settings(self, company_id: str, *, data: dict) -> Any:
+        """POST /companies/{companyId}/packagingsettings.
+
+        Args:
+            company_id: Company ID or code.
+            data: Packaging settings payload.
+        """
+        return self._request(
+            _SAVE_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)), json=data,
+        )
 
     def get_packaging_labor(self, company_id: str) -> PackagingLabor:
         """GET /companies/{companyId}/packaginglabor"""
         return self._request(_GET_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_labor(self, company_id: str, **kwargs: Any) -> Any:
-        """POST /companies/{companyId}/packaginglabor"""
-        return self._request(_SAVE_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)), json=kwargs)
+    def save_packaging_labor(self, company_id: str, *, data: dict) -> Any:
+        """POST /companies/{companyId}/packaginglabor.
+
+        Args:
+            company_id: Company ID or code.
+            data: Packaging labor rates payload.
+        """
+        return self._request(
+            _SAVE_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)), json=data,
+        )
 
     def get_inherited_packaging_tariffs(self, company_id: str) -> list[PackagingTariff]:
         """GET /companies/{companyId}/inheritedPackagingTariffs"""

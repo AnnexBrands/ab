@@ -234,6 +234,10 @@ def render_gate_summary(gate_results: list[EndpointGateStatus]) -> str:
         1 for s in gate_results
         if s.g5_param_routing and s.g5_param_routing.passed
     )
+    g6_pass = sum(
+        1 for s in gate_results
+        if s.g6_request_quality and s.g6_request_quality.passed
+    )
 
     pct = f"{complete / total * 100:.0f}%" if total else "0%"
 
@@ -257,6 +261,7 @@ def render_gate_summary(gate_results: list[EndpointGateStatus]) -> str:
         _card("G3: Test Quality", g3_pass, "isinstance + extra", "card-pass" if g3_pass > total // 2 else "card-fail"),
         _card("G4: Doc Accuracy", g4_pass, "Correct return type", "card-pass" if g4_pass > total // 2 else "card-fail"),
         _card("G5: Param Routing", g5_pass, "params_model set", "card-pass" if g5_pass > total // 2 else "card-fail"),
+        _card("G6: Request Quality", g6_pass, "Typed sigs + descriptions", "card-pass" if g6_pass > total // 2 else "card-fail"),
     ]
 
     return (
@@ -300,6 +305,7 @@ def render_gate_details(gate_results: list[EndpointGateStatus]) -> str:
             f"{_gate_cell(s.g3_test_quality)}"
             f"{_gate_cell(s.g4_doc_accuracy)}"
             f"{_gate_cell(s.g5_param_routing)}"
+            f"{_gate_cell(s.g6_request_quality)}"
             f"<td class='col-status'>{_status_badge(s.overall_status)}</td>"
             f"</tr>"
         )
@@ -309,7 +315,7 @@ def render_gate_details(gate_results: list[EndpointGateStatus]) -> str:
         "<table class='gate-table'>"
         "<tr>"
         "<th>Method</th><th>Endpoint</th><th>Model</th>"
-        "<th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>G5</th><th>Status</th>"
+        "<th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>G5</th><th>G6</th><th>Status</th>"
         "</tr>"
         + "\n".join(rows)
         + "</table>"

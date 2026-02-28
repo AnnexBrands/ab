@@ -186,10 +186,14 @@ from ab.api.models.mixins import (
     ActiveModel,
     CompanyAuditModel,
     CompanyRelatedModel,
+    DateRangeRequestMixin,
     FullAuditModel,
     IdentifiedModel,
     JobAuditModel,
     JobRelatedModel,
+    PaginatedRequestMixin,
+    SearchableRequestMixin,
+    SortableRequestMixin,
     TimestampedModel,
 )
 from ab.api.models.notes import (
@@ -274,6 +278,9 @@ __all__ = [
     "IdentifiedModel", "TimestampedModel", "ActiveModel",
     "CompanyRelatedModel", "JobRelatedModel",
     "FullAuditModel", "CompanyAuditModel", "JobAuditModel",
+    # Request mixins
+    "PaginatedRequestMixin", "SortableRequestMixin",
+    "SearchableRequestMixin", "DateRangeRequestMixin",
     # Common (shared sub-models)
     "Coordinates", "CompanyAddress",
     # Shared

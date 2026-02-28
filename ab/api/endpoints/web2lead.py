@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.web2lead import Web2LeadResponse
+    from ab.api.models.web2lead import Web2LeadGetParams, Web2LeadResponse
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -23,14 +23,37 @@ _POST = Route(
 class Web2LeadEndpoint(BaseEndpoint):
     """Web-to-lead capture (ABC API)."""
 
-    def get(self, **params: Any) -> Web2LeadResponse:
-        """GET /Web2Lead/get — accepts 29 optional string query params.
+    def get(self, *, params: Web2LeadGetParams | dict) -> Web2LeadResponse:
+        """GET /Web2Lead/get.
 
-        Pass params as snake_case kwargs (e.g., first_name="John").
-        See Web2LeadGetParams for all accepted fields.
+        Args:
+            params: Lead query parameters (29 optional string fields).
+                Accepts a :class:`Web2LeadGetParams` instance or a dict
+                with snake_case or PascalCase keys.
+
+        Params model: :class:`Web2LeadGetParams`
         """
         return self._request(_GET, params=params)
 
-    def post(self, data: dict | Any) -> Web2LeadResponse:
-        """POST /Web2Lead/post"""
-        return self._request(_POST, json=data)
+    def post(
+        self,
+        *,
+        name: str | None = None,
+        email: str | None = None,
+        phone: str | None = None,
+        company: str | None = None,
+        message: str | None = None,
+    ) -> Web2LeadResponse:
+        """POST /Web2Lead/post.
+
+        Args:
+            name: Lead name.
+            email: Lead email.
+            phone: Lead phone.
+            company: Lead company.
+            message: Lead message/inquiry.
+
+        Request model: :class:`Web2LeadRequest`
+        """
+        body = dict(name=name, email=email, phone=phone, company=company, message=message)
+        return self._request(_POST, json=body)

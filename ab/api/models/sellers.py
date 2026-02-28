@@ -31,7 +31,7 @@ class SellerExpandedDto(ResponseModel):
 class AddSellerRequest(RequestModel):
     """Body for POST /Seller."""
 
-    name: str = Field(..., description="Seller name")
+    name: Optional[str] = Field(None, description="Seller name")
     display_id: Optional[str] = Field(None, alias="displayId", description="Display identifier")
 
 

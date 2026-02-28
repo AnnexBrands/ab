@@ -26,6 +26,21 @@ class PartnersEndpoint(BaseEndpoint):
         """GET /partner/{id}"""
         return self._request(_GET.bind(id=partner_id))
 
-    def search(self, **kwargs: Any) -> list[Partner]:
-        """POST /partner/search"""
-        return self._request(_SEARCH, json=kwargs)
+    def search(
+        self,
+        *,
+        search_text: str | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+    ) -> list[Partner]:
+        """POST /partner/search.
+
+        Args:
+            search_text: Search query.
+            page: Page number.
+            page_size: Results per page.
+
+        Request model: :class:`PartnerSearchRequest`
+        """
+        body = dict(search_text=search_text, page=page, page_size=page_size)
+        return self._request(_SEARCH, json=body)

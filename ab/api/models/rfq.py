@@ -12,13 +12,13 @@ from ab.api.models.base import RequestModel, ResponseModel
 class RfqForJobParams(RequestModel):
     """Query parameters for GET /rfq/forjob/{jobId}."""
 
-    company_id: Optional[str] = Field(None, alias="companyId")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID filter")
 
 
 class RfqAcceptWinnerParams(RequestModel):
     """Query parameters for POST /rfq/{rfqId}/acceptwinner."""
 
-    final_amount: Optional[float] = Field(None, alias="finalAmount")
+    final_amount: Optional[float] = Field(None, alias="finalAmount", description="Final accepted amount")
 
 
 class QuoteRequestDisplayInfo(ResponseModel):

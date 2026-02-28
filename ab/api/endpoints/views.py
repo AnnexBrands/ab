@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ab.api.models.shared import ServiceBaseResponse
-    from ab.api.models.views import GridViewAccess, GridViewDetails, StoredProcedureColumn
+    from ab.api.models.views import GridViewAccess, GridViewCreateRequest, GridViewDetails, StoredProcedureColumn
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -32,9 +32,16 @@ class ViewsEndpoint(BaseEndpoint):
         """GET /views/{viewId}"""
         return self._request(_GET.bind(viewId=view_id))
 
-    def create(self, **kwargs: Any) -> GridViewDetails:
-        """POST /views"""
-        return self._request(_CREATE, json=kwargs)
+    def create(self, *, data: GridViewCreateRequest | dict) -> GridViewDetails:
+        """POST /views.
+
+        Args:
+            data: View creation payload with name, dataset_sp, and columns.
+                Accepts a :class:`GridViewCreateRequest` instance or a dict.
+
+        Request model: :class:`GridViewCreateRequest`
+        """
+        return self._request(_CREATE, json=data)
 
     def delete(self, view_id: str) -> ServiceBaseResponse:
         """DELETE /views/{viewId}"""
@@ -44,9 +51,17 @@ class ViewsEndpoint(BaseEndpoint):
         """GET /views/{viewId}/accessinfo"""
         return self._request(_GET_ACCESS_INFO.bind(viewId=view_id))
 
-    def update_access(self, view_id: str, **kwargs: Any) -> Any:
-        """PUT /views/{viewId}/access"""
-        return self._request(_UPDATE_ACCESS.bind(viewId=view_id), json=kwargs)
+    def update_access(self, view_id: str, *, data: GridViewAccess | dict) -> Any:
+        """PUT /views/{viewId}/access.
+
+        Args:
+            view_id: View identifier.
+            data: Access control payload with users and roles.
+                Accepts a :class:`GridViewAccess` instance or a dict.
+
+        Request model: :class:`GridViewAccess`
+        """
+        return self._request(_UPDATE_ACCESS.bind(viewId=view_id), json=data)
 
     def get_dataset_sps(self) -> list[StoredProcedureColumn]:
         """GET /views/datasetsps"""

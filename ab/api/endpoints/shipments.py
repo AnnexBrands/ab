@@ -69,9 +69,24 @@ class ShipmentsEndpoint(BaseEndpoint):
         """POST /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
         return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), json=data)
 
-    def book(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
-        """POST /job/{jobDisplayId}/shipment/book (ACPortal)"""
-        return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=data)
+    def book(
+        self,
+        job_display_id: int,
+        *,
+        provider_option_index: int | None = None,
+        ship_date: str | None = None,
+    ) -> ServiceBaseResponse:
+        """POST /job/{jobDisplayId}/shipment/book.
+
+        Args:
+            job_display_id: Job display ID.
+            provider_option_index: Selected rate quote index.
+            ship_date: Requested ship date.
+
+        Request model: :class:`ShipmentBookRequest`
+        """
+        body = dict(provider_option_index=provider_option_index, ship_date=ship_date)
+        return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=body)
 
     def delete_shipment(self, job_display_id: int) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment (ACPortal)"""
@@ -81,9 +96,22 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/accessorials (ACPortal)"""
         return self._request(_GET_ACCESSORIALS.bind(jobDisplayId=job_display_id))
 
-    def add_accessorial(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
-        """POST /job/{jobDisplayId}/shipment/accessorial (ACPortal)"""
-        return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=data)
+    def add_accessorial(
+        self,
+        job_display_id: int,
+        *,
+        add_on_id: str | None = None,
+    ) -> ServiceBaseResponse:
+        """POST /job/{jobDisplayId}/shipment/accessorial.
+
+        Args:
+            job_display_id: Job display ID.
+            add_on_id: Accessorial ID to add.
+
+        Request model: :class:`AccessorialAddRequest`
+        """
+        body = dict(add_on_id=add_on_id)
+        return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=body)
 
     def remove_accessorial(self, job_display_id: int, add_on_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId} (ACPortal)"""
@@ -99,8 +127,13 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/exportdata (ACPortal)"""
         return self._request(_GET_EXPORT_DATA.bind(jobDisplayId=job_display_id))
 
-    def post_export_data(self, job_display_id: int, data: dict | Any) -> ServiceBaseResponse:
-        """POST /job/{jobDisplayId}/shipment/exportdata (ACPortal)"""
+    def post_export_data(self, job_display_id: int, *, data: dict | None = None) -> ServiceBaseResponse:
+        """POST /job/{jobDisplayId}/shipment/exportdata.
+
+        Args:
+            job_display_id: Job display ID.
+            data: Export data payload.
+        """
         return self._request(_POST_EXPORT_DATA.bind(jobDisplayId=job_display_id), json=data)
 
     def get_rates_state(self, job_display_id: int) -> RatesState:

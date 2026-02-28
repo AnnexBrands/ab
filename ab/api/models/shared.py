@@ -7,7 +7,8 @@ from typing import Generic, List, Optional, TypeVar
 
 from pydantic import Field
 
-from ab.api.models.base import RequestModel, ResponseModel
+from ab.api.models.base import ResponseModel
+from ab.api.models.mixins import PaginatedRequestMixin, SortableRequestMixin
 
 logger = logging.getLogger(__name__)
 
@@ -71,10 +72,7 @@ class PaginatedList(ResponseModel, Generic[T]):
     has_next_page: bool = Field(False, alias="hasNextPage")
 
 
-class ListRequest(RequestModel):
+class ListRequest(PaginatedRequestMixin, SortableRequestMixin):
     """Shared request body for paginated list endpoints (Companies, Users)."""
 
-    page: int = Field(1, description="Page number (1-based)")
-    page_size: int = Field(25, alias="pageSize", description="Items per page")
     filters: Optional[dict] = Field(None, description="Filter criteria")
-    sort_by: Optional[str] = Field(None, alias="sortBy", description="Sort field name")

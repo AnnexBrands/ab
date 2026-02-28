@@ -8,7 +8,7 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
-from ab.api.models.mixins import FullAuditModel, IdentifiedModel
+from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin
 
 
 class ContactSimple(ResponseModel, IdentifiedModel):
@@ -111,13 +111,13 @@ class SearchContactEntityResult(ResponseModel):
 class ContactEditParams(RequestModel):
     """Query parameters for contact edit operations."""
 
-    franchisee_id: Optional[str] = Field(None, alias="franchiseeId")
+    franchisee_id: Optional[str] = Field(None, alias="franchiseeId", description="Franchisee UUID filter")
 
 
 class ContactHistoryParams(RequestModel):
     """Query parameters for contact history operations."""
 
-    statuses: Optional[str] = Field(None, alias="statuses")
+    statuses: Optional[str] = Field(None, alias="statuses", description="Comma-separated status filters")
 
 
 class ContactEditRequest(RequestModel):
@@ -130,12 +130,8 @@ class ContactEditRequest(RequestModel):
     addresses: Optional[List[dict]] = Field(None, description="Contact addresses")
 
 
-class ContactSearchRequest(RequestModel):
+class ContactSearchRequest(PaginatedRequestMixin, SearchableRequestMixin):
     """Body for POST /contacts/v2/search."""
-
-    search_text: Optional[str] = Field(None, alias="searchText", description="Search query")
-    page: int = Field(1, description="Page number")
-    page_size: int = Field(25, alias="pageSize", description="Results per page")
 
 
 # ---- Extended contact models (008) ----------------------------------------

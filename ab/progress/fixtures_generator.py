@@ -143,6 +143,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
     g3_pass = sum(1 for _, s in gate_results if s.g3_test_quality and s.g3_test_quality.passed)
     g4_pass = sum(1 for _, s in gate_results if s.g4_doc_accuracy and s.g4_doc_accuracy.passed)
     g5_pass = sum(1 for _, s in gate_results if s.g5_param_routing and s.g5_param_routing.passed)
+    g6_pass = sum(1 for _, s in gate_results if s.g6_request_quality and s.g6_request_quality.passed)
 
     lines = [
         "# Fixture Tracking",
@@ -151,7 +152,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         "",
         "**Constitution**: v2.3.0, Principles I–V",
         "**Quality Gates**: G1 (Model Fidelity), G2 (Fixture Status), "
-        "G3 (Test Quality), G4 (Doc Accuracy), G5 (Param Routing)",
+        "G3 (Test Quality), G4 (Doc Accuracy), G5 (Param Routing), G6 (Request Quality)",
         "**Rule**: Status is \"complete\" only when ALL applicable gates pass.",
         "",
         "## Summary",
@@ -163,6 +164,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         f"- **G3 Test Quality**: {g3_pass}/{total} pass",
         f"- **G4 Doc Accuracy**: {g4_pass}/{total} pass",
         f"- **G5 Param Routing**: {g5_pass}/{total} pass",
+        f"- **G6 Request Quality**: {g6_pass}/{total} pass",
         "",
         "## Status Legend",
         "",
@@ -172,8 +174,8 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         "",
         "## ACPortal Endpoints",
         "",
-        "| Endpoint Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | G5 | Status | Notes |",
-        "|---------------|--------|-----------|------------|----|----|----|----|----|--------|-------|",
+        "| Endpoint Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | G5 | G6 | Status | Notes |",
+        "|---------------|--------|-----------|------------|----|----|----|----|----|----|--------|-------|",
     ]
 
     for ep, status in gate_results:
@@ -182,6 +184,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
         g3 = _gate_badge(status.g3_test_quality.passed) if status.g3_test_quality else "—"
         g4 = _gate_badge(status.g4_doc_accuracy.passed) if status.g4_doc_accuracy else "—"
         g5 = _gate_badge(status.g5_param_routing.passed) if status.g5_param_routing else "—"
+        g6 = _gate_badge(status.g6_request_quality.passed) if status.g6_request_quality else "—"
 
         req_model = ep.get("request_model", "") or "—"
         resp_model = ep.get("response_model", "") or "—"
@@ -189,7 +192,7 @@ def generate_fixtures_md(output_path: Path | None = None) -> str:
 
         lines.append(
             f"| {ep['endpoint_path']} | {ep['method']} | {req_model} | {resp_model} "
-            f"| {g1} | {g2} | {g3} | {g4} | {g5} | {status.overall_status} | {notes} |"
+            f"| {g1} | {g2} | {g3} | {g4} | {g5} | {g6} | {status.overall_status} | {notes} |"
         )
 
     # Add Model Warning Summary

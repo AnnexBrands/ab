@@ -19,6 +19,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies) (014-endpoint-cli)
 - Filesystem (fixture JSON files in `tests/fixtures/requests/`) (015-endpoint-request-mocks)
 - N/A — SDK, no local storage (018-job-get-response)
+- N/A (SDK — no persistence) (019-refine-request-models)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -38,7 +39,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 019-refine-request-models: Added Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv
 - 018-job-get-response: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 018-job-get-response: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-- 017-response-model-rigor: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

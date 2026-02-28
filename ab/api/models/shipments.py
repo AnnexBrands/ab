@@ -21,15 +21,15 @@ class ShipmentParams(RequestModel):
 class RateQuotesParams(RequestModel):
     """Query parameters for GET rate quotes."""
 
-    ship_out_date: Optional[str] = Field(None, alias="ShipOutDate")
-    rates_sources: Optional[str] = Field(None, alias="RatesSources")
-    settings_key: Optional[str] = Field(None, alias="SettingsKey")
+    ship_out_date: Optional[str] = Field(None, alias="ShipOutDate", description="Requested ship-out date (ISO 8601)")
+    rates_sources: Optional[str] = Field(None, alias="RatesSources", description="Comma-separated rate source identifiers")
+    settings_key: Optional[str] = Field(None, alias="SettingsKey", description="Settings configuration key")
 
 
 class ShipmentDocumentParams(RequestModel):
     """Query parameters for GET shipment document."""
 
-    franchisee_id: Optional[str] = Field(None, alias="franchiseeId")
+    franchisee_id: Optional[str] = Field(None, alias="franchiseeId", description="Franchisee UUID filter")
 
 
 # ---- Response models --------------------------------------------------
@@ -166,4 +166,4 @@ class ShipmentBookRequest(RequestModel):
 class AccessorialAddRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/shipment/accessorial."""
 
-    add_on_id: str = Field(..., alias="addOnId", description="Accessorial ID to add")
+    add_on_id: Optional[str] = Field(None, alias="addOnId", description="Accessorial ID to add")

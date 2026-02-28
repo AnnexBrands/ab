@@ -6,14 +6,12 @@ from typing import List, Optional
 
 from pydantic import Field
 
-from ab.api.models.base import RequestModel, ResponseModel
+from ab.api.models.base import ResponseModel
+from ab.api.models.mixins import DateRangeRequestMixin
 
 
-class InsuranceReportRequest(RequestModel):
+class InsuranceReportRequest(DateRangeRequestMixin):
     """Filter for POST /reports/insurance."""
-
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
 
 
 class InsuranceReport(ResponseModel):
@@ -24,11 +22,9 @@ class InsuranceReport(ResponseModel):
     by_status: Optional[List[dict]] = Field(None, alias="byStatus", description="Breakdown by status")
 
 
-class SalesForecastReportRequest(RequestModel):
+class SalesForecastReportRequest(DateRangeRequestMixin):
     """Filter for POST /reports/sales."""
 
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
     agent_code: Optional[str] = Field(None, alias="agentCode", description="Agent code filter")
 
 
@@ -40,11 +36,8 @@ class SalesForecastReport(ResponseModel):
     by_rep: Optional[List[dict]] = Field(None, alias="byRep", description="Breakdown by sales rep")
 
 
-class SalesForecastSummaryRequest(RequestModel):
+class SalesForecastSummaryRequest(DateRangeRequestMixin):
     """Filter for POST /reports/sales/summary."""
-
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
 
 
 class SalesForecastSummary(ResponseModel):
@@ -54,11 +47,8 @@ class SalesForecastSummary(ResponseModel):
     count: Optional[int] = Field(None, description="Record count")
 
 
-class Web2LeadRevenueFilter(RequestModel):
+class Web2LeadRevenueFilter(DateRangeRequestMixin):
     """Filter for POST /reports/salesDrilldown, topRevenueCustomers, topRevenueSalesReps."""
-
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
 
 
 class RevenueCustomer(ResponseModel):
@@ -70,11 +60,8 @@ class RevenueCustomer(ResponseModel):
     average_value: Optional[float] = Field(None, alias="averageValue", description="Average job value")
 
 
-class ReferredByReportRequest(RequestModel):
+class ReferredByReportRequest(DateRangeRequestMixin):
     """Filter for POST /reports/referredBy."""
-
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
 
 
 class ReferredByReport(ResponseModel):
@@ -84,11 +71,8 @@ class ReferredByReport(ResponseModel):
     by_source: Optional[List[dict]] = Field(None, alias="bySource", description="Breakdown by source")
 
 
-class Web2LeadV2RequestModel(RequestModel):
+class Web2LeadV2RequestModel(DateRangeRequestMixin):
     """Filter for POST /reports/web2Lead."""
-
-    start_date: Optional[str] = Field(None, alias="startDate", description="Start date")
-    end_date: Optional[str] = Field(None, alias="endDate", description="End date")
 
 
 class Web2LeadReport(ResponseModel):

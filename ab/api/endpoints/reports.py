@@ -54,34 +54,140 @@ _WEB2LEAD = Route(
 class ReportsEndpoint(BaseEndpoint):
     """Report generation (ACPortal API)."""
 
-    def insurance(self, **kwargs: Any) -> InsuranceReport:
-        """POST /reports/insurance"""
-        return self._request(_INSURANCE, json=kwargs)
+    def insurance(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> InsuranceReport:
+        """POST /reports/insurance.
 
-    def sales(self, **kwargs: Any) -> SalesForecastReport:
-        """POST /reports/sales"""
-        return self._request(_SALES, json=kwargs)
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
 
-    def sales_summary(self, **kwargs: Any) -> SalesForecastSummary:
-        """POST /reports/sales/summary"""
-        return self._request(_SALES_SUMMARY, json=kwargs)
+        Request model: :class:`InsuranceReportRequest`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_INSURANCE, json=body)
 
-    def sales_drilldown(self, **kwargs: Any) -> list[RevenueCustomer]:
-        """POST /reports/salesDrilldown"""
-        return self._request(_SALES_DRILLDOWN, json=kwargs)
+    def sales(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        agent_code: str | None = None,
+    ) -> SalesForecastReport:
+        """POST /reports/sales.
 
-    def top_revenue_customers(self, **kwargs: Any) -> list[RevenueCustomer]:
-        """POST /reports/topRevenueCustomers"""
-        return self._request(_TOP_REVENUE_CUSTOMERS, json=kwargs)
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+            agent_code: Agent code filter.
 
-    def top_revenue_sales_reps(self, **kwargs: Any) -> list[RevenueCustomer]:
-        """POST /reports/topRevenueSalesReps"""
-        return self._request(_TOP_REVENUE_SALES_REPS, json=kwargs)
+        Request model: :class:`SalesForecastReportRequest`
+        """
+        body = dict(start_date=start_date, end_date=end_date, agent_code=agent_code)
+        return self._request(_SALES, json=body)
 
-    def referred_by(self, **kwargs: Any) -> ReferredByReport:
-        """POST /reports/referredBy"""
-        return self._request(_REFERRED_BY, json=kwargs)
+    def sales_summary(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> SalesForecastSummary:
+        """POST /reports/sales/summary.
 
-    def web2lead(self, **kwargs: Any) -> Web2LeadReport:
-        """POST /reports/web2Lead"""
-        return self._request(_WEB2LEAD, json=kwargs)
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`SalesForecastSummaryRequest`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_SALES_SUMMARY, json=body)
+
+    def sales_drilldown(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list[RevenueCustomer]:
+        """POST /reports/salesDrilldown.
+
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`Web2LeadRevenueFilter`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_SALES_DRILLDOWN, json=body)
+
+    def top_revenue_customers(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list[RevenueCustomer]:
+        """POST /reports/topRevenueCustomers.
+
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`Web2LeadRevenueFilter`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_TOP_REVENUE_CUSTOMERS, json=body)
+
+    def top_revenue_sales_reps(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> list[RevenueCustomer]:
+        """POST /reports/topRevenueSalesReps.
+
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`Web2LeadRevenueFilter`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_TOP_REVENUE_SALES_REPS, json=body)
+
+    def referred_by(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> ReferredByReport:
+        """POST /reports/referredBy.
+
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`ReferredByReportRequest`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_REFERRED_BY, json=body)
+
+    def web2lead(
+        self,
+        *,
+        start_date: str | None = None,
+        end_date: str | None = None,
+    ) -> Web2LeadReport:
+        """POST /reports/web2Lead.
+
+        Args:
+            start_date: Report start date (ISO 8601).
+            end_date: Report end date (ISO 8601).
+
+        Request model: :class:`Web2LeadV2RequestModel`
+        """
+        body = dict(start_date=start_date, end_date=end_date)
+        return self._request(_WEB2LEAD, json=body)

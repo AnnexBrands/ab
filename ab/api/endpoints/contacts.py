@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from ab.api.models.contacts import (
         ContactDetailedInfo,
+        ContactEditRequest,
         ContactGraphData,
         ContactHistory,
         ContactHistoryAggregated,
@@ -52,17 +53,66 @@ class ContactsEndpoint(BaseEndpoint):
         """GET /contacts/{contactId}/editdetails"""
         return self._request(_GET_DETAILS.bind(contactId=contact_id))
 
-    def update_details(self, contact_id: str, data: dict | Any) -> Any:
-        """PUT /contacts/{contactId}/editdetails"""
-        return self._request(_UPDATE_DETAILS.bind(contactId=contact_id), json=data)
+    def update_details(
+        self,
+        contact_id: str,
+        *,
+        data: ContactEditRequest | dict,
+        franchisee_id: str | None = None,
+    ) -> Any:
+        """PUT /contacts/{contactId}/editdetails.
 
-    def create(self, data: dict | Any) -> Any:
-        """POST /contacts/editdetails"""
-        return self._request(_CREATE, json=data)
+        Args:
+            contact_id: Contact identifier.
+            data: Contact edit payload with name, email, phone, addresses.
+                Accepts a :class:`ContactEditRequest` instance or a dict.
+            franchisee_id: Franchisee UUID filter (query param).
 
-    def search(self, data: dict | Any) -> list[SearchContactEntityResult]:
-        """POST /contacts/v2/search"""
-        return self._request(_SEARCH, json=data)
+        Request model: :class:`ContactEditRequest`
+        Params model: :class:`ContactEditParams`
+        """
+        params = dict(franchisee_id=franchisee_id)
+        return self._request(
+            _UPDATE_DETAILS.bind(contactId=contact_id), json=data, params=params,
+        )
+
+    def create(
+        self,
+        *,
+        data: ContactEditRequest | dict,
+        franchisee_id: str | None = None,
+    ) -> Any:
+        """POST /contacts/editdetails.
+
+        Args:
+            data: Contact creation payload with name, email, phone, addresses.
+                Accepts a :class:`ContactEditRequest` instance or a dict.
+            franchisee_id: Franchisee UUID filter (query param).
+
+        Request model: :class:`ContactEditRequest`
+        Params model: :class:`ContactEditParams`
+        """
+        params = dict(franchisee_id=franchisee_id)
+        return self._request(_CREATE, json=data, params=params)
+
+    def search(
+        self,
+        *,
+        search_text: str | None = None,
+        page: int | None = None,
+        page_size: int | None = None,
+    ) -> list[SearchContactEntityResult]:
+        """POST /contacts/v2/search.
+
+        Args:
+            search_text: Free-text search query.
+            page: Page number (1-based).
+            page_size: Items per page.
+
+        Request model: :class:`ContactSearchRequest`
+        """
+        body = dict(search_text=search_text, page=page, page_size=page_size)
+        return self._request(_SEARCH, json=body)
 
     def get_primary_details(self, contact_id: str) -> ContactPrimaryDetails:
         """GET /contacts/{contactId}/primarydetails"""
@@ -74,9 +124,14 @@ class ContactsEndpoint(BaseEndpoint):
 
     # ---- Extended (008) ---------------------------------------------------
 
-    def post_history(self, contact_id: str, **kwargs: Any) -> ContactHistory:
-        """POST /contacts/{contactId}/history"""
-        return self._request(_POST_HISTORY.bind(contactId=contact_id), json=kwargs)
+    def post_history(self, contact_id: str, *, data: dict | None = None) -> ContactHistory:
+        """POST /contacts/{contactId}/history.
+
+        Args:
+            contact_id: Contact identifier.
+            data: History request payload.
+        """
+        return self._request(_POST_HISTORY.bind(contactId=contact_id), json=data)
 
     def get_history_aggregated(self, contact_id: str) -> ContactHistoryAggregated:
         """GET /contacts/{contactId}/history/aggregated"""
@@ -86,10 +141,20 @@ class ContactsEndpoint(BaseEndpoint):
         """GET /contacts/{contactId}/history/graphdata"""
         return self._request(_GET_HISTORY_GRAPH_DATA.bind(contactId=contact_id))
 
-    def merge_preview(self, merge_to_id: str, **kwargs: Any) -> ContactMergePreview:
-        """POST /contacts/{mergeToId}/merge/preview"""
-        return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=kwargs)
+    def merge_preview(self, merge_to_id: str, *, data: dict | None = None) -> ContactMergePreview:
+        """POST /contacts/{mergeToId}/merge/preview.
 
-    def merge(self, merge_to_id: str, **kwargs: Any) -> Any:
-        """PUT /contacts/{mergeToId}/merge"""
-        return self._request(_MERGE.bind(mergeToId=merge_to_id), json=kwargs)
+        Args:
+            merge_to_id: Target contact to merge into.
+            data: Merge preview request payload.
+        """
+        return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=data)
+
+    def merge(self, merge_to_id: str, *, data: dict | None = None) -> Any:
+        """PUT /contacts/{mergeToId}/merge.
+
+        Args:
+            merge_to_id: Target contact to merge into.
+            data: Merge request payload.
+        """
+        return self._request(_MERGE.bind(mergeToId=merge_to_id), json=data)

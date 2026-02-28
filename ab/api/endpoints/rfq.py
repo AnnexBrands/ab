@@ -30,9 +30,17 @@ class RFQEndpoint(BaseEndpoint):
         """GET /rfq/forjob/{jobId}"""
         return self._request(_GET_FOR_JOB.bind(jobId=job_id))
 
-    def accept(self, rfq_id: str, **kwargs: Any) -> Any:
-        """POST /rfq/{rfqId}/accept"""
-        return self._request(_ACCEPT.bind(rfqId=rfq_id), json=kwargs)
+    def accept(self, rfq_id: str, *, notes: str | None = None) -> Any:
+        """POST /rfq/{rfqId}/accept.
+
+        Args:
+            rfq_id: RFQ identifier.
+            notes: Acceptance notes.
+
+        Request model: :class:`AcceptModel`
+        """
+        body = dict(notes=notes)
+        return self._request(_ACCEPT.bind(rfqId=rfq_id), json=body)
 
     def decline(self, rfq_id: str) -> Any:
         """POST /rfq/{rfqId}/decline"""
@@ -46,6 +54,14 @@ class RFQEndpoint(BaseEndpoint):
         """POST /rfq/{rfqId}/acceptwinner"""
         return self._request(_ACCEPT_WINNER.bind(rfqId=rfq_id))
 
-    def add_comment(self, rfq_id: str, **kwargs: Any) -> Any:
-        """POST /rfq/{rfqId}/comment"""
-        return self._request(_ADD_COMMENT.bind(rfqId=rfq_id), json=kwargs)
+    def add_comment(self, rfq_id: str, *, notes: str | None = None) -> Any:
+        """POST /rfq/{rfqId}/comment.
+
+        Args:
+            rfq_id: RFQ identifier.
+            notes: Comment text.
+
+        Request model: :class:`AcceptModel`
+        """
+        body = dict(notes=notes)
+        return self._request(_ADD_COMMENT.bind(rfqId=rfq_id), json=body)

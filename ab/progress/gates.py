@@ -1,11 +1,12 @@
 """Quality gate evaluation for endpoint status tracking.
 
-Five gates determine endpoint completion:
+Six gates determine endpoint completion:
 - G1: Model Fidelity — response model declares all fixture fields
 - G2: Fixture Status — fixture file exists on disk
 - G3: Test Quality — tests assert isinstance + zero __pydantic_extra__
 - G4: Documentation Accuracy — return type is not Any, docs exist
 - G5: Parameter Routing — query params use params_model dispatch
+- G6: Request Quality — typed signatures, field descriptions, verified optionality
 """
 
 from __future__ import annotations
@@ -48,6 +49,7 @@ class EndpointGateStatus:
     g3_test_quality: GateResult | None = None
     g4_doc_accuracy: GateResult | None = None
     g5_param_routing: GateResult | None = None
+    g6_request_quality: GateResult | None = None
     overall_status: str = "incomplete"
     notes: str = ""
 
@@ -59,6 +61,7 @@ class EndpointGateStatus:
             self.g3_test_quality,
             self.g4_doc_accuracy,
             self.g5_param_routing,
+            self.g6_request_quality,
         ]
         applicable = [g for g in gates if g is not None]
         if not applicable:
@@ -390,6 +393,148 @@ def evaluate_g5(endpoint_path: str, method: str) -> GateResult:
 
 
 # ---------------------------------------------------------------------------
+# G6: Request Quality
+# ---------------------------------------------------------------------------
+
+_KWARGS_RE = re.compile(r"\*\*kwargs\s*:\s*Any")
+_DATA_DICT_ANY_RE = re.compile(r"data\s*:\s*dict\s*\|\s*Any")
+
+
+def _g6a_typed_signature(
+    endpoint_path: str,
+    request_model: str | None,
+    params_model: str | None,
+) -> GateResult:
+    """G6a: Check endpoint method does NOT use **kwargs or data: dict | Any."""
+    if not request_model and not params_model:
+        return GateResult("G6a", True, "No request/params model — auto-pass")
+
+    endpoint_module = _infer_endpoint_module(endpoint_path)
+    if not endpoint_module:
+        return GateResult("G6a", False, "Cannot infer endpoint module")
+
+    ep_file = ENDPOINTS_DIR / f"{endpoint_module}.py"
+    if not ep_file.exists():
+        return GateResult("G6a", False, f"Endpoint file {endpoint_module}.py not found")
+
+    content = ep_file.read_text()
+
+    # Find methods associated with routes that reference this path
+    # We scan for method definitions that contain **kwargs or data: dict | Any
+    # within the vicinity of the endpoint path
+    path_escaped = re.escape(endpoint_path)
+    path_pattern = re.sub(r"\\{[^}]+\\}", r"\\{[^}]+\\}", path_escaped)
+
+    # Find Route definitions for this path
+    route_var_re = re.compile(
+        r"^(\w+)\s*=\s*Route\([^)]*?" + path_pattern + r"[^)]*?\)",
+        re.MULTILINE | re.DOTALL,
+    )
+    route_match = route_var_re.search(content)
+    if not route_match:
+        return GateResult("G6a", True, "Route not found in file — auto-pass")
+
+    route_var = route_match.group(1)
+
+    # Find the method that uses this route variable
+    method_re = re.compile(
+        r"def\s+(\w+)\s*\(([^)]*)\).*?self\._(?:request|paginated_request)\s*\(\s*"
+        + re.escape(route_var),
+        re.DOTALL,
+    )
+    method_match = method_re.search(content)
+    if not method_match:
+        return GateResult("G6a", True, "Method not found for route — auto-pass")
+
+    method_sig = method_match.group(2)
+
+    if _KWARGS_RE.search(method_sig):
+        return GateResult("G6a", False, f"Method uses **kwargs: Any")
+    if _DATA_DICT_ANY_RE.search(method_sig):
+        return GateResult("G6a", False, f"Method uses data: dict | Any")
+
+    return GateResult("G6a", True)
+
+
+def _g6b_field_descriptions(model_name: str | None) -> GateResult:
+    """G6b: Check every field in the request model has a non-empty description."""
+    if not model_name:
+        return GateResult("G6b", True, "No request model — auto-pass")
+
+    try:
+        model_cls = _resolve_model(model_name)
+    except (ImportError, AttributeError) as exc:
+        return GateResult("G6b", False, f"Model class not found: {exc}")
+
+    missing = []
+    for field_name, field_info in model_cls.model_fields.items():
+        desc = field_info.description
+        if not desc or not desc.strip():
+            missing.append(field_name)
+
+    if missing:
+        return GateResult(
+            "G6b", False,
+            f"{len(missing)} field(s) without description: {', '.join(missing)}",
+        )
+    return GateResult("G6b", True)
+
+
+def _g6c_optionality_verified(model_name: str | None) -> GateResult:
+    """G6c: Check model source has no '# TODO: verify optionality' markers."""
+    if not model_name:
+        return GateResult("G6c", True, "No request model — auto-pass")
+
+    # Find the model source file
+    models_dir = REPO_ROOT / "ab" / "api" / "models"
+    for py_file in models_dir.glob("*.py"):
+        content = py_file.read_text()
+        if f"class {model_name}" in content:
+            if "# TODO: verify optionality" in content:
+                return GateResult(
+                    "G6c", False,
+                    f"'{model_name}' source contains '# TODO: verify optionality'",
+                )
+            return GateResult("G6c", True)
+
+    return GateResult("G6c", True, "Model source not found — auto-pass")
+
+
+def evaluate_g6(
+    endpoint_path: str,
+    method: str,
+    request_model: str | None = None,
+    params_model: str | None = None,
+) -> GateResult:
+    """Evaluate G6: Request Model Quality.
+
+    Combines three sub-criteria:
+    - G6a: Typed signature (no **kwargs or data: dict | Any)
+    - G6b: Field descriptions (every field has description)
+    - G6c: Optionality verified (no TODO markers)
+
+    Returns PASS only if all three sub-criteria pass.
+    """
+    if not request_model and not params_model:
+        return GateResult("G6", True, "No request/params model — auto-pass")
+
+    results = [
+        _g6a_typed_signature(endpoint_path, request_model, params_model),
+        _g6b_field_descriptions(request_model),
+        _g6b_field_descriptions(params_model),  # Also check params model
+        _g6c_optionality_verified(request_model),
+        _g6c_optionality_verified(params_model),
+    ]
+
+    failures = [r for r in results if not r.passed]
+    if failures:
+        reasons = "; ".join(f"{r.gate}: {r.reason}" for r in failures)
+        return GateResult("G6", False, reasons)
+
+    return GateResult("G6", True)
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
@@ -435,8 +580,13 @@ def _infer_endpoint_module(endpoint_path: str) -> str | None:
         "dashboard": "dashboard",
         "views": "views",
         "commodities": "commodities",
+        "commodity": "commodities",
         "commodity-maps": "commodity_maps",
+        "commodity-map": "commodity_maps",
         "forms": "forms",
+        "note": "notes",
+        "partner": "partners",
+        "Lot": "lots",
         "v3": "jobs",  # v3/job/... maps to jobs module
     }
 
@@ -453,9 +603,10 @@ def evaluate_endpoint_gates(
     method: str,
     response_model: str | None = None,
     request_model: str | None = None,
+    params_model: str | None = None,
     notes: str = "",
 ) -> EndpointGateStatus:
-    """Evaluate all four gates for a single endpoint."""
+    """Evaluate all six gates for a single endpoint."""
     status = EndpointGateStatus(
         endpoint_path=endpoint_path,
         method=method,
@@ -471,6 +622,7 @@ def evaluate_endpoint_gates(
         status.g3_test_quality = GateResult("G3", False, "No response model")
         status.g4_doc_accuracy = GateResult("G4", False, "No response model")
         status.g5_param_routing = evaluate_g5(endpoint_path, method)
+        status.g6_request_quality = evaluate_g6(endpoint_path, method, request_model, params_model)
         status.compute_overall()
         return status
 
@@ -488,6 +640,7 @@ def evaluate_endpoint_gates(
     status.g3_test_quality = evaluate_g3(clean_model)
     status.g4_doc_accuracy = evaluate_g4(clean_model, endpoint_module)
     status.g5_param_routing = evaluate_g5(endpoint_path, method)
+    status.g6_request_quality = evaluate_g6(endpoint_path, method, request_model, params_model)
     status.compute_overall()
 
     return status
@@ -512,6 +665,7 @@ def evaluate_all_gates(
             method=entry.get("method", ""),
             response_model=entry.get("response_model"),
             request_model=entry.get("request_model"),
+            params_model=entry.get("params_model"),
             notes=entry.get("notes", ""),
         )
         results.append(status)
