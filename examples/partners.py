@@ -29,7 +29,7 @@ runner.add(
 
 runner.add(
     "search",
-    lambda api, data=None: api.partners.search(**(data or {})),
+    lambda api, data=None: api.partners.search(data=data or {}),
     request_model="PartnerSearchRequest",
     request_fixture_file="PartnerSearchRequest.json",
     response_model="List[Partner]",

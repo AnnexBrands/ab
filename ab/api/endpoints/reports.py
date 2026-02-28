@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.reports import (
         InsuranceReport,
+        InsuranceReportRequest,
         ReferredByReport,
+        ReferredByReportRequest,
         RevenueCustomer,
         SalesForecastReport,
+        SalesForecastReportRequest,
         SalesForecastSummary,
+        SalesForecastSummaryRequest,
         Web2LeadReport,
+        Web2LeadRevenueFilter,
+        Web2LeadV2RequestModel,
     )
 
 from ab.api.base import BaseEndpoint
@@ -54,140 +60,92 @@ _WEB2LEAD = Route(
 class ReportsEndpoint(BaseEndpoint):
     """Report generation (ACPortal API)."""
 
-    def insurance(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> InsuranceReport:
+    def insurance(self, *, data: InsuranceReportRequest | dict) -> InsuranceReport:
         """POST /reports/insurance.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Insurance report payload with date range filters.
+                Accepts an :class:`InsuranceReportRequest` instance or a dict.
 
         Request model: :class:`InsuranceReportRequest`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_INSURANCE, json=body)
+        return self._request(_INSURANCE, json=data)
 
-    def sales(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-        agent_code: str | None = None,
-    ) -> SalesForecastReport:
+    def sales(self, *, data: SalesForecastReportRequest | dict) -> SalesForecastReport:
         """POST /reports/sales.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
-            agent_code: Agent code filter.
+            data: Sales forecast payload with date range and agent code
+                filters. Accepts a :class:`SalesForecastReportRequest`
+                instance or a dict.
 
         Request model: :class:`SalesForecastReportRequest`
         """
-        body = dict(start_date=start_date, end_date=end_date, agent_code=agent_code)
-        return self._request(_SALES, json=body)
+        return self._request(_SALES, json=data)
 
-    def sales_summary(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> SalesForecastSummary:
+    def sales_summary(self, *, data: SalesForecastSummaryRequest | dict) -> SalesForecastSummary:
         """POST /reports/sales/summary.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Sales forecast summary payload with date range filters.
+                Accepts a :class:`SalesForecastSummaryRequest` instance
+                or a dict.
 
         Request model: :class:`SalesForecastSummaryRequest`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_SALES_SUMMARY, json=body)
+        return self._request(_SALES_SUMMARY, json=data)
 
-    def sales_drilldown(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> list[RevenueCustomer]:
+    def sales_drilldown(self, *, data: Web2LeadRevenueFilter | dict) -> list[RevenueCustomer]:
         """POST /reports/salesDrilldown.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Revenue filter payload with date range filters.
+                Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_SALES_DRILLDOWN, json=body)
+        return self._request(_SALES_DRILLDOWN, json=data)
 
-    def top_revenue_customers(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> list[RevenueCustomer]:
+    def top_revenue_customers(self, *, data: Web2LeadRevenueFilter | dict) -> list[RevenueCustomer]:
         """POST /reports/topRevenueCustomers.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Revenue filter payload with date range filters.
+                Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_TOP_REVENUE_CUSTOMERS, json=body)
+        return self._request(_TOP_REVENUE_CUSTOMERS, json=data)
 
-    def top_revenue_sales_reps(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> list[RevenueCustomer]:
+    def top_revenue_sales_reps(self, *, data: Web2LeadRevenueFilter | dict) -> list[RevenueCustomer]:
         """POST /reports/topRevenueSalesReps.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Revenue filter payload with date range filters.
+                Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_TOP_REVENUE_SALES_REPS, json=body)
+        return self._request(_TOP_REVENUE_SALES_REPS, json=data)
 
-    def referred_by(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> ReferredByReport:
+    def referred_by(self, *, data: ReferredByReportRequest | dict) -> ReferredByReport:
         """POST /reports/referredBy.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Referred-by report payload with date range filters.
+                Accepts a :class:`ReferredByReportRequest` instance or a dict.
 
         Request model: :class:`ReferredByReportRequest`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_REFERRED_BY, json=body)
+        return self._request(_REFERRED_BY, json=data)
 
-    def web2lead(
-        self,
-        *,
-        start_date: str | None = None,
-        end_date: str | None = None,
-    ) -> Web2LeadReport:
+    def web2lead(self, *, data: Web2LeadV2RequestModel | dict) -> Web2LeadReport:
         """POST /reports/web2Lead.
 
         Args:
-            start_date: Report start date (ISO 8601).
-            end_date: Report end date (ISO 8601).
+            data: Web2Lead report payload with date range filters.
+                Accepts a :class:`Web2LeadV2RequestModel` instance or a dict.
 
         Request model: :class:`Web2LeadV2RequestModel`
         """
-        body = dict(start_date=start_date, end_date=end_date)
-        return self._request(_WEB2LEAD, json=body)
+        return self._request(_WEB2LEAD, json=data)

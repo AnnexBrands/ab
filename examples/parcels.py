@@ -19,7 +19,7 @@ runner.add(
 
 runner.add(
     "create_parcel_item",
-    lambda api, data=None: api.jobs.create_parcel_item(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_parcel_item(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="ParcelItemCreateRequest",
     request_fixture_file="ParcelItemCreateRequest.json",
     response_model="ParcelItem",

@@ -22,7 +22,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.notes.create(**(data or {})),
+    lambda api, data=None: api.notes.create(data=data or {}),
     request_model="GlobalNoteCreateRequest",
     request_fixture_file="GlobalNoteCreateRequest.json",
     response_model="GlobalNote",
@@ -31,7 +31,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.notes.update(TEST_NOTE_ID, **(data or {})),
+    lambda api, data=None: api.notes.update(TEST_NOTE_ID, data=data or {}),
     request_model="GlobalNoteUpdateRequest",
     request_fixture_file="GlobalNoteUpdateRequest.json",
     response_model="GlobalNote",

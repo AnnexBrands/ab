@@ -8,7 +8,17 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.payments import ACHSessionResponse, PaymentInfo, PaymentSource
+    from ab.api.models.payments import (
+        ACHCreditTransferRequest,
+        ACHSessionRequest,
+        ACHSessionResponse,
+        AttachBankRequest,
+        BankSourceRequest,
+        PayBySourceRequest,
+        PaymentInfo,
+        PaymentSource,
+        VerifyACHRequest,
+    )
     from ab.api.models.shared import ServiceBaseResponse
 
 from ab.api.base import BaseEndpoint
@@ -67,88 +77,86 @@ class PaymentsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        source_id: str | None = None,
-        amount: float | None = None,
+        data: PayBySourceRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/bysource.
 
         Args:
             job_display_id: Job display ID.
-            source_id: Payment source to charge.
-            amount: Amount (or full balance).
+            data: Payment payload with source_id and amount.
+                Accepts a :class:`PayBySourceRequest` instance or a dict.
 
         Request model: :class:`PayBySourceRequest`
         """
-        body = dict(source_id=source_id, amount=amount)
-        return self._request(_PAY_BY_SOURCE.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_PAY_BY_SOURCE.bind(jobDisplayId=job_display_id), json=data)
 
     def create_ach_session(
         self,
         job_display_id: int,
         *,
-        return_url: str | None = None,
+        data: ACHSessionRequest | dict,
     ) -> ACHSessionResponse:
         """POST /job/{jobDisplayId}/payment/ACHPaymentSession.
 
         Args:
             job_display_id: Job display ID.
-            return_url: Redirect after session.
+            data: ACH session payload with return_url.
+                Accepts an :class:`ACHSessionRequest` instance or a dict.
 
         Request model: :class:`ACHSessionRequest`
         """
-        body = dict(return_url=return_url)
-        return self._request(_ACH_SESSION.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_ACH_SESSION.bind(jobDisplayId=job_display_id), json=data)
 
     def ach_credit_transfer(
         self,
         job_display_id: int,
         *,
-        amount: float | None = None,
+        data: ACHCreditTransferRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/ACHCreditTransfer.
 
         Args:
             job_display_id: Job display ID.
-            amount: Transfer amount.
+            data: ACH credit transfer payload with amount.
+                Accepts an :class:`ACHCreditTransferRequest` instance or a dict.
 
         Request model: :class:`ACHCreditTransferRequest`
         """
-        body = dict(amount=amount)
-        return self._request(_ACH_CREDIT_TRANSFER.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_ACH_CREDIT_TRANSFER.bind(jobDisplayId=job_display_id), json=data)
 
     def attach_customer_bank(
         self,
         job_display_id: int,
         *,
-        token: str | None = None,
+        data: AttachBankRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/attachCustomerBank.
 
         Args:
             job_display_id: Job display ID.
-            token: Bank account token.
+            data: Bank attachment payload with token.
+                Accepts an :class:`AttachBankRequest` instance or a dict.
 
         Request model: :class:`AttachBankRequest`
         """
-        body = dict(token=token)
-        return self._request(_ATTACH_BANK.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_ATTACH_BANK.bind(jobDisplayId=job_display_id), json=data)
 
     def verify_ach_source(
         self,
         job_display_id: int,
         *,
-        amounts: list[int] | None = None,
+        data: VerifyACHRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/verifyJobACHSource.
 
         Args:
             job_display_id: Job display ID.
-            amounts: Micro-deposit verification amounts.
+            data: ACH verification payload with micro-deposit amounts.
+                Accepts a :class:`VerifyACHRequest` instance or a dict.
 
         Request model: :class:`VerifyACHRequest`
         """
-        body = dict(amounts=amounts)
-        return self._request(_VERIFY_ACH.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_VERIFY_ACH.bind(jobDisplayId=job_display_id), json=data)
 
     def cancel_ach_verification(self, job_display_id: int) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/cancelJobACHVerification (ACPortal)"""
@@ -158,15 +166,15 @@ class PaymentsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        source_id: str | None = None,
+        data: BankSourceRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/payment/banksource.
 
         Args:
             job_display_id: Job display ID.
-            source_id: Bank source ID.
+            data: Bank source payload with source_id.
+                Accepts a :class:`BankSourceRequest` instance or a dict.
 
         Request model: :class:`BankSourceRequest`
         """
-        body = dict(source_id=source_id)
-        return self._request(_BANK_SOURCE.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_BANK_SOURCE.bind(jobDisplayId=job_display_id), json=data)

@@ -24,7 +24,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.lots.create(data or {}),
+    lambda api, data=None: api.lots.create(data=data or {}),
     request_model="AddLotRequest",
     request_fixture_file="AddLotRequest.json",
     response_model="LotDto",
@@ -33,7 +33,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.lots.update(1, data or {}),
+    lambda api, data=None: api.lots.update(1, data=data or {}),
     request_model="UpdateLotRequest",
     request_fixture_file="UpdateLotRequest.json",
     response_model="LotDto",

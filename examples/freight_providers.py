@@ -21,7 +21,7 @@ runner.add(
 
 runner.add(
     "save_freight_providers",
-    lambda api, data=None: api.jobs.save_freight_providers(TEST_JOB_DISPLAY_ID, **(data or {})),
+    lambda api, data=None: api.jobs.save_freight_providers(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="ShipmentPlanProvider",
     request_fixture_file="ShipmentPlanProvider.json",
 )

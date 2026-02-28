@@ -37,32 +37,34 @@ runner.add(
 
 runner.add(
     "save_grid_view_state",
-    lambda api: api.dashboard.save_grid_view_state(TEST_VIEW_ID, columns=[], filters=[]),
+    lambda api, data=None: api.dashboard.save_grid_view_state(
+        TEST_VIEW_ID, data=data or {"columns": [], "filters": []},
+    ),
 )
 
 runner.add(
     "inbound",
-    lambda api: api.dashboard.inbound(),
+    lambda api, data=None: api.dashboard.inbound(data=data or {}),
 )
 
 runner.add(
     "in_house",
-    lambda api: api.dashboard.in_house(),
+    lambda api, data=None: api.dashboard.in_house(data=data or {}),
 )
 
 runner.add(
     "outbound",
-    lambda api: api.dashboard.outbound(),
+    lambda api, data=None: api.dashboard.outbound(data=data or {}),
 )
 
 runner.add(
     "local_deliveries",
-    lambda api: api.dashboard.local_deliveries(),
+    lambda api, data=None: api.dashboard.local_deliveries(data=data or {}),
 )
 
 runner.add(
     "recent_estimates",
-    lambda api: api.dashboard.recent_estimates(),
+    lambda api, data=None: api.dashboard.recent_estimates(data=data or {}),
 )
 
 if __name__ == "__main__":

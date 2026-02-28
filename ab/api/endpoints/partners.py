@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.partners import Partner
+    from ab.api.models.partners import Partner, PartnerSearchRequest
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -26,21 +26,13 @@ class PartnersEndpoint(BaseEndpoint):
         """GET /partner/{id}"""
         return self._request(_GET.bind(id=partner_id))
 
-    def search(
-        self,
-        *,
-        search_text: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-    ) -> list[Partner]:
+    def search(self, *, data: PartnerSearchRequest | dict) -> list[Partner]:
         """POST /partner/search.
 
         Args:
-            search_text: Search query.
-            page: Page number.
-            page_size: Results per page.
+            data: Partner search payload.
+                Accepts a :class:`PartnerSearchRequest` instance or a dict.
 
         Request model: :class:`PartnerSearchRequest`
         """
-        body = dict(search_text=search_text, page=page, page_size=page_size)
-        return self._request(_SEARCH, json=body)
+        return self._request(_SEARCH, json=data)

@@ -39,7 +39,7 @@ runner.add(
 
 runner.add(
     "update_fulldetails",
-    lambda api, data=None: api.companies.update_fulldetails(TEST_COMPANY_UUID, **(data or {})),
+    lambda api, data=None: api.companies.update_fulldetails(TEST_COMPANY_UUID, data=data or {}),
     request_model="CompanyDetails",
     request_fixture_file="CompanyDetails.json",
     response_model="CompanyDetails",
@@ -48,7 +48,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.companies.create(**(data or {})),
+    lambda api, data=None: api.companies.create(data=data or {}),
     request_model="CompanyDetails",
     request_fixture_file="CompanyDetails.json",
     response_model="str",
@@ -56,7 +56,7 @@ runner.add(
 
 runner.add(
     "search",
-    lambda api, data=None: api.companies.search(**(data or {})),
+    lambda api, data=None: api.companies.search(data=data or {}),
     request_model="CompanySearchRequest",
     request_fixture_file="CompanySearchRequest.json",
     response_model="List[SearchCompanyResponse]",
@@ -65,7 +65,7 @@ runner.add(
 
 runner.add(
     "list",
-    lambda api, data=None: api.companies.list(data or {}),
+    lambda api, data=None: api.companies.list(data=data or {}),
     request_model="ListRequest",
     request_fixture_file="ListRequest.json",
     response_model="List[CompanySimple]",

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ab.api.models.shared import ListRequest
-    from ab.api.models.users import User
+    from ab.api.models.users import User, UserCreateRequest, UserUpdateRequest
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -35,42 +35,24 @@ class UsersEndpoint(BaseEndpoint):
         """GET /users/roles"""
         return self._request(_ROLES)
 
-    def create(
-        self,
-        *,
-        username: str | None = None,
-        email: str | None = None,
-        roles: list[str] | None = None,
-    ) -> Any:
+    def create(self, *, data: UserCreateRequest | dict) -> Any:
         """POST /users/user.
 
         Args:
-            username: Username.
-            email: Email.
-            roles: Role IDs.
+            data: User creation payload.
+                Accepts a :class:`UserCreateRequest` instance or a dict.
 
         Request model: :class:`UserCreateRequest`
         """
-        body = dict(username=username, email=email, roles=roles)
-        return self._request(_CREATE, json=body)
+        return self._request(_CREATE, json=data)
 
-    def update(
-        self,
-        *,
-        id: str | None = None,
-        username: str | None = None,
-        email: str | None = None,
-        roles: list[str] | None = None,
-    ) -> Any:
+    def update(self, *, data: UserUpdateRequest | dict) -> Any:
         """PUT /users/user.
 
         Args:
-            id: User ID.
-            username: Updated username.
-            email: Updated email.
-            roles: Updated role IDs.
+            data: User update payload.
+                Accepts a :class:`UserUpdateRequest` instance or a dict.
 
         Request model: :class:`UserUpdateRequest`
         """
-        body = dict(id=id, username=username, email=email, roles=roles)
-        return self._request(_UPDATE, json=body)
+        return self._request(_UPDATE, json=data)

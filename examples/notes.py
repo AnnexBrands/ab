@@ -16,7 +16,7 @@ runner.add(
 
 runner.add(
     "create_note",
-    lambda api, data=None: api.jobs.create_note(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_note(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="JobNoteCreateRequest",
     request_fixture_file="JobNoteCreateRequest.json",
     response_model="JobNote",
@@ -32,7 +32,7 @@ runner.add(
 
 runner.add(
     "update_note",
-    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, "note-id-placeholder", data or {}),
+    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, "note-id-placeholder", data=data or {}),
     request_model="JobNoteUpdateRequest",
     request_fixture_file="JobNoteUpdateRequest.json",
     response_model="JobNote",

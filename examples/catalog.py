@@ -24,7 +24,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.catalog.create(data or {}),
+    lambda api, data=None: api.catalog.create(data=data or {}),
     request_model="AddCatalogRequest",
     request_fixture_file="AddCatalogRequest.json",
     response_model="CatalogWithSellersDto",
@@ -33,7 +33,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.catalog.update(1, data or {}),
+    lambda api, data=None: api.catalog.update(1, data=data or {}),
     request_model="UpdateCatalogRequest",
     request_fixture_file="UpdateCatalogRequest.json",
     response_model="CatalogWithSellersDto",
@@ -47,7 +47,7 @@ runner.add(
 
 runner.add(
     "bulk_insert",
-    lambda api, data=None: api.catalog.bulk_insert(data or {}),
+    lambda api, data=None: api.catalog.bulk_insert(data=data or {}),
     request_model="BulkInsertRequest",
     request_fixture_file="BulkInsertRequest.json",
 )

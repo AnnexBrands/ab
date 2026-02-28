@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.web2lead import Web2LeadGetParams, Web2LeadResponse
+    from ab.api.models.web2lead import Web2LeadGetParams, Web2LeadRequest, Web2LeadResponse
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -35,25 +35,13 @@ class Web2LeadEndpoint(BaseEndpoint):
         """
         return self._request(_GET, params=params)
 
-    def post(
-        self,
-        *,
-        name: str | None = None,
-        email: str | None = None,
-        phone: str | None = None,
-        company: str | None = None,
-        message: str | None = None,
-    ) -> Web2LeadResponse:
+    def post(self, *, data: Web2LeadRequest | dict) -> Web2LeadResponse:
         """POST /Web2Lead/post.
 
         Args:
-            name: Lead name.
-            email: Lead email.
-            phone: Lead phone.
-            company: Lead company.
-            message: Lead message/inquiry.
+            data: Web-to-lead submission payload.
+                Accepts a :class:`Web2LeadRequest` instance or a dict.
 
         Request model: :class:`Web2LeadRequest`
         """
-        body = dict(name=name, email=email, phone=phone, company=company, message=message)
-        return self._request(_POST, json=body)
+        return self._request(_POST, json=data)

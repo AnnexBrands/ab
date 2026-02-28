@@ -30,7 +30,7 @@ runner.add(
 
 runner.add(
     "accept",
-    lambda api, data=None: api.rfq.accept(TEST_RFQ_ID, **(data or {})),
+    lambda api, data=None: api.rfq.accept(TEST_RFQ_ID, data=data or {}),
     request_model="AcceptModel",
     request_fixture_file="AcceptModel.json",
 )
@@ -52,7 +52,7 @@ runner.add(
 
 runner.add(
     "add_comment",
-    lambda api, data=None: api.rfq.add_comment(TEST_RFQ_ID, **(data or {})),
+    lambda api, data=None: api.rfq.add_comment(TEST_RFQ_ID, data=data or {}),
     request_model="AcceptModel",
     request_fixture_file="AcceptModel.json",
 )

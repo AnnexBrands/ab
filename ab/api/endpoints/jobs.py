@@ -18,27 +18,46 @@ if TYPE_CHECKING:
     from ab.api.models.jobs import (
         CalendarItem,
         ExtendedOnHoldInfo,
+        FreightItemsRequest,
+        IncrementStatusRequest,
+        ItemNotesRequest,
+        ItemUpdateRequest,
         Job,
         JobCreateRequest,
         JobNote,
+        JobNoteCreateRequest,
+        JobNoteUpdateRequest,
         JobPrice,
         JobSaveRequest,
+        JobSearchRequest,
         JobSearchResult,
         JobUpdatePageConfig,
         JobUpdateRequest,
+        MarkSmsAsReadModel,
+        OnHoldCommentRequest,
         OnHoldDetails,
         OnHoldNoteDetails,
         OnHoldUser,
         PackagingContainer,
         ParcelItem,
+        ParcelItemCreateRequest,
         ParcelItemWithMaterials,
         PricedFreightProvider,
+        RateQuoteRequest,
         ResolveJobOnHoldResponse,
+        ResolveOnHoldRequest,
+        SaveOnHoldDatesModel,
+        SaveOnHoldRequest,
         SaveOnHoldResponse,
+        SendDocumentEmailModel,
+        SendEmailRequest,
+        SendSMSModel,
         ShipmentPlanProvider,
         SortByModel,
         TimelineAgent,
         TimelineTask,
+        TimelineTaskCreateRequest,
+        TimelineTaskUpdateRequest,
         TrackingInfo,
         TrackingInfoV3,
     )
@@ -167,17 +186,19 @@ _LIST_ON_HOLD_FOLLOWUP_USERS = Route(
     "GET", "/job/{jobDisplayId}/onhold/followupusers", response_model="List[OnHoldUser]",
 )
 _ADD_ON_HOLD_COMMENT = Route(
-    "POST", "/job/{jobDisplayId}/onhold/{onHoldId}/comment", response_model="OnHoldNoteDetails",
+    "POST", "/job/{jobDisplayId}/onhold/{onHoldId}/comment",
+    request_model="OnHoldCommentRequest", response_model="OnHoldNoteDetails",
 )
 _UPDATE_ON_HOLD_DATES = Route(
     "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/dates", request_model="SaveOnHoldDatesModel",
 )
 _RESOLVE_ON_HOLD = Route(
-    "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/resolve", response_model="ResolveJobOnHoldResponse",
+    "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/resolve",
+    request_model="ResolveOnHoldRequest", response_model="ResolveJobOnHoldResponse",
 )
 
 # Email routes
-_SEND_EMAIL = Route("POST", "/job/{jobDisplayId}/email")
+_SEND_EMAIL = Route("POST", "/job/{jobDisplayId}/email", request_model="SendEmailRequest")
 _SEND_DOCUMENT_EMAIL = Route(
     "POST", "/job/{jobDisplayId}/email/senddocument", request_model="SendDocumentEmailModel",
 )
@@ -200,8 +221,12 @@ _SAVE_FREIGHT_PROVIDERS = Route(
 )
 _GET_FREIGHT_PROVIDER_RATE_QUOTE = Route(
     "POST", "/job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote",
+    request_model="RateQuoteRequest",
 )
-_ADD_FREIGHT_ITEMS = Route("POST", "/job/{jobDisplayId}/freightitems")
+_ADD_FREIGHT_ITEMS = Route(
+    "POST", "/job/{jobDisplayId}/freightitems",
+    request_model="FreightItemsRequest",
+)
 
 
 class JobsEndpoint(BaseEndpoint):
@@ -244,28 +269,17 @@ class JobsEndpoint(BaseEndpoint):
         """GET /job/search (ACPortal) — query params."""
         return self._request(_SEARCH, params=dict(job_display_id=job_display_id))
 
-    def search_by_details(
-        self,
-        *,
-        search_text: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-        sort_by: SortByModel | None = None,
-    ) -> list[JobSearchResult]:
+    def search_by_details(self, *, data: JobSearchRequest | dict) -> list[JobSearchResult]:
         """POST /job/searchByDetails.
 
         Args:
-            search_text: Free-text search across job fields.
-            page: Page number (1-based, alias pageNo).
-            page_size: Results per page.
-            sort_by: Sort configuration (field index + direction).
+            data: Search filter with search_text, page, page_size, and
+                sort_by. Accepts a :class:`JobSearchRequest` instance
+                or a dict.
 
         Request model: :class:`JobSearchRequest`
         """
-        body = dict(search_text=search_text, page=page, page_size=page_size)
-        if sort_by is not None:
-            body["sort_by"] = sort_by
-        return self._request(_SEARCH_BY_DETAILS, json=body)
+        return self._request(_SEARCH_BY_DETAILS, json=data)
 
     def get_price(self, job_display_id: int) -> JobPrice:
         """GET /job/{jobDisplayId}/price (ACPortal)"""
@@ -314,30 +328,24 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
+        data: TimelineTaskCreateRequest | dict,
         create_email: bool | None = None,
-        task_code: str | None = None,
-        scheduled_date: str | None = None,
-        comments: str | None = None,
-        agent_contact_id: str | None = None,
     ) -> TimelineTask:
         """POST /job/{jobDisplayId}/timeline.
 
         Args:
             job_display_id: Job display ID.
+            data: Timeline task payload with task_code, scheduled_date,
+                comments, and agent_contact_id. Accepts a
+                :class:`TimelineTaskCreateRequest` instance or a dict.
             create_email: Send status notification email (query param).
-            task_code: Task type code.
-            scheduled_date: When the task is scheduled.
-            comments: Task notes.
-            agent_contact_id: Assigned agent contact ID.
 
         Request model: :class:`TimelineTaskCreateRequest`
         Params model: :class:`TimelineCreateParams`
         """
-        body = dict(task_code=task_code, scheduled_date=scheduled_date,
-                     comments=comments, agent_contact_id=agent_contact_id)
         params = dict(create_email=create_email)
         return self._request(
-            _POST_TIMELINE.bind(jobDisplayId=job_display_id), json=body, params=params,
+            _POST_TIMELINE.bind(jobDisplayId=job_display_id), json=data, params=params,
         )
 
     def get_timeline_task(self, job_display_id: int, task_id: str) -> TimelineTask:
@@ -351,28 +359,22 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         task_id: str,
         *,
-        status: int | None = None,
-        scheduled_date: str | None = None,
-        completed_date: str | None = None,
-        comments: str | None = None,
+        data: TimelineTaskUpdateRequest | dict,
     ) -> TimelineTask:
         """PATCH /job/{jobDisplayId}/timeline/{timelineTaskId}.
 
         Args:
             job_display_id: Job display ID.
             task_id: Timeline task identifier.
-            status: New status code.
-            scheduled_date: Updated schedule.
-            completed_date: Completion date.
-            comments: Updated notes.
+            data: Timeline task update payload with status, scheduled_date,
+                completed_date, and comments. Accepts a
+                :class:`TimelineTaskUpdateRequest` instance or a dict.
 
         Request model: :class:`TimelineTaskUpdateRequest`
         """
-        body = dict(status=status, scheduled_date=scheduled_date,
-                     completed_date=completed_date, comments=comments)
         return self._request(
             _PATCH_TIMELINE_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id),
-            json=body,
+            json=data,
         )
 
     def delete_timeline_task(self, job_display_id: int, task_id: str) -> ServiceBaseResponse:
@@ -391,36 +393,36 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        create_email: bool | None = None,
+        data: IncrementStatusRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/timeline/incrementjobstatus.
 
         Args:
             job_display_id: Job display ID.
-            create_email: Send status notification email.
+            data: Status increment payload with create_email flag.
+                Accepts an :class:`IncrementStatusRequest` instance or a dict.
 
         Request model: :class:`IncrementStatusRequest`
         """
-        body = dict(create_email=create_email)
-        return self._request(_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=data)
 
     def undo_increment_status(
         self,
         job_display_id: int,
         *,
-        create_email: bool | None = None,
+        data: IncrementStatusRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/timeline/undoincrementjobstatus.
 
         Args:
             job_display_id: Job display ID.
-            create_email: Send status notification email.
+            data: Status undo payload with create_email flag.
+                Accepts an :class:`IncrementStatusRequest` instance or a dict.
 
         Request model: :class:`IncrementStatusRequest`
         """
-        body = dict(create_email=create_email)
         return self._request(
-            _UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=body,
+            _UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=data,
         )
 
     def set_quote_status(self, job_display_id: int) -> ServiceBaseResponse:
@@ -464,27 +466,19 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        comments: str | None = None,
-        task_code: str | None = None,
-        is_important: bool | None = None,
-        send_notification: bool | None = None,
-        due_date: str | None = None,
+        data: JobNoteCreateRequest | dict,
     ) -> JobNote:
         """POST /job/{jobDisplayId}/note.
 
         Args:
             job_display_id: Job display ID.
-            comments: Note content (max 8000 chars).
-            task_code: Associated timeline task code.
-            is_important: Flag as important.
-            send_notification: Notify assigned users.
-            due_date: Due date.
+            data: Note creation payload with comments, task_code,
+                is_important, send_notification, and due_date. Accepts a
+                :class:`JobNoteCreateRequest` instance or a dict.
 
         Request model: :class:`JobNoteCreateRequest`
         """
-        body = dict(comments=comments, task_code=task_code, is_important=is_important,
-                     send_notification=send_notification, due_date=due_date)
-        return self._request(_POST_NOTE.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_POST_NOTE.bind(jobDisplayId=job_display_id), json=data)
 
     def get_note(self, job_display_id: int, note_id: str) -> JobNote:
         """GET /job/{jobDisplayId}/note/{id} (ACPortal)"""
@@ -495,24 +489,21 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         note_id: str,
         *,
-        comments: str | None = None,
-        is_important: bool | None = None,
-        is_completed: bool | None = None,
+        data: JobNoteUpdateRequest | dict,
     ) -> JobNote:
         """PUT /job/{jobDisplayId}/note/{id}.
 
         Args:
             job_display_id: Job display ID.
             note_id: Note identifier.
-            comments: Updated content.
-            is_important: Updated flag.
-            is_completed: Mark complete.
+            data: Note update payload with comments, is_important,
+                and is_completed. Accepts a :class:`JobNoteUpdateRequest`
+                instance or a dict.
 
         Request model: :class:`JobNoteUpdateRequest`
         """
-        body = dict(comments=comments, is_important=is_important, is_completed=is_completed)
         return self._request(
-            _PUT_NOTE.bind(jobDisplayId=job_display_id, id=note_id), json=body,
+            _PUT_NOTE.bind(jobDisplayId=job_display_id, id=note_id), json=data,
         )
 
     # ---- Parcels & Items --------------------------------------------------
@@ -525,29 +516,19 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        description: str | None = None,
-        length: float | None = None,
-        width: float | None = None,
-        height: float | None = None,
-        weight: float | None = None,
-        quantity: int | None = None,
+        data: ParcelItemCreateRequest | dict,
     ) -> ParcelItem:
         """POST /job/{jobDisplayId}/parcelitems.
 
         Args:
             job_display_id: Job display ID.
-            description: Item description.
-            length: Length.
-            width: Width.
-            height: Height.
-            weight: Weight.
-            quantity: Quantity.
+            data: Parcel item payload with description, length, width,
+                height, weight, and quantity. Accepts a
+                :class:`ParcelItemCreateRequest` instance or a dict.
 
         Request model: :class:`ParcelItemCreateRequest`
         """
-        body = dict(description=description, length=length, width=width,
-                     height=height, weight=weight, quantity=quantity)
-        return self._request(_POST_PARCEL_ITEM.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_POST_PARCEL_ITEM.bind(jobDisplayId=job_display_id), json=data)
 
     def delete_parcel_item(self, job_display_id: int, parcel_item_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId} (ACPortal)"""
@@ -568,42 +549,38 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         item_id: str,
         *,
-        description: str | None = None,
-        quantity: int | None = None,
-        weight: float | None = None,
+        data: ItemUpdateRequest | dict,
     ) -> ServiceBaseResponse:
         """PUT /job/{jobDisplayId}/item/{itemId}.
 
         Args:
             job_display_id: Job display ID.
             item_id: Item identifier.
-            description: Updated description.
-            quantity: Updated quantity.
-            weight: Updated weight.
+            data: Item update payload with description, quantity, and weight.
+                Accepts an :class:`ItemUpdateRequest` instance or a dict.
 
         Request model: :class:`ItemUpdateRequest`
         """
-        body = dict(description=description, quantity=quantity, weight=weight)
         return self._request(
-            _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id), json=body,
+            _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id), json=data,
         )
 
     def add_item_notes(
         self,
         job_display_id: int,
         *,
-        notes: str | None = None,
+        data: ItemNotesRequest | dict,
     ) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/item/notes.
 
         Args:
             job_display_id: Job display ID.
-            notes: Item notes content.
+            data: Item notes payload. Accepts an :class:`ItemNotesRequest`
+                instance or a dict.
 
         Request model: :class:`ItemNotesRequest`
         """
-        body = dict(notes=notes)
-        return self._request(_POST_ITEM_NOTES.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_POST_ITEM_NOTES.bind(jobDisplayId=job_display_id), json=data)
 
     # ---- RFQ (job-scoped) -------------------------------------------------
 
@@ -629,25 +606,19 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        reason: str | None = None,
-        description: str | None = None,
-        follow_up_contact_id: str | None = None,
-        follow_up_date: str | None = None,
+        data: SaveOnHoldRequest | dict,
     ) -> SaveOnHoldResponse:
         """POST /job/{jobDisplayId}/onhold.
 
         Args:
             job_display_id: Job display ID.
-            reason: Hold reason.
-            description: Hold description.
-            follow_up_contact_id: Follow-up contact ID.
-            follow_up_date: Follow-up date.
+            data: On-hold payload with reason, description,
+                follow_up_contact_id, and follow_up_date. Accepts a
+                :class:`SaveOnHoldRequest` instance or a dict.
 
         Request model: :class:`SaveOnHoldRequest`
         """
-        body = dict(reason=reason, description=description,
-                     follow_up_contact_id=follow_up_contact_id, follow_up_date=follow_up_date)
-        return self._request(_CREATE_ON_HOLD.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_CREATE_ON_HOLD.bind(jobDisplayId=job_display_id), json=data)
 
     def delete_on_hold(self, job_display_id: int) -> Any:
         """DELETE /job/{jobDisplayId}/onhold (ACPortal)"""
@@ -662,27 +633,21 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         on_hold_id: str,
         *,
-        reason: str | None = None,
-        description: str | None = None,
-        follow_up_contact_id: str | None = None,
-        follow_up_date: str | None = None,
+        data: SaveOnHoldRequest | dict,
     ) -> SaveOnHoldResponse:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}.
 
         Args:
             job_display_id: Job display ID.
             on_hold_id: On-hold record identifier.
-            reason: Hold reason.
-            description: Hold description.
-            follow_up_contact_id: Follow-up contact ID.
-            follow_up_date: Follow-up date.
+            data: On-hold payload with reason, description,
+                follow_up_contact_id, and follow_up_date. Accepts a
+                :class:`SaveOnHoldRequest` instance or a dict.
 
         Request model: :class:`SaveOnHoldRequest`
         """
-        body = dict(reason=reason, description=description,
-                     follow_up_contact_id=follow_up_contact_id, follow_up_date=follow_up_date)
         return self._request(
-            _UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=body,
+            _UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=data,
         )
 
     def get_on_hold_followup_user(self, job_display_id: int, contact_id: str) -> OnHoldUser:
@@ -696,14 +661,17 @@ class JobsEndpoint(BaseEndpoint):
         return self._request(_LIST_ON_HOLD_FOLLOWUP_USERS.bind(jobDisplayId=job_display_id))
 
     def add_on_hold_comment(
-        self, job_display_id: int, on_hold_id: str, *, data: dict | None = None,
+        self, job_display_id: int, on_hold_id: str, *, data: OnHoldCommentRequest | dict,
     ) -> OnHoldNoteDetails:
         """POST /job/{jobDisplayId}/onhold/{onHoldId}/comment.
 
         Args:
             job_display_id: Job display ID.
             on_hold_id: On-hold record identifier.
-            data: Comment payload.
+            data: Comment payload. Accepts an :class:`OnHoldCommentRequest`
+                instance or a dict.
+
+        Request model: :class:`OnHoldCommentRequest`
         """
         return self._request(
             _ADD_ON_HOLD_COMMENT.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
@@ -715,34 +683,35 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         on_hold_id: str,
         *,
-        follow_up_date: str | None = None,
-        due_date: str | None = None,
+        data: SaveOnHoldDatesModel | dict,
     ) -> Any:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}/dates.
 
         Args:
             job_display_id: Job display ID.
             on_hold_id: On-hold record identifier.
-            follow_up_date: Follow-up date.
-            due_date: Due date.
+            data: On-hold dates payload with follow_up_date and due_date.
+                Accepts a :class:`SaveOnHoldDatesModel` instance or a dict.
 
         Request model: :class:`SaveOnHoldDatesModel`
         """
-        body = dict(follow_up_date=follow_up_date, due_date=due_date)
         return self._request(
             _UPDATE_ON_HOLD_DATES.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
-            json=body,
+            json=data,
         )
 
     def resolve_on_hold(
-        self, job_display_id: int, on_hold_id: str, *, data: dict | None = None,
+        self, job_display_id: int, on_hold_id: str, *, data: ResolveOnHoldRequest | dict,
     ) -> ResolveJobOnHoldResponse:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve.
 
         Args:
             job_display_id: Job display ID.
             on_hold_id: On-hold record identifier.
-            data: Resolution payload.
+            data: Resolution payload. Accepts a :class:`ResolveOnHoldRequest`
+                instance or a dict.
+
+        Request model: :class:`ResolveOnHoldRequest`
         """
         return self._request(
             _RESOLVE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
@@ -751,12 +720,15 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Email ------------------------------------------------------------
 
-    def send_email(self, job_display_id: int, *, data: dict | None = None) -> Any:
+    def send_email(self, job_display_id: int, *, data: SendEmailRequest | dict) -> Any:
         """POST /job/{jobDisplayId}/email.
 
         Args:
             job_display_id: Job display ID.
-            data: Email payload.
+            data: Email payload. Accepts a :class:`SendEmailRequest`
+                instance or a dict.
+
+        Request model: :class:`SendEmailRequest`
         """
         return self._request(_SEND_EMAIL.bind(jobDisplayId=job_display_id), json=data)
 
@@ -764,30 +736,20 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        to: list[str] | None = None,
-        cc: list[str] | None = None,
-        bcc: list[str] | None = None,
-        subject: str | None = None,
-        body: str | None = None,
-        document_type: str | None = None,
+        data: SendDocumentEmailModel | dict,
     ) -> Any:
         """POST /job/{jobDisplayId}/email/senddocument.
 
         Args:
             job_display_id: Job display ID.
-            to: Recipient emails.
-            cc: CC emails.
-            bcc: BCC emails.
-            subject: Email subject.
-            body: Email body.
-            document_type: Document type.
+            data: Document email payload with to, cc, bcc, subject, body,
+                and document_type. Accepts a :class:`SendDocumentEmailModel`
+                instance or a dict.
 
         Request model: :class:`SendDocumentEmailModel`
         """
-        payload = dict(to=to, cc=cc, bcc=bcc, subject=subject,
-                        body=body, document_type=document_type)
         return self._request(
-            _SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id), json=payload,
+            _SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id), json=data,
         )
 
     def create_transactional_email(self, job_display_id: int) -> Any:
@@ -810,39 +772,35 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        phone_number: str | None = None,
-        message: str | None = None,
-        template_id: str | None = None,
+        data: SendSMSModel | dict,
     ) -> Any:
         """POST /job/{jobDisplayId}/sms.
 
         Args:
             job_display_id: Job display ID.
-            phone_number: Phone number.
-            message: SMS message body.
-            template_id: SMS template ID.
+            data: SMS payload with phone_number, message, and template_id.
+                Accepts a :class:`SendSMSModel` instance or a dict.
 
         Request model: :class:`SendSMSModel`
         """
-        body = dict(phone_number=phone_number, message=message, template_id=template_id)
-        return self._request(_SEND_SMS.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_SEND_SMS.bind(jobDisplayId=job_display_id), json=data)
 
     def mark_sms_read(
         self,
         job_display_id: int,
         *,
-        sms_ids: list[str] | None = None,
+        data: MarkSmsAsReadModel | dict,
     ) -> Any:
         """POST /job/{jobDisplayId}/sms/read.
 
         Args:
             job_display_id: Job display ID.
-            sms_ids: SMS IDs to mark read.
+            data: SMS read payload with sms_ids. Accepts a
+                :class:`MarkSmsAsReadModel` instance or a dict.
 
         Request model: :class:`MarkSmsAsReadModel`
         """
-        body = dict(sms_ids=sms_ids)
-        return self._request(_MARK_SMS_READ.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_MARK_SMS_READ.bind(jobDisplayId=job_display_id), json=data)
 
     def get_sms_template(self, job_display_id: int, template_id: str) -> Any:
         """GET /job/{jobDisplayId}/sms/templatebased/{templateId} (ACPortal)"""
@@ -887,14 +845,17 @@ class JobsEndpoint(BaseEndpoint):
         )
 
     def get_freight_provider_rate_quote(
-        self, job_display_id: int, option_index: int, *, data: dict | None = None,
+        self, job_display_id: int, option_index: int, *, data: RateQuoteRequest | dict,
     ) -> Any:
         """POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote.
 
         Args:
             job_display_id: Job display ID.
             option_index: Provider option index.
-            data: Rate quote request payload.
+            data: Rate quote request payload. Accepts a
+                :class:`RateQuoteRequest` instance or a dict.
+
+        Request model: :class:`RateQuoteRequest`
         """
         return self._request(
             _GET_FREIGHT_PROVIDER_RATE_QUOTE.bind(
@@ -903,11 +864,14 @@ class JobsEndpoint(BaseEndpoint):
             json=data,
         )
 
-    def add_freight_items(self, job_display_id: int, *, data: dict | None = None) -> Any:
+    def add_freight_items(self, job_display_id: int, *, data: FreightItemsRequest | dict) -> Any:
         """POST /job/{jobDisplayId}/freightitems.
 
         Args:
             job_display_id: Job display ID.
-            data: Freight items payload.
+            data: Freight items payload. Accepts a :class:`FreightItemsRequest`
+                instance or a dict.
+
+        Request model: :class:`FreightItemsRequest`
         """
         return self._request(_ADD_FREIGHT_ITEMS.bind(jobDisplayId=job_display_id), json=data)

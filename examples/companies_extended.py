@@ -45,7 +45,7 @@ runner.add(
 
 runner.add(
     "save_geo_settings",
-    lambda api, data=None: api.companies.save_geo_settings(TEST_COMPANY_ID, **(data or {})),
+    lambda api, data=None: api.companies.save_geo_settings(TEST_COMPANY_ID, data=data or {}),
     request_model="GeoSettingsSaveRequest",
     request_fixture_file="GeoSettingsSaveRequest.json",
 )
@@ -80,7 +80,7 @@ runner.add(
 
 runner.add(
     "save_carrier_accounts",
-    lambda api, data=None: api.companies.save_carrier_accounts(TEST_COMPANY_ID, **(data or {})),
+    lambda api, data=None: api.companies.save_carrier_accounts(TEST_COMPANY_ID, data=data or {}),
     request_model="CarrierAccountSaveRequest",
     request_fixture_file="CarrierAccountSaveRequest.json",
 )

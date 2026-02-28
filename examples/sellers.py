@@ -24,7 +24,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.sellers.create(data or {}),
+    lambda api, data=None: api.sellers.create(data=data or {}),
     request_model="AddSellerRequest",
     request_fixture_file="AddSellerRequest.json",
     response_model="SellerDto",
@@ -33,7 +33,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.sellers.update(1, data or {}),
+    lambda api, data=None: api.sellers.update(1, data=data or {}),
     request_model="UpdateSellerRequest",
     request_fixture_file="UpdateSellerRequest.json",
     response_model="SellerDto",

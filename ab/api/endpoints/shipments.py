@@ -12,20 +12,30 @@ if TYPE_CHECKING:
     from ab.api.models.shared import ServiceBaseResponse
     from ab.api.models.shipments import (
         Accessorial,
+        AccessorialAddRequest,
         GlobalAccessorial,
         RateQuote,
         RatesState,
+        ShipmentBookRequest,
         ShipmentExportData,
+        ShipmentExportRequest,
         ShipmentInfo,
         ShipmentOriginDestination,
+        ShipmentRateQuoteRequest,
     )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 # Job-scoped shipment routes
-_GET_RATE_QUOTES = Route("GET", "/job/{jobDisplayId}/shipment/ratequotes", params_model="RateQuotesParams", response_model="List[RateQuote]")
-_POST_RATE_QUOTES = Route("POST", "/job/{jobDisplayId}/shipment/ratequotes", response_model="List[RateQuote]")
+_GET_RATE_QUOTES = Route(
+    "GET", "/job/{jobDisplayId}/shipment/ratequotes",
+    params_model="RateQuotesParams", response_model="List[RateQuote]",
+)
+_POST_RATE_QUOTES = Route(
+    "POST", "/job/{jobDisplayId}/shipment/ratequotes",
+    request_model="ShipmentRateQuoteRequest", response_model="List[RateQuote]",
+)
 _BOOK = Route(
     "POST", "/job/{jobDisplayId}/shipment/book",
     request_model="ShipmentBookRequest", response_model="ServiceBaseResponse",
@@ -47,13 +57,19 @@ _GET_ORIGIN_DEST = Route(
     response_model="ShipmentOriginDestination",
 )
 _GET_EXPORT_DATA = Route("GET", "/job/{jobDisplayId}/shipment/exportdata", response_model="ShipmentExportData")
-_POST_EXPORT_DATA = Route("POST", "/job/{jobDisplayId}/shipment/exportdata", response_model="ServiceBaseResponse")
+_POST_EXPORT_DATA = Route(
+    "POST", "/job/{jobDisplayId}/shipment/exportdata",
+    request_model="ShipmentExportRequest", response_model="ServiceBaseResponse",
+)
 _GET_RATES_STATE = Route("GET", "/job/{jobDisplayId}/shipment/ratesstate", response_model="RatesState")
 
 # Global shipment routes
 _GET_SHIPMENT = Route("GET", "/shipment", params_model="ShipmentParams", response_model="ShipmentInfo")
 _GET_GLOBAL_ACCESSORIALS = Route("GET", "/shipment/accessorials", response_model="List[GlobalAccessorial]")
-_GET_SHIPMENT_DOCUMENT = Route("GET", "/shipment/document/{docId}", params_model="ShipmentDocumentParams", response_model="bytes")
+_GET_SHIPMENT_DOCUMENT = Route(
+    "GET", "/shipment/document/{docId}",
+    params_model="ShipmentDocumentParams", response_model="bytes",
+)
 
 
 class ShipmentsEndpoint(BaseEndpoint):
@@ -65,28 +81,29 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
         return self._request(_GET_RATE_QUOTES.bind(jobDisplayId=job_display_id))
 
-    def request_rate_quotes(self, job_display_id: int, data: dict | None = None) -> list[RateQuote]:
-        """POST /job/{jobDisplayId}/shipment/ratequotes (ACPortal)"""
+    def request_rate_quotes(self, job_display_id: int, *, data: ShipmentRateQuoteRequest | dict) -> list[RateQuote]:
+        """POST /job/{jobDisplayId}/shipment/ratequotes.
+
+        Args:
+            job_display_id: Job display ID.
+            data: Rate quote request payload.
+                Accepts a :class:`ShipmentRateQuoteRequest` instance or a dict.
+
+        Request model: :class:`ShipmentRateQuoteRequest`
+        """
         return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), json=data)
 
-    def book(
-        self,
-        job_display_id: int,
-        *,
-        provider_option_index: int | None = None,
-        ship_date: str | None = None,
-    ) -> ServiceBaseResponse:
+    def book(self, job_display_id: int, *, data: ShipmentBookRequest | dict) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/book.
 
         Args:
             job_display_id: Job display ID.
-            provider_option_index: Selected rate quote index.
-            ship_date: Requested ship date.
+            data: Shipment booking payload.
+                Accepts a :class:`ShipmentBookRequest` instance or a dict.
 
         Request model: :class:`ShipmentBookRequest`
         """
-        body = dict(provider_option_index=provider_option_index, ship_date=ship_date)
-        return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=data)
 
     def delete_shipment(self, job_display_id: int) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment (ACPortal)"""
@@ -96,22 +113,17 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/accessorials (ACPortal)"""
         return self._request(_GET_ACCESSORIALS.bind(jobDisplayId=job_display_id))
 
-    def add_accessorial(
-        self,
-        job_display_id: int,
-        *,
-        add_on_id: str | None = None,
-    ) -> ServiceBaseResponse:
+    def add_accessorial(self, job_display_id: int, *, data: AccessorialAddRequest | dict) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/accessorial.
 
         Args:
             job_display_id: Job display ID.
-            add_on_id: Accessorial ID to add.
+            data: Accessorial add payload.
+                Accepts an :class:`AccessorialAddRequest` instance or a dict.
 
         Request model: :class:`AccessorialAddRequest`
         """
-        body = dict(add_on_id=add_on_id)
-        return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=body)
+        return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=data)
 
     def remove_accessorial(self, job_display_id: int, add_on_id: str) -> ServiceBaseResponse:
         """DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId} (ACPortal)"""
@@ -127,12 +139,15 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/shipment/exportdata (ACPortal)"""
         return self._request(_GET_EXPORT_DATA.bind(jobDisplayId=job_display_id))
 
-    def post_export_data(self, job_display_id: int, *, data: dict | None = None) -> ServiceBaseResponse:
+    def post_export_data(self, job_display_id: int, *, data: ShipmentExportRequest | dict) -> ServiceBaseResponse:
         """POST /job/{jobDisplayId}/shipment/exportdata.
 
         Args:
             job_display_id: Job display ID.
             data: Export data payload.
+                Accepts a :class:`ShipmentExportRequest` instance or a dict.
+
+        Request model: :class:`ShipmentExportRequest`
         """
         return self._request(_POST_EXPORT_DATA.bind(jobDisplayId=job_display_id), json=data)
 
