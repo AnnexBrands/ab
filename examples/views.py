@@ -30,7 +30,7 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.views.create(**(data or {})),
+    lambda api, data=None: api.views.create(data=data or {}),
     request_model="GridViewCreateRequest",
     request_fixture_file="GridViewCreateRequest.json",
     response_model="GridViewDetails",

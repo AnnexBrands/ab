@@ -5,7 +5,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.commodities import CommodityMap
+    from ab.api.models.commodities import (
+        CommodityMap,
+        CommodityMapCreateRequest,
+        CommodityMapSearchRequest,
+        CommodityMapUpdateRequest,
+    )
     from ab.api.models.shared import ServiceBaseResponse
 
 from ab.api.base import BaseEndpoint
@@ -28,61 +33,40 @@ class CommodityMapsEndpoint(BaseEndpoint):
         """GET /commodity-map/{id}"""
         return self._request(_GET.bind(id=map_id))
 
-    def update(
-        self,
-        map_id: str,
-        *,
-        custom_name: str | None = None,
-        commodity_id: str | None = None,
-    ) -> CommodityMap:
+    def update(self, map_id: str, *, data: CommodityMapUpdateRequest | dict) -> CommodityMap:
         """PUT /commodity-map/{id}.
 
         Args:
             map_id: Commodity map identifier.
-            custom_name: Custom commodity name.
-            commodity_id: Linked commodity ID.
+            data: Commodity map update payload with custom_name, commodity_id.
+                Accepts a :class:`CommodityMapUpdateRequest` instance or a dict.
 
         Request model: :class:`CommodityMapUpdateRequest`
         """
-        body = dict(custom_name=custom_name, commodity_id=commodity_id)
-        return self._request(_UPDATE.bind(id=map_id), json=body)
+        return self._request(_UPDATE.bind(id=map_id), json=data)
 
     def delete(self, map_id: str) -> ServiceBaseResponse:
         """DELETE /commodity-map/{id}"""
         return self._request(_DELETE.bind(id=map_id))
 
-    def create(
-        self,
-        *,
-        custom_name: str | None = None,
-        commodity_id: str | None = None,
-    ) -> CommodityMap:
+    def create(self, *, data: CommodityMapCreateRequest | dict) -> CommodityMap:
         """POST /commodity-map.
 
         Args:
-            custom_name: Custom commodity name.
-            commodity_id: Linked commodity ID.
+            data: Commodity map creation payload with custom_name, commodity_id.
+                Accepts a :class:`CommodityMapCreateRequest` instance or a dict.
 
         Request model: :class:`CommodityMapCreateRequest`
         """
-        body = dict(custom_name=custom_name, commodity_id=commodity_id)
-        return self._request(_CREATE, json=body)
+        return self._request(_CREATE, json=data)
 
-    def search(
-        self,
-        *,
-        search_text: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-    ) -> list[CommodityMap]:
+    def search(self, *, data: CommodityMapSearchRequest | dict) -> list[CommodityMap]:
         """POST /commodity-map/search.
 
         Args:
-            search_text: Search query.
-            page: Page number.
-            page_size: Results per page.
+            data: Search payload with search_text, page, page_size.
+                Accepts a :class:`CommodityMapSearchRequest` instance or a dict.
 
         Request model: :class:`CommodityMapSearchRequest`
         """
-        body = dict(search_text=search_text, page=page, page_size=page_size)
-        return self._request(_SEARCH, json=body)
+        return self._request(_SEARCH, json=data)

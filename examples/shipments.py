@@ -64,7 +64,7 @@ runner.add(
 
 runner.add(
     "book",
-    lambda api, data=None: api.shipments.book(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.shipments.book(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="ShipmentBookRequest",
     request_fixture_file="ShipmentBookRequest.json",
     response_model="ServiceBaseResponse",
@@ -80,7 +80,7 @@ runner.add(
 
 runner.add(
     "add_accessorial",
-    lambda api, data=None: api.shipments.add_accessorial(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.shipments.add_accessorial(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="AccessorialAddRequest",
     request_fixture_file="AccessorialAddRequest.json",
     response_model="ServiceBaseResponse",

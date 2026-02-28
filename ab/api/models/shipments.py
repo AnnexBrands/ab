@@ -167,3 +167,19 @@ class AccessorialAddRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/shipment/accessorial."""
 
     add_on_id: Optional[str] = Field(None, alias="addOnId", description="Accessorial ID to add")
+
+
+class ShipmentRateQuoteRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/shipment/ratequotes."""
+
+    ship_out_date: Optional[str] = Field(None, alias="ShipOutDate", description="Requested ship-out date (ISO 8601)")
+    rates_sources: Optional[str] = Field(
+        None, alias="RatesSources", description="Comma-separated rate source identifiers",
+    )
+    settings_key: Optional[str] = Field(None, alias="SettingsKey", description="Settings configuration key")
+
+
+class ShipmentExportRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/shipment/exportdata."""
+
+    export_data: Optional[dict] = Field(None, alias="exportData", description="Shipment export payload")

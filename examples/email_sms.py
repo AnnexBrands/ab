@@ -25,7 +25,7 @@ runner.add(
 
 runner.add(
     "send_document_email",
-    lambda api, data=None: api.jobs.send_document_email(TEST_JOB_DISPLAY_ID, **(data or {})),
+    lambda api, data=None: api.jobs.send_document_email(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="SendDocumentEmailModel",
     request_fixture_file="SendDocumentEmailModel.json",
 )
@@ -51,14 +51,14 @@ runner.add(
 
 runner.add(
     "send_sms",
-    lambda api, data=None: api.jobs.send_sms(TEST_JOB_DISPLAY_ID, **(data or {})),
+    lambda api, data=None: api.jobs.send_sms(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="SendSMSModel",
     request_fixture_file="SendSMSModel.json",
 )
 
 runner.add(
     "mark_sms_read",
-    lambda api, data=None: api.jobs.mark_sms_read(TEST_JOB_DISPLAY_ID, **(data or {})),
+    lambda api, data=None: api.jobs.mark_sms_read(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="MarkSmsAsReadModel",
     request_fixture_file="MarkSmsAsReadModel.json",
 )

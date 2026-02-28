@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.catalog import BulkInsertRequest, CatalogExpandedDto, CatalogWithSellersDto
+    from ab.api.models.catalog import AddCatalogRequest, BulkInsertRequest, CatalogExpandedDto, CatalogWithSellersDto, UpdateCatalogRequest
     from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint
@@ -32,24 +32,16 @@ _BULK_INSERT = Route("POST", "/Bulk/insert", request_model="BulkInsertRequest", 
 class CatalogEndpoint(BaseEndpoint):
     """Operations on catalogs (Catalog API)."""
 
-    def create(
-        self,
-        *,
-        title: str | None = None,
-        agent_id: str | None = None,
-        seller_ids: list[int] | None = None,
-    ) -> CatalogWithSellersDto:
+    def create(self, *, data: AddCatalogRequest | dict) -> CatalogWithSellersDto:
         """POST /Catalog.
 
         Args:
-            title: Catalog title.
-            agent_id: Assigned agent ID.
-            seller_ids: Seller IDs to attach.
+            data: Catalog creation payload.
+                Accepts an :class:`AddCatalogRequest` instance or a dict.
 
         Request model: :class:`AddCatalogRequest`
         """
-        body = dict(title=title, agent_id=agent_id, seller_ids=seller_ids)
-        return self._request(_CREATE, json=body)
+        return self._request(_CREATE, json=data)
 
     def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[CatalogExpandedDto]:
         """GET /Catalog — paginated list of catalogs."""
@@ -62,26 +54,17 @@ class CatalogEndpoint(BaseEndpoint):
         """GET /Catalog/{id}"""
         return self._request(_GET.bind(id=catalog_id))
 
-    def update(
-        self,
-        catalog_id: int,
-        *,
-        title: str | None = None,
-        agent_id: str | None = None,
-        seller_ids: list[int] | None = None,
-    ) -> CatalogWithSellersDto:
+    def update(self, catalog_id: int, *, data: UpdateCatalogRequest | dict) -> CatalogWithSellersDto:
         """PUT /Catalog/{id}.
 
         Args:
             catalog_id: Catalog identifier.
-            title: Updated title.
-            agent_id: Updated agent ID.
-            seller_ids: Updated seller IDs.
+            data: Catalog update payload.
+                Accepts an :class:`UpdateCatalogRequest` instance or a dict.
 
         Request model: :class:`UpdateCatalogRequest`
         """
-        body = dict(title=title, agent_id=agent_id, seller_ids=seller_ids)
-        return self._request(_UPDATE.bind(id=catalog_id), json=body)
+        return self._request(_UPDATE.bind(id=catalog_id), json=data)
 
     def delete(self, catalog_id: int) -> None:
         """DELETE /Catalog/{id}"""

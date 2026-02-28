@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.documents import Document
+    from ab.api.models.documents import Document, DocumentUpdateRequest
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -40,21 +40,14 @@ class DocumentsEndpoint(BaseEndpoint):
         """GET /documents/get/{docPath} — returns raw bytes."""
         return self._client.request("GET", f"/documents/get/{doc_path}", raw=True).content
 
-    def update(
-        self,
-        doc_id: str,
-        *,
-        doc_type: int | None = None,
-        sharing_level: int | None = None,
-    ) -> Any:
+    def update(self, doc_id: str, *, data: DocumentUpdateRequest | dict) -> Any:
         """PUT /documents/update/{docId}.
 
         Args:
             doc_id: Document identifier.
-            doc_type: Updated document type.
-            sharing_level: Updated sharing level.
+            data: Document update payload.
+                Accepts a :class:`DocumentUpdateRequest` instance or a dict.
 
         Request model: :class:`DocumentUpdateRequest`
         """
-        body = dict(doc_type=doc_type, sharing_level=sharing_level)
-        return self._request(_UPDATE.bind(docId=doc_id), json=body)
+        return self._request(_UPDATE.bind(docId=doc_id), json=data)

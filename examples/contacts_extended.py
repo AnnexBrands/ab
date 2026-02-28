@@ -15,7 +15,7 @@ MERGE_FROM_ID = "PLACEHOLDER"
 
 runner.add(
     "post_history",
-    lambda api: api.contacts.post_history(TEST_CONTACT_ID, event="SDK test"),
+    lambda api, data=None: api.contacts.post_history(TEST_CONTACT_ID, data=data or {"statuses": ""}),
     response_model="ContactHistory",
     fixture_file="ContactHistory.json",
 )
@@ -40,14 +40,14 @@ runner.add(
 
 runner.add(
     "merge_preview",
-    lambda api: api.contacts.merge_preview(TEST_CONTACT_ID, mergeFromId=MERGE_FROM_ID),
+    lambda api, data=None: api.contacts.merge_preview(TEST_CONTACT_ID, data=data or {"mergeFromId": MERGE_FROM_ID}),
     response_model="ContactMergePreview",
     fixture_file="ContactMergePreview.json",
 )
 
 runner.add(
     "merge",
-    lambda api: api.contacts.merge(TEST_CONTACT_ID, mergeFromId=MERGE_FROM_ID),
+    lambda api, data=None: api.contacts.merge(TEST_CONTACT_ID, data=data or {"mergeFromId": MERGE_FROM_ID}),
 )
 
 if __name__ == "__main__":

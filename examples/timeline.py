@@ -16,7 +16,7 @@ runner.add(
 
 runner.add(
     "create_timeline_task",
-    lambda api, data=None: api.jobs.create_timeline_task(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_timeline_task(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="TimelineTaskCreateRequest",
     request_fixture_file="TimelineTaskCreateRequest.json",
     response_model="TimelineTask",
@@ -32,7 +32,7 @@ runner.add(
 
 runner.add(
     "update_timeline_task",
-    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder", data or {}),
+    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder", data=data or {}),
     request_model="TimelineTaskUpdateRequest",
     request_fixture_file="TimelineTaskUpdateRequest.json",
     response_model="TimelineTask",

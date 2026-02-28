@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.sellers import SellerDto, SellerExpandedDto
+    from ab.api.models.sellers import AddSellerRequest, SellerDto, SellerExpandedDto, UpdateSellerRequest
     from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint
@@ -27,22 +27,16 @@ _DELETE = Route("DELETE", "/Seller/{id}", api_surface="catalog")
 class SellersEndpoint(BaseEndpoint):
     """Operations on sellers (Catalog API)."""
 
-    def create(
-        self,
-        *,
-        name: str | None = None,
-        display_id: str | None = None,
-    ) -> SellerDto:
+    def create(self, *, data: AddSellerRequest | dict) -> SellerDto:
         """POST /Seller.
 
         Args:
-            name: Seller name.
-            display_id: Display identifier.
+            data: Seller creation payload with name and display_id.
+                Accepts an :class:`AddSellerRequest` instance or a dict.
 
         Request model: :class:`AddSellerRequest`
         """
-        body = dict(name=name, display_id=display_id)
-        return self._request(_CREATE, json=body)
+        return self._request(_CREATE, json=data)
 
     def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[SellerExpandedDto]:
         """GET /Seller — paginated list."""
@@ -55,24 +49,17 @@ class SellersEndpoint(BaseEndpoint):
         """GET /Seller/{id}"""
         return self._request(_GET.bind(id=seller_id))
 
-    def update(
-        self,
-        seller_id: int,
-        *,
-        name: str | None = None,
-        display_id: str | None = None,
-    ) -> SellerDto:
+    def update(self, seller_id: int, *, data: UpdateSellerRequest | dict) -> SellerDto:
         """PUT /Seller/{id}.
 
         Args:
             seller_id: Seller identifier.
-            name: Updated name.
-            display_id: Updated display ID.
+            data: Seller update payload with name and display_id.
+                Accepts an :class:`UpdateSellerRequest` instance or a dict.
 
         Request model: :class:`UpdateSellerRequest`
         """
-        body = dict(name=name, display_id=display_id)
-        return self._request(_UPDATE.bind(id=seller_id), json=body)
+        return self._request(_UPDATE.bind(id=seller_id), json=data)
 
     def delete(self, seller_id: int) -> None:
         """DELETE /Seller/{id}"""

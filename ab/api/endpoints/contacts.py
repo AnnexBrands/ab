@@ -11,8 +11,11 @@ if TYPE_CHECKING:
         ContactGraphData,
         ContactHistory,
         ContactHistoryAggregated,
+        ContactHistoryCreateRequest,
         ContactMergePreview,
+        ContactMergeRequest,
         ContactPrimaryDetails,
+        ContactSearchRequest,
         ContactSimple,
         SearchContactEntityResult,
     )
@@ -32,14 +35,14 @@ _PRIMARY_DETAILS = Route("GET", "/contacts/{contactId}/primarydetails", response
 _CURRENT_USER = Route("GET", "/contacts/user", response_model="ContactSimple")
 
 # Extended contact routes (008)
-_POST_HISTORY = Route("POST", "/contacts/{contactId}/history", response_model="ContactHistory")
+_POST_HISTORY = Route("POST", "/contacts/{contactId}/history", request_model="ContactHistoryCreateRequest", response_model="ContactHistory")
 _GET_HISTORY_AGGREGATED = Route(
     "GET", "/contacts/{contactId}/history/aggregated",
     params_model="ContactHistoryParams", response_model="ContactHistoryAggregated",
 )
 _GET_HISTORY_GRAPH_DATA = Route("GET", "/contacts/{contactId}/history/graphdata", params_model="ContactHistoryParams", response_model="ContactGraphData")
-_MERGE_PREVIEW = Route("POST", "/contacts/{mergeToId}/merge/preview", response_model="ContactMergePreview")
-_MERGE = Route("PUT", "/contacts/{mergeToId}/merge")
+_MERGE_PREVIEW = Route("POST", "/contacts/{mergeToId}/merge/preview", request_model="ContactMergeRequest", response_model="ContactMergePreview")
+_MERGE = Route("PUT", "/contacts/{mergeToId}/merge", request_model="ContactMergeRequest")
 
 
 class ContactsEndpoint(BaseEndpoint):
@@ -95,24 +98,16 @@ class ContactsEndpoint(BaseEndpoint):
         params = dict(franchisee_id=franchisee_id)
         return self._request(_CREATE, json=data, params=params)
 
-    def search(
-        self,
-        *,
-        search_text: str | None = None,
-        page: int | None = None,
-        page_size: int | None = None,
-    ) -> list[SearchContactEntityResult]:
+    def search(self, *, data: ContactSearchRequest | dict) -> list[SearchContactEntityResult]:
         """POST /contacts/v2/search.
 
         Args:
-            search_text: Free-text search query.
-            page: Page number (1-based).
-            page_size: Items per page.
+            data: Search payload with search_text, page, and page_size.
+                Accepts a :class:`ContactSearchRequest` instance or a dict.
 
         Request model: :class:`ContactSearchRequest`
         """
-        body = dict(search_text=search_text, page=page, page_size=page_size)
-        return self._request(_SEARCH, json=body)
+        return self._request(_SEARCH, json=data)
 
     def get_primary_details(self, contact_id: str) -> ContactPrimaryDetails:
         """GET /contacts/{contactId}/primarydetails"""
@@ -124,12 +119,15 @@ class ContactsEndpoint(BaseEndpoint):
 
     # ---- Extended (008) ---------------------------------------------------
 
-    def post_history(self, contact_id: str, *, data: dict | None = None) -> ContactHistory:
+    def post_history(self, contact_id: str, *, data: ContactHistoryCreateRequest | dict) -> ContactHistory:
         """POST /contacts/{contactId}/history.
 
         Args:
             contact_id: Contact identifier.
-            data: History request payload.
+            data: History creation payload.
+                Accepts a :class:`ContactHistoryCreateRequest` instance or a dict.
+
+        Request model: :class:`ContactHistoryCreateRequest`
         """
         return self._request(_POST_HISTORY.bind(contactId=contact_id), json=data)
 
@@ -141,20 +139,26 @@ class ContactsEndpoint(BaseEndpoint):
         """GET /contacts/{contactId}/history/graphdata"""
         return self._request(_GET_HISTORY_GRAPH_DATA.bind(contactId=contact_id))
 
-    def merge_preview(self, merge_to_id: str, *, data: dict | None = None) -> ContactMergePreview:
+    def merge_preview(self, merge_to_id: str, *, data: ContactMergeRequest | dict) -> ContactMergePreview:
         """POST /contacts/{mergeToId}/merge/preview.
 
         Args:
             merge_to_id: Target contact to merge into.
             data: Merge preview request payload.
+                Accepts a :class:`ContactMergeRequest` instance or a dict.
+
+        Request model: :class:`ContactMergeRequest`
         """
         return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=data)
 
-    def merge(self, merge_to_id: str, *, data: dict | None = None) -> Any:
+    def merge(self, merge_to_id: str, *, data: ContactMergeRequest | dict) -> Any:
         """PUT /contacts/{mergeToId}/merge.
 
         Args:
             merge_to_id: Target contact to merge into.
             data: Merge request payload.
+                Accepts a :class:`ContactMergeRequest` instance or a dict.
+
+        Request model: :class:`ContactMergeRequest`
         """
         return self._request(_MERGE.bind(mergeToId=merge_to_id), json=data)

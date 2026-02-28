@@ -700,7 +700,7 @@ class TimelineAgent(ResponseModel):
 class TimelineTaskCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/timeline."""
 
-    task_code: Optional[str] = Field(None, alias="taskCode", description="Task type code")
+    task_code: str = Field(..., alias="taskCode", description="Task type code")
     scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Scheduled date")
     comments: Optional[str] = Field(None, description="Notes")
     agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
@@ -763,8 +763,8 @@ class JobNote(ResponseModel, IdentifiedModel):
 class JobNoteCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/note."""
 
-    comments: Optional[str] = Field(None, description="Note content (max 8000 chars)")
-    task_code: Optional[str] = Field(None, alias="taskCode", description="Associated timeline task code")
+    comments: str = Field(..., description="Note content (max 8000 chars)")
+    task_code: str = Field(..., alias="taskCode", description="Associated timeline task code")
     is_important: Optional[bool] = Field(None, alias="isImportant", description="Flag as important")
     send_notification: Optional[bool] = Field(None, alias="sendNotification", description="Notify assigned users")
     due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
@@ -841,7 +841,7 @@ class PackagingContainer(ResponseModel):
 class ParcelItemCreateRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/parcelitems."""
 
-    description: Optional[str] = Field(None, description="Item description")
+    description: str = Field(..., description="Item description")
     length: Optional[float] = Field(None, description="Length")
     width: Optional[float] = Field(None, description="Width")
     height: Optional[float] = Field(None, description="Height")
@@ -852,7 +852,7 @@ class ParcelItemCreateRequest(RequestModel):
 class ItemNotesRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/item/notes."""
 
-    notes: Optional[str] = Field(None, description="Item notes content")
+    notes: str = Field(..., description="Item notes content")
 
 
 class ItemUpdateRequest(RequestModel):
@@ -980,3 +980,40 @@ class ShipmentPlanProvider(RequestModel):
     """Save freight provider selection — POST /job/{jobDisplayId}/freightproviders."""
 
     provider_data: Optional[dict] = Field(None, alias="providerData", description="Provider selection data")
+
+
+# ---- Pattern C → B placeholder models (020) ---------------------------------
+
+
+class OnHoldCommentRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/onhold/{onHoldId}/comment."""
+
+    comment: Optional[str] = Field(None, description="Comment text")
+
+
+class ResolveOnHoldRequest(RequestModel):
+    """Body for PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve."""
+
+    resolution_notes: Optional[str] = Field(None, alias="resolutionNotes", description="Resolution notes")
+
+
+class SendEmailRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/email."""
+
+    to: Optional[List[str]] = Field(None, description="Recipient emails")
+    cc: Optional[List[str]] = Field(None, description="CC emails")
+    bcc: Optional[List[str]] = Field(None, description="BCC emails")
+    subject: Optional[str] = Field(None, description="Email subject")
+    body: Optional[str] = Field(None, description="Email body")
+
+
+class RateQuoteRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote."""
+
+    options: Optional[dict] = Field(None, description="Rate quote options")
+
+
+class FreightItemsRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/freightitems."""
+
+    items: Optional[List[dict]] = Field(None, description="Freight items to add")

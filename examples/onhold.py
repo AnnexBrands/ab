@@ -24,7 +24,7 @@ runner.add(
 
 runner.add(
     "create_on_hold",
-    lambda api, data=None: api.jobs.create_on_hold(TEST_JOB_DISPLAY_ID, **(data or {})),
+    lambda api, data=None: api.jobs.create_on_hold(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="SaveOnHoldRequest",
     request_fixture_file="SaveOnHoldRequest.json",
     response_model="SaveOnHoldResponse",
@@ -40,7 +40,7 @@ runner.add(
 
 runner.add(
     "update_on_hold",
-    lambda api, data=None: api.jobs.update_on_hold(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, **(data or {})),
+    lambda api, data=None: api.jobs.update_on_hold(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, data=data or {}),
     request_model="SaveOnHoldRequest",
     request_fixture_file="SaveOnHoldRequest.json",
     response_model="SaveOnHoldResponse",
@@ -49,21 +49,21 @@ runner.add(
 
 runner.add(
     "add_on_hold_comment",
-    lambda api: api.jobs.add_on_hold_comment(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, comment="Comment via SDK"),
+    lambda api: api.jobs.add_on_hold_comment(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, data={"comment": "Comment via SDK"}),
     response_model="OnHoldNoteDetails",
     fixture_file="OnHoldNoteDetails.json",
 )
 
 runner.add(
     "update_on_hold_dates",
-    lambda api, data=None: api.jobs.update_on_hold_dates(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, **(data or {})),
+    lambda api, data=None: api.jobs.update_on_hold_dates(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, data=data or {}),
     request_model="SaveOnHoldDatesModel",
     request_fixture_file="SaveOnHoldDatesModel.json",
 )
 
 runner.add(
     "resolve_on_hold",
-    lambda api: api.jobs.resolve_on_hold(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID),
+    lambda api, data=None: api.jobs.resolve_on_hold(TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, data=data or {}),
     response_model="ResolveJobOnHoldResponse",
     fixture_file="ResolveJobOnHoldResponse.json",
 )

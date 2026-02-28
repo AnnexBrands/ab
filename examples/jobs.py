@@ -33,7 +33,7 @@ runner.add(
 
 runner.add(
     "search_by_details",
-    lambda api, data=None: api.jobs.search_by_details(data or {}),
+    lambda api, data=None: api.jobs.search_by_details(data=data or {}),
     request_model="JobSearchRequest",
     request_fixture_file="JobSearchRequest.json",
     response_model="List[JobSearchResult]",
@@ -42,21 +42,21 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.jobs.create(data or {}),
+    lambda api, data=None: api.jobs.create(data=data or {}),
     request_model="JobCreateRequest",
     request_fixture_file="JobCreateRequest.json",
 )
 
 runner.add(
     "save",
-    lambda api, data=None: api.jobs.save(data or {}),
+    lambda api, data=None: api.jobs.save(data=data or {}),
     request_model="JobSaveRequest",
     request_fixture_file="JobSaveRequest.json",
 )
 
 runner.add(
     "update",
-    lambda api, data=None: api.jobs.update(data or {}),
+    lambda api, data=None: api.jobs.update(data=data or {}),
     request_model="JobUpdateRequest",
     request_fixture_file="JobUpdateRequest.json",
 )
@@ -136,7 +136,7 @@ runner.add(
 
 runner.add(
     "create_timeline_task",
-    lambda api, data=None: api.jobs.create_timeline_task(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_timeline_task(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="TimelineTaskCreateRequest",
     request_fixture_file="TimelineTaskCreateRequest.json",
     response_model="TimelineTask",
@@ -152,7 +152,7 @@ runner.add(
 
 runner.add(
     "update_timeline_task",
-    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "TASK_ID", data or {}),
+    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "TASK_ID", data=data or {}),
     request_model="TimelineTaskUpdateRequest",
     request_fixture_file="TimelineTaskUpdateRequest.json",
     response_model="TimelineTask",
@@ -207,7 +207,7 @@ runner.add(
 
 runner.add(
     "create_note",
-    lambda api, data=None: api.jobs.create_note(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_note(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="JobNoteCreateRequest",
     request_fixture_file="JobNoteCreateRequest.json",
     response_model="JobNote",
@@ -223,7 +223,7 @@ runner.add(
 
 runner.add(
     "update_note",
-    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, "NOTE_ID", data or {}),
+    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, "NOTE_ID", data=data or {}),
     request_model="JobNoteUpdateRequest",
     request_fixture_file="JobNoteUpdateRequest.json",
     response_model="JobNote",
@@ -245,7 +245,7 @@ runner.add(
 
 runner.add(
     "create_parcel_item",
-    lambda api, data=None: api.jobs.create_parcel_item(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.create_parcel_item(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="ParcelItemCreateRequest",
     request_fixture_file="ParcelItemCreateRequest.json",
     response_model="ParcelItem",
@@ -279,7 +279,7 @@ runner.add(
 
 runner.add(
     "update_item",
-    lambda api, data=None: api.jobs.update_item(TEST_JOB_DISPLAY_ID, "ITEM_ID", data or {}),
+    lambda api, data=None: api.jobs.update_item(TEST_JOB_DISPLAY_ID, "ITEM_ID", data=data or {}),
     request_model="ItemUpdateRequest",
     request_fixture_file="ItemUpdateRequest.json",
     response_model="ServiceBaseResponse",
@@ -288,7 +288,7 @@ runner.add(
 
 runner.add(
     "add_item_notes",
-    lambda api, data=None: api.jobs.add_item_notes(TEST_JOB_DISPLAY_ID, data or {}),
+    lambda api, data=None: api.jobs.add_item_notes(TEST_JOB_DISPLAY_ID, data=data or {}),
     request_model="ItemNotesRequest",
     request_fixture_file="ItemNotesRequest.json",
     response_model="ServiceBaseResponse",

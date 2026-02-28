@@ -8,7 +8,7 @@ runner = ExampleRunner("Users", env="staging")
 
 runner.add(
     "list",
-    lambda api, data=None: api.users.list(data or {}),
+    lambda api, data=None: api.users.list(data=data or {}),
     request_model="ListRequest",
     request_fixture_file="ListRequest.json",
     response_model="List[User]",
@@ -26,14 +26,14 @@ runner.add(
 
 runner.add(
     "create",
-    lambda api, data=None: api.users.create(data or {}),
+    lambda api, data=None: api.users.create(data=data or {}),
     request_model="UserCreateRequest",
     request_fixture_file="UserCreateRequest.json",
 )
 
 runner.add(
     "update",
-    lambda api, data=None: api.users.update(data or {}),
+    lambda api, data=None: api.users.update(data=data or {}),
     request_model="UserUpdateRequest",
     request_fixture_file="UserUpdateRequest.json",
 )

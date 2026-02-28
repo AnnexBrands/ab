@@ -8,7 +8,7 @@ runner = ExampleRunner("AutoPrice", env="staging")
 
 runner.add(
     "quick_quote",
-    lambda api, data=None: api.autoprice.quick_quote(data or {}),
+    lambda api, data=None: api.autoprice.quick_quote(data=data or {}),
     request_model="QuoteRequestModel",
     request_fixture_file="QuoteRequestModel.json",
     response_model="QuickQuoteResponse",
@@ -17,7 +17,7 @@ runner.add(
 
 runner.add(
     "quote_request",
-    lambda api, data=None: api.autoprice.quote_request(data or {}),
+    lambda api, data=None: api.autoprice.quote_request(data=data or {}),
     request_model="QuoteRequestModel",
     request_fixture_file="QuoteRequestModel.json",
     response_model="QuoteRequestResponse",

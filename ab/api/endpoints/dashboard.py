@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.dashboard import DashboardSummary, GridViewInfo, GridViewState
+    from ab.api.models.dashboard import DashboardCompanyParams, DashboardSummary, GridViewInfo, GridViewState
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -14,11 +14,11 @@ _GET = Route("GET", "/dashboard", params_model="DashboardParams", response_model
 _GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", params_model="DashboardCompanyParams", response_model="List[GridViewInfo]")
 _GET_GRID_VIEW_STATE = Route("GET", "/dashboard/gridviewstate/{id}", response_model="GridViewState")
 _SAVE_GRID_VIEW_STATE = Route("POST", "/dashboard/gridviewstate/{id}", request_model="GridViewState")
-_INBOUND = Route("POST", "/dashboard/inbound", params_model="DashboardCompanyParams")
-_IN_HOUSE = Route("POST", "/dashboard/inhouse", params_model="DashboardCompanyParams")
-_OUTBOUND = Route("POST", "/dashboard/outbound", params_model="DashboardCompanyParams")
-_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries", params_model="DashboardCompanyParams")
-_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates", params_model="DashboardCompanyParams")
+_INBOUND = Route("POST", "/dashboard/inbound", request_model="DashboardCompanyParams")
+_IN_HOUSE = Route("POST", "/dashboard/inhouse", request_model="DashboardCompanyParams")
+_OUTBOUND = Route("POST", "/dashboard/outbound", request_model="DashboardCompanyParams")
+_LOCAL_DELIVERIES = Route("POST", "/dashboard/local-deliveries", request_model="DashboardCompanyParams")
+_RECENT_ESTIMATES = Route("POST", "/dashboard/recentestimates", request_model="DashboardCompanyParams")
 
 
 class DashboardEndpoint(BaseEndpoint):
@@ -53,52 +53,57 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=data)
 
-    def inbound(self, *, company_id: str | None = None) -> Any:
+    def inbound(self, *, data: DashboardCompanyParams | dict) -> Any:
         """POST /dashboard/inbound.
 
         Args:
-            company_id: Company UUID filter.
+            data: Dashboard company filter payload.
+                Accepts a :class:`DashboardCompanyParams` instance or a dict.
 
-        Params model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyParams`
         """
-        return self._request(_INBOUND, json=dict(company_id=company_id))
+        return self._request(_INBOUND, json=data)
 
-    def in_house(self, *, company_id: str | None = None) -> Any:
+    def in_house(self, *, data: DashboardCompanyParams | dict) -> Any:
         """POST /dashboard/inhouse.
 
         Args:
-            company_id: Company UUID filter.
+            data: Dashboard company filter payload.
+                Accepts a :class:`DashboardCompanyParams` instance or a dict.
 
-        Params model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyParams`
         """
-        return self._request(_IN_HOUSE, json=dict(company_id=company_id))
+        return self._request(_IN_HOUSE, json=data)
 
-    def outbound(self, *, company_id: str | None = None) -> Any:
+    def outbound(self, *, data: DashboardCompanyParams | dict) -> Any:
         """POST /dashboard/outbound.
 
         Args:
-            company_id: Company UUID filter.
+            data: Dashboard company filter payload.
+                Accepts a :class:`DashboardCompanyParams` instance or a dict.
 
-        Params model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyParams`
         """
-        return self._request(_OUTBOUND, json=dict(company_id=company_id))
+        return self._request(_OUTBOUND, json=data)
 
-    def local_deliveries(self, *, company_id: str | None = None) -> Any:
+    def local_deliveries(self, *, data: DashboardCompanyParams | dict) -> Any:
         """POST /dashboard/local-deliveries.
 
         Args:
-            company_id: Company UUID filter.
+            data: Dashboard company filter payload.
+                Accepts a :class:`DashboardCompanyParams` instance or a dict.
 
-        Params model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyParams`
         """
-        return self._request(_LOCAL_DELIVERIES, json=dict(company_id=company_id))
+        return self._request(_LOCAL_DELIVERIES, json=data)
 
-    def recent_estimates(self, *, company_id: str | None = None) -> Any:
+    def recent_estimates(self, *, data: DashboardCompanyParams | dict) -> Any:
         """POST /dashboard/recentestimates.
 
         Args:
-            company_id: Company UUID filter.
+            data: Dashboard company filter payload.
+                Accepts a :class:`DashboardCompanyParams` instance or a dict.
 
-        Params model: :class:`DashboardCompanyParams`
+        Request model: :class:`DashboardCompanyParams`
         """
-        return self._request(_RECENT_ESTIMATES, json=dict(company_id=company_id))
+        return self._request(_RECENT_ESTIMATES, json=data)

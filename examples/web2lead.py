@@ -17,7 +17,7 @@ runner.add(
 
 runner.add(
     "post",
-    lambda api, data=None: api.web2lead.post(data or {}),
+    lambda api, data=None: api.web2lead.post(data=data or {}),
     request_model="Web2LeadRequest",
     request_fixture_file="Web2LeadRequest.json",
     response_model="Web2LeadResponse",

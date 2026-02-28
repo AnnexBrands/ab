@@ -12,14 +12,13 @@ if TYPE_CHECKING:
     from ab.api.models.companies import (
         BrandTree,
         CarrierAccount,
+        CarrierAccountSaveRequest,
         CompanyBrand,
         CompanyDetails,
         CompanySearchRequest,
         CompanySimple,
         GeoSettings,
-        GeoSettingsParams,
         GeoSettingsSaveRequest,
-        InheritFromParams,
         PackagingLabor,
         PackagingSettings,
         PackagingTariff,
@@ -50,7 +49,10 @@ _GET_BRANDS_TREE = Route("GET", "/companies/brandstree", response_model="List[Br
 _GET_GEO_AREA_COMPANIES = Route("GET", "/companies/geoAreaCompanies")
 _GET_GEO_SETTINGS = Route("GET", "/companies/{companyId}/geosettings", response_model="GeoSettings")
 _SAVE_GEO_SETTINGS = Route("POST", "/companies/{companyId}/geosettings", request_model="GeoSettingsSaveRequest")
-_GET_GLOBAL_GEO_SETTINGS = Route("GET", "/companies/geosettings", response_model="GeoSettings", params_model="GeoSettingsParams")
+_GET_GLOBAL_GEO_SETTINGS = Route(
+    "GET", "/companies/geosettings",
+    response_model="GeoSettings", params_model="GeoSettingsParams",
+)
 
 # Carrier Accounts (008)
 _SEARCH_CARRIER_ACCOUNTS = Route(
@@ -217,25 +219,18 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/carrierAcounts"""
         return self._request(_GET_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)))
 
-    def save_carrier_accounts(
-        self,
-        company_id: str,
-        *,
-        carrier_name: str | None = None,
-        account_number: str | None = None,
-    ) -> Any:
+    def save_carrier_accounts(self, company_id: str, *, data: CarrierAccountSaveRequest | dict) -> Any:
         """POST /companies/{companyId}/carrierAcounts.
 
         Args:
             company_id: Company ID or code.
-            carrier_name: Carrier name.
-            account_number: Account number.
+            data: Carrier account payload.
+                Accepts a :class:`CarrierAccountSaveRequest` instance or a dict.
 
         Request model: :class:`CarrierAccountSaveRequest`
         """
-        body = dict(carrier_name=carrier_name, account_number=account_number)
         return self._request(
-            _SAVE_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)), json=body,
+            _SAVE_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)), json=data,
         )
 
     # ---- Packaging (008) --------------------------------------------------

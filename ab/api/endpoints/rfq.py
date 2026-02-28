@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from ab.api.models.rfq import QuoteRequestDisplayInfo
+    from ab.api.models.rfq import AcceptModel, QuoteRequestDisplayInfo
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -30,17 +30,17 @@ class RFQEndpoint(BaseEndpoint):
         """GET /rfq/forjob/{jobId}"""
         return self._request(_GET_FOR_JOB.bind(jobId=job_id))
 
-    def accept(self, rfq_id: str, *, notes: str | None = None) -> Any:
+    def accept(self, rfq_id: str, *, data: AcceptModel | dict) -> Any:
         """POST /rfq/{rfqId}/accept.
 
         Args:
             rfq_id: RFQ identifier.
-            notes: Acceptance notes.
+            data: Acceptance payload.
+                Accepts an :class:`AcceptModel` instance or a dict.
 
         Request model: :class:`AcceptModel`
         """
-        body = dict(notes=notes)
-        return self._request(_ACCEPT.bind(rfqId=rfq_id), json=body)
+        return self._request(_ACCEPT.bind(rfqId=rfq_id), json=data)
 
     def decline(self, rfq_id: str) -> Any:
         """POST /rfq/{rfqId}/decline"""
@@ -54,14 +54,14 @@ class RFQEndpoint(BaseEndpoint):
         """POST /rfq/{rfqId}/acceptwinner"""
         return self._request(_ACCEPT_WINNER.bind(rfqId=rfq_id))
 
-    def add_comment(self, rfq_id: str, *, notes: str | None = None) -> Any:
+    def add_comment(self, rfq_id: str, *, data: AcceptModel | dict) -> Any:
         """POST /rfq/{rfqId}/comment.
 
         Args:
             rfq_id: RFQ identifier.
-            notes: Comment text.
+            data: Comment payload.
+                Accepts an :class:`AcceptModel` instance or a dict.
 
         Request model: :class:`AcceptModel`
         """
-        body = dict(notes=notes)
-        return self._request(_ADD_COMMENT.bind(rfqId=rfq_id), json=body)
+        return self._request(_ADD_COMMENT.bind(rfqId=rfq_id), json=data)

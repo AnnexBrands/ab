@@ -32,7 +32,7 @@ runner.add(
 
 runner.add(
     "search",
-    lambda api, data=None: api.contacts.search(data or {}),
+    lambda api, data=None: api.contacts.search(data=data or {}),
     request_model="ContactSearchRequest",
     request_fixture_file="ContactSearchRequest.json",
     response_model="List[SearchContactEntityResult]",
@@ -48,14 +48,14 @@ runner.add(
 
 runner.add(
     "update_details",
-    lambda api, data=None: api.contacts.update_details(str(TEST_CONTACT_ID), data or {}),
+    lambda api, data=None: api.contacts.update_details(str(TEST_CONTACT_ID), data=data or {}),
     request_model="ContactEditRequest",
     request_fixture_file="ContactEditRequest.json",
 )
 
 runner.add(
     "create",
-    lambda api, data=None: api.contacts.create(data or {}),
+    lambda api, data=None: api.contacts.create(data=data or {}),
     request_model="ContactEditRequest",
     request_fixture_file="ContactEditRequest.json",
 )

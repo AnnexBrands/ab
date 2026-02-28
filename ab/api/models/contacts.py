@@ -164,3 +164,18 @@ class ContactMergePreview(ResponseModel):
     merge_to: Optional[dict] = Field(None, alias="mergeTo", description="Target contact")
     merge_from: Optional[dict] = Field(None, alias="mergeFrom", description="Source contact")
     conflicts: Optional[List[dict]] = Field(None, description="Merge conflicts")
+
+
+# ---- Pattern C → B placeholder models (020) ---------------------------------
+
+
+class ContactHistoryCreateRequest(RequestModel):
+    """Body for POST /contacts/{contactId}/history."""
+
+    statuses: Optional[str] = Field(None, description="Comma-separated status filters")
+
+
+class ContactMergeRequest(RequestModel):
+    """Body for POST /contacts/{mergeToId}/merge/preview and PUT /contacts/{mergeToId}/merge."""
+
+    merge_from_id: Optional[str] = Field(None, alias="mergeFromId", description="Source contact ID to merge from")

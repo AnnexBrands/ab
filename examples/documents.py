@@ -32,7 +32,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.documents.update("doc-id-placeholder", data or {}),
+    lambda api, data=None: api.documents.update("doc-id-placeholder", data=data or {}),
     request_model="DocumentUpdateRequest",
     request_fixture_file="DocumentUpdateRequest.json",
 )
