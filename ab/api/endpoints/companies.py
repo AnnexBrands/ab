@@ -18,9 +18,13 @@ if TYPE_CHECKING:
         CompanySearchRequest,
         CompanySimple,
         GeoSettings,
+        GeoSettingsParams,
         GeoSettingsSaveRequest,
+        InheritFromParams,
         PackagingLabor,
+        PackagingLaborSaveRequest,
         PackagingSettings,
+        PackagingSettingsSaveRequest,
         PackagingTariff,
         SearchCompanyResponse,
     )
@@ -67,9 +71,9 @@ _SAVE_CARRIER_ACCOUNTS = Route(
 
 # Packaging (008)
 _GET_PACKAGING_SETTINGS = Route("GET", "/companies/{companyId}/packagingsettings", response_model="PackagingSettings")
-_SAVE_PACKAGING_SETTINGS = Route("POST", "/companies/{companyId}/packagingsettings")
+_SAVE_PACKAGING_SETTINGS = Route("POST", "/companies/{companyId}/packagingsettings", request_model="PackagingSettingsSaveRequest")
 _GET_PACKAGING_LABOR = Route("GET", "/companies/{companyId}/packaginglabor", response_model="PackagingLabor")
-_SAVE_PACKAGING_LABOR = Route("POST", "/companies/{companyId}/packaginglabor")
+_SAVE_PACKAGING_LABOR = Route("POST", "/companies/{companyId}/packaginglabor", request_model="PackagingLaborSaveRequest")
 _GET_INHERITED_PACKAGING_TARIFFS = Route(
     "GET", "/companies/{companyId}/inheritedPackagingTariffs",
     response_model="List[PackagingTariff]", params_model="InheritFromParams",
@@ -239,12 +243,15 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/packagingsettings"""
         return self._request(_GET_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_settings(self, company_id: str, *, data: dict) -> Any:
+    def save_packaging_settings(self, company_id: str, *, data: PackagingSettingsSaveRequest | dict) -> Any:
         """POST /companies/{companyId}/packagingsettings.
 
         Args:
             company_id: Company ID or code.
             data: Packaging settings payload.
+                Accepts a :class:`PackagingSettingsSaveRequest` instance or a dict.
+
+        Request model: :class:`PackagingSettingsSaveRequest`
         """
         return self._request(
             _SAVE_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)), json=data,
@@ -254,12 +261,15 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/packaginglabor"""
         return self._request(_GET_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_labor(self, company_id: str, *, data: dict) -> Any:
+    def save_packaging_labor(self, company_id: str, *, data: PackagingLaborSaveRequest | dict) -> Any:
         """POST /companies/{companyId}/packaginglabor.
 
         Args:
             company_id: Company ID or code.
             data: Packaging labor rates payload.
+                Accepts a :class:`PackagingLaborSaveRequest` instance or a dict.
+
+        Request model: :class:`PackagingLaborSaveRequest`
         """
         return self._request(
             _SAVE_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)), json=data,

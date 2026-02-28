@@ -251,12 +251,12 @@ used uniformly, which keeps examples runnable even without fixture data.
 
 ## Summary Table
 
-| # | Category | Severity | Issue |
-|---|----------|----------|-------|
-| 1 | Defect | Medium | Two `data: dict` methods survive in companies.py |
-| 2 | Defect | Low | Unnecessary import removal of Params models |
+| # | Category | Severity | Status |
+|---|----------|----------|--------|
+| 1 | Defect | Medium | **FIXED** in #21-followup — `PackagingSettingsSaveRequest`, `PackagingLaborSaveRequest` added |
+| 2 | Defect | Low | **FIXED** in #21-followup — `GeoSettingsParams`, `InheritFromParams` restored in TYPE_CHECKING |
 | 3 | Design | Medium | Placeholder models are barely typed |
-| 4 | Design | Low | `DashboardCompanyParams` naming inconsistency |
+| 4 | Design | Low | **FIXED** in #21-followup — `DashboardCompanyRequest` created for POST routes |
 | 5 | Design | Medium | Breaking change without migration docs |
 | 6 | Risk | Low | No `None` guard on `data` parameter |
 | 7 | Quality | Low | Formulaic docstrings replace informative ones |
@@ -268,6 +268,5 @@ used uniformly, which keeps examples runnable even without fixture data.
 
 ## Recommendation
 
-**Request changes** on issues #1 (incomplete conversion) and #5 (breaking
-change documentation).  The remaining items can be addressed in follow-up
-work but should be filed as issues so they don't get lost.
+Issues #1, #2, and #4 have been resolved in the follow-up PR.  The remaining
+items (#3, #5, #6, #7) can be addressed in future work.

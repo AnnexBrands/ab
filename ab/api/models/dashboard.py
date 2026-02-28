@@ -17,7 +17,13 @@ class DashboardParams(RequestModel):
 
 
 class DashboardCompanyParams(RequestModel):
-    """Query parameters for dashboard operations (company filter)."""
+    """Query parameters for GET /dashboard/gridviews (company filter)."""
+
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID filter")
+
+
+class DashboardCompanyRequest(RequestModel):
+    """Body for POST /dashboard/{inbound,inhouse,outbound,...} endpoints."""
 
     company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID filter")
 

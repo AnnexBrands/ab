@@ -799,3 +799,18 @@ class PackagingTariff(ResponseModel):
 
     tariff_id: Optional[str] = Field(None, alias="tariffId", description="Tariff ID")
     rates: Optional[List[dict]] = Field(None, description="Tariff rate entries")
+
+
+# ---- Pattern C → B placeholder models (020) ---------------------------------
+
+
+class PackagingSettingsSaveRequest(RequestModel):
+    """Body for POST /companies/{companyId}/packagingsettings."""
+
+    settings: Optional[dict] = Field(None, description="Packaging settings data")
+
+
+class PackagingLaborSaveRequest(RequestModel):
+    """Body for POST /companies/{companyId}/packaginglabor."""
+
+    labor_rates: Optional[List[dict]] = Field(None, alias="laborRates", description="Labor rate entries")
