@@ -112,10 +112,15 @@ def evaluate_g1(model_name: str) -> GateResult:
                 return GateResult("G1", True, "Empty paginated data — nothing to validate")
             data = items[0]
         elif "items" in data and isinstance(data["items"], list):
-            items = data["items"]
-            if not items:
-                return GateResult("G1", True, "Empty paginated items — nothing to validate")
-            data = items[0]
+            # Only unwrap if the model itself does NOT declare an 'items' field;
+            # otherwise this is a real model property (e.g. Job.items), not a
+            # paginated wrapper.
+            model_fields = model_cls.model_fields if hasattr(model_cls, "model_fields") else {}
+            if "items" not in model_fields:
+                items = data["items"]
+                if not items:
+                    return GateResult("G1", True, "Empty paginated items — nothing to validate")
+                data = items[0]
 
     try:
         instance = model_cls.model_validate(data)
