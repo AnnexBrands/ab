@@ -30,7 +30,17 @@ print(contact.first_name, contact.last_name)
 
 ```python
 details = api.contacts.get_details("30760")
-print(details.emails)
+print(details.full_name, details.contact_display_id)
+
+# Typed nested lists with IDE autocomplete
+for entry in details.emails_list or []:
+    print(entry.email.email, entry.meta_data)
+
+for entry in details.phones_list or []:
+    print(entry.phone.phone, entry.meta_data)
+
+for entry in details.addresses_list or []:
+    print(entry.address.city, entry.address.state)
 ```
 
 ### update_details

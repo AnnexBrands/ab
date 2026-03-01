@@ -91,9 +91,11 @@ from ab.api.models.companies import (
     USPSAccount,
 )
 from ab.api.models.contacts import (
+    ContactAddressEntry,
     ContactDetailedInfo,
     ContactEditParams,
     ContactEditRequest,
+    ContactEmailEntry,
     ContactGraphData,
     ContactHistory,
     ContactHistoryAggregated,
@@ -101,9 +103,12 @@ from ab.api.models.contacts import (
     ContactHistoryParams,
     ContactMergePreview,
     ContactMergeRequest,
+    ContactPhoneEntry,
     ContactPrimaryDetails,
     ContactSearchRequest,
     ContactSimple,
+    EmailDetails,
+    PhoneDetails,
     SearchContactEntityResult,
 )
 from ab.api.models.dashboard import DashboardCompanyParams, DashboardCompanyRequest, DashboardParams, DashboardSummary, GridViewInfo, GridViewState
@@ -331,6 +336,7 @@ __all__ = [
     "SearchContactEntityResult", "ContactEditRequest", "ContactSearchRequest",
     "ContactHistory", "ContactHistoryAggregated", "ContactGraphData", "ContactMergePreview",
     "ContactHistoryCreateRequest", "ContactMergeRequest",
+    "EmailDetails", "PhoneDetails", "ContactEmailEntry", "ContactPhoneEntry", "ContactAddressEntry",
     # Jobs
     "JobSearchParams", "FreightProvidersParams",
     "TimelineCreateParams", "TrackingV3Params", "JobNoteListParams", "JobRfqListParams",

@@ -24,8 +24,7 @@ class TestContactModels:
         data = require_fixture("ContactDetailedInfo", "GET", "/contacts/{id}/editdetails", required=True)
         model = ContactDetailedInfo.model_validate(data)
         assert isinstance(model, ContactDetailedInfo)
-        # ContactDetailedInfo still has extra fields — not yet fully typed
-        # assert_no_extra_fields(model)
+        assert_no_extra_fields(model)
 
     @pytest.mark.live
     def test_contact_primary_details(self):

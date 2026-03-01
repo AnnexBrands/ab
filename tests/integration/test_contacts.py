@@ -18,7 +18,7 @@ class TestContactsIntegration:
     def test_get_details(self, api):
         result = api.contacts.get_details(str(TEST_CONTACT_ID))
         assert isinstance(result, ContactDetailedInfo)
-        # ContactDetailedInfo not yet fully typed — skip extra_fields check
+        assert_no_extra_fields(result)
 
     def test_get_primary_details(self, api):
         result = api.contacts.get_primary_details(str(TEST_CONTACT_ID))

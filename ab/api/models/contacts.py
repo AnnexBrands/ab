@@ -62,17 +62,117 @@ class ContactSimple(ResponseModel, IdentifiedModel):
     web_site: Optional[str] = Field(None, alias="webSite", description="Website URL")
 
 
-class ContactDetailedInfo(ResponseModel, FullAuditModel):
-    """Full editable contact details — GET /contacts/{id}/editdetails."""
+# ---- Typed sub-models for ContactDetailedInfo nested lists (021) -----------
 
+
+class EmailDetails(ResponseModel):
+    """Inner email object within ContactEmailEntry — maps to C# EmailDetails."""
+
+    id: Optional[int] = Field(None, description="Email row ID")
+    email: Optional[str] = Field(None, description="Email address")
+    invalid: Optional[bool] = Field(None, description="Whether email is invalid")
+    dont_spam: Optional[bool] = Field(None, alias="dontSpam", description="Do-not-spam flag")
+
+
+class PhoneDetails(ResponseModel):
+    """Inner phone object within ContactPhoneEntry — maps to C# PhoneDetails."""
+
+    id: Optional[int] = Field(None, description="Phone row ID")
+    phone: Optional[str] = Field(None, description="Phone number")
+
+
+class ContactEmailEntry(ResponseModel):
+    """Email list entry — maps to C# ContactEmailEditDetails (DetailBindingBase)."""
+
+    id: Optional[int] = Field(None, description="Mapping row ID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    deactivated_reason: Optional[str] = Field(None, alias="deactivatedReason", description="Deactivation reason")
+    meta_data: Optional[str] = Field(None, alias="metaData", description="Type label (e.g. 'Primary', 'Fax')")
+    editable: Optional[bool] = Field(None, description="Edit permission")
+    email: Optional[EmailDetails] = Field(None, description="Nested email details")
+
+
+class ContactPhoneEntry(ResponseModel):
+    """Phone list entry — maps to C# ContactPhoneEditDetails (DetailBindingBase)."""
+
+    id: Optional[int] = Field(None, description="Mapping row ID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    deactivated_reason: Optional[str] = Field(None, alias="deactivatedReason", description="Deactivation reason")
+    meta_data: Optional[str] = Field(None, alias="metaData", description="Type label")
+    editable: Optional[bool] = Field(None, description="Edit permission")
+    phone: Optional[PhoneDetails] = Field(None, description="Nested phone details")
+
+
+class ContactAddressEntry(ResponseModel):
+    """Address list entry — maps to C# ContactAddressEditDetails (DetailBindingBase)."""
+
+    id: Optional[int] = Field(None, description="Mapping row ID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+    deactivated_reason: Optional[str] = Field(None, alias="deactivatedReason", description="Deactivation reason")
+    meta_data: Optional[str] = Field(None, alias="metaData", description="Type label")
+    editable: Optional[bool] = Field(None, description="Edit permission")
+    address: Optional[CompanyAddress] = Field(None, description="Nested address (reuses CompanyAddress)")
+
+
+class ContactDetailedInfo(ResponseModel, FullAuditModel):
+    """Full editable contact details — GET /contacts/{id}/editdetails.
+
+    Maps to C# ContactEditDetails → ContactExtendedDetails<T> → ContactBaseDetails.
+    """
+
+    # --- ContactBaseDetails fields ---
     first_name: Optional[str] = Field(None, alias="firstName", description="First name")
     last_name: Optional[str] = Field(None, alias="lastName", description="Last name")
     email: Optional[str] = Field(None, description="Email address")
     phone: Optional[str] = Field(None, description="Phone number")
-    addresses: Optional[List[dict]] = Field(None, description="Contact addresses")
-    phones: Optional[List[dict]] = Field(None, description="Phone numbers")
-    emails: Optional[List[dict]] = Field(None, description="Email addresses")
-    company_info: Optional[dict] = Field(None, alias="companyInfo", description="Associated company")
+    contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Display ID")
+    full_name: Optional[str] = Field(None, alias="fullName", description="Full display name")
+    contact_type_id: Optional[int] = Field(None, alias="contactTypeId", description="Contact type identifier")
+    care_of: Optional[str] = Field(None, alias="careOf", description="Care-of / attention line")
+    bol_notes: Optional[str] = Field(None, alias="bolNotes", description="BOL notes")
+    tax_id: Optional[str] = Field(None, alias="taxId", description="Tax ID")
+    is_business: Optional[bool] = Field(None, alias="isBusiness", description="Whether this is a business contact")
+    is_payer: Optional[bool] = Field(None, alias="isPayer", description="Whether this contact is a payer")
+    is_prefered: Optional[bool] = Field(None, alias="isPrefered", description="Whether this contact is preferred")
+    is_private: Optional[bool] = Field(None, alias="isPrivate", description="Whether this contact is private")
+    is_primary: Optional[bool] = Field(None, alias="isPrimary", description="Whether this is the primary contact")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Associated company UUID")
+    root_contact_id: Optional[int] = Field(None, alias="rootContactId", description="Root contact identifier")
+    owner_franchisee_id: Optional[str] = Field(None, alias="ownerFranchiseeId", description="Owner franchisee UUID")
+    company: Optional[dict] = Field(None, description="Full company object")
+    legacy_guid: Optional[str] = Field(None, alias="legacyGuid", description="Legacy system GUID")
+    assistant: Optional[str] = Field(None, description="Assistant name")
+    department: Optional[str] = Field(None, description="Department name")
+    web_site: Optional[str] = Field(None, alias="webSite", description="Website URL")
+    birth_date: Optional[str] = Field(None, alias="birthDate", description="Birth date")
+    job_title_id: Optional[int] = Field(None, alias="jobTitleId", description="Job title identifier")
+    job_title: Optional[str] = Field(None, alias="jobTitle", description="Job title")
+
+    # --- ContactExtendedDetails fields ---
+    emails_list: Optional[List[ContactEmailEntry]] = Field(None, alias="emailsList", description="Typed email entries")
+    phones_list: Optional[List[ContactPhoneEntry]] = Field(None, alias="phonesList", description="Typed phone entries")
+    addresses_list: Optional[List[ContactAddressEntry]] = Field(
+        None, alias="addressesList", description="Typed address entries",
+    )
+    fax: Optional[str] = Field(None, description="Fax number")
+    primary_phone: Optional[str] = Field(None, alias="primaryPhone", description="Primary phone number")
+    primary_email: Optional[str] = Field(None, alias="primaryEmail", description="Primary email address")
+
+    # --- ContactEditDetails fields ---
+    editable: Optional[bool] = Field(None, description="Whether the contact is editable")
+
+    # --- Additional fields from fixture / service layer ---
+    addresses: Optional[List[dict]] = Field(None, description="Contact addresses (legacy, untyped)")
+    phones: Optional[List[dict]] = Field(None, description="Phone numbers (legacy, untyped)")
+    emails: Optional[List[dict]] = Field(None, description="Email addresses (legacy, untyped)")
+    company_info: Optional[dict] = Field(None, alias="companyInfo", description="Associated company info")
+    contact_details_company_info: Optional[dict] = Field(
+        None, alias="contactDetailsCompanyInfo", description="Rich company details with address and branding",
+    )
+    full_name_update_required: Optional[bool] = Field(
+        None, alias="fullNameUpdateRequired", description="Whether full name needs update",
+    )
+    is_empty: Optional[bool] = Field(None, alias="isEmpty", description="Whether the contact record is empty")
 
 
 class ContactPrimaryDetails(ResponseModel):
