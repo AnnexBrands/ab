@@ -9,9 +9,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 29
-- **G1 Model Fidelity**: 40/231 pass
-- **G2 Fixture Status**: 43/231 pass
+- **Complete (all gates pass)**: 30
+- **G1 Model Fidelity**: 41/231 pass
+- **G2 Fixture Status**: 44/231 pass
 - **G3 Test Quality**: 139/231 pass
 - **G4 Doc Accuracy**: 157/231 pass
 - **G5 Param Routing**: 216/231 pass
@@ -45,7 +45,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /lookup/contactTypes | GET | — | List[ContactTypeEntity] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /lookup/countries | GET | — | List[CountryCodeDto] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /lookup/jobStatuses | GET | — | List[JobStatus] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
-| /lookup/items | GET | — | List[LookupItem] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Returns 204 — research ABConnectTools for required query params |
+| /lookup/items | GET | — | List[LookupItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Returns 204 — research ABConnectTools for required query params |
 | /users/list | POST | ListRequest | List[User] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging. Model warning: response is paginated wrapper (totalCount, data) |
 | /users/roles | GET | — | List[str] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Fixed — route uses List[str]; API returns plain strings, not UserRole objects |
 | /job/{jobDisplayId} | GET | — | Job | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | HTTP 500 on staging |
