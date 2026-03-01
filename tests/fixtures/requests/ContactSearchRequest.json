@@ -1,5 +1,17 @@
 {
-  "searchText": null,
-  "page": null,
-  "pageSize": null
+  "mainSearchRequest": {
+    "contactDisplayId": 1,
+    "fullName": "Training",
+    "companyName": "Training",
+    "companyCode": "Training",
+    "email": "training@annexbrands.com",
+    "phone": "+3334445566",
+    "companyDisplayId": 694618
+  },
+  "loadOptions": {
+    "pageNumber": 1,
+    "pageSize": 10,
+    "sortingBy": "fullName",
+    "sortingDirection": 0
+  }
 }
