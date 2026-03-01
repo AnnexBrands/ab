@@ -263,10 +263,7 @@ def main(env: str | None = None) -> None:
     # Call the method
     try:
         if body is not None:
-            result = live_method(*positional, **keyword, json=body) if keyword else live_method(*positional, body)
-            if result is None:
-                # Try with data= instead
-                result = live_method(*positional, data=body, **keyword)
+            result = live_method(*positional, data=body, **keyword)
         else:
             result = live_method(*positional, **keyword)
     except Exception as exc:

@@ -3,6 +3,20 @@
 Maps each public method of an endpoint class to its Route constant by
 parsing the method's source code for ``self._request(_ROUTE_NAME`` calls,
 then matching against module-level Route instances.
+
+Known limitations
+-----------------
+- Methods that call ``self._client.request()`` directly (bypassing
+  ``_request()``) will NOT be matched.  Known cases: ``get_timeline_agent``
+  in JobsEndpoint, ``upload``/``get`` in DocumentsEndpoint.
+- Methods that delegate through a private helper (e.g. ``self._pdf()`` in
+  FormsEndpoint) will NOT be matched unless the helper is added to the
+  regex alternation below.
+- Wrapper methods that call another public method instead of ``_request``
+  (e.g. ``get_timeline`` → ``get_timeline_response``) will NOT be matched.
+
+These unmatched methods are shown as "Helpers (no API route)" in CLI
+listings — a graceful degradation, not an error.
 """
 
 from __future__ import annotations
@@ -12,7 +26,9 @@ import re
 
 from ab.api.route import Route
 
-_ROUTE_REF_RE = re.compile(r"(?:self\._request|_request)\(\s*(_[A-Z_][A-Z0-9_]*)")
+# Anchored to ``self.`` to prevent false positives on helpers like
+# ``self._paginated_request(`` or ``self._pdf(``.
+_ROUTE_REF_RE = re.compile(r"self\._request\(\s*(_[A-Z_][A-Z0-9_]*)")
 
 
 def resolve_routes_for_class(cls: type) -> dict[str, Route]:
