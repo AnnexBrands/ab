@@ -9,9 +9,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 33
-- **G1 Model Fidelity**: 66/231 pass
-- **G2 Fixture Status**: 70/231 pass
+- **Complete (all gates pass)**: 38
+- **G1 Model Fidelity**: 71/231 pass
+- **G2 Fixture Status**: 75/231 pass
 - **G3 Test Quality**: 139/231 pass
 - **G4 Doc Accuracy**: 157/231 pass
 - **G5 Param Routing**: 216/231 pass
@@ -53,8 +53,8 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/calendaritems | GET | — | List[CalendarItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/updatePageConfig | GET | — | JobUpdatePageConfig | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/search | GET | — | JobSearchResult | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 404 on staging |
-| /job/{jobDisplayId}/timeline | GET | — | List[TimelineTask] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID with active timeline |
-| /job/{jobDisplayId}/timeline/{taskCode}/agent | GET | — | TimelineAgent | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID + task code |
+| /job/{jobDisplayId}/timeline | GET | — | TimelineResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs job ID with active timeline |
+| /job/{jobDisplayId}/timeline/{taskCode}/agent | GET | — | TimelineAgent | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs job ID + task code |
 | /job/{jobDisplayId}/tracking | GET | — | TrackingInfo | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
 | /v3/job/{jobDisplayId}/tracking/{historyAmount} | GET | — | TrackingInfoV3 | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{jobDisplayId}/payment | GET | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | FAIL | PASS | incomplete | Works but no fixture_file set in example |
@@ -243,13 +243,13 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/parcelitems/{parcelItemId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/timeline/{timelineTaskId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | GET | — | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} | GET | — | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} | GET | — | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/timeline/incrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskId} | PATCH | TimelineTaskUpdateRequest | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskId} | PATCH | TimelineTaskUpdateRequest | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/item/notes | POST | ItemNotesRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note | POST | JobNoteCreateRequest | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/parcelitems | POST | ParcelItemCreateRequest | ParcelItem | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline | POST | TimelineTaskCreateRequest | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline | POST | — | TimelineSaveResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/item/{itemId} | PUT | ItemUpdateRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | PUT | JobNoteUpdateRequest | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/searchByDetails | POST | JobSearchRequest | List[JobSearchResult] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |

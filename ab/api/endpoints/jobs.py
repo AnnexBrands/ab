@@ -55,6 +55,8 @@ if TYPE_CHECKING:
         ShipmentPlanProvider,
         SortByModel,
         TimelineAgent,
+        TimelineResponse,
+        TimelineSaveResponse,
         TimelineTask,
         TimelineTaskCreateRequest,
         TimelineTaskUpdateRequest,
@@ -84,10 +86,10 @@ _TRANSFER = Route("POST", "/job/transfer/{jobDisplayId}", request_model="Transfe
 _ABC_UPDATE = Route("POST", "/job/update", request_model="JobUpdateRequest", api_surface="abc")
 
 # Timeline routes
-_GET_TIMELINE = Route("GET", "/job/{jobDisplayId}/timeline", response_model="List[TimelineTask]")
+_GET_TIMELINE = Route("GET", "/job/{jobDisplayId}/timeline", response_model="TimelineResponse")
 _POST_TIMELINE = Route(
     "POST", "/job/{jobDisplayId}/timeline",
-    request_model="TimelineTaskCreateRequest", response_model="TimelineTask",
+    response_model="TimelineSaveResponse",
     params_model="TimelineCreateParams",
 )
 _GET_TIMELINE_TASK = Route(
@@ -237,6 +239,9 @@ class JobsEndpoint(BaseEndpoint):
         self._abc_client = abc_client
         self._resolver = resolver
 
+        from ab.api.helpers.timeline import TimelineHelpers
+        self.timeline = TimelineHelpers(self)
+
     def create(self, *, data: JobCreateRequest | dict) -> Any:
         """POST /job.
 
@@ -320,27 +325,39 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Timeline & Status ------------------------------------------------
 
-    def get_timeline(self, job_display_id: int) -> list[TimelineTask]:
-        """GET /job/{jobDisplayId}/timeline (ACPortal)"""
+    def get_timeline_response(self, job_display_id: int) -> TimelineResponse:
+        """GET /job/{jobDisplayId}/timeline — full wrapper response.
+
+        Returns the complete TimelineResponse with tasks, status metadata,
+        SLA info, and on-hold entries.
+        """
         return self._request(_GET_TIMELINE.bind(jobDisplayId=job_display_id))
+
+    def get_timeline(self, job_display_id: int) -> list[TimelineTask]:
+        """GET /job/{jobDisplayId}/timeline — convenience returning just tasks.
+
+        For the full wrapper response, use :meth:`get_timeline_response`.
+        """
+        resp = self.get_timeline_response(job_display_id)
+        return resp.tasks or []
 
     def create_timeline_task(
         self,
         job_display_id: int,
         *,
-        data: TimelineTaskCreateRequest | dict,
+        data: dict,
         create_email: bool | None = None,
-    ) -> TimelineTask:
+    ) -> TimelineSaveResponse:
         """POST /job/{jobDisplayId}/timeline.
+
+        The API accepts any task dict with at minimum a ``taskCode`` field.
+        It creates or updates the task based on whether one already exists.
 
         Args:
             job_display_id: Job display ID.
-            data: Timeline task payload with task_code, scheduled_date,
-                comments, and agent_contact_id. Accepts a
-                :class:`TimelineTaskCreateRequest` instance or a dict.
+            data: Task dict with taskCode and task-code-specific fields.
             create_email: Send status notification email (query param).
 
-        Request model: :class:`TimelineTaskCreateRequest`
         Params model: :class:`TimelineCreateParams`
         """
         params = dict(create_email=create_email)
@@ -383,11 +400,19 @@ class JobsEndpoint(BaseEndpoint):
             _DELETE_TIMELINE_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id),
         )
 
-    def get_timeline_agent(self, job_display_id: int, task_code: str) -> TimelineAgent:
-        """GET /job/{jobDisplayId}/timeline/{taskCode}/agent (ACPortal)"""
-        return self._request(
-            _GET_TIMELINE_AGENT.bind(jobDisplayId=job_display_id, taskCode=task_code),
+    def get_timeline_agent(self, job_display_id: int, task_code: str) -> TimelineAgent | None:
+        """GET /job/{jobDisplayId}/timeline/{taskCode}/agent (ACPortal)
+
+        Returns None if no agent is assigned for the given task code.
+        """
+        resp = self._client.request(
+            _GET_TIMELINE_AGENT.method,
+            _GET_TIMELINE_AGENT.bind(jobDisplayId=job_display_id, taskCode=task_code).path,
         )
+        if resp is None:
+            return None
+        from ab.api.models.jobs import TimelineAgent as _TA
+        return _TA.model_validate(resp)
 
     def increment_status(
         self,
