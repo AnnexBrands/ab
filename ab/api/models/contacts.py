@@ -8,7 +8,7 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
-from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin
+from ab.api.models.mixins import FullAuditModel, IdentifiedModel
 
 
 class ContactSimple(ResponseModel, IdentifiedModel):
@@ -195,17 +195,63 @@ class ContactPrimaryDetails(ResponseModel):
 
 
 class SearchContactEntityResult(ResponseModel):
-    """Single result from POST /contacts/v2/search.
+    """Single result row from POST /contacts/v2/search.
 
-    The live API returns integer IDs and nested detail fields rather than
-    simple flat strings as swagger implies.
+    Maps to C# ``SearchContactEntityResult`` entity (22 properties).
+    Each row contains contact details, address fields, company info,
+    and a denormalized ``totalRecords`` count.
     """
 
-    id: Optional[int] = Field(None, description="Contact integer ID")
-    full_name: Optional[str] = Field(None, alias="fullName", description="Display name")
-    email: Optional[str] = Field(None, description="Primary email")
+    contact_id: Optional[int] = Field(None, alias="contactID", description="Contact integer ID")
+    customer_cell: Optional[str] = Field(None, alias="customerCell", description="Customer cell phone number")
+    contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Contact display ID")
+    contact_full_name: Optional[str] = Field(None, alias="contactFullName", description="Contact full display name")
+    contact_phone: Optional[str] = Field(None, alias="contactPhone", description="Contact phone number")
+    contact_home_phone: Optional[str] = Field(None, alias="contactHomePhone", description="Contact home phone number")
+    contact_email: Optional[str] = Field(None, alias="contactEmail", description="Contact email address")
+    master_constant_value: Optional[str] = Field(None, alias="masterConstantValue", description="Master constant value")
+    contact_dept: Optional[str] = Field(None, alias="contactDept", description="Contact department")
+    address1: Optional[str] = Field(None, description="Street address line 1")
+    address2: Optional[str] = Field(None, description="Street address line 2")
+    city: Optional[str] = Field(None, description="City")
+    state: Optional[str] = Field(None, description="State/province")
+    zip_code: Optional[str] = Field(None, alias="zipCode", description="ZIP/postal code")
+    country_name: Optional[str] = Field(None, alias="countryName", description="Country name")
+    company_code: Optional[str] = Field(None, alias="companyCode", description="Company code")
+    company_id: Optional[str] = Field(None, alias="companyID", description="Company UUID")
     company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
-    contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Display ID")
+    company_display_id: Optional[str] = Field(None, alias="companyDisplayId", description="Company display ID")
+    is_prefered: Optional[bool] = Field(None, alias="isPrefered", description="Whether this contact is preferred")
+    industry_type: Optional[str] = Field(None, alias="industryType", description="Industry type classification")
+    total_records: Optional[int] = Field(None, alias="totalRecords", description="Total matching records (denormalized)")
+
+
+class ContactSearchParams(RequestModel):
+    """Search filter parameters — the ``mainSearchRequest`` sub-object of POST /contacts/v2/search.
+
+    Maps to swagger ``MergeContactsSearchRequestParameters``.  All fields are
+    optional; omit entirely for unfiltered results.
+    """
+
+    contact_display_id: Optional[int] = Field(None, alias="contactDisplayId", description="Filter by contact display ID")
+    full_name: Optional[str] = Field(None, alias="fullName", description="Filter by contact name")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Filter by company name")
+    company_code: Optional[str] = Field(None, alias="companyCode", description="Filter by company code")
+    email: Optional[str] = Field(None, description="Filter by email address")
+    phone: Optional[str] = Field(None, description="Filter by phone number")
+    company_display_id: Optional[int] = Field(None, alias="companyDisplayId", description="Filter by company display ID")
+
+
+class PageOrderedRequest(RequestModel):
+    """Pagination and sorting options — the ``loadOptions`` sub-object of POST /contacts/v2/search.
+
+    Maps to swagger ``PageOrderedRequestModel`` / C# ``PagedOrderedRequest``.
+    """
+
+    page_number: int = Field(..., alias="pageNumber", description="Page number (1-based, required)")
+    page_size: int = Field(..., alias="pageSize", description="Items per page (required, 1-32767)")
+    sorting_by: Optional[str] = Field(None, alias="sortingBy", description="Sort field name")
+    sorting_direction: Optional[int] = Field(None, alias="sortingDirection", description="Sort direction (0=ascending, 1=descending)")
 
 
 class ContactEditParams(RequestModel):
@@ -230,8 +276,21 @@ class ContactEditRequest(RequestModel):
     addresses: Optional[List[dict]] = Field(None, description="Contact addresses")
 
 
-class ContactSearchRequest(PaginatedRequestMixin, SearchableRequestMixin):
-    """Body for POST /contacts/v2/search."""
+class ContactSearchRequest(RequestModel):
+    """Body for POST /contacts/v2/search.
+
+    Uses a nested structure with ``mainSearchRequest`` (search filter
+    parameters) and ``loadOptions`` (pagination/sort).  The flat mixin
+    fields (page, pageSize, searchText) are replaced by typed sub-models
+    that match the API's expected shape.
+    """
+
+    main_search_request: Optional[ContactSearchParams] = Field(
+        None, alias="mainSearchRequest", description="Search filter parameters (omit for unfiltered results)",
+    )
+    load_options: PageOrderedRequest = Field(
+        ..., alias="loadOptions", description="Pagination and sorting options (required)",
+    )
 
 
 # ---- Extended contact models (008) ----------------------------------------

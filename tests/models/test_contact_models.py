@@ -34,10 +34,10 @@ class TestContactModels:
         assert_no_extra_fields(model)
         assert model.full_name is not None
 
-    @pytest.mark.live
     def test_search_contact_entity_result(self):
         data = require_fixture("SearchContactEntityResult", "POST", "/contacts/v2/search", required=True)
+        if isinstance(data, list):
+            data = data[0]
         model = SearchContactEntityResult.model_validate(data)
         assert isinstance(model, SearchContactEntityResult)
-        # SearchContactEntityResult still has extra fields — not yet fully typed
-        # assert_no_extra_fields(model)
+        assert_no_extra_fields(model)

@@ -1,0 +1,26 @@
+[
+  {
+    "contactID": 30760,
+    "customerCell": null,
+    "contactDisplayId": "1308994",
+    "contactFullName": "Justine Yigitbasi",
+    "contactPhone": "6147065958",
+    "contactHomePhone": null,
+    "contactEmail": "oh14004@goNavis.com",
+    "masterConstantValue": null,
+    "contactDept": null,
+    "address1": "5738 Westbourne Ave",
+    "address2": null,
+    "city": "Columbus",
+    "state": "OH",
+    "zipCode": "43213",
+    "countryName": null,
+    "companyCode": "14004OH",
+    "companyID": "93179b52-3da9-e311-b6f8-000c298b59ee",
+    "companyName": "Navis Pack & Ship #14004OH",
+    "companyDisplayId": "852949",
+    "isPrefered": true,
+    "industryType": null,
+    "totalRecords": 1
+  }
+]

@@ -9,8 +9,8 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 28
-- **G1 Model Fidelity**: 39/231 pass
+- **Complete (all gates pass)**: 29
+- **G1 Model Fidelity**: 40/231 pass
 - **G2 Fixture Status**: 43/231 pass
 - **G3 Test Quality**: 139/231 pass
 - **G4 Doc Accuracy**: 157/231 pass
@@ -38,7 +38,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /contacts/user | GET | — | ContactSimple | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /contacts/{contactId}/primarydetails | GET | — | ContactPrimaryDetails | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /contacts/{contactId}/editdetails | GET | — | ContactDetailedInfo | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 500 on staging — was previously captured but now fails |
-| /contacts/v2/search | POST | ContactSearchRequest | List[SearchContactEntityResult] | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | HTTP 400 — needs PageSize (1-32767) and PageNumber (1-32767) in request body |
+| /contacts/v2/search | POST | ContactSearchRequest | List[SearchContactEntityResult] | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 400 — needs PageSize (1-32767) and PageNumber (1-32767) in request body |
 | /documents | GET | — | Document | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 500 on staging — was previously captured but now fails |
 | /address/isvalid | GET | — | AddressIsValidResult | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
 | /address/propertytype | GET | — | int | PASS | PASS | PASS | PASS | PASS | PASS | complete | Query params: needs valid address1, city, state, zip_code for a real address |
@@ -267,4 +267,3 @@ Models with `__pydantic_extra__` fields when validated against their fixtures:
 |-------|-------|
 | Job | 85 undeclared field(s): autoPackFailed, autoPackOff, cFillId, cFillValue, cPackId, cPackValue, ceilingTransportationWeight, commodityId, companyID, companyName, containerId, containerThickness, containerType, containerWeight, customerItemId, descriptionOfProducts, doNotTip, documentExists, eccn, fillWeight, forceCrate, grossCubicFeet, inchesToAdd, isAccess, isContainerChanged, isFillChanged, isFillPercentChanged, isInchToAddChanged, isPrepacked, isValidContainer, isValidFill, itemActive, itemDescription, itemHeight, itemID, itemLength, itemName, itemNotes, itemPublic, itemSequenceNo, itemValue, itemWeight, itemWidth, jobFreightID, jobID, jobItemFillPercent, jobItemID, jobItemNotes, jobItemParcelValue, jobItemPkdHeight, jobItemPkdLength, jobItemPkdValue, jobItemPkdWeight, jobItemPkdWidth, laborCharge, laborHrs, longestDimension, materialTotalCost, materialWeight, materials, netCubicFeet, nmfcItem, nmfcSub, nmfcSubClass, notedConditions, originalJobItemId, originalQty, parcelPackageTypeId, pkdLengthPlusGirth, quantity, requestedParcelPackagings, rowNumber, scheduleB, secondDimension, stc, totalItems, totalLaborCharge, totalPackedValue, totalPcs, totalWeight, transportationHeight, transportationLength, transportationWeight, transportationWidth, userId |
 | List[JobSearchResult] | 21 undeclared field(s): completedDate, createdByUserName, delAddress1, delZipCode, destAddress, estimateDate1, expectedDeliveryDate, expectedPickUpDate, itemName, jobItemsTotalMaterialsLbs, jobMgmtId, jobMgmtStatusName, jobTotalQty, jobTotalValue, jobTotalWeight, orginAddress, psDoneBy, puAddress2, puZipcode, quoteDate1, totalItems |
-| List[SearchContactEntityResult] | 30 undeclared field(s): addressesList, assistant, birthDate, bolNotes, careOf, company, companyId, contactTypeId, department, editable, emailsList, fax, fullNameUpdateRequired, isActive, isBusiness, isEmpty, isPayer, isPrefered, isPrimary, isPrivate, jobTitle, jobTitleId, legacyGuid, ownerFranchiseeId, phonesList, primaryEmail, primaryPhone, rootContactId, taxId, webSite |
