@@ -1,7 +1,7 @@
 {
-  "Address1": null,
-  "Address2": null,
-  "City": null,
-  "State": null,
-  "ZipCode": null
+  "Address1": "7580 Metropolitan Dr",
+  "Address2": "Ste 200",
+  "City": "San Diego",
+  "State": "CA",
+  "ZipCode": "92108"
 }

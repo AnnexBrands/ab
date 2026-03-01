@@ -633,6 +633,19 @@ def evaluate_endpoint_gates(
     if clean_model.startswith("list["):
         clean_model = clean_model[5:-1]
 
+    # Scalar builtins (str, int, bool, float) are not Pydantic models —
+    # exempt from fixture/model gates (G1-G4).
+    _SCALAR_TYPES = {"str", "int", "bool", "float", "None"}
+    if clean_model in _SCALAR_TYPES:
+        status.g1_model_fidelity = GateResult("G1", True, f"Scalar type ({clean_model}) — no model to validate")
+        status.g2_fixture_status = GateResult("G2", True, f"Scalar type ({clean_model}) — no fixture needed")
+        status.g3_test_quality = GateResult("G3", True, f"Scalar type ({clean_model}) — no model assertions needed")
+        status.g4_doc_accuracy = GateResult("G4", True, f"Scalar type ({clean_model}) — return type is correct")
+        status.g5_param_routing = evaluate_g5(endpoint_path, method)
+        status.g6_request_quality = evaluate_g6(endpoint_path, method, request_model, params_model)
+        status.compute_overall()
+        return status
+
     endpoint_module = _infer_endpoint_module(endpoint_path)
 
     status.g1_model_fidelity = evaluate_g1(clean_model)

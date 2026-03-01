@@ -23,7 +23,7 @@ API_SURFACE = REPO_ROOT / "specs" / "api-surface.md"
 FIXTURES_MD = REPO_ROOT / "FIXTURES.md"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 CONSTANTS_PY = REPO_ROOT / "tests" / "constants.py"
-OUTPUT = REPO_ROOT / "progress.html"
+OUTPUT = REPO_ROOT / "html" / "progress.html"
 
 
 def main() -> int:
@@ -43,8 +43,25 @@ def _generate_fixtures() -> int:
 
     from ab.progress.fixtures_generator import generate_fixtures_md
 
-    generate_fixtures_md(FIXTURES_MD)
+    _content, sync_report = generate_fixtures_md(FIXTURES_MD)
     print(f"FIXTURES.md regenerated with quality gate columns at {FIXTURES_MD.relative_to(REPO_ROOT)}")
+
+    # Route sync summary
+    total_routes = sync_report.matched + len(sync_report.new_endpoints)
+    print(
+        f"  Route sync: {sync_report.matched} matched, "
+        f"{len(sync_report.mismatches)} mismatches, "
+        f"{len(sync_report.new_endpoints)} new endpoints added"
+    )
+    if sync_report.unmatched_rows:
+        print(f"  Unmatched FIXTURES.md rows: {len(sync_report.unmatched_rows)}")
+    for msg in sync_report.mismatches:
+        print(f"    {msg}")
+    for msg in sync_report.new_endpoints:
+        print(f"    {msg}")
+    for msg in sync_report.unmatched_rows:
+        print(f"    {msg}")
+
     return 0
 
 
@@ -112,6 +129,12 @@ def _generate_html_report() -> int:
     # Gate summary
     gate_total = len(gate_results)
     gate_complete = sum(1 for s in gate_results if s.overall_status == "complete")
+    g1_pass = sum(1 for s in gate_results if s.g1_model_fidelity and s.g1_model_fidelity.passed)
+    g2_pass = sum(1 for s in gate_results if s.g2_fixture_status and s.g2_fixture_status.passed)
+    g3_pass = sum(1 for s in gate_results if s.g3_test_quality and s.g3_test_quality.passed)
+    g4_pass = sum(1 for s in gate_results if s.g4_doc_accuracy and s.g4_doc_accuracy.passed)
+    g5_pass = sum(1 for s in gate_results if s.g5_param_routing and s.g5_param_routing.passed)
+    g6_pass = sum(1 for s in gate_results if s.g6_request_quality and s.g6_request_quality.passed)
 
     print(f"Progress report written to {OUTPUT.relative_to(REPO_ROOT)}")
     print(f"  Endpoints: {total} total, {done} done, {pending} pending, {ns} not started")
@@ -120,6 +143,12 @@ def _generate_html_report() -> int:
     print(f"  Constants defined: {len(constants)}")
     if gate_total:
         print(f"  Quality gates: {gate_complete}/{gate_total} endpoints pass all gates")
+        print(f"    G1 Model Fidelity:  {g1_pass}/{gate_total}")
+        print(f"    G2 Fixture Status:  {g2_pass}/{gate_total}")
+        print(f"    G3 Test Quality:    {g3_pass}/{gate_total}")
+        print(f"    G4 Doc Accuracy:    {g4_pass}/{gate_total}")
+        print(f"    G5 Param Routing:   {g5_pass}/{gate_total}")
+        print(f"    G6 Request Quality: {g6_pass}/{gate_total}")
 
     return 0
 
