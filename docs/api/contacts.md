@@ -66,7 +66,14 @@ api.contacts.create({"firstName": "New", "lastName": "Contact", "email": "new@ex
 **Returns:** `list[`{class}`~ab.api.models.contacts.SearchContactEntityResult`]`
 
 ```python
-results = api.contacts.search({"searchText": "Justine"})
+from ab.api.models.contacts import ContactSearchRequest, ContactSearchParams, PageOrderedRequest
+
+results = api.contacts.search(data=ContactSearchRequest(
+    main_search_request=ContactSearchParams(full_name="Justine"),
+    load_options=PageOrderedRequest(page_number=1, page_size=10),
+))
+for r in results:
+    print(r.contact_full_name, r.contact_email, r.company_name)
 ```
 
 ### get_primary_details

@@ -84,6 +84,8 @@ def evaluate_g1(model_name: str) -> GateResult:
 
     fixture_path = FIXTURES_DIR / f"{model_name}.json"
     if not fixture_path.exists():
+        fixture_path = FIXTURES_DIR / "mocks" / f"{model_name}.json"
+    if not fixture_path.exists():
         return GateResult("G1", False, f"Fixture {model_name}.json not found")
 
     try:
