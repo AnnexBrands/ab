@@ -1,6 +1,7 @@
 """Example: Lookup operations (4 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import TEST_ITEM_ID, TEST_JOB_DISPLAY_ID
 
 runner = ExampleRunner("Lookup", env="staging")
 
@@ -32,7 +33,8 @@ runner.add(
 runner.add(
     "get_items",
     lambda api: api.lookup.get_items(
-        # TODO: capture fixture — returns 204, research needed
+        job_display_id=TEST_JOB_DISPLAY_ID,
+        job_item_id=TEST_ITEM_ID,
     ),
     response_model="List[LookupItem]",
     fixture_file="LookupItem.json",

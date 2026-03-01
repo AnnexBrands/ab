@@ -4,6 +4,7 @@ import pytest
 
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
 from tests.conftest import assert_no_extra_fields
+from tests.constants import TEST_ITEM_ID, TEST_JOB_DISPLAY_ID
 
 pytestmark = pytest.mark.live
 
@@ -31,7 +32,10 @@ class TestLookupIntegration:
         assert_no_extra_fields(result[0])
 
     def test_get_items(self, api):
-        result = api.lookup.get_items()
+        result = api.lookup.get_items(
+            job_display_id=TEST_JOB_DISPLAY_ID,
+            job_item_id=TEST_ITEM_ID,
+        )
         # May return 204 No Content
         if result is not None:
             assert isinstance(result, list)

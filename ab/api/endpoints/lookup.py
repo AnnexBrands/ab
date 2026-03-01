@@ -64,7 +64,7 @@ class LookupEndpoint(BaseEndpoint):
         self,
         *,
         job_display_id: Optional[int] = None,
-        job_item_id: Optional[int] = None,
+        job_item_id: Optional[str] = None,
     ) -> list[LookupItem]:
         """GET /lookup/items
 

@@ -13,7 +13,7 @@ class LookupItemsParams(RequestModel):
     """Query parameters for GET /lookup/items."""
 
     job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID for item lookup")
-    job_item_id: Optional[int] = Field(None, alias="jobItemId", description="Job item ID filter")
+    job_item_id: Optional[str] = Field(None, alias="jobItemId", description="Job item UUID filter")
 
 
 class LookupDocumentTypesParams(RequestModel):
@@ -59,9 +59,8 @@ class JobStatus(ResponseModel):
 class LookupItem(ResponseModel):
     """Generic lookup item — GET /lookup/items."""
 
-    id: Optional[int] = Field(None, description="Item ID")
+    id: Optional[str] = Field(None, description="Item UUID")
     name: Optional[str] = Field(None, description="Item name")
-    value: Optional[str] = Field(None, description="Item value")
 
 
 # ---- Extended lookup models (008) -----------------------------------------
