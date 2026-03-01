@@ -68,7 +68,7 @@ if TYPE_CHECKING:
 _CREATE = Route("POST", "/job", request_model="JobCreateRequest")
 _SAVE = Route("PUT", "/job/save", request_model="JobSaveRequest")
 _GET = Route("GET", "/job/{jobDisplayId}", response_model="Job")
-_SEARCH = Route("GET", "/job/search", params_model="JobSearchParams", response_model="List[JobSearchResult]")
+_SEARCH = Route("GET", "/job/search", params_model="JobSearchParams", response_model="JobSearchResult")
 _SEARCH_BY_DETAILS = Route(
     "POST", "/job/searchByDetails",
     request_model="JobSearchRequest", response_model="List[JobSearchResult]",
@@ -265,7 +265,7 @@ class JobsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId} (ACPortal)"""
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
-    def search(self, *, job_display_id: int | None = None) -> list[JobSearchResult]:
+    def search(self, *, job_display_id: int | None = None) -> JobSearchResult:
         """GET /job/search (ACPortal) — query params."""
         return self._request(_SEARCH, params=dict(job_display_id=job_display_id))
 
