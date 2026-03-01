@@ -1,0 +1,26 @@
+{
+  "trackingDetails": null,
+  "carrierInfo": null,
+  "shipmentStatus": null,
+  "statuses": [
+    {
+      "date": "2026-01-30T02:12:50.693",
+      "code": "PUS",
+      "message": "Pickup is scheduled for 01/30/2026",
+      "carrierProps": null
+    },
+    {
+      "date": "2024-08-13T14:04:04",
+      "code": "BKD",
+      "message": "Booked",
+      "carrierProps": null
+    },
+    {
+      "date": "2024-02-13T07:43:22.907",
+      "code": "EST",
+      "message": "Estimate",
+      "carrierProps": null
+    }
+  ],
+  "carriers": []
+}

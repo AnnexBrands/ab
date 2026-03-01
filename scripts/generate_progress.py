@@ -47,7 +47,6 @@ def _generate_fixtures() -> int:
     print(f"FIXTURES.md regenerated with quality gate columns at {FIXTURES_MD.relative_to(REPO_ROOT)}")
 
     # Route sync summary
-    total_routes = sync_report.matched + len(sync_report.new_endpoints)
     print(
         f"  Route sync: {sync_report.matched} matched, "
         f"{len(sync_report.mismatches)} mismatches, "
@@ -91,6 +90,7 @@ def _generate_html_report() -> int:
     from ab.progress.models import classify_action_items
     from ab.progress.parsers import parse_api_surface, parse_fixtures
     from ab.progress.renderer import render_report
+    from ab.progress.route_index import build_endpoint_class_progress
     from ab.progress.scanner import parse_constants, scan_fixture_files
 
     # Parse all data sources
@@ -108,6 +108,9 @@ def _generate_html_report() -> int:
     finally:
         logging.root.setLevel(prev_level)
 
+    # Build endpoint class progress (US3)
+    endpoint_class_progress = build_endpoint_class_progress()
+
     # Classify action items
     action_items = classify_action_items(groups, fixtures, fixture_files, constants)
 
@@ -115,6 +118,7 @@ def _generate_html_report() -> int:
     html = render_report(
         groups, fixtures, constants, fixture_files, action_items,
         gate_results=gate_results,
+        endpoint_class_progress=endpoint_class_progress,
     )
     OUTPUT.write_text(html)
 

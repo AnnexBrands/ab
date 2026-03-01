@@ -316,6 +316,22 @@ def generate_fixtures_md(
     g5_pass = sum(1 for _, s in gate_results if s.g5_param_routing and s.g5_param_routing.passed)
     g6_pass = sum(1 for _, s in gate_results if s.g6_request_quality and s.g6_request_quality.passed)
 
+    # Build dotted-path lookup from endpoint class progress
+    dotted_path_map: dict[tuple[str, str], str] = {}
+    try:
+        from ab.progress.route_index import build_endpoint_class_progress
+
+        ecp_list = build_endpoint_class_progress()
+        for ecp in ecp_list:
+            for mp in ecp.helpers:
+                if mp.http_path and mp.http_method:
+                    dotted_path_map[(mp.http_path, mp.http_method)] = mp.dotted_path
+            for methods in ecp.sub_groups.values():
+                for mp in methods:
+                    dotted_path_map[(mp.http_path, mp.http_method)] = mp.dotted_path
+    except Exception:
+        pass  # graceful fallback
+
     lines = [
         "# Fixture Tracking",
         "",
@@ -345,8 +361,10 @@ def generate_fixtures_md(
         "",
         "## ACPortal Endpoints",
         "",
-        "| Endpoint Path | Method | Req Model | Resp Model | G1 | G2 | G3 | G4 | G5 | G6 | Status | Notes |",
-        "|---------------|--------|-----------|------------|----|----|----|----|----|----|--------|-------|",
+        "| Endpoint Path | Method | Python Path | Req Model | Resp Model "
+        "| G1 | G2 | G3 | G4 | G5 | G6 | Status | Notes |",
+        "|---------------|--------|-------------|-----------|------------"
+        "|----|----|----|----|----|----|----|-------|",
     ]
 
     for ep, status in gate_results:
@@ -360,9 +378,12 @@ def generate_fixtures_md(
         req_model = ep.get("request_model", "") or "—"
         resp_model = ep.get("response_model", "") or "—"
         notes = ep.get("notes", "")
+        dotted = dotted_path_map.get(
+            (ep["endpoint_path"], ep["method"]), "—"
+        )
 
         lines.append(
-            f"| {ep['endpoint_path']} | {ep['method']} | {req_model} | {resp_model} "
+            f"| {ep['endpoint_path']} | {ep['method']} | {dotted} | {req_model} | {resp_model} "
             f"| {g1} | {g2} | {g3} | {g4} | {g5} | {g6} | {status.overall_status} | {notes} |"
         )
 

@@ -7,7 +7,13 @@ from html import escape
 from itertools import groupby
 
 from ab.progress.gates import EndpointGateStatus
-from ab.progress.models import ActionItem, Constant, EndpointGroup, Fixture
+from ab.progress.models import (
+    ActionItem,
+    Constant,
+    EndpointClassProgress,
+    EndpointGroup,
+    Fixture,
+)
 
 CSS = """\
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -96,6 +102,7 @@ def render_report(
     fixture_files: set[str],
     action_items: list[ActionItem],
     gate_results: list[EndpointGateStatus] | None = None,
+    endpoint_class_progress: list[EndpointClassProgress] | None = None,
 ) -> str:
     """Render the complete progress report as self-contained HTML."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -114,6 +121,9 @@ def render_report(
         f"<p class='subtitle'>Generated {now}</p>",
         render_summary(groups),
     ]
+
+    if endpoint_class_progress:
+        parts.append(render_endpoint_class_progress(endpoint_class_progress))
 
     if gate_results:
         parts.append(render_gate_summary(gate_results))
@@ -261,7 +271,10 @@ def render_gate_summary(gate_results: list[EndpointGateStatus]) -> str:
         _card("G3: Test Quality", g3_pass, "isinstance + extra", "card-pass" if g3_pass > total // 2 else "card-fail"),
         _card("G4: Doc Accuracy", g4_pass, "Correct return type", "card-pass" if g4_pass > total // 2 else "card-fail"),
         _card("G5: Param Routing", g5_pass, "params_model set", "card-pass" if g5_pass > total // 2 else "card-fail"),
-        _card("G6: Request Quality", g6_pass, "Typed sigs + descriptions", "card-pass" if g6_pass > total // 2 else "card-fail"),
+        _card(
+            "G6: Request Quality", g6_pass, "Typed sigs + descriptions",
+            "card-pass" if g6_pass > total // 2 else "card-fail",
+        ),
     ]
 
     return (
@@ -428,3 +441,77 @@ def _blocker_summary(items: list[ActionItem]) -> str:
         parts.append(f"{badge}&nbsp;{count}")
 
     return " ".join(parts)
+
+
+# ------------------------------------------------------------------
+# Endpoint class progress (US3)
+# ------------------------------------------------------------------
+
+
+def render_endpoint_class_progress(
+    progress: list[EndpointClassProgress],
+) -> str:
+    """Render endpoint coverage by class with grouped sub-sections."""
+    parts = ["<h2>Endpoint Coverage by Class</h2>"]
+
+    for ecp in progress:
+        aliases_str = f" — aliases: {', '.join(ecp.aliases)}" if ecp.aliases else ""
+        parts.append(
+            f"<h3>{escape(ecp.class_name)} "
+            f"({ecp.total_methods} methods){aliases_str}</h3>"
+        )
+        if ecp.path_root:
+            parts.append(f"<p>Path root: <code>{escape(ecp.path_root)}</code></p>")
+
+        # Helpers section
+        if ecp.helpers:
+            parts.append("<h4>Helpers</h4>")
+            parts.append(
+                "<table>"
+                "<tr><th>Method</th><th>Python Path</th><th>Ex</th><th>CLI</th></tr>"
+            )
+            for mp in ecp.helpers:
+                parts.append(
+                    f"<tr>"
+                    f"<td>{escape(mp.method_name)}</td>"
+                    f"<td><code>{escape(mp.dotted_path)}</code></td>"
+                    f"<td>{_yn_badge(mp.has_example)}</td>"
+                    f"<td>{_yn_badge(mp.has_cli)}</td>"
+                    f"</tr>"
+                )
+            parts.append("</table>")
+
+        # Sub-groups
+        for sub_root, methods in sorted(ecp.sub_groups.items()):
+            label = sub_root or "(root)"
+            parts.append(
+                f"<h4>{escape(label)} ({len(methods)} methods)</h4>"
+            )
+            parts.append(
+                "<table>"
+                "<tr><th>HTTP</th><th>Path</th><th>Method</th>"
+                "<th>Python Path</th><th>Return</th>"
+                "<th>Ex</th><th>CLI</th></tr>"
+            )
+            for mp in methods:
+                parts.append(
+                    f"<tr>"
+                    f"<td class='col-method'>{escape(mp.http_method)}</td>"
+                    f"<td class='col-path'>{escape(mp.http_path)}</td>"
+                    f"<td>{escape(mp.method_name)}</td>"
+                    f"<td><code>{escape(mp.dotted_path)}</code></td>"
+                    f"<td>{escape(mp.return_type)}</td>"
+                    f"<td>{_yn_badge(mp.has_example)}</td>"
+                    f"<td>{_yn_badge(mp.has_cli)}</td>"
+                    f"</tr>"
+                )
+            parts.append("</table>")
+
+    return "\n".join(parts)
+
+
+def _yn_badge(value: bool) -> str:
+    """Render a yes/no badge."""
+    if value:
+        return "<span class='badge badge-done'>yes</span>"
+    return "<span class='badge badge-ns'>no</span>"

@@ -8,39 +8,28 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ab.progress.models import ActionItem, Constant, Endpoint
 
-# Map path parameters to known constants
-_PARAM_CONSTANT_MAP: dict[str, str] = {
-    "companyId": "TEST_COMPANY_UUID",
-    "id": "TEST_JOB_DISPLAY_ID",
-    "jobDisplayId": "TEST_JOB_DISPLAY_ID",
-    "contactId": "TEST_CONTACT_ID",
-    "sellerId": "TEST_SELLER_ID",
-    "catalogId": "TEST_CATALOG_ID",
-}
-
 _PATH_PARAM_RE = re.compile(r"\{(\w+)\}")
 
 
 def detect_required_constants(endpoint: Endpoint) -> list[str]:
     """Map path parameters to required test constants.
 
+    Uses the generic ``path_param_to_constant()`` converter instead of
+    hardcoded mappings, so new path parameters are handled automatically.
+
     Returns list of constant names needed for this endpoint.
     """
+    from ab.cli.route_resolver import path_param_to_constant
+
     params = _PATH_PARAM_RE.findall(endpoint.path)
     constants: list[str] = []
     seen: set[str] = set()
 
     for param in params:
-        const = _PARAM_CONSTANT_MAP.get(param)
-        if const and const not in seen:
+        const = path_param_to_constant(param)
+        if const not in seen:
             constants.append(const)
             seen.add(const)
-        elif not const:
-            # Unknown param — suggest a new constant name
-            suggested = f"TEST_{param.upper()}"
-            if suggested not in seen:
-                constants.append(suggested)
-                seen.add(suggested)
 
     return constants
 

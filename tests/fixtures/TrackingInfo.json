@@ -1,0 +1,28 @@
+{
+  "status": null,
+  "location": null,
+  "estimatedDelivery": null,
+  "events": null,
+  "carrierName": null,
+  "proNumber": null,
+  "statuses": [
+    {
+      "date": "2026-01-30T02:12:50.693",
+      "message": "Pickup Scheduled for 01/30/2026",
+      "code": "PU",
+      "carrierSource": false,
+      "city": null,
+      "state": null
+    },
+    {
+      "date": "2024-08-13T00:00:00",
+      "message": "Packaging has been Planned",
+      "code": "PK",
+      "carrierSource": false,
+      "city": null,
+      "state": null
+    }
+  ],
+  "success": true,
+  "errorMessage": null
+}
