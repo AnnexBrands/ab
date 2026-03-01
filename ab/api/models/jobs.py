@@ -8,7 +8,7 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
-from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin
+from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin, TimestampedModel
 
 
 # ---- Job GET response sub-models (018) ------------------------------------
@@ -719,27 +719,87 @@ class JobUpdateRequest(RequestModel):
 # ---- Timeline / Status models -----------------------------------------
 
 
-class TimelineTask(ResponseModel, IdentifiedModel):
-    """Timeline task — GET /job/{jobDisplayId}/timeline."""
+class TimelineTask(ResponseModel, TimestampedModel):
+    """Timeline task — unified model for all task codes (PU, PK, ST, CP).
 
-    id: Optional[str] = Field(None, description="Timeline task ID")
-    task_code: Optional[str] = Field(None, alias="taskCode", description="Task type code")
-    status: Optional[int] = Field(None, description="Status code")
-    status_name: Optional[str] = Field(None, alias="statusName", description="Human-readable status")
-    agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
-    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="When task is scheduled")
-    completed_date: Optional[str] = Field(None, alias="completedDate", description="When task was completed")
-    comments: Optional[str] = Field(None, description="Task notes")
-    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Completion flag")
-    sort_order: Optional[int] = Field(None, alias="sortOrder", description="Display order")
+    Common fields from C# BaseTask + TimestampedModel, plus task-code-specific
+    fields that are null when not applicable to the task's code.
+    """
+
+    # Common fields (BaseTask)
+    id: Optional[int] = Field(None, description="Timeline task integer ID")
+    job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Task code (PU/PK/ST/CP)")
+    planned_start_date: Optional[str] = Field(None, alias="plannedStartDate", description="Planned start date")
+    target_start_date: Optional[str] = Field(None, alias="targetStartDate", description="Target start date")
+    actual_end_date: Optional[str] = Field(None, alias="actualEndDate", description="Actual end date")
+    notes: Optional[List[dict]] = Field(None, description="JobTaskNote objects")
+    work_time_logs: Optional[List[dict]] = Field(None, alias="workTimeLogs", description="WorkTimeLog objects")
+    initial_note: Optional[dict] = Field(None, alias="initialNote", description="InitialNoteModel")
+    time_log: Optional[dict] = Field(None, alias="timeLog", description="TimeLog (PK/ST tasks)")
+
+    # PU-specific fields (InTheFieldTaskModel)
+    planned_end_date: Optional[str] = Field(None, alias="plannedEndDate", description="Planned end date")
+    preferred_start_date: Optional[str] = Field(None, alias="preferredStartDate", description="Preferred start date")
+    preferred_end_date: Optional[str] = Field(None, alias="preferredEndDate", description="Preferred end date")
+    truck: Optional[dict] = Field(None, description="Truck assignment")
+    on_site_time_log: Optional[dict] = Field(None, alias="onSiteTimeLog", description="On-site time log (PU)")
+    trip_time_log: Optional[dict | str] = Field(None, alias="tripTimeLog", description="Trip time log (PU)")
+    completed_date: Optional[str] = Field(None, alias="completedDate", description="Completed date (PU)")
+
+    # CP-specific fields (CarrierTaskModel)
+    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Carrier scheduled date")
+    pickup_completed_date: Optional[str] = Field(None, alias="pickupCompletedDate", description="Carrier pickup completed")
+    delivery_completed_date: Optional[str] = Field(None, alias="deliveryCompletedDate", description="Carrier delivery completed")
+    expected_delivery_date: Optional[str] = Field(None, alias="expectedDeliveryDate", description="Expected delivery date")
 
 
 class TimelineAgent(ResponseModel):
-    """Timeline agent — GET /job/{jobDisplayId}/timeline/{taskCode}/agent."""
+    """Timeline agent — GET /job/{jobDisplayId}/timeline/{taskCode}/agent.
 
-    contact_id: Optional[str] = Field(None, alias="contactId", description="Agent contact ID")
-    name: Optional[str] = Field(None, description="Agent name")
-    company_name: Optional[str] = Field(None, alias="companyName", description="Agent's company")
+    Maps to C# CompanyListItem entity.
+    """
+
+    id: Optional[int | str] = Field(None, description="Agent/company ID")
+    code: Optional[str] = Field(None, description="Company code")
+    name: Optional[str] = Field(None, description="Company/agent name")
+    type_id: Optional[str] = Field(None, alias="typeId", description="Company type ID")
+
+
+class TimelineResponse(ResponseModel):
+    """GET /job/{jobDisplayId}/timeline wrapper response.
+
+    The API returns this wrapper object (not a bare list of tasks).
+    """
+
+    success: Optional[bool] = Field(None, description="Operation success flag")
+    error_message: Optional[str] = Field(None, alias="errorMessage", description="Error message if failed")
+    tasks: Optional[List[TimelineTask]] = Field(None, description="Timeline task list")
+    on_holds: Optional[List[dict]] = Field(None, alias="onHolds", description="Active on-hold entries")
+    days_per_sla: Optional[int] = Field(None, alias="daysPerSla", description="SLA days")
+    delivery_service_done_by: Optional[str] = Field(
+        None, alias="deliveryServiceDoneBy", description="Delivery service provider"
+    )
+    job_sub_management_status: Optional[dict] = Field(
+        None, alias="jobSubManagementStatus", description="Current job sub-management status"
+    )
+    job_booked_date: Optional[str] = Field(None, alias="jobBookedDate", description="Job booked date")
+
+
+class TimelineSaveResponse(ResponseModel):
+    """POST /job/{jobDisplayId}/timeline wrapper response.
+
+    The API returns this wrapper (not a bare TimelineTask).
+    """
+
+    success: Optional[bool] = Field(None, description="Operation success flag")
+    error_message: Optional[str] = Field(None, alias="errorMessage", description="Error message if failed")
+    task_exists: Optional[bool] = Field(None, alias="taskExists", description="Whether task already existed")
+    task: Optional[TimelineTask] = Field(None, description="Created or updated task")
+    email_log_id: Optional[int] = Field(None, alias="emailLogId", description="Email log ID if email sent")
+    job_sub_management_status: Optional[dict] = Field(
+        None, alias="jobSubManagementStatus", description="Updated job sub-management status"
+    )
 
 
 class TimelineTaskCreateRequest(RequestModel):
