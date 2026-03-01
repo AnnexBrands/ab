@@ -9,8 +9,8 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 31
-- **G1 Model Fidelity**: 64/231 pass
+- **Complete (all gates pass)**: 33
+- **G1 Model Fidelity**: 66/231 pass
 - **G2 Fixture Status**: 70/231 pass
 - **G3 Test Quality**: 139/231 pass
 - **G4 Doc Accuracy**: 157/231 pass
@@ -52,7 +52,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/price | GET | — | JobPrice | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/calendaritems | GET | — | List[CalendarItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/updatePageConfig | GET | — | JobUpdatePageConfig | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
-| /job/search | GET | — | List[JobSearchResult] | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | HTTP 404 on staging |
+| /job/search | GET | — | JobSearchResult | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 404 on staging |
 | /job/{jobDisplayId}/timeline | GET | — | List[TimelineTask] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID with active timeline |
 | /job/{jobDisplayId}/timeline/{taskCode}/agent | GET | — | TimelineAgent | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID + task code |
 | /job/{jobDisplayId}/tracking | GET | — | TrackingInfo | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
@@ -252,7 +252,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/timeline | POST | TimelineTaskCreateRequest | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/item/{itemId} | PUT | ItemUpdateRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | PUT | JobNoteUpdateRequest | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/searchByDetails | POST | JobSearchRequest | List[JobSearchResult] | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/searchByDetails | POST | JobSearchRequest | List[JobSearchResult] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/timeline/undoincrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/payment/create | GET | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/shipment/exportdata | GET | — | ShipmentExportData | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | auto-discovered |
@@ -265,7 +265,6 @@ Models with `__pydantic_extra__` fields when validated against their fixtures:
 
 | Model | Issue |
 |-------|-------|
-| List[JobSearchResult] | 21 undeclared field(s): completedDate, createdByUserName, delAddress1, delZipCode, destAddress, estimateDate1, expectedDeliveryDate, expectedPickUpDate, itemName, jobItemsTotalMaterialsLbs, jobMgmtId, jobMgmtStatusName, jobTotalQty, jobTotalValue, jobTotalWeight, orginAddress, psDoneBy, puAddress2, puZipcode, quoteDate1, totalItems |
 | List[ParcelItem] | 2 undeclared field(s): jobModifiedDate, parcelItems |
 | ParcelItem | 2 undeclared field(s): jobModifiedDate, parcelItems |
 | TrackingInfo | 3 undeclared field(s): errorMessage, statuses, success |
