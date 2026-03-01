@@ -9,9 +9,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 30
-- **G1 Model Fidelity**: 41/231 pass
-- **G2 Fixture Status**: 44/231 pass
+- **Complete (all gates pass)**: 31
+- **G1 Model Fidelity**: 64/231 pass
+- **G2 Fixture Status**: 70/231 pass
 - **G3 Test Quality**: 139/231 pass
 - **G4 Doc Accuracy**: 157/231 pass
 - **G5 Param Routing**: 216/231 pass
@@ -48,22 +48,22 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /lookup/items | GET | — | List[LookupItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Returns 204 — research ABConnectTools for required query params |
 | /users/list | POST | ListRequest | List[User] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging. Model warning: response is paginated wrapper (totalCount, data) |
 | /users/roles | GET | — | List[str] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Fixed — route uses List[str]; API returns plain strings, not UserRole objects |
-| /job/{jobDisplayId} | GET | — | Job | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | HTTP 500 on staging |
+| /job/{jobDisplayId} | GET | — | Job | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 500 on staging |
 | /job/{jobDisplayId}/price | GET | — | JobPrice | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/calendaritems | GET | — | List[CalendarItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/updatePageConfig | GET | — | JobUpdatePageConfig | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/search | GET | — | List[JobSearchResult] | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | HTTP 404 on staging |
 | /job/{jobDisplayId}/timeline | GET | — | List[TimelineTask] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID with active timeline |
 | /job/{jobDisplayId}/timeline/{taskCode}/agent | GET | — | TimelineAgent | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs job ID + task code |
-| /job/{jobDisplayId}/tracking | GET | — | TrackingInfo | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
-| /v3/job/{jobDisplayId}/tracking/{historyAmount} | GET | — | TrackingInfoV3 | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
+| /job/{jobDisplayId}/tracking | GET | — | TrackingInfo | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
+| /v3/job/{jobDisplayId}/tracking/{historyAmount} | GET | — | TrackingInfoV3 | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{jobDisplayId}/payment | GET | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | FAIL | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{jobDisplayId}/payment/sources | GET | — | List[PaymentSource] | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | Works but no fixture_file set in example |
 | /job/{jobDisplayId}/payment/ACHPaymentSession | POST | ACHSessionRequest | ACHSessionResponse | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | Needs ACH session params |
 | /job/{jobDisplayId}/note | GET | — | List[JobNote] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Model bug — id field typed as str but API returns int |
-| /job/{jobDisplayId}/parcelitems | GET | — | List[ParcelItem] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with parcel items |
-| /job/{jobDisplayId}/parcel-items-with-materials | GET | — | List[ParcelItemWithMaterials] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with packed items |
-| /job/{jobDisplayId}/packagingcontainers | GET | — | List[PackagingContainer] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | Model has warning fields — works but model incomplete |
+| /job/{jobDisplayId}/parcelitems | GET | — | List[ParcelItem] | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with parcel items |
+| /job/{jobDisplayId}/parcel-items-with-materials | GET | — | List[ParcelItemWithMaterials] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with packed items |
+| /job/{jobDisplayId}/packagingcontainers | GET | — | List[PackagingContainer] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Model has warning fields — works but model incomplete |
 | /job/{jobDisplayId}/shipment/ratequotes | GET | — | List[RateQuote] | PASS | PASS | PASS | FAIL | FAIL | PASS | incomplete | 2026-02-14, staging |
 | /job/{jobDisplayId}/shipment/accessorials | GET | — | List[Accessorial] | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
 | /job/{jobDisplayId}/shipment/origindestination | GET | — | ShipmentOriginDestination | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
@@ -127,7 +127,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /commodity/suggestions | POST | CommoditySuggestionRequest | List[Commodity] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/{id} | GET | — | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/{id} | PUT | CommodityMapUpdateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /commodity-map/{id} | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /commodity-map/{id} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map | POST | CommodityMapCreateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/search | POST | CommodityMapSearchRequest | List[CommodityMap] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard | GET | — | DashboardSummary | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
@@ -142,7 +142,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /views/all | GET | — | List[GridViewDetails] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId} | GET | — | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views | POST | GridViewCreateRequest | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /views/{viewId} | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /views/{viewId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId}/accessinfo | GET | — | GridViewAccess | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId}/access | PUT | GridViewAccess | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
 | /views/datasetsps | GET | — | List[StoredProcedureColumn] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
@@ -192,19 +192,19 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/update | POST | JobUpdateRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
 | /job/save | PUT | JobSaveRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
 | /job/transfer/{jobDisplayId} | POST | TransferModel | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/status/quote | POST | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/status/quote | POST | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
 | /job/{jobDisplayId}/shipment/ratequotes | POST | ShipmentRateQuoteRequest | List[RateQuote] | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/book | POST | ShipmentBookRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/accessorial | POST | AccessorialAddRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/accessorial/{addOnId} | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/exportdata | POST | ShipmentExportRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/bysource | POST | PayBySourceRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/ACHCreditTransfer | POST | ACHCreditTransferRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/attachCustomerBank | POST | AttachBankRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/verifyJobACHSource | POST | VerifyACHRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/banksource | POST | BankSourceRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/cancelJobACHVerification | POST | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/shipment/book | POST | ShipmentBookRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/shipment | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/shipment/accessorial | POST | AccessorialAddRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/shipment/accessorial/{addOnId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/shipment/exportdata | POST | ShipmentExportRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/bysource | POST | PayBySourceRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/ACHCreditTransfer | POST | ACHCreditTransferRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/attachCustomerBank | POST | AttachBankRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/verifyJobACHSource | POST | VerifyACHRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/banksource | POST | BankSourceRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/payment/cancelJobACHVerification | POST | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
 | /contacts/editdetails | POST | ContactEditRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
 | /contacts/{contactId}/editdetails | PUT | ContactEditRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
 | /documents | POST | — | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 020 |
@@ -240,20 +240,20 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/form/quick-sale | GET | — | bytes | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/form/usar | GET | — | bytes | FAIL | FAIL | FAIL | FAIL | FAIL | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/form/usar/editable | GET | — | bytes | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/parcelitems/{parcelItemId} | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskId} | DELETE | — | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/parcelitems/{parcelItemId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskId} | DELETE | — | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | GET | — | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} | GET | — | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/incrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/incrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/timeline/{timelineTaskId} | PATCH | TimelineTaskUpdateRequest | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/item/notes | POST | ItemNotesRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/item/notes | POST | ItemNotesRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note | POST | JobNoteCreateRequest | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/parcelitems | POST | ParcelItemCreateRequest | ParcelItem | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/parcelitems | POST | ParcelItemCreateRequest | ParcelItem | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/timeline | POST | TimelineTaskCreateRequest | TimelineTask | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/item/{itemId} | PUT | ItemUpdateRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/item/{itemId} | PUT | ItemUpdateRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | PUT | JobNoteUpdateRequest | JobNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/searchByDetails | POST | JobSearchRequest | List[JobSearchResult] | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/undoincrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/undoincrementjobstatus | POST | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/payment/create | GET | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/shipment/exportdata | GET | — | ShipmentExportData | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /shipment/document/{docId} | GET | — | bytes | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | auto-discovered |
@@ -265,5 +265,8 @@ Models with `__pydantic_extra__` fields when validated against their fixtures:
 
 | Model | Issue |
 |-------|-------|
-| Job | 85 undeclared field(s): autoPackFailed, autoPackOff, cFillId, cFillValue, cPackId, cPackValue, ceilingTransportationWeight, commodityId, companyID, companyName, containerId, containerThickness, containerType, containerWeight, customerItemId, descriptionOfProducts, doNotTip, documentExists, eccn, fillWeight, forceCrate, grossCubicFeet, inchesToAdd, isAccess, isContainerChanged, isFillChanged, isFillPercentChanged, isInchToAddChanged, isPrepacked, isValidContainer, isValidFill, itemActive, itemDescription, itemHeight, itemID, itemLength, itemName, itemNotes, itemPublic, itemSequenceNo, itemValue, itemWeight, itemWidth, jobFreightID, jobID, jobItemFillPercent, jobItemID, jobItemNotes, jobItemParcelValue, jobItemPkdHeight, jobItemPkdLength, jobItemPkdValue, jobItemPkdWeight, jobItemPkdWidth, laborCharge, laborHrs, longestDimension, materialTotalCost, materialWeight, materials, netCubicFeet, nmfcItem, nmfcSub, nmfcSubClass, notedConditions, originalJobItemId, originalQty, parcelPackageTypeId, pkdLengthPlusGirth, quantity, requestedParcelPackagings, rowNumber, scheduleB, secondDimension, stc, totalItems, totalLaborCharge, totalPackedValue, totalPcs, totalWeight, transportationHeight, transportationLength, transportationWeight, transportationWidth, userId |
 | List[JobSearchResult] | 21 undeclared field(s): completedDate, createdByUserName, delAddress1, delZipCode, destAddress, estimateDate1, expectedDeliveryDate, expectedPickUpDate, itemName, jobItemsTotalMaterialsLbs, jobMgmtId, jobMgmtStatusName, jobTotalQty, jobTotalValue, jobTotalWeight, orginAddress, psDoneBy, puAddress2, puZipcode, quoteDate1, totalItems |
+| List[ParcelItem] | 2 undeclared field(s): jobModifiedDate, parcelItems |
+| ParcelItem | 2 undeclared field(s): jobModifiedDate, parcelItems |
+| TrackingInfo | 3 undeclared field(s): errorMessage, statuses, success |
+| TrackingInfoV3 | 2 undeclared field(s): carriers, statuses |
