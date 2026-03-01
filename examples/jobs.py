@@ -7,7 +7,7 @@ Core CRUD, Pricing, Status, Timeline, Tracking, Notes, Parcels, Items.
 from examples._runner import ExampleRunner
 from tests.constants import TEST_JOB_DISPLAY_ID
 
-runner = ExampleRunner("Jobs", env="staging")
+runner = ExampleRunner("Jobs", endpoint_attr="jobs", env="staging")
 
 # ═══════════════════════════════════════════════════════════════════════
 # Core CRUD
@@ -18,8 +18,7 @@ runner = ExampleRunner("Jobs", env="staging")
 runner.add(
     "get",
     lambda api: api.jobs.get(TEST_JOB_DISPLAY_ID),
-    response_model="Job",
-    fixture_file="Job.json",
+    # response_model and fixture_file auto-discovered from Route
 )
 
 runner.add(
@@ -70,8 +69,7 @@ runner.add(
 runner.add(
     "get_price",
     lambda api: api.jobs.get_price(TEST_JOB_DISPLAY_ID),
-    response_model="JobPrice",
-    fixture_file="JobPrice.json",
+    # response_model and fixture_file auto-discovered from Route
 )
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -83,8 +81,7 @@ runner.add(
 runner.add(
     "get_update_page_config",
     lambda api: api.jobs.get_update_page_config(TEST_JOB_DISPLAY_ID),
-    response_model="JobUpdatePageConfig",
-    fixture_file="JobUpdatePageConfig.json",
+    # response_model and fixture_file auto-discovered from Route
 )
 
 # ── Uses request fixtures ────────────────────────────────────────────

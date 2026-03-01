@@ -1,0 +1,16 @@
+{
+  "id": null,
+  "jobItemId": null,
+  "description": null,
+  "quantity": null,
+  "jobItemPkdLength": null,
+  "jobItemPkdWidth": null,
+  "jobItemPkdHeight": null,
+  "jobItemPkdWeight": null,
+  "jobItemParcelValue": null,
+  "parcelPackageTypeId": null,
+  "insureKey": null,
+  "packageTypeCode": null,
+  "jobModifiedDate": "2026-02-28T19:07:26.847",
+  "parcelItems": []
+}

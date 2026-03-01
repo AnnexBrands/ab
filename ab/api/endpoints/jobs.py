@@ -267,7 +267,16 @@ class JobsEndpoint(BaseEndpoint):
         return self._request(_SAVE, json=data)
 
     def get(self, job_display_id: int) -> Job:
-        """GET /job/{jobDisplayId} (ACPortal)"""
+        """GET /job/{jobDisplayId} (ACPortal)
+
+        Retrieve a job by its display ID.
+
+        Args:
+            job_display_id: The numeric display ID of the job.
+
+        Returns:
+            :class:`~ab.api.models.jobs.Job`
+        """
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
     def search(self, *, job_display_id: int | None = None) -> JobSearchResult:
@@ -328,8 +337,14 @@ class JobsEndpoint(BaseEndpoint):
     def get_timeline_response(self, job_display_id: int) -> TimelineResponse:
         """GET /job/{jobDisplayId}/timeline — full wrapper response.
 
-        Returns the complete TimelineResponse with tasks, status metadata,
-        SLA info, and on-hold entries.
+        Returns the complete :class:`~ab.api.models.jobs.TimelineResponse` with
+        tasks, status metadata, SLA info, and on-hold entries.
+
+        Args:
+            job_display_id: The numeric display ID of the job.
+
+        Returns:
+            :class:`~ab.api.models.jobs.TimelineResponse`
         """
         return self._request(_GET_TIMELINE.bind(jobDisplayId=job_display_id))
 
@@ -348,17 +363,17 @@ class JobsEndpoint(BaseEndpoint):
         data: dict,
         create_email: bool | None = None,
     ) -> TimelineSaveResponse:
-        """POST /job/{jobDisplayId}/timeline.
+        """POST /job/{jobDisplayId}/timeline
 
-        The API accepts any task dict with at minimum a ``taskCode`` field.
-        It creates or updates the task based on whether one already exists.
+        Create or update a timeline task for a job.
 
         Args:
-            job_display_id: Job display ID.
-            data: Task dict with taskCode and task-code-specific fields.
+            job_display_id: The numeric display ID of the job.
+            data: Task dict with ``taskCode`` and task-code-specific fields.
             create_email: Send status notification email (query param).
 
-        Params model: :class:`TimelineCreateParams`
+        Returns:
+            :class:`~ab.api.models.jobs.TimelineSaveResponse`
         """
         params = dict(create_email=create_email)
         return self._request(

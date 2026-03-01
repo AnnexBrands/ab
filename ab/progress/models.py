@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ab.progress.gates import EndpointGateStatus
 
 
 @dataclass
@@ -82,6 +86,38 @@ class ActionItem:
     instructions: list[str] = field(default_factory=list)
     required_constants: list[str] = field(default_factory=list)
     missing_constants: list[str] = field(default_factory=list)
+
+
+@dataclass
+class MethodProgress:
+    """Unified view of a single endpoint method's coverage."""
+
+    dotted_path: str
+    method_name: str
+    http_method: str
+    http_path: str
+    return_type: str
+    has_example: bool
+    has_cli: bool
+    has_route: bool
+    path_sub_root: str
+    gate_status: EndpointGateStatus | None = None
+
+
+@dataclass
+class EndpointClassProgress:
+    """All methods in an endpoint class, grouped by path sub-root."""
+
+    class_name: str
+    display_name: str
+    aliases: list[str] = field(default_factory=list)
+    path_root: str = ""
+    helpers: list[MethodProgress] = field(default_factory=list)
+    sub_groups: dict[str, list[MethodProgress]] = field(default_factory=dict)
+    total_methods: int = 0
+    total_with_route: int = 0
+    total_with_example: int = 0
+    total_with_cli: int = 0
 
 
 def classify_action_items(

@@ -62,11 +62,19 @@ class ExampleRunner:
         Keyword arguments forwarded to :class:`ab.ABConnectAPI`.
     """
 
-    def __init__(self, title: str, **api_kwargs: Any) -> None:
+    def __init__(
+        self,
+        title: str,
+        *,
+        endpoint_attr: str | None = None,
+        **api_kwargs: Any,
+    ) -> None:
         self.title = title
+        self.endpoint_attr = endpoint_attr
         self.api_kwargs = api_kwargs
         self.entries: list[ExampleEntry] = []
         self._api: Any = None
+        self._method_routes: dict[str, Any] | None = None
 
     @property
     def api(self) -> Any:
@@ -87,17 +95,90 @@ class ExampleRunner:
         fixture_file: Optional[str] = None,
         request_fixture_file: Optional[str] = None,
     ) -> None:
-        """Register a structured entry."""
-        self.entries.append(
-            ExampleEntry(
-                name=name,
-                call=call,
-                response_model=response_model,
-                request_model=request_model,
-                fixture_file=fixture_file,
-                request_fixture_file=request_fixture_file,
-            )
+        """Register a structured entry.
+
+        When ``endpoint_attr`` was set on the runner and model/fixture fields
+        are left as ``None``, they are auto-populated from Route metadata.
+        """
+        entry = ExampleEntry(
+            name=name,
+            call=call,
+            response_model=response_model,
+            request_model=request_model,
+            fixture_file=fixture_file,
+            request_fixture_file=request_fixture_file,
         )
+        self.entries.append(entry)
+        self._auto_populate_entry(entry)
+
+    # ------------------------------------------------------------------
+    # Route-based auto-discovery
+    # ------------------------------------------------------------------
+
+    def _resolve_method_routes(self) -> dict[str, Any]:
+        """Lazily resolve method → Route mapping for this endpoint."""
+        if self._method_routes is not None:
+            return self._method_routes
+
+        if self.endpoint_attr is None:
+            self._method_routes = {}
+            return self._method_routes
+
+        try:
+            from ab.cli.discovery import discover_endpoints_from_class
+
+            registry = discover_endpoints_from_class()
+            endpoint_info = registry.get(self.endpoint_attr)
+            if endpoint_info and endpoint_info.endpoint_class:
+                from ab.cli.route_resolver import resolve_routes_for_class
+
+                self._method_routes = resolve_routes_for_class(
+                    endpoint_info.endpoint_class
+                )
+            else:
+                self._method_routes = {}
+        except Exception:
+            self._method_routes = {}
+
+        return self._method_routes
+
+    def _auto_populate_entry(self, entry: ExampleEntry) -> None:
+        """Auto-populate response/request model and fixture from Route metadata."""
+        # Skip if everything is explicitly set
+        if (
+            entry.response_model is not None
+            and entry.fixture_file is not None
+            and entry.request_model is not None
+        ):
+            return
+
+        routes = self._resolve_method_routes()
+        route = routes.get(entry.name)
+        if route is None:
+            return
+
+        # Auto-populate response_model
+        if entry.response_model is None and route.response_model:
+            model_name = route.response_model
+            # Parse List[Model] to get inner name
+            import re
+
+            inner = re.match(r"^List\[(\w+)\]$", model_name)
+            if inner:
+                model_name = inner.group(1)
+            entry.response_model = model_name
+
+        # Auto-populate fixture_file
+        if entry.fixture_file is None and entry.response_model:
+            entry.fixture_file = f"{entry.response_model}.json"
+
+        # Auto-populate request_model
+        if entry.request_model is None and route.request_model:
+            entry.request_model = route.request_model
+
+        # Auto-populate request_fixture_file
+        if entry.request_fixture_file is None and entry.request_model:
+            entry.request_fixture_file = f"{entry.request_model}.json"
 
     # ------------------------------------------------------------------
     # Execution

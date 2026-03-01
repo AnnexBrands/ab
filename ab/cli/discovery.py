@@ -10,6 +10,8 @@ import inspect
 from dataclasses import dataclass, field
 from typing import Any
 
+from ab.api.route import Route
+
 
 @dataclass
 class ParamInfo:
@@ -32,6 +34,8 @@ class MethodInfo:
     positional_params: list[ParamInfo] = field(default_factory=list)
     keyword_params: list[ParamInfo] = field(default_factory=list)
     docstring: str | None = None
+    route: Route | None = None
+    return_annotation: str | None = None
 
 
 @dataclass
@@ -41,6 +45,8 @@ class EndpointInfo:
     name: str
     endpoint_class: type | None = None
     methods: list[MethodInfo] = field(default_factory=list)
+    aliases: list[str] = field(default_factory=list)
+    path_root: str | None = None
 
 
 def _python_to_cli(name: str) -> str:
@@ -113,16 +119,40 @@ def _extract_methods(cls: type) -> list[MethodInfo]:
             continue
 
         positional, keyword = _extract_params(sig)
+
+        # Capture return annotation as a string
+        ret_ann = None
+        if sig.return_annotation is not inspect.Parameter.empty:
+            ret_ann = _format_return_annotation(sig.return_annotation)
+
         methods.append(
             MethodInfo(
                 name=name,
                 positional_params=positional,
                 keyword_params=keyword,
                 docstring=inspect.getdoc(attr),
+                return_annotation=ret_ann,
             )
         )
 
     return methods
+
+
+def _format_return_annotation(ann: Any) -> str:
+    """Convert a return annotation to a readable string."""
+    origin = getattr(ann, "__origin__", None)
+    args = getattr(ann, "__args__", ())
+
+    if origin is list:
+        if args:
+            inner = _format_return_annotation(args[0])
+            return f"list[{inner}]"
+        return "list"
+
+    if hasattr(ann, "__name__"):
+        return ann.__name__
+
+    return str(ann)
 
 
 def discover_endpoints_from_class() -> dict[str, EndpointInfo]:
@@ -131,15 +161,23 @@ def discover_endpoints_from_class() -> dict[str, EndpointInfo]:
     This approach avoids instantiating the client (no credentials needed)
     by parsing the attribute assignments in ``_init_endpoints``.
     """
+    import re
+
     from ab.api.base import BaseEndpoint
+    from ab.cli.aliases import ALIASES
+    from ab.cli.route_resolver import resolve_routes_for_class
     from ab.client import ABConnectAPI
 
     endpoints: dict[str, EndpointInfo] = {}
 
+    # Build reverse alias map: endpoint_name → [alias1, alias2, ...]
+    reverse_aliases: dict[str, list[str]] = {}
+    for alias, target in ALIASES.items():
+        reverse_aliases.setdefault(target, []).append(alias)
+
     # Inspect _init_endpoints source to find attribute name → class mappings
     source = inspect.getsource(ABConnectAPI._init_endpoints)
     # Parse lines like: self.address = AddressEndpoint(self._acportal)
-    import re
 
     for match in re.finditer(r"self\.(\w+)\s*=\s*(\w+Endpoint)\(", source):
         attr_name = match.group(1)
@@ -153,13 +191,49 @@ def discover_endpoints_from_class() -> dict[str, EndpointInfo]:
             continue
 
         methods = _extract_methods(cls)
+
+        # Resolve method → Route mapping
+        method_routes = resolve_routes_for_class(cls)
+        for m in methods:
+            if m.name in method_routes:
+                m.route = method_routes[m.name]
+
+        # Compute path_root from collected Route paths
+        path_root = _compute_path_root(method_routes)
+
         endpoints[attr_name] = EndpointInfo(
             name=attr_name,
             endpoint_class=cls,
             methods=methods,
+            aliases=sorted(reverse_aliases.get(attr_name, [])),
+            path_root=path_root,
         )
 
     return endpoints
+
+
+def _compute_path_root(method_routes: dict[str, Route]) -> str | None:
+    """Extract the common first path segment from a set of Routes."""
+    if not method_routes:
+        return None
+    paths = [r.path for r in method_routes.values()]
+    # Extract first path segment (e.g., "/job" from "/job/{id}/timeline")
+    segments: set[str] = set()
+    for path in paths:
+        parts = path.strip("/").split("/")
+        if parts:
+            segments.add(f"/{parts[0]}")
+    if len(segments) == 1:
+        return segments.pop()
+    # Multiple roots — return the most common one
+    if segments:
+        from collections import Counter
+
+        counter = Counter(
+            f"/{path.strip('/').split('/')[0]}" for path in paths
+        )
+        return counter.most_common(1)[0][0]
+    return None
 
 
 def discover_endpoints_from_instance(api: object) -> dict[str, EndpointInfo]:

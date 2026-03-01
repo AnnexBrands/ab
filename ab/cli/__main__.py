@@ -93,42 +93,65 @@ def _resolve_method(
 
 
 def _list_all(registry: dict[str, EndpointInfo]) -> None:
-    """Print all endpoint groups with method counts and aliases."""
-    reverse_aliases: dict[str, list[str]] = {}
-    for alias, mod in ALIASES.items():
-        reverse_aliases.setdefault(mod, []).append(alias)
-
+    """Print all endpoint groups with method counts, path roots, and aliases."""
     total_methods = 0
-    print(f"\n  {'Endpoint':<20} {'Methods':>7}   Aliases")
-    print(f"  {'─' * 20} {'─' * 7}   {'─' * 30}")
+    print(f"\n  {'Endpoint':<20} {'Methods':>7}   {'Path Root':<15}   Aliases", file=sys.stderr)
+    print(f"  {'─' * 20} {'─' * 7}   {'─' * 15}   {'─' * 30}", file=sys.stderr)
     for name in sorted(registry):
         info = registry[name]
         count = len(info.methods)
         total_methods += count
-        aliases = ", ".join(sorted(reverse_aliases.get(name, []))) or "—"
-        print(f"  {name:<20} {count:>7}   {aliases}")
-    print(f"\n  {len(registry)} endpoints, {total_methods} methods\n")
+        aliases = ", ".join(info.aliases) or "—"
+        path_root = info.path_root or "—"
+        print(f"  {name:<20} {count:>7}   {path_root:<15}   {aliases}", file=sys.stderr)
+    print(f"\n  {len(registry)} endpoints, {total_methods} methods\n", file=sys.stderr)
 
 
 def _list_methods(endpoint: EndpointInfo) -> None:
-    """Print all methods in an endpoint group with signatures."""
-    print(f"\n  {endpoint.name} — {len(endpoint.methods)} methods\n")
-    print(f"  {'Method':<30} Parameters")
-    print(f"  {'─' * 30} {'─' * 50}")
-    for m in endpoint.methods:
-        parts: list[str] = []
-        for p in m.positional_params:
-            type_str = getattr(p.annotation, "__name__", "") if p.annotation else ""
-            parts.append(f"{p.name}: {type_str}" if type_str else p.name)
-        for p in m.keyword_params:
-            type_str = getattr(p.annotation, "__name__", "") if p.annotation else ""
-            if p.default is not inspect.Parameter.empty:
-                parts.append(f"{p.cli_name}={p.default!r}")
-            else:
-                parts.append(f"{p.cli_name}")
-        sig = ", ".join(parts) if parts else "(no parameters)"
-        print(f"  {m.name:<30} {sig}")
-    print()
+    """Print methods in an endpoint group, separated into helpers and API methods."""
+    w = sys.stderr.write
+    w(f"\n  {endpoint.name} — {len(endpoint.methods)} methods\n\n")
+
+    helpers = [m for m in endpoint.methods if m.route is None]
+    api_methods = [m for m in endpoint.methods if m.route is not None]
+
+    # Helpers section
+    if helpers:
+        w("  Helpers (no API route):\n")
+        w(f"  {'─' * 50}\n")
+        for m in helpers:
+            params = _param_summary(m)
+            w(f"  {m.name:<30} {params}\n")
+        w("\n")
+
+    # API methods section
+    if api_methods:
+        w("  API Methods:\n")
+        w(f"  {'─' * 80}\n")
+        # Sort by Route path
+        api_methods.sort(key=lambda m: m.route.path)
+        for m in api_methods:
+            route = m.route
+            ret = m.return_annotation or route.response_model or ""
+            ret_str = f" -> {ret}" if ret else ""
+            params = _param_summary(m)
+            path_col = f"{route.method} {route.path}"
+            w(f"  {path_col:<42} {m.name}({params}){ret_str}\n")
+
+    w("\n")
+
+
+def _param_summary(m: MethodInfo) -> str:
+    """Build a short parameter summary for listing."""
+    parts: list[str] = []
+    for p in m.positional_params:
+        parts.append(p.name)
+    for p in m.keyword_params:
+        if p.default is not inspect.Parameter.empty:
+            parts.append(f"{p.name}={p.default!r}")
+        else:
+            parts.append(p.name)
+    return ", ".join(parts) if parts else ""
 
 
 # ------------------------------------------------------------------
@@ -198,12 +221,8 @@ def main(env: str | None = None) -> None:
         sys.exit(1)
     mod_name, endpoint_info = resolved
 
-    # module --list → list methods (no credentials needed)
+    # module with no method → list methods (no credentials needed)
     if method_part is None and (not rest or rest == ["--list"]):
-        if rest == ["--list"]:
-            _list_methods(endpoint_info)
-            return
-        # bare module with no args → list methods
         _list_methods(endpoint_info)
         return
 
@@ -225,7 +244,7 @@ def main(env: str | None = None) -> None:
     if "--help" in rest:
         from ab.cli.parser import print_method_help
 
-        print_method_help(method)
+        print_method_help(method, module_name=mod_name)
         sys.exit(0)
 
     # Parse arguments
@@ -244,10 +263,7 @@ def main(env: str | None = None) -> None:
     # Call the method
     try:
         if body is not None:
-            result = live_method(*positional, **keyword, json=body) if keyword else live_method(*positional, body)
-            if result is None:
-                # Try with data= instead
-                result = live_method(*positional, data=body, **keyword)
+            result = live_method(*positional, data=body, **keyword)
         else:
             result = live_method(*positional, **keyword)
     except Exception as exc:
