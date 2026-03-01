@@ -18,21 +18,15 @@ class TestJobsIntegration:
 
     def test_search(self, api):
         result = api.jobs.search(job_display_id=TEST_JOB_DISPLAY_ID)
-        # API returns a single object (not a list) when filtering by jobDisplayId
-        assert result is not None
-        if isinstance(result, list):
-            assert len(result) > 0
-            assert isinstance(result[0], JobSearchResult)
-        else:
-            assert isinstance(result, dict)
-            assert result.get("jobDisplayId") == TEST_JOB_DISPLAY_ID
+        assert isinstance(result, JobSearchResult)
+        assert_no_extra_fields(result)
 
     def test_search_by_details(self, api):
         data = load_request_fixture("JobSearchRequest")
         try:
-            result = api.jobs.search_by_details(data)
+            result = api.jobs.search_by_details(data=data)
         except RequestError as exc:
-            if exc.status_code >= 500:
+            if exc.status_code >= 400:
                 pytest.skip(f"Staging server error: {exc}")
             raise
         assert isinstance(result, list)

@@ -561,27 +561,72 @@ class Job(ResponseModel, FullAuditModel):
     prices: Optional[List[dict]] = Field(None, description="Price entries")
 
 
-class JobSearchResult(ResponseModel):
-    """Single search hit — GET /job/search and POST /job/searchByDetails.
+class JobSearchAddress(ResponseModel):
+    """Address nested in job search pickup/delivery details."""
 
-    The live API returns ``jobDisplayID`` (capital *ID*) as a string,
-    not the camelCase ``jobDisplayId`` that swagger shows.
+    id: Optional[int] = Field(None, description="Address integer ID")
+    master_address_id: Optional[int] = Field(None, alias="masterAddressId", description="Master address ID")
+    property_type: Optional[int] = Field(None, alias="propertyType", description="Property type classification")
+    address1: Optional[str] = Field(None, description="Primary address line")
+    address2: Optional[str] = Field(None, description="Secondary address line")
+    city: Optional[str] = Field(None, description="City")
+    state: Optional[str] = Field(None, description="State")
+    country_name: Optional[str] = Field(None, alias="countryName", description="Country name")
+    country_code: Optional[str] = Field(None, alias="countryCode", description="ISO country code")
+    zip_code: Optional[str] = Field(None, alias="zipCode", description="ZIP/postal code")
+
+
+class JobSearchContact(ResponseModel):
+    """Contact nested in job search pickup/delivery details."""
+
+    id: Optional[int] = Field(None, description="Contact integer ID")
+    contact_display_id: Optional[str] = Field(None, alias="contactDisplayId", description="Contact display ID")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
+    bol_notes: Optional[str] = Field(None, alias="bolNotes", description="BOL notes")
+    full_name: Optional[str] = Field(None, alias="fullName", description="Contact full name")
+
+
+class JobSearchTask(ResponseModel):
+    """Timeline task nested in job search pickup/delivery details."""
+
+    id: Optional[int] = Field(None, description="Task integer ID")
+    job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
+    truck_id: Optional[str] = Field(None, alias="truckId", description="Truck UUID")
+    task_code: Optional[str] = Field(None, alias="taskCode", description="Task code (PU, DEL)")
+    planned_start_date: Optional[str] = Field(None, alias="plannedStartDate", description="Planned start datetime")
+    planned_end_date: Optional[str] = Field(None, alias="plannedEndDate", description="Planned end datetime")
+    modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Last modified datetime")
+    on_site_time_log: Optional[str] = Field(None, alias="onSiteTimeLog", description="On-site time log")
+    trip_time_log: Optional[str] = Field(None, alias="tripTimeLog", description="Trip time log")
+    completed_date: Optional[str] = Field(None, alias="completedDate", description="Completed datetime")
+
+
+class JobSearchTransportDetails(ResponseModel):
+    """Pickup or delivery details in job search result."""
+
+    important_notes_count: Optional[int] = Field(None, alias="importantNotesCount", description="Count of important notes")
+    contact: Optional[JobSearchContact] = Field(None, description="Contact details")
+    address: Optional[JobSearchAddress] = Field(None, description="Address details")
+    contact_email: Optional[str] = Field(None, alias="contactEmail", description="Contact email")
+    contact_phone: Optional[str] = Field(None, alias="contactPhone", description="Contact phone")
+    company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
+    task: Optional[JobSearchTask] = Field(None, description="Timeline task")
+
+
+class JobSearchResult(ResponseModel):
+    """Single search hit — GET /job/search.
+
+    The live API returns a structured object with nested pickup/delivery
+    details rather than the flat fields shown in older documentation.
     """
 
-    job_display_id: Optional[str] = Field(None, alias="jobDisplayID", description="Display ID (string)")
-    job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
-    customer_full_name: Optional[str] = Field(None, alias="customerFullName", description="Customer full name")
-    customer_phone_number: Optional[str] = Field(None, alias="customerPhoneNumber", description="Customer phone")
-    jobstatus: Optional[str] = Field(None, description="Job status text")
-    company_name: Optional[str] = Field(None, alias="companyName", description="Company name")
-    agent_code: Optional[str] = Field(None, alias="agentCode", description="Agent code")
-    job_total_amount: Optional[float] = Field(None, alias="jobTotalAmount", description="Total amount")
-    pu_address1: Optional[str] = Field(None, alias="puAddress1", description="Pickup address line 1")
-    pu_city: Optional[str] = Field(None, alias="puCity", description="Pickup city")
-    pu_state: Optional[str] = Field(None, alias="puState", description="Pickup state")
-    del_city: Optional[str] = Field(None, alias="delCity", description="Delivery city")
-    del_state: Optional[str] = Field(None, alias="delState", description="Delivery state")
-    status_id: Optional[str] = Field(None, alias="statusID", description="Status UUID")
+    job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
+    job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID")
+    items_count: Optional[int] = Field(None, alias="itemsCount", description="Number of items in job")
+    pickup_details: Optional[JobSearchTransportDetails] = Field(None, alias="pickupDetails", description="Pickup details")
+    delivery_details: Optional[JobSearchTransportDetails] = Field(None, alias="deliveryDetails", description="Delivery details")
+    access_level: Optional[int] = Field(None, alias="accessLevel", description="Access level bitmask")
 
 
 class JobPrice(ResponseModel):

@@ -79,8 +79,7 @@ class TestJobModels:
         data = require_fixture("JobSearchResult", "GET", "/job/search", required=True)
         model = JobSearchResult.model_validate(data)
         assert isinstance(model, JobSearchResult)
-        # JobSearchResult still has extra fields — not yet fully typed
-        # assert_no_extra_fields(model)
+        assert_no_extra_fields(model)
 
     @pytest.mark.live
     def test_job_price(self):
