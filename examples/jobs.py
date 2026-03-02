@@ -5,7 +5,15 @@ Core CRUD, Pricing, Status, Timeline, Tracking, Notes, Parcels, Items.
 """
 
 from examples._runner import ExampleRunner
-from tests.constants import TEST_JOB_DISPLAY_ID
+from tests.constants import (
+    TEST_JOB_DISPLAY_ID,
+    TEST_NOTE_ID,
+    TEST_RFQ_COMPANY_ID,
+    TEST_RFQ_SERVICE_TYPE,
+    TEST_SMS_TEMPLATE_ID,
+    TEST_TIMELINE_TASK_CODE,
+    TEST_TIMELINE_TASK_ID,
+)
 
 runner = ExampleRunner("Jobs", endpoint_attr="jobs", env="staging")
 
@@ -23,7 +31,7 @@ runner.add(
 
 runner.add(
     "search",
-    lambda api: api.jobs.search(),
+    lambda api: api.jobs.search(job_display_id=TEST_JOB_DISPLAY_ID),
     response_model="List[JobSearchResult]",
     fixture_file="JobSearchResult.json",
 )
@@ -142,14 +150,16 @@ runner.add(
 
 runner.add(
     "get_timeline_task",
-    lambda api: api.jobs.get_timeline_task(TEST_JOB_DISPLAY_ID, "TASK_ID"),
+    lambda api: api.jobs.get_timeline_task(TEST_JOB_DISPLAY_ID, str(TEST_TIMELINE_TASK_ID)),
     response_model="TimelineTask",
     fixture_file="TimelineTask.json",
 )
 
 runner.add(
     "update_timeline_task",
-    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "TASK_ID", data=data or {}),
+    lambda api, data=None: api.jobs.update_timeline_task(
+        TEST_JOB_DISPLAY_ID, str(TEST_TIMELINE_TASK_ID), data=data or {},
+    ),
     request_model="TimelineTaskUpdateRequest",
     request_fixture_file="TimelineTaskUpdateRequest.json",
     response_model="TimelineTask",
@@ -158,13 +168,13 @@ runner.add(
 
 runner.add(
     "delete_timeline_task",
-    lambda api: api.jobs.delete_timeline_task(TEST_JOB_DISPLAY_ID, "TASK_ID"),
+    lambda api: api.jobs.delete_timeline_task(TEST_JOB_DISPLAY_ID, str(TEST_TIMELINE_TASK_ID)),
     # destructive — no fixture
 )
 
 runner.add(
     "get_timeline_agent",
-    lambda api: api.jobs.get_timeline_agent(TEST_JOB_DISPLAY_ID, "SCH"),
+    lambda api: api.jobs.get_timeline_agent(TEST_JOB_DISPLAY_ID, TEST_TIMELINE_TASK_CODE),
     response_model="TimelineAgent",
     fixture_file="TimelineAgent.json",
 )
@@ -213,14 +223,14 @@ runner.add(
 
 runner.add(
     "get_note",
-    lambda api: api.jobs.get_note(TEST_JOB_DISPLAY_ID, "NOTE_ID"),
+    lambda api: api.jobs.get_note(TEST_JOB_DISPLAY_ID, str(TEST_NOTE_ID)),
     response_model="JobNote",
     fixture_file="JobNote.json",
 )
 
 runner.add(
     "update_note",
-    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, "NOTE_ID", data=data or {}),
+    lambda api, data=None: api.jobs.update_note(TEST_JOB_DISPLAY_ID, str(TEST_NOTE_ID), data=data or {}),
     request_model="JobNoteUpdateRequest",
     request_fixture_file="JobNoteUpdateRequest.json",
     response_model="JobNote",
@@ -290,6 +300,69 @@ runner.add(
     request_fixture_file="ItemNotesRequest.json",
     response_model="ServiceBaseResponse",
     fixture_file="ServiceBaseResponse.json",
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# On-Hold
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "list_on_hold",
+    lambda api: api.jobs.list_on_hold(TEST_JOB_DISPLAY_ID),
+)
+
+runner.add(
+    "list_on_hold_followup_users",
+    lambda api: api.jobs.list_on_hold_followup_users(TEST_JOB_DISPLAY_ID),
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# RFQs
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "list_rfqs",
+    lambda api: api.jobs.list_rfqs(TEST_JOB_DISPLAY_ID),
+)
+
+runner.add(
+    "get_rfq_status",
+    lambda api: api.jobs.get_rfq_status(
+        TEST_JOB_DISPLAY_ID, TEST_RFQ_SERVICE_TYPE, TEST_RFQ_COMPANY_ID,
+    ),
+    response_model="int",
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# SMS
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "list_sms",
+    lambda api: api.jobs.list_sms(TEST_JOB_DISPLAY_ID),
+)
+
+runner.add(
+    "get_sms_template",
+    lambda api: api.jobs.get_sms_template(TEST_JOB_DISPLAY_ID, str(TEST_SMS_TEMPLATE_ID)),
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# Freight Providers
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "list_freight_providers",
+    lambda api: api.jobs.list_freight_providers(TEST_JOB_DISPLAY_ID),
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# Timeline (full response)
+# ═══════════════════════════════════════════════════════════════════════
+
+runner.add(
+    "get_timeline_response",
+    lambda api: api.jobs.get_timeline_response(TEST_JOB_DISPLAY_ID),
 )
 
 if __name__ == "__main__":

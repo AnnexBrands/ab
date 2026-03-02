@@ -1,0 +1,20 @@
+[
+  {
+    "id": 2945,
+    "reason": "Storage",
+    "description": null,
+    "followUpUser": null,
+    "followUpDate": null,
+    "status": null,
+    "createdDate": null,
+    "createdByContactId": 477896,
+    "createdByJobRelation": null,
+    "resolvedDate": null,
+    "responsiblePartyTypeId": "80158430-1f63-e811-9c34-00155d426802",
+    "reasonId": "8b158430-1f63-e811-9c34-00155d426802",
+    "responsibleParty": "Dealer",
+    "comment": "",
+    "startDate": "2024-08-13T00:00:00",
+    "createdBy": "Brett Monson"
+  }
+]

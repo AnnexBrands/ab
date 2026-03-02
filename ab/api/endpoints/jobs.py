@@ -63,7 +63,7 @@ if TYPE_CHECKING:
         TrackingInfo,
         TrackingInfoV3,
     )
-    from ab.api.models.rfq import QuoteRequestDisplayInfo, QuoteRequestStatus
+    from ab.api.models.rfq import QuoteRequestDisplayInfo
     from ab.api.models.shared import ServiceBaseResponse
 
 # ACPortal routes
@@ -166,7 +166,7 @@ _POST_ITEM_NOTES = Route(
 _LIST_RFQS = Route("GET", "/job/{jobDisplayId}/rfq", params_model="JobRfqListParams", response_model="List[QuoteRequestDisplayInfo]")
 _GET_RFQ_STATUS = Route(
     "GET", "/job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}",
-    response_model="QuoteRequestStatus",
+    response_model="int",
 )
 
 # On-Hold routes
@@ -628,7 +628,7 @@ class JobsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/rfq (ACPortal)"""
         return self._request(_LIST_RFQS.bind(jobDisplayId=job_display_id))
 
-    def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> QuoteRequestStatus:
+    def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> int:
         """GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} (ACPortal)"""
         return self._request(_GET_RFQ_STATUS.bind(
             jobDisplayId=job_display_id,

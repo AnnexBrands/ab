@@ -14,6 +14,8 @@ from tests.conftest import assert_no_extra_fields, require_fixture
 class TestShipmentModels:
     def test_rate_quote(self):
         data = require_fixture("RateQuote", "GET", "/job/{id}/shipment/ratequotes")
+        if isinstance(data, list):
+            data = data[0]
         model = RateQuote.model_validate(data)
         assert isinstance(model, RateQuote)
         assert_no_extra_fields(model)

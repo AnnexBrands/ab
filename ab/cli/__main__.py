@@ -127,16 +127,14 @@ def _list_methods(endpoint: EndpointInfo) -> None:
     # API methods section
     if api_methods:
         w("  API Methods:\n")
-        w(f"  {'─' * 80}\n")
-        # Sort by Route path
-        api_methods.sort(key=lambda m: m.route.path)
+        w(f"  {'─' * 50}\n")
+        api_methods.sort(key=lambda m: m.name)
         for m in api_methods:
             route = m.route
             ret = m.return_annotation or route.response_model or ""
             ret_str = f" -> {ret}" if ret else ""
             params = _param_summary(m)
-            path_col = f"{route.method} {route.path}"
-            w(f"  {path_col:<42} {m.name}({params}){ret_str}\n")
+            w(f"  {m.name:<30} ({params}){ret_str}\n")
 
     w("\n")
 

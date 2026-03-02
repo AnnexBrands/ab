@@ -1,0 +1,366 @@
+[
+  {
+    "contactId": 266841,
+    "name": null,
+    "email": null,
+    "fullName": "Training",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 338253,
+    "name": null,
+    "email": null,
+    "fullName": "Training User",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 558429,
+    "name": null,
+    "email": null,
+    "fullName": "VKmerge5",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 724042,
+    "name": null,
+    "email": null,
+    "fullName": "Customer for training",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 724043,
+    "name": null,
+    "email": null,
+    "fullName": "vkuser",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 765894,
+    "name": null,
+    "email": null,
+    "fullName": "Elena B",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 765895,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Boridko",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 765896,
+    "name": null,
+    "email": null,
+    "fullName": "Test Trainee",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 795512,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Training",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 884239,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 884240,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 884241,
+    "name": null,
+    "email": null,
+    "fullName": "maciek",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 947255,
+    "name": null,
+    "email": null,
+    "fullName": "Masha O",
+    "jobRelation": "Pickup Agent"
+  },
+  {
+    "contactId": 266841,
+    "name": null,
+    "email": null,
+    "fullName": "Training",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 338253,
+    "name": null,
+    "email": null,
+    "fullName": "Training User",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 558429,
+    "name": null,
+    "email": null,
+    "fullName": "VKmerge5",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 724042,
+    "name": null,
+    "email": null,
+    "fullName": "Customer for training",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 724043,
+    "name": null,
+    "email": null,
+    "fullName": "vkuser",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 765894,
+    "name": null,
+    "email": null,
+    "fullName": "Elena B",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 765895,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Boridko",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 765896,
+    "name": null,
+    "email": null,
+    "fullName": "Test Trainee",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 795512,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Training",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 884239,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 884240,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 884241,
+    "name": null,
+    "email": null,
+    "fullName": "maciek",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 947255,
+    "name": null,
+    "email": null,
+    "fullName": "Masha O",
+    "jobRelation": "Owner"
+  },
+  {
+    "contactId": 266841,
+    "name": null,
+    "email": null,
+    "fullName": "Training",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 338253,
+    "name": null,
+    "email": null,
+    "fullName": "Training User",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 558429,
+    "name": null,
+    "email": null,
+    "fullName": "VKmerge5",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 724042,
+    "name": null,
+    "email": null,
+    "fullName": "Customer for training",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 724043,
+    "name": null,
+    "email": null,
+    "fullName": "vkuser",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 765894,
+    "name": null,
+    "email": null,
+    "fullName": "Elena B",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 765895,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Boridko",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 765896,
+    "name": null,
+    "email": null,
+    "fullName": "Test Trainee",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 795512,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Training",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 884239,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 884240,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 884241,
+    "name": null,
+    "email": null,
+    "fullName": "maciek",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 947255,
+    "name": null,
+    "email": null,
+    "fullName": "Masha O",
+    "jobRelation": "Dealer"
+  },
+  {
+    "contactId": 266841,
+    "name": null,
+    "email": null,
+    "fullName": "Training",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 338253,
+    "name": null,
+    "email": null,
+    "fullName": "Training User",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 558429,
+    "name": null,
+    "email": null,
+    "fullName": "VKmerge5",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 724042,
+    "name": null,
+    "email": null,
+    "fullName": "Customer for training",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 724043,
+    "name": null,
+    "email": null,
+    "fullName": "vkuser",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 765894,
+    "name": null,
+    "email": null,
+    "fullName": "Elena B",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 765895,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Boridko",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 765896,
+    "name": null,
+    "email": null,
+    "fullName": "Test Trainee",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 795512,
+    "name": null,
+    "email": null,
+    "fullName": "Elena Training",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 884239,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 884240,
+    "name": null,
+    "email": null,
+    "fullName": "Maciek",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 884241,
+    "name": null,
+    "email": null,
+    "fullName": "maciek",
+    "jobRelation": "Customer"
+  },
+  {
+    "contactId": 947255,
+    "name": null,
+    "email": null,
+    "fullName": "Masha O",
+    "jobRelation": "Customer"
+  }
+]

@@ -1,4 +1,21 @@
 {
   "success": false,
-  "errorMessage": null
+  "errorMessage": "Specified provider was not set or it is not active",
+  "documents": [],
+  "errors": null,
+  "confirmRequired": false,
+  "notifications": [],
+  "shipmentId": null,
+  "shipmentAcceptIdentifier": null,
+  "weight": {
+    "pounds": 0.0,
+    "originalWeight": null,
+    "originalWeightMeasureUnit": null
+  },
+  "totalNetChargeAmount": 0.0,
+  "currencyCode": null,
+  "internationalInfoRequired": false,
+  "shipOutDateRequired": false,
+  "fedExExpressFreightDetailRequired": false,
+  "carrierAPI": 0
 }

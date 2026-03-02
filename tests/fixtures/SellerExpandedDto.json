@@ -1,19 +1,29 @@
 {
   "items": [
     {
-      "id": 1,
-      "name": "Staging Test Seller UPD",
-      "displayId": null,
-      "catalogs": [],
-      "customerDisplayId": 22,
-      "isActive": true
-    },
-    {
       "id": 2,
       "name": "Everard Auctions & Appraisals",
       "displayId": null,
       "catalogs": [],
       "customerDisplayId": 4098,
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "name": "string",
+      "displayId": null,
+      "catalogs": [
+        {
+          "id": 1,
+          "customerCatalogId": "test",
+          "agent": "test",
+          "title": "test",
+          "startDate": "2026-02-18T09:34:16.856",
+          "endDate": "2026-02-18T11:35:16.856",
+          "isCompleted": false
+        }
+      ],
+      "customerDisplayId": 1,
       "isActive": true
     }
   ],

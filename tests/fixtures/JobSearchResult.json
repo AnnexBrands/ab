@@ -57,8 +57,29 @@
     },
     "contactEmail": null,
     "contactPhone": null,
-    "companyId": null,
-    "task": null
+    "companyId": "9cb22fe2-fd16-e611-ae37-00155d426802",
+    "task": {
+      "id": 615720,
+      "jobId": "e30de49d-86ca-ee11-ac1c-0a15ce13c9bf",
+      "truckId": null,
+      "taskCode": "DE",
+      "plannedStartDate": "2026-03-16T01:00:00",
+      "plannedEndDate": "2026-03-16T01:30:00",
+      "modifiedDate": null,
+      "onSiteTimeLog": {
+        "id": 366433,
+        "start": "2026-03-20T20:35:00",
+        "end": "2026-03-20T21:35:00",
+        "pauses": []
+      },
+      "tripTimeLog": {
+        "id": 366434,
+        "start": "2026-03-17T20:35:00",
+        "end": "2026-03-17T21:35:00",
+        "pauses": []
+      },
+      "completedDate": null
+    }
   },
-  "accessLevel": 15
+  "accessLevel": 31
 }
