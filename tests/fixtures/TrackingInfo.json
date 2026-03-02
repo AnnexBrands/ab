@@ -7,17 +7,17 @@
   "proNumber": null,
   "statuses": [
     {
-      "date": "2026-01-30T02:12:50.693",
-      "message": "Pickup Scheduled for 01/30/2026",
-      "code": "PU",
+      "date": "2026-02-28T20:34:00",
+      "message": "In Storage",
+      "code": "ST",
       "carrierSource": false,
       "city": null,
       "state": null
     },
     {
-      "date": "2024-08-13T00:00:00",
-      "message": "Packaging has been Planned",
-      "code": "PK",
+      "date": "2026-01-30T02:12:50.693",
+      "message": "Pickup Scheduled for 01/30/2026",
+      "code": "PU",
       "carrierSource": false,
       "city": null,
       "state": null

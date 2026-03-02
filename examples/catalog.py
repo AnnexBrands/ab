@@ -1,6 +1,7 @@
 """Example: Catalog operations (6 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import TEST_CATALOG_ID
 
 runner = ExampleRunner("Catalog", env="staging")
 
@@ -15,7 +16,7 @@ runner.add(
 
 runner.add(
     "get",
-    lambda api: api.catalog.get(1),
+    lambda api: api.catalog.get(TEST_CATALOG_ID),
     response_model="CatalogExpandedDto",
     fixture_file="CatalogExpandedDto.json",
 )
@@ -33,7 +34,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.catalog.update(1, data=data or {}),
+    lambda api, data=None: api.catalog.update(TEST_CATALOG_ID, data=data or {}),
     request_model="UpdateCatalogRequest",
     request_fixture_file="UpdateCatalogRequest.json",
     response_model="CatalogWithSellersDto",
@@ -42,7 +43,7 @@ runner.add(
 
 runner.add(
     "delete",
-    lambda api: api.catalog.delete(1),
+    lambda api: api.catalog.delete(TEST_CATALOG_ID),
 )
 
 runner.add(

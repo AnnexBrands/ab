@@ -52,6 +52,13 @@ class RateQuote(ResponseModel):
     rates: Optional[list] = Field(None, description="Available rates")
     rates_key: Optional[str] = Field(None, alias="ratesKey", description="Rates cache key")
     request_snapshot: Optional[dict] = Field(None, alias="requestSnapshot", description="Original request snapshot")
+    carrier_code: Optional[str] = Field(None, alias="carrierCode", description="Carrier code identifier")
+    used_carrier_account_info: Optional[dict] = Field(
+        None, alias="usedCarrierAccountInfo", description="Carrier account info used for quoting",
+    )
+    service_days: Optional[int] = Field(None, alias="serviceDays", description="Service delivery days")
+    price: Optional[float] = Field(None, alias="price", description="Quoted price")
+    accessorials: Optional[list] = Field(None, alias="accessorials", description="Accessorial services")
 
 
 class ShipmentOriginDestination(ResponseModel):
@@ -74,6 +81,22 @@ class ShipmentExportData(ResponseModel):
     """Export data — GET /job/{jobDisplayId}/shipment/exportdata."""
 
     export_data: Optional[dict] = Field(None, alias="exportData", description="Shipment export payload")
+    values_specified: Optional[dict] = Field(None, alias="valuesSpecified", description="Specified value flags")
+    sold_to: Optional[dict] = Field(None, alias="soldTo", description="Sold-to contact and address")
+    commodities: Optional[list] = Field(None, description="Commodity line items")
+    packing_info: Optional[list] = Field(None, alias="packingInfo", description="Packing information entries")
+    customs_value: Optional[dict] = Field(None, alias="customsValue", description="Customs declared value")
+    invoice_number: Optional[str] = Field(None, alias="invoiceNumber", description="Commercial invoice number")
+    purchase_order_number: Optional[str] = Field(
+        None, alias="purchaseOrderNumber", description="Purchase order number",
+    )
+    terms_of_sale: Optional[str] = Field(None, alias="termsOfSale", description="Incoterms / terms of sale")
+    exporter_tax_id: Optional[str] = Field(None, alias="exporterTaxId", description="Exporter tax identifier")
+    consignee_tax_id: Optional[str] = Field(None, alias="consigneeTaxId", description="Consignee tax identifier")
+    total_costs: Optional[dict] = Field(None, alias="totalCosts", description="Aggregate cost breakdown")
+    usps_specific: Optional[dict] = Field(None, alias="uspsSpecific", description="USPS-specific export fields")
+    fed_ex_specific: Optional[dict] = Field(None, alias="fedExSpecific", description="FedEx-specific export fields")
+    ups_specific: Optional[dict] = Field(None, alias="upsSpecific", description="UPS-specific export fields")
 
 
 class RatesState(ResponseModel):

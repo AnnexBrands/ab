@@ -1,0 +1,61 @@
+{
+  "exportData": null,
+  "valuesSpecified": null,
+  "soldTo": {
+    "contactName": "",
+    "companyName": "",
+    "phoneNumber": "",
+    "emailAddress": null,
+    "taxId": "",
+    "address": {
+      "addressLine1": "",
+      "addressLine2": "",
+      "city": "",
+      "state": "",
+      "zipCode": "",
+      "countryId": null,
+      "countryIATACode": null,
+      "alpha3Code": null,
+      "countyName": null,
+      "isMetricSystem": false,
+      "isEmpty": true
+    },
+    "isEmpty": true
+  },
+  "commodities": [],
+  "packingInfo": [],
+  "customsValue": null,
+  "invoiceNumber": null,
+  "purchaseOrderNumber": null,
+  "termsOfSale": null,
+  "exporterTaxId": null,
+  "consigneeTaxId": null,
+  "totalCosts": {
+    "discount": null,
+    "insurance": null,
+    "freight": null,
+    "packing": null,
+    "handling": null,
+    "other": null
+  },
+  "uspsSpecific": {
+    "aesitn": null,
+    "contentComments": null,
+    "reasonForExport": null
+  },
+  "fedExSpecific": {
+    "reasonForExport": null,
+    "specialInstructions": null,
+    "paymentType": "RECIPIENT",
+    "exportComplianceStatement": null,
+    "paymentTerms": null
+  },
+  "upsSpecific": {
+    "reasonForExport": null,
+    "shipperMemo": null,
+    "invoiceDate": null,
+    "dutiesPaidBySender": false,
+    "descriptionOnLabel": null,
+    "exemptionOrITN": null
+  }
+}

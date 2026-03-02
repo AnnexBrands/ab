@@ -29,6 +29,9 @@ class ServiceBaseResponse(ResponseModel):
 
     success: Optional[bool] = Field(None, description="Whether the operation succeeded")
     error_message: Optional[str] = Field(None, alias="errorMessage", description="Error detail when success is False")
+    job_sub_management_status: Optional[dict] = Field(
+        None, alias="jobSubManagementStatus", description="Current job sub-management status"
+    )
 
     def raise_for_error(self) -> None:
         """Raise ``ValueError`` when ``success`` is ``False``."""

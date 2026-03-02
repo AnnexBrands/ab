@@ -42,7 +42,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 026-cli-gate-sweep: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 025-cli-docs-discovery: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing — no new dependencies)
 - 024-timeline-operations: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 023-contact-search-tests: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

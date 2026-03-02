@@ -14,6 +14,8 @@ from tests.conftest import assert_no_extra_fields, require_fixture
 class TestOnHoldModels:
     def test_extended_on_hold_info(self):
         data = require_fixture("ExtendedOnHoldInfo", "GET", "/job/{id}/onhold")
+        if isinstance(data, list):
+            data = data[0]
         model = ExtendedOnHoldInfo.model_validate(data)
         assert isinstance(model, ExtendedOnHoldInfo)
         assert_no_extra_fields(model)
@@ -38,6 +40,8 @@ class TestOnHoldModels:
 
     def test_on_hold_user(self):
         data = require_fixture("OnHoldUser", "GET", "/job/{id}/onhold/followupuser/{id}")
+        if isinstance(data, list):
+            data = data[0]
         model = OnHoldUser.model_validate(data)
         assert isinstance(model, OnHoldUser)
         assert_no_extra_fields(model)

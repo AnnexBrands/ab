@@ -9,6 +9,189 @@
   "lastName": null,
   "email": null,
   "phone": null,
+  "contactDisplayId": "1308994",
+  "fullName": "Justine Yigitbasi",
+  "contactTypeId": 4,
+  "careOf": null,
+  "bolNotes": null,
+  "taxId": null,
+  "isBusiness": true,
+  "isPayer": true,
+  "isPrefered": true,
+  "isPrivate": false,
+  "isPrimary": true,
+  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "rootContactId": null,
+  "ownerFranchiseeId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "company": null,
+  "legacyGuid": "781d3fd8-3da9-e311-b6f8-000c298b59ee",
+  "assistant": null,
+  "department": null,
+  "webSite": "https://gonavis.com/about/oh14004",
+  "birthDate": null,
+  "jobTitleId": null,
+  "jobTitle": null,
+  "emailsList": [
+    {
+      "id": 17936,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null,
+      "editable": true,
+      "email": {
+        "id": 116237,
+        "email": "oh14004@goNavis.com",
+        "invalid": false,
+        "dontSpam": false
+      }
+    },
+    {
+      "id": 305463,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Josh",
+      "editable": true,
+      "email": {
+        "id": 77049,
+        "email": "joshua.yigitbasi@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      }
+    },
+    {
+      "id": 305464,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Justine",
+      "editable": true,
+      "email": {
+        "id": 196279,
+        "email": "justine.yigitbasi@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      }
+    },
+    {
+      "id": 388549,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Meggan",
+      "editable": true,
+      "email": {
+        "id": 258387,
+        "email": "meggan.williams@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      }
+    },
+    {
+      "id": 553961,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null,
+      "editable": true,
+      "email": {
+        "id": 403195,
+        "email": "william.shannon@gonavis.com",
+        "invalid": false,
+        "dontSpam": false
+      }
+    }
+  ],
+  "phonesList": [
+    {
+      "id": 25585,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Primary",
+      "editable": true,
+      "phone": {
+        "id": 118507,
+        "phone": "6147065958"
+      }
+    },
+    {
+      "id": 488221,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": "Fax",
+      "editable": true,
+      "phone": {
+        "id": 106498,
+        "phone": "6147065965"
+      }
+    }
+  ],
+  "addressesList": [
+    {
+      "id": 27546,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null,
+      "editable": true,
+      "address": {
+        "id": 140026,
+        "isValid": true,
+        "dontValidate": false,
+        "propertyType": 3,
+        "address1Value": "5738 Westbourne Ave",
+        "address2Value": "",
+        "countryName": null,
+        "countryCode": "US",
+        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+        "countrySkipZipCodeVerification": null,
+        "zipCodeResolvingFailed": false,
+        "latitude": 39.9850328,
+        "longitude": -82.847824,
+        "fullCityLine": "Columbus, OH, 43213",
+        "coordinates": {
+          "latitude": 39.9850328,
+          "longitude": -82.847824
+        },
+        "address1": "5738 Westbourne Ave",
+        "address2": null,
+        "city": "Columbus",
+        "state": "OH",
+        "zipCode": "43213"
+      }
+    },
+    {
+      "id": 18019244,
+      "isActive": true,
+      "deactivatedReason": null,
+      "metaData": null,
+      "editable": true,
+      "address": {
+        "id": 722336,
+        "isValid": false,
+        "dontValidate": true,
+        "propertyType": null,
+        "address1Value": "869 8 Mile Rd",
+        "address2Value": "",
+        "countryName": null,
+        "countryCode": "US",
+        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
+        "countrySkipZipCodeVerification": null,
+        "zipCodeResolvingFailed": false,
+        "latitude": 39.1031971,
+        "longitude": -84.5064881,
+        "fullCityLine": "Cincinnati, OH, 45202",
+        "coordinates": {
+          "latitude": 39.1031971,
+          "longitude": -84.5064881
+        },
+        "address1": "869 8 Mile Rd",
+        "address2": null,
+        "city": "Cincinnati",
+        "state": "OH",
+        "zipCode": "45202"
+      }
+    }
+  ],
+  "fax": "6147065965",
+  "primaryPhone": "6147065958",
+  "primaryEmail": "oh14004@goNavis.com",
+  "editable": true,
   "addresses": null,
   "phones": null,
   "emails": null,
@@ -58,187 +241,6 @@
     "isActive": true,
     "isHidden": false
   },
-  "editable": true,
-  "emailsList": [
-    {
-      "editable": true,
-      "email": {
-        "id": 116237,
-        "email": "oh14004@goNavis.com",
-        "invalid": false,
-        "dontSpam": false
-      },
-      "id": 17936,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": null
-    },
-    {
-      "editable": true,
-      "email": {
-        "id": 77049,
-        "email": "joshua.yigitbasi@gonavis.com",
-        "invalid": false,
-        "dontSpam": false
-      },
-      "id": 305463,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": "Josh"
-    },
-    {
-      "editable": true,
-      "email": {
-        "id": 196279,
-        "email": "justine.yigitbasi@gonavis.com",
-        "invalid": false,
-        "dontSpam": false
-      },
-      "id": 305464,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": "Justine"
-    },
-    {
-      "editable": true,
-      "email": {
-        "id": 258387,
-        "email": "meggan.williams@gonavis.com",
-        "invalid": false,
-        "dontSpam": false
-      },
-      "id": 388549,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": "Meggan"
-    },
-    {
-      "editable": true,
-      "email": {
-        "id": 403195,
-        "email": "william.shannon@gonavis.com",
-        "invalid": false,
-        "dontSpam": false
-      },
-      "id": 553961,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": null
-    }
-  ],
-  "phonesList": [
-    {
-      "editable": true,
-      "phone": {
-        "id": 118507,
-        "phone": "6147065958"
-      },
-      "id": 25585,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": "Primary"
-    },
-    {
-      "editable": true,
-      "phone": {
-        "id": 106498,
-        "phone": "6147065965"
-      },
-      "id": 488221,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": "Fax"
-    }
-  ],
-  "addressesList": [
-    {
-      "editable": true,
-      "address": {
-        "id": 140026,
-        "isValid": true,
-        "dontValidate": false,
-        "propertyType": 3,
-        "address1Value": "5738 Westbourne Ave",
-        "address2Value": "",
-        "countryName": null,
-        "countryCode": "US",
-        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
-        "countrySkipZipCodeVerification": null,
-        "zipCodeResolvingFailed": false,
-        "latitude": 39.9850328,
-        "longitude": -82.847824,
-        "fullCityLine": "Columbus, OH, 43213",
-        "coordinates": {
-          "latitude": 39.9850328,
-          "longitude": -82.847824
-        },
-        "address1": "5738 Westbourne Ave",
-        "address2": null,
-        "city": "Columbus",
-        "state": "OH",
-        "zipCode": "43213"
-      },
-      "id": 27546,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": null
-    },
-    {
-      "editable": true,
-      "address": {
-        "id": 722336,
-        "isValid": false,
-        "dontValidate": true,
-        "propertyType": null,
-        "address1Value": "869 8 Mile Rd",
-        "address2Value": "",
-        "countryName": null,
-        "countryCode": "US",
-        "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
-        "countrySkipZipCodeVerification": null,
-        "zipCodeResolvingFailed": false,
-        "latitude": 39.1031971,
-        "longitude": -84.5064881,
-        "fullCityLine": "Cincinnati, OH, 45202",
-        "coordinates": {
-          "latitude": 39.1031971,
-          "longitude": -84.5064881
-        },
-        "address1": "869 8 Mile Rd",
-        "address2": null,
-        "city": "Cincinnati",
-        "state": "OH",
-        "zipCode": "45202"
-      },
-      "id": 18019244,
-      "isActive": true,
-      "deactivatedReason": null,
-      "metaData": null
-    }
-  ],
-  "fax": "6147065965",
-  "primaryPhone": "6147065958",
-  "primaryEmail": "oh14004@goNavis.com",
-  "contactDisplayId": "1308994",
-  "fullName": "Justine Yigitbasi",
-  "contactTypeId": 4,
-  "careOf": null,
-  "bolNotes": null,
-  "taxId": null,
-  "isBusiness": true,
-  "isPayer": true,
-  "isPrefered": true,
-  "isPrivate": false,
-  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
-  "rootContactId": null,
-  "ownerFranchiseeId": "93179b52-3da9-e311-b6f8-000c298b59ee",
-  "company": null,
-  "legacyGuid": "781d3fd8-3da9-e311-b6f8-000c298b59ee",
-  "isPrimary": true,
-  "assistant": null,
-  "department": null,
-  "webSite": "https://gonavis.com/about/oh14004",
-  "birthDate": null,
-  "jobTitleId": null,
-  "jobTitle": null
+  "fullNameUpdateRequired": null,
+  "isEmpty": null
 }

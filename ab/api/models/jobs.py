@@ -597,8 +597,8 @@ class JobSearchTask(ResponseModel):
     planned_start_date: Optional[str] = Field(None, alias="plannedStartDate", description="Planned start datetime")
     planned_end_date: Optional[str] = Field(None, alias="plannedEndDate", description="Planned end datetime")
     modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Last modified datetime")
-    on_site_time_log: Optional[str] = Field(None, alias="onSiteTimeLog", description="On-site time log")
-    trip_time_log: Optional[str] = Field(None, alias="tripTimeLog", description="Trip time log")
+    on_site_time_log: Optional[dict] = Field(None, alias="onSiteTimeLog", description="On-site time log")
+    trip_time_log: Optional[dict] = Field(None, alias="tripTimeLog", description="Trip time log")
     completed_date: Optional[str] = Field(None, alias="completedDate", description="Completed datetime")
 
 
@@ -838,6 +838,9 @@ class TrackingInfo(ResponseModel):
     events: Optional[List[dict]] = Field(None, description="Tracking event history")
     carrier_name: Optional[str] = Field(None, alias="carrierName", description="Carrier")
     pro_number: Optional[str] = Field(None, alias="proNumber", description="PRO number")
+    statuses: Optional[List[dict]] = Field(None, description="Tracking status entries with date, message, code")
+    success: Optional[bool] = Field(None, description="Whether the tracking lookup succeeded")
+    error_message: Optional[str] = Field(None, alias="errorMessage", description="Error message if lookup failed")
 
 
 class TrackingInfoV3(ResponseModel):
@@ -848,15 +851,17 @@ class TrackingInfoV3(ResponseModel):
     )
     carrier_info: Optional[List[dict]] = Field(None, alias="carrierInfo", description="Carrier metadata")
     shipment_status: Optional[str] = Field(None, alias="shipmentStatus", description="Overall status")
+    statuses: Optional[List[dict]] = Field(None, description="Status entries with date, code, message, carrierProps")
+    carriers: Optional[List[dict]] = Field(None, description="Carrier information list")
 
 
 # ---- Notes models -----------------------------------------------------
 
 
-class JobNote(ResponseModel, IdentifiedModel):
+class JobNote(ResponseModel, IdentifiedModel, TimestampedModel):
     """Job note — GET /job/{jobDisplayId}/note."""
 
-    id: Optional[str] = Field(None, description="Note ID")
+    id: Optional[int] = Field(None, description="Note ID")
     comment: Optional[str] = Field(None, description="Note content")
     is_important: Optional[bool] = Field(None, alias="isImportant", description="Flagged as important")
     is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Completion status")
@@ -904,6 +909,8 @@ class ParcelItem(ResponseModel):
     parcel_package_type_id: Optional[int] = Field(None, alias="parcelPackageTypeId", description="Package type ID")
     insure_key: Optional[str] = Field(None, alias="insureKey", description="Insurance key")
     package_type_code: Optional[str] = Field(None, alias="packageTypeCode", description="Package type code")
+    job_modified_date: Optional[str] = Field(None, alias="jobModifiedDate", description="Job modified datetime")
+    parcel_items: Optional[List[dict]] = Field(None, alias="parcelItems", description="Nested parcel items")
 
 
 class JobParcelItemMaterial(ResponseModel):
@@ -974,13 +981,22 @@ class ItemUpdateRequest(RequestModel):
 class ExtendedOnHoldInfo(ResponseModel):
     """On-hold listing entry — GET /job/{jobDisplayId}/onhold."""
 
-    id: Optional[str] = Field(None, description="On-hold record ID")
+    id: Optional[int] = Field(None, description="On-hold record ID")
     reason: Optional[str] = Field(None, description="Hold reason")
     description: Optional[str] = Field(None, description="Hold description")
     follow_up_user: Optional[str] = Field(None, alias="followUpUser", description="Follow-up user name")
     follow_up_date: Optional[str] = Field(None, alias="followUpDate", description="Follow-up date")
     status: Optional[str] = Field(None, description="Hold status")
     created_date: Optional[str] = Field(None, alias="createdDate", description="Created date")
+    created_by_contact_id: Optional[int] = Field(None, alias="createdByContactId", description="Contact ID of creator")
+    created_by_job_relation: Optional[str] = Field(None, alias="createdByJobRelation", description="Creator's job relation")
+    resolved_date: Optional[str] = Field(None, alias="resolvedDate", description="Resolution date")
+    responsible_party_type_id: Optional[str] = Field(None, alias="responsiblePartyTypeId", description="Responsible party type UUID")
+    reason_id: Optional[str] = Field(None, alias="reasonId", description="Hold reason UUID")
+    responsible_party: Optional[str] = Field(None, alias="responsibleParty", description="Responsible party label")
+    comment: Optional[str] = Field(None, description="Hold comment")
+    start_date: Optional[str] = Field(None, alias="startDate", description="Hold start date")
+    created_by: Optional[str] = Field(None, alias="createdBy", description="Creator name")
 
 
 class OnHoldDetails(ResponseModel):
@@ -1028,9 +1044,11 @@ class SaveOnHoldDatesModel(RequestModel):
 class OnHoldUser(ResponseModel):
     """Follow-up user info — GET /job/{jobDisplayId}/onhold/followupuser/{contactId}."""
 
-    contact_id: Optional[str] = Field(None, alias="contactId", description="Contact ID")
+    contact_id: Optional[int] = Field(None, alias="contactId", description="Contact ID")
     name: Optional[str] = Field(None, description="User name")
     email: Optional[str] = Field(None, description="User email")
+    full_name: Optional[str] = Field(None, alias="fullName", description="Full display name")
+    job_relation: Optional[str] = Field(None, alias="jobRelation", description="Relation to the job (e.g. Pickup Agent, Owner)")
 
 
 class OnHoldNoteDetails(ResponseModel):

@@ -7,6 +7,8 @@ from tests.conftest import assert_no_extra_fields, require_fixture
 class TestRFQModels:
     def test_quote_request_display_info(self):
         data = require_fixture("QuoteRequestDisplayInfo", "GET", "/rfq/{rfqId}")
+        if isinstance(data, list):
+            data = data[0]
         model = QuoteRequestDisplayInfo.model_validate(data)
         assert isinstance(model, QuoteRequestDisplayInfo)
         assert_no_extra_fields(model)

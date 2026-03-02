@@ -3,5 +3,7 @@
   "name": "Navis Pack & Ship #14004OH",
   "code": "14004OH",
   "companyType": null,
-  "parentCompanyId": "764db661-27e1-48b7-962f-1b5157390c53"
+  "parentCompanyId": "764db661-27e1-48b7-962f-1b5157390c53",
+  "companyName": null,
+  "typeId": null
 }

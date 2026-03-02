@@ -32,34 +32,34 @@
     "taxIds": []
   },
   "destination": {
-    "contactName": null,
-    "companyName": null,
-    "phoneNumber": null,
-    "emailAddress": null,
+    "contactName": "Faran Rizvi",
+    "companyName": "Pak Mail #US430",
+    "phoneNumber": "7703218262",
+    "emailAddress": "us430@pakmail.com",
     "address": {
-      "id": 7165,
+      "id": 518760,
       "isValid": false,
       "dontValidate": false,
       "propertyType": null,
-      "address1Value": "",
-      "address2Value": "",
+      "address1Value": "1860 Sandy Plains Rd",
+      "address2Value": "Suite 204",
       "countryName": null,
-      "countryCode": "US",
+      "countryCode": null,
       "countryId": "daf9b34b-ce6a-4f2f-9207-15278c06b7d2",
       "countrySkipZipCodeVerification": null,
       "zipCodeResolvingFailed": false,
-      "latitude": 33.9253024,
-      "longitude": -84.3857442,
-      "fullCityLine": "Atlanta, GA, 30328",
+      "latitude": 33.9944053,
+      "longitude": -84.5082293,
+      "fullCityLine": "Marietta, GA, 30066",
       "coordinates": {
-        "latitude": 33.9253024,
-        "longitude": -84.3857442
+        "latitude": 33.9944053,
+        "longitude": -84.5082293
       },
-      "address1": null,
-      "address2": null,
-      "city": "Atlanta",
+      "address1": "1860 Sandy Plains Rd",
+      "address2": "Suite 204",
+      "city": "Marietta",
       "state": "GA",
-      "zipCode": "30328"
+      "zipCode": "30066"
     },
     "taxIds": []
   }
