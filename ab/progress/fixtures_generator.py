@@ -55,6 +55,7 @@ def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
     in_table = False
     header_seen = False
     is_gate_format = False
+    has_python_path = False
 
     for line in lines:
         if _SECTION_RE.match(line):
@@ -74,6 +75,9 @@ def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
             # Detect gate-column format by checking for G1 header
             if "G1" in line and "G2" in line:
                 is_gate_format = True
+            # Detect Python Path column (13-col format)
+            if "Python Path" in line:
+                has_python_path = True
             continue
         # (is_gate_format covers both 10-col G4 and 11-col G5 layouts)
         if not header_seen:
@@ -83,16 +87,20 @@ def parse_existing_fixtures(path: Path | None = None) -> list[dict[str, str]]:
         cells = [c for c in cells if c != ""]
 
         if is_gate_format:
-            # G5 format (11 cols): Path | Method | Req | Resp | G1 | G2 | G3 | G4 | G5 | Status | Notes
-            # G4 format (10 cols): Path | Method | Req | Resp | G1 | G2 | G3 | G4 | Status | Notes
+            # 13-col format: Path | Method | Python Path | Req | Resp | G1-G6 | Status | Notes
+            # 11-col format: Path | Method | Req | Resp | G1 | G2 | G3 | G4 | G5 | Status | Notes
+            # 10-col format: Path | Method | Req | Resp | G1 | G2 | G3 | G4 | Status | Notes
             if len(cells) < 9:
                 continue
+            # Column offsets shift by 1 when Python Path is present
+            req_idx = 3 if has_python_path else 2
+            resp_idx = 4 if has_python_path else 3
             # Status and Notes are always the last two columns
             endpoints.append({
                 "endpoint_path": cells[0],
                 "method": cells[1],
-                "request_model": cells[2] if cells[2] != "—" else "",
-                "response_model": cells[3] if cells[3] != "—" else "",
+                "request_model": cells[req_idx] if cells[req_idx] != "—" else "",
+                "response_model": cells[resp_idx] if cells[resp_idx] != "—" else "",
                 "old_status": cells[-2] if len(cells) >= 2 else "",
                 "notes": cells[-1] if len(cells) >= 1 else "",
             })
