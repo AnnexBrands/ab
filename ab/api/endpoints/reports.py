@@ -25,11 +25,11 @@ from ab.api.route import Route
 
 _INSURANCE = Route(
     "POST", "/reports/insurance",
-    request_model="InsuranceReportRequest", response_model="InsuranceReport",
+    request_model="InsuranceReportRequest", response_model="List[InsuranceReport]",
 )
 _SALES = Route(
     "POST", "/reports/sales",
-    request_model="SalesForecastReportRequest", response_model="SalesForecastReport",
+    request_model="SalesForecastReportRequest", response_model="List[SalesForecastReport]",
 )
 _SALES_SUMMARY = Route(
     "POST", "/reports/sales/summary",
@@ -49,18 +49,18 @@ _TOP_REVENUE_SALES_REPS = Route(
 )
 _REFERRED_BY = Route(
     "POST", "/reports/referredBy",
-    request_model="ReferredByReportRequest", response_model="ReferredByReport",
+    request_model="ReferredByReportRequest", response_model="List[ReferredByReport]",
 )
 _WEB2LEAD = Route(
     "POST", "/reports/web2Lead",
-    request_model="Web2LeadV2RequestModel", response_model="Web2LeadReport",
+    request_model="Web2LeadV2RequestModel", response_model="List[Web2LeadReport]",
 )
 
 
 class ReportsEndpoint(BaseEndpoint):
     """Report generation (ACPortal API)."""
 
-    def insurance(self, *, data: InsuranceReportRequest | dict) -> InsuranceReport:
+    def insurance(self, *, data: InsuranceReportRequest | dict) -> list[InsuranceReport]:
         """POST /reports/insurance.
 
         Args:
@@ -71,7 +71,7 @@ class ReportsEndpoint(BaseEndpoint):
         """
         return self._request(_INSURANCE, json=data)
 
-    def sales(self, *, data: SalesForecastReportRequest | dict) -> SalesForecastReport:
+    def sales(self, *, data: SalesForecastReportRequest | dict) -> list[SalesForecastReport]:
         """POST /reports/sales.
 
         Args:
@@ -128,7 +128,7 @@ class ReportsEndpoint(BaseEndpoint):
         """
         return self._request(_TOP_REVENUE_SALES_REPS, json=data)
 
-    def referred_by(self, *, data: ReferredByReportRequest | dict) -> ReferredByReport:
+    def referred_by(self, *, data: ReferredByReportRequest | dict) -> list[ReferredByReport]:
         """POST /reports/referredBy.
 
         Args:
@@ -139,7 +139,7 @@ class ReportsEndpoint(BaseEndpoint):
         """
         return self._request(_REFERRED_BY, json=data)
 
-    def web2lead(self, *, data: Web2LeadV2RequestModel | dict) -> Web2LeadReport:
+    def web2lead(self, *, data: Web2LeadV2RequestModel | dict) -> list[Web2LeadReport]:
         """POST /reports/web2Lead.
 
         Args:

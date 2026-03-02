@@ -9,9 +9,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 231
-- **Complete (all gates pass)**: 50
-- **G1 Model Fidelity**: 66/231 pass
-- **G2 Fixture Status**: 87/231 pass
+- **Complete (all gates pass)**: 69
+- **G1 Model Fidelity**: 85/231 pass
+- **G2 Fixture Status**: 106/231 pass
 - **G3 Test Quality**: 135/231 pass
 - **G4 Doc Accuracy**: 153/231 pass
 - **G5 Param Routing**: 216/231 pass
@@ -92,14 +92,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/onhold/{onHoldId}/comment | POST | api.jobs.add_on_hold_comment | OnHoldCommentRequest | OnHoldNoteDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /job/{jobDisplayId}/onhold/{onHoldId}/dates | PUT | api.jobs.update_on_hold_dates | SaveOnHoldDatesModel | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
 | /job/{jobDisplayId}/onhold/{onHoldId}/resolve | PUT | api.jobs.resolve_on_hold | ResolveOnHoldRequest | ResolveJobOnHoldResponse | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/insurance | POST | api.reports.insurance | InsuranceReportRequest | InsuranceReport | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/sales | POST | api.reports.sales | SalesForecastReportRequest | SalesForecastReport | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/sales/summary | POST | api.reports.sales_summary | SalesForecastSummaryRequest | SalesForecastSummary | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/salesDrilldown | POST | api.reports.sales_drilldown | Web2LeadRevenueFilter | List[RevenueCustomer] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/topRevenueCustomers | POST | api.reports.top_revenue_customers | Web2LeadRevenueFilter | List[RevenueCustomer] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/topRevenueSalesReps | POST | api.reports.top_revenue_sales_reps | Web2LeadRevenueFilter | List[RevenueCustomer] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/referredBy | POST | api.reports.referred_by | ReferredByReportRequest | ReferredByReport | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /reports/web2Lead | POST | api.reports.web2lead | Web2LeadV2RequestModel | Web2LeadReport | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /reports/insurance | POST | api.reports.insurance | InsuranceReportRequest | List[InsuranceReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/sales | POST | api.reports.sales | SalesForecastReportRequest | List[SalesForecastReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/sales/summary | POST | api.reports.sales_summary | SalesForecastSummaryRequest | SalesForecastSummary | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/salesDrilldown | POST | api.reports.sales_drilldown | Web2LeadRevenueFilter | List[RevenueCustomer] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/topRevenueCustomers | POST | api.reports.top_revenue_customers | Web2LeadRevenueFilter | List[RevenueCustomer] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/topRevenueSalesReps | POST | api.reports.top_revenue_sales_reps | Web2LeadRevenueFilter | List[RevenueCustomer] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/referredBy | POST | api.reports.referred_by | ReferredByReportRequest | List[ReferredByReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /reports/web2Lead | POST | api.reports.web2lead | Web2LeadV2RequestModel | List[Web2LeadReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/email | POST | api.jobs.send_email | SendEmailRequest | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 — fire-and-forget |
 | /job/{jobDisplayId}/email/senddocument | POST | api.jobs.send_document_email | SendDocumentEmailModel | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
 | /job/{jobDisplayId}/email/createtransactionalemail | POST | api.jobs.create_transactional_email | — | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
@@ -108,17 +108,17 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/sms | POST | api.jobs.send_sms | SendSMSModel | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
 | /job/{jobDisplayId}/sms/read | POST | api.jobs.mark_sms_read | MarkSmsAsReadModel | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
 | /job/{jobDisplayId}/sms/templatebased/{templateId} | GET | api.jobs.get_sms_template | — | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 |
-| /lookup/{masterConstantKey} | GET | api.lookup.get_by_key | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/{masterConstantKey}/{valueId} | GET | api.lookup.get_by_key_and_id | — | LookupValue | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/accessKeys | GET | api.lookup.get_access_keys | — | List[AccessKey] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/accessKey/{accessKey} | GET | api.lookup.get_access_key | — | AccessKey | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/PPCCampaigns | GET | api.lookup.get_ppc_campaigns | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/parcelPackageTypes | GET | api.lookup.get_parcel_package_types | — | List[ParcelPackageType] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/documentTypes | GET | api.lookup.get_document_types | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/comonInsurance | GET | api.lookup.get_common_insurance | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/densityClassMap | GET | api.lookup.get_density_class_map | — | List[DensityClassEntry] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/referCategory | GET | api.lookup.get_refer_categories | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /lookup/referCategoryHeirachy | GET | api.lookup.get_refer_category_hierarchy | — | List[LookupValue] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /lookup/{masterConstantKey} | GET | api.lookup.get_by_key | — | List[LookupValue] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/{masterConstantKey}/{valueId} | GET | api.lookup.get_by_key_and_id | — | LookupValue | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/accessKeys | GET | api.lookup.get_access_keys | — | List[AccessKey] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/accessKey/{accessKey} | GET | api.lookup.get_access_key | — | AccessKeySetup | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/PPCCampaigns | GET | api.lookup.get_ppc_campaigns | — | List[PPCCampaign] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/parcelPackageTypes | GET | api.lookup.get_parcel_package_types | — | List[ParcelPackageType] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/documentTypes | GET | api.lookup.get_document_types | — | List[DocumentTypeBySource] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/comonInsurance | GET | api.lookup.get_common_insurance | — | List[CommonInsuranceSlab] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/densityClassMap | GET | api.lookup.get_density_class_map | — | List[DensityClassEntry] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/referCategory | GET | api.lookup.get_refer_categories | — | List[LookupValue] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /lookup/referCategoryHeirachy | GET | api.lookup.get_refer_category_hierarchy | — | List[LookupValue] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /lookup/resetMasterConstantCache | GET | api.lookup.reset_cache | — | — | FAIL | FAIL | FAIL | FAIL | PASS | PASS | incomplete | 008 — mutating |
 | /commodity/{id} | GET | api.commodities.get | — | Commodity | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity/{id} | PUT | api.commodities.update | CommodityUpdateRequest | Commodity | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |

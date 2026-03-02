@@ -1,0 +1,18 @@
+{
+  "accessKey": "3CD4E92F-6ADD-4C2B-8F36-79C58E6437E5",
+  "friendlyName": "GoNavisAPI",
+  "userId": null,
+  "userIdentifier": null,
+  "referredById": null,
+  "referredBy": null,
+  "useAgentSearch": null,
+  "allowJobInfoUpdate": null,
+  "allowJobInfoUpdateWithoutBookingKey": null,
+  "ipProtections": null,
+  "parcelTransportationMultiplier": null,
+  "parcelAccessorialMultiplier": null,
+  "itemsCombineMaxInches": null,
+  "usePackLaborCalculation": null,
+  "useBasePickupFeeCalculation": null,
+  "forceAgentPickup": null
+}

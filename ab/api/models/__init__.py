@@ -181,15 +181,19 @@ from ab.api.models.jobs import (
 )
 from ab.api.models.lookup import (
     AccessKey,
+    AccessKeySetup,
+    CommonInsuranceSlab,
     ContactTypeEntity,
     CountryCodeDto,
     DensityClassEntry,
+    DocumentTypeBySource,
     JobStatus,
     LookupDensityClassMapParams,
     LookupDocumentTypesParams,
     LookupItem,
     LookupItemsParams,
     LookupValue,
+    PPCCampaign,
     ParcelPackageType,
 )
 from ab.api.models.lots import (
@@ -372,7 +376,8 @@ __all__ = [
     # Lookup
     "LookupItemsParams", "LookupDocumentTypesParams", "LookupDensityClassMapParams",
     "ContactTypeEntity", "CountryCodeDto", "JobStatus", "LookupItem",
-    "LookupValue", "AccessKey", "ParcelPackageType", "DensityClassEntry",
+    "LookupValue", "AccessKey", "AccessKeySetup", "ParcelPackageType", "DensityClassEntry",
+    "DocumentTypeBySource", "PPCCampaign", "CommonInsuranceSlab",
     # Users
     "User", "UserRole", "UserCreateRequest", "UserUpdateRequest",
     # AutoPrice

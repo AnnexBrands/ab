@@ -7,13 +7,17 @@ from typing import TYPE_CHECKING, Any, Optional
 if TYPE_CHECKING:
     from ab.api.models.lookup import (
         AccessKey,
+        AccessKeySetup,
+        CommonInsuranceSlab,
         ContactTypeEntity,
         CountryCodeDto,
         DensityClassEntry,
+        DocumentTypeBySource,
         JobStatus,
         LookupItem,
         LookupValue,
         ParcelPackageType,
+        PPCCampaign,
     )
 
 from ab.api.base import BaseEndpoint
@@ -28,13 +32,14 @@ _ITEMS = Route("GET", "/lookup/items", params_model="LookupItemsParams", respons
 _GET_BY_KEY = Route("GET", "/lookup/{masterConstantKey}", response_model="List[LookupValue]")
 _GET_BY_KEY_AND_ID = Route("GET", "/lookup/{masterConstantKey}/{valueId}", response_model="LookupValue")
 _ACCESS_KEYS = Route("GET", "/lookup/accessKeys", response_model="List[AccessKey]")
-_ACCESS_KEY = Route("GET", "/lookup/accessKey/{accessKey}", response_model="AccessKey")
-_PPC_CAMPAIGNS = Route("GET", "/lookup/PPCCampaigns", response_model="List[LookupValue]")
+_ACCESS_KEY = Route("GET", "/lookup/accessKey/{accessKey}", response_model="AccessKeySetup")
+_PPC_CAMPAIGNS = Route("GET", "/lookup/PPCCampaigns", response_model="List[PPCCampaign]")
 _PARCEL_PACKAGE_TYPES = Route("GET", "/lookup/parcelPackageTypes", response_model="List[ParcelPackageType]")
 _DOCUMENT_TYPES = Route(
-    "GET", "/lookup/documentTypes", params_model="LookupDocumentTypesParams", response_model="List[LookupValue]"
+    "GET", "/lookup/documentTypes",
+    params_model="LookupDocumentTypesParams", response_model="List[DocumentTypeBySource]",
 )
-_COMMON_INSURANCE = Route("GET", "/lookup/comonInsurance", response_model="List[LookupValue]")
+_COMMON_INSURANCE = Route("GET", "/lookup/comonInsurance", response_model="List[CommonInsuranceSlab]")
 _DENSITY_CLASS_MAP = Route(
     "GET", "/lookup/densityClassMap",
     params_model="LookupDensityClassMapParams",
@@ -93,11 +98,11 @@ class LookupEndpoint(BaseEndpoint):
         """GET /lookup/accessKeys"""
         return self._request(_ACCESS_KEYS)
 
-    def get_access_key(self, access_key: str) -> AccessKey:
+    def get_access_key(self, access_key: str) -> AccessKeySetup:
         """GET /lookup/accessKey/{accessKey}"""
         return self._request(_ACCESS_KEY.bind(accessKey=access_key))
 
-    def get_ppc_campaigns(self) -> list[LookupValue]:
+    def get_ppc_campaigns(self) -> list[PPCCampaign]:
         """GET /lookup/PPCCampaigns"""
         return self._request(_PPC_CAMPAIGNS)
 
@@ -105,7 +110,7 @@ class LookupEndpoint(BaseEndpoint):
         """GET /lookup/parcelPackageTypes"""
         return self._request(_PARCEL_PACKAGE_TYPES)
 
-    def get_document_types(self, *, document_source: Optional[str] = None) -> list[LookupValue]:
+    def get_document_types(self, *, document_source: Optional[str] = None) -> list[DocumentTypeBySource]:
         """GET /lookup/documentTypes
 
         Args:
@@ -116,7 +121,7 @@ class LookupEndpoint(BaseEndpoint):
             params=dict(document_source=document_source),
         )
 
-    def get_common_insurance(self) -> list[LookupValue]:
+    def get_common_insurance(self) -> list[CommonInsuranceSlab]:
         """GET /lookup/comonInsurance"""
         return self._request(_COMMON_INSURANCE)
 
