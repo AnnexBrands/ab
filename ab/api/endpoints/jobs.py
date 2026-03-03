@@ -1,4 +1,4 @@
-"""Jobs API endpoints — ACPortal (54 routes) + ABC (1 route).
+"""Jobs API endpoints — ACPortal (55 routes) + ABC (1 route).
 
 This file handles two API surfaces. ACPortal routes use the default
 ``api_surface="acportal"``; the ABC job update route explicitly sets
@@ -17,6 +17,7 @@ from ab.http import HttpClient
 if TYPE_CHECKING:
     from ab.api.models.jobs import (
         CalendarItem,
+        ChangeJobAgentRequest,
         ExtendedOnHoldInfo,
         FreightItemsRequest,
         IncrementStatusRequest,
@@ -231,6 +232,12 @@ _ADD_FREIGHT_ITEMS = Route(
     request_model="FreightItemsRequest",
 )
 
+# Agent change route (029)
+_POST_CHANGE_AGENT = Route(
+    "POST", "/job/{jobDisplayId}/changeAgent",
+    request_model="ChangeJobAgentRequest", response_model="ServiceBaseResponse",
+)
+
 
 class JobsEndpoint(BaseEndpoint):
     """Operations on jobs (ACPortal + ABC APIs)."""
@@ -240,7 +247,9 @@ class JobsEndpoint(BaseEndpoint):
         self._abc_client = abc_client
         self._resolver = resolver
 
+        from ab.api.helpers.agent import AgentHelpers
         from ab.api.helpers.timeline import TimelineHelpers
+        self.agent = AgentHelpers(self, self._resolver)
         self.timeline = TimelineHelpers(self)
 
     def create(self, *, data: JobCreateRequest | dict) -> None:
@@ -916,3 +925,28 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`FreightItemsRequest`
         """
         return self._request(_ADD_FREIGHT_ITEMS.bind(jobDisplayId=job_display_id), json=data)
+
+    # ---- Agent change (029) -----------------------------------------------
+
+    def change_agent(
+        self,
+        job_display_id: int,
+        *,
+        data: ChangeJobAgentRequest | dict,
+    ) -> ServiceBaseResponse:
+        """POST /job/{jobDisplayId}/changeAgent.
+
+        Args:
+            job_display_id: Job display ID.
+            data: Agent change payload with service type, agent ID, and
+                optional price/rebate flags. Accepts a
+                :class:`ChangeJobAgentRequest` instance or a dict.
+
+        Returns:
+            :class:`~ab.api.models.shared.ServiceBaseResponse`
+
+        Request model: :class:`ChangeJobAgentRequest`
+        """
+        return self._request(
+            _POST_CHANGE_AGENT.bind(jobDisplayId=job_display_id), json=data,
+        )

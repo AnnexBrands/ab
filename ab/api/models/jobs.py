@@ -1140,3 +1140,18 @@ class FreightItemsRequest(RequestModel):
     """Body for POST /job/{jobDisplayId}/freightitems."""
 
     items: Optional[List[dict]] = Field(None, description="Freight items to add")
+
+
+# ---- Agent change models (029) -------------------------------------------
+
+
+class ChangeJobAgentRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/changeAgent.
+
+    Maps to C# ``ChangeJobAgentRequest`` DTO (ABConnectTools).
+    """
+
+    service_type: Optional[int] = Field(None, alias="serviceType", description="Agent service type (0-4)")
+    agent_id: Optional[str] = Field(None, alias="agentId", description="Agent company UUID")
+    recalculate_price: Optional[bool] = Field(None, alias="recalculatePrice", description="Recalculate job price after change")
+    apply_rebate: Optional[bool] = Field(None, alias="applyRebate", description="Apply rebate after change")

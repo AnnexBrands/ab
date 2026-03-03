@@ -660,6 +660,11 @@
     "G5",
     "G6"
   ],
+  "/job/{_}/changeAgent POST": [
+    "G2",
+    "G4",
+    "G5"
+  ],
   "/job/{_}/email POST": [
     "G1",
     "G2",

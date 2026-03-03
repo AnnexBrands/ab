@@ -8,14 +8,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 
 ## Summary
 
-- **Total endpoints**: 231
+- **Total endpoints**: 232
 - **Complete (all gates pass)**: 127
-- **G1 Model Fidelity**: 154/231 pass
-- **G2 Fixture Status**: 174/231 pass
-- **G3 Test Quality**: 204/231 pass
-- **G4 Doc Accuracy**: 220/231 pass
-- **G5 Param Routing**: 216/231 pass
-- **G6 Request Quality**: 223/231 pass
+- **G1 Model Fidelity**: 154/232 pass
+- **G2 Fixture Status**: 175/232 pass
+- **G3 Test Quality**: 204/232 pass
+- **G4 Doc Accuracy**: 221/232 pass
+- **G5 Param Routing**: 217/232 pass
+- **G6 Request Quality**: 223/232 pass
 
 ## Status Legend
 
@@ -258,6 +258,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/shipment/exportdata | GET | api.shipments.get_export_data | — | ShipmentExportData | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /shipment/document/{docId} | GET | api.shipments.get_shipment_document | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /Web2Lead/get | GET | api.web2lead.get | — | Web2LeadResponse | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | FAIL | incomplete | auto-discovered |
 
 ## Model Warning Summary
 

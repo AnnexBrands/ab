@@ -25,3 +25,16 @@ class CarrierAPI(str, Enum):
     ABF = "abf"
     FEDEX = "fedex"
     UPS = "ups"
+
+
+class ServiceType(int, Enum):
+    """Agent service type for POST /job/{jobDisplayId}/changeAgent.
+
+    Maps to C# ``ServiceType`` enum (ABConnectTools).
+    """
+
+    UNDEFINED = 0
+    PICK = 1
+    PACK = 2
+    PICKANDPACK = 3
+    DELIVERY = 4
