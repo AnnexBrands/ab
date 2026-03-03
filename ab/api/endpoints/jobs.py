@@ -7,7 +7,7 @@ This file handles two API surfaces. ACPortal routes use the default
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -89,6 +89,7 @@ _ABC_UPDATE = Route("POST", "/job/update", request_model="JobUpdateRequest", api
 _GET_TIMELINE = Route("GET", "/job/{jobDisplayId}/timeline", response_model="TimelineResponse")
 _POST_TIMELINE = Route(
     "POST", "/job/{jobDisplayId}/timeline",
+    request_model="TimelineTaskCreateRequest",
     response_model="TimelineSaveResponse",
     params_model="TimelineCreateParams",
 )
@@ -242,7 +243,7 @@ class JobsEndpoint(BaseEndpoint):
         from ab.api.helpers.timeline import TimelineHelpers
         self.timeline = TimelineHelpers(self)
 
-    def create(self, *, data: JobCreateRequest | dict) -> Any:
+    def create(self, *, data: JobCreateRequest | dict) -> None:
         """POST /job.
 
         Args:
@@ -254,7 +255,7 @@ class JobsEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE, json=data)
 
-    def save(self, *, data: JobSaveRequest | dict) -> Any:
+    def save(self, *, data: JobSaveRequest | dict) -> None:
         """PUT /job/save.
 
         Args:
@@ -307,7 +308,7 @@ class JobsEndpoint(BaseEndpoint):
         """GET /job/{jobDisplayId}/updatePageConfig (ACPortal)"""
         return self._request(_GET_CONFIG.bind(jobDisplayId=job_display_id))
 
-    def update(self, *, data: JobUpdateRequest | dict) -> Any:
+    def update(self, *, data: JobUpdateRequest | dict) -> None:
         """POST /job/update (ABC API surface).
 
         Args:
@@ -318,7 +319,7 @@ class JobsEndpoint(BaseEndpoint):
         """
         return self._request(_ABC_UPDATE, client=self._abc_client, json=data)
 
-    def transfer(self, job_display_id: int, franchisee_id: str) -> Any:
+    def transfer(self, job_display_id: int, franchisee_id: str) -> None:
         """POST /job/transfer/{jobDisplayId} (ACPortal)
 
         Args:
@@ -660,7 +661,7 @@ class JobsEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE_ON_HOLD.bind(jobDisplayId=job_display_id), json=data)
 
-    def delete_on_hold(self, job_display_id: int) -> Any:
+    def delete_on_hold(self, job_display_id: int) -> None:
         """DELETE /job/{jobDisplayId}/onhold (ACPortal)"""
         return self._request(_DELETE_ON_HOLD.bind(jobDisplayId=job_display_id))
 
@@ -724,7 +725,7 @@ class JobsEndpoint(BaseEndpoint):
         on_hold_id: str,
         *,
         data: SaveOnHoldDatesModel | dict,
-    ) -> Any:
+    ) -> None:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}/dates.
 
         Args:
@@ -760,7 +761,7 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- Email ------------------------------------------------------------
 
-    def send_email(self, job_display_id: int, *, data: SendEmailRequest | dict) -> Any:
+    def send_email(self, job_display_id: int, *, data: SendEmailRequest | dict) -> None:
         """POST /job/{jobDisplayId}/email.
 
         Args:
@@ -777,7 +778,7 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         *,
         data: SendDocumentEmailModel | dict,
-    ) -> Any:
+    ) -> None:
         """POST /job/{jobDisplayId}/email/senddocument.
 
         Args:
@@ -792,11 +793,11 @@ class JobsEndpoint(BaseEndpoint):
             _SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id), json=data,
         )
 
-    def create_transactional_email(self, job_display_id: int) -> Any:
+    def create_transactional_email(self, job_display_id: int) -> None:
         """POST /job/{jobDisplayId}/email/createtransactionalemail (ACPortal)"""
         return self._request(_CREATE_TRANSACTIONAL_EMAIL.bind(jobDisplayId=job_display_id))
 
-    def send_template_email(self, job_display_id: int, template_guid: str) -> Any:
+    def send_template_email(self, job_display_id: int, template_guid: str) -> None:
         """POST /job/{jobDisplayId}/email/{emailTemplateGuid}/send (ACPortal)"""
         return self._request(
             _SEND_TEMPLATE_EMAIL.bind(jobDisplayId=job_display_id, emailTemplateGuid=template_guid),
@@ -804,7 +805,7 @@ class JobsEndpoint(BaseEndpoint):
 
     # ---- SMS --------------------------------------------------------------
 
-    def list_sms(self, job_display_id: int) -> Any:
+    def list_sms(self, job_display_id: int) -> None:
         """GET /job/{jobDisplayId}/sms (ACPortal)"""
         return self._request(_LIST_SMS.bind(jobDisplayId=job_display_id))
 
@@ -813,7 +814,7 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         *,
         data: SendSMSModel | dict,
-    ) -> Any:
+    ) -> None:
         """POST /job/{jobDisplayId}/sms.
 
         Args:
@@ -830,7 +831,7 @@ class JobsEndpoint(BaseEndpoint):
         job_display_id: int,
         *,
         data: MarkSmsAsReadModel | dict,
-    ) -> Any:
+    ) -> None:
         """POST /job/{jobDisplayId}/sms/read.
 
         Args:
@@ -842,7 +843,7 @@ class JobsEndpoint(BaseEndpoint):
         """
         return self._request(_MARK_SMS_READ.bind(jobDisplayId=job_display_id), json=data)
 
-    def get_sms_template(self, job_display_id: int, template_id: str) -> Any:
+    def get_sms_template(self, job_display_id: int, template_id: str) -> None:
         """GET /job/{jobDisplayId}/sms/templatebased/{templateId} (ACPortal)"""
         return self._request(
             _GET_SMS_TEMPLATE.bind(jobDisplayId=job_display_id, templateId=template_id),
@@ -870,7 +871,7 @@ class JobsEndpoint(BaseEndpoint):
 
     def save_freight_providers(
         self, job_display_id: int, *, data: ShipmentPlanProvider | dict,
-    ) -> Any:
+    ) -> None:
         """POST /job/{jobDisplayId}/freightproviders.
 
         Args:
@@ -886,7 +887,7 @@ class JobsEndpoint(BaseEndpoint):
 
     def get_freight_provider_rate_quote(
         self, job_display_id: int, option_index: int, *, data: RateQuoteRequest | dict,
-    ) -> Any:
+    ) -> None:
         """POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote.
 
         Args:
@@ -904,7 +905,7 @@ class JobsEndpoint(BaseEndpoint):
             json=data,
         )
 
-    def add_freight_items(self, job_display_id: int, *, data: FreightItemsRequest | dict) -> Any:
+    def add_freight_items(self, job_display_id: int, *, data: FreightItemsRequest | dict) -> None:
         """POST /job/{jobDisplayId}/freightitems.
 
         Args:

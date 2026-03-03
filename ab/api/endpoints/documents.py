@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.documents import Document, DocumentUpdateRequest
@@ -20,7 +20,7 @@ _UPDATE = Route("PUT", "/documents/update/{docId}", request_model="DocumentUpdat
 class DocumentsEndpoint(BaseEndpoint):
     """Operations on documents (ACPortal API)."""
 
-    def upload(self, *, job_id: str, file_path: str, document_type: int = 6, sharing_level: int = 0) -> Any:
+    def upload(self, *, job_id: str, file_path: str, document_type: int = 6, sharing_level: int = 0) -> None:
         """POST /documents — multipart file upload."""
         p = Path(file_path)
         with open(p, "rb") as f:
@@ -40,7 +40,7 @@ class DocumentsEndpoint(BaseEndpoint):
         """GET /documents/get/{docPath} — returns raw bytes."""
         return self._client.request("GET", f"/documents/get/{doc_path}", raw=True).content
 
-    def update(self, doc_id: str, *, data: DocumentUpdateRequest | dict) -> Any:
+    def update(self, doc_id: str, *, data: DocumentUpdateRequest | dict) -> None:
         """PUT /documents/update/{docId}.
 
         Args:

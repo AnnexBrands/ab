@@ -23,6 +23,7 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - Python 3.11+ + pydantic>=2.0, requests (existing SDK) + pydantic>=2.0, requests (no new deps) (021-endpoint-quality-sweep)
 - Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing — no new dependencies) (025-cli-docs-discovery)
 - Filesystem (HTML reports in `html/`, fixture JSON in `tests/fixtures/`) (025-cli-docs-discovery)
+- Filesystem (JSON baseline file in `tests/`, generated test stubs in `tests/models/`) (028-quality-infra)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -42,7 +43,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 028-quality-infra: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 027-reports-lookups-gates: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 026-cli-gate-sweep: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 025-cli-docs-discovery: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests, sphinx, sphinx-rtd-theme, myst-parser (all existing — no new dependencies)
 

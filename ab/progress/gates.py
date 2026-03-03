@@ -77,6 +77,46 @@ class EndpointGateStatus:
 # G1: Model Fidelity
 # ---------------------------------------------------------------------------
 
+def unwrap_fixture(data: dict | list, model_cls: Any = None) -> tuple[dict | None, str]:
+    """Unwrap a fixture to a single model-validatable dict.
+
+    Handles list fixtures, paginated ``{data: [...]}`` wrappers, and
+    ``{items: [...]}`` wrappers (with model-field disambiguation).
+
+    Args:
+        data: Parsed JSON fixture (dict or list).
+        model_cls: Optional Pydantic model class — used to disambiguate
+            ``items`` key (paginated wrapper vs real model field).
+
+    Returns:
+        Tuple of (unwrapped_dict_or_None, reason).  ``None`` means the
+        fixture was an empty collection and should be auto-passed.
+    """
+    if isinstance(data, list):
+        if not data:
+            return None, "Empty list fixture — nothing to validate"
+        return data[0], ""
+
+    if isinstance(data, dict):
+        if "data" in data and isinstance(data["data"], list):
+            items = data["data"]
+            if not items:
+                return None, "Empty paginated data — nothing to validate"
+            return items[0], ""
+        if "items" in data and isinstance(data["items"], list):
+            # Only unwrap if the model itself does NOT declare an 'items' field;
+            # otherwise this is a real model property (e.g. Job.items), not a
+            # paginated wrapper.
+            model_fields = model_cls.model_fields if model_cls and hasattr(model_cls, "model_fields") else {}
+            if "items" not in model_fields:
+                items = data["items"]
+                if not items:
+                    return None, "Empty paginated items — nothing to validate"
+                return items[0], ""
+
+    return data, ""
+
+
 def evaluate_g1(model_name: str) -> GateResult:
     """Check if model declares all fields from its fixture (zero __pydantic_extra__)."""
     if not model_name or model_name == "—":
@@ -98,29 +138,9 @@ def evaluate_g1(model_name: str) -> GateResult:
     except (json.JSONDecodeError, OSError) as exc:
         return GateResult("G1", False, f"Fixture load error: {exc}")
 
-    # Handle list fixtures — validate first element
-    if isinstance(data, list):
-        if not data:
-            return GateResult("G1", True, "Empty list fixture — nothing to validate")
-        data = data[0]
-
-    # Handle paginated wrappers: {data: [...], totalCount: N} or {items: [...]}
-    if isinstance(data, dict):
-        if "data" in data and isinstance(data["data"], list):
-            items = data["data"]
-            if not items:
-                return GateResult("G1", True, "Empty paginated data — nothing to validate")
-            data = items[0]
-        elif "items" in data and isinstance(data["items"], list):
-            # Only unwrap if the model itself does NOT declare an 'items' field;
-            # otherwise this is a real model property (e.g. Job.items), not a
-            # paginated wrapper.
-            model_fields = model_cls.model_fields if hasattr(model_cls, "model_fields") else {}
-            if "items" not in model_fields:
-                items = data["items"]
-                if not items:
-                    return GateResult("G1", True, "Empty paginated items — nothing to validate")
-                data = items[0]
+    data, reason = unwrap_fixture(data, model_cls)
+    if data is None:
+        return GateResult("G1", True, reason)
 
     try:
         instance = model_cls.model_validate(data)
@@ -623,11 +643,11 @@ def evaluate_endpoint_gates(
     )
 
     if not response_model or response_model == "—":
-        # No-body endpoints (e.g., DELETE, some POSTs) — exempt from G1/G3/G4
-        status.g1_model_fidelity = GateResult("G1", False, "No response model")
-        status.g2_fixture_status = GateResult("G2", False, "No response model")
-        status.g3_test_quality = GateResult("G3", False, "No response model")
-        status.g4_doc_accuracy = GateResult("G4", False, "No response model")
+        # Void endpoints (DELETE, fire-and-forget POSTs) — exempt from G1-G4
+        status.g1_model_fidelity = GateResult("G1", True, "No response model — exempt")
+        status.g2_fixture_status = GateResult("G2", True, "No response model — exempt")
+        status.g3_test_quality = GateResult("G3", True, "No response model — exempt")
+        status.g4_doc_accuracy = GateResult("G4", True, "No response model — exempt")
         status.g5_param_routing = evaluate_g5(endpoint_path, method)
         status.g6_request_quality = evaluate_g6(endpoint_path, method, request_model, params_model)
         status.compute_overall()
@@ -642,7 +662,7 @@ def evaluate_endpoint_gates(
 
     # Scalar builtins (str, int, bool, float) are not Pydantic models —
     # exempt from fixture/model gates (G1-G4).
-    _SCALAR_TYPES = {"str", "int", "bool", "float", "None"}
+    _SCALAR_TYPES = {"str", "int", "bool", "float", "bytes", "None"}
     if clean_model in _SCALAR_TYPES:
         status.g1_model_fidelity = GateResult("G1", True, f"Scalar type ({clean_model}) — no model to validate")
         status.g2_fixture_status = GateResult("G2", True, f"Scalar type ({clean_model}) — no fixture needed")

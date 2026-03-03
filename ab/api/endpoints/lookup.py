@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ab.api.models.lookup import (
@@ -144,6 +144,6 @@ class LookupEndpoint(BaseEndpoint):
         """GET /lookup/referCategoryHeirachy"""
         return self._request(_REFER_CATEGORY_HIERARCHY)
 
-    def reset_cache(self) -> Any:
+    def reset_cache(self) -> None:
         """GET /lookup/resetMasterConstantCache"""
         return self._request(_RESET_CACHE)

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.shared import ServiceBaseResponse
@@ -51,7 +51,7 @@ class ViewsEndpoint(BaseEndpoint):
         """GET /views/{viewId}/accessinfo"""
         return self._request(_GET_ACCESS_INFO.bind(viewId=view_id))
 
-    def update_access(self, view_id: str, *, data: GridViewAccess | dict) -> Any:
+    def update_access(self, view_id: str, *, data: GridViewAccess | dict) -> None:
         """PUT /views/{viewId}/access.
 
         Args:

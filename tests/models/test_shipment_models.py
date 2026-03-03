@@ -8,15 +8,14 @@ from ab.api.models.shipments import (
     ShipmentInfo,
     ShipmentOriginDestination,
 )
-from tests.conftest import assert_no_extra_fields, require_fixture
+from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixture
 
 
 class TestShipmentModels:
     def test_rate_quote(self):
         data = require_fixture("RateQuote", "GET", "/job/{id}/shipment/ratequotes")
-        if isinstance(data, list):
-            data = data[0]
-        model = RateQuote.model_validate(data)
+        item = first_or_skip(data)
+        model = RateQuote.model_validate(item)
         assert isinstance(model, RateQuote)
         assert_no_extra_fields(model)
 
@@ -28,11 +27,8 @@ class TestShipmentModels:
 
     def test_accessorial(self):
         data = require_fixture("Accessorial", "GET", "/job/{id}/shipment/accessorials")
-        if isinstance(data, list):
-            if not data:
-                return  # empty list — nothing to validate
-            data = data[0]
-        model = Accessorial.model_validate(data)
+        item = first_or_skip(data)
+        model = Accessorial.model_validate(item)
         assert isinstance(model, Accessorial)
         assert_no_extra_fields(model)
 
@@ -50,8 +46,7 @@ class TestShipmentModels:
 
     def test_global_accessorial(self):
         data = require_fixture("GlobalAccessorial", "GET", "/shipment/accessorials")
-        if isinstance(data, list) and data:
-            data = data[0]
-        model = GlobalAccessorial.model_validate(data)
+        item = first_or_skip(data)
+        model = GlobalAccessorial.model_validate(item)
         assert isinstance(model, GlobalAccessorial)
         assert_no_extra_fields(model)

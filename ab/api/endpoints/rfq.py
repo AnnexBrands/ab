@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.rfq import AcceptModel, QuoteRequestDisplayInfo
@@ -30,7 +30,7 @@ class RFQEndpoint(BaseEndpoint):
         """GET /rfq/forjob/{jobId}"""
         return self._request(_GET_FOR_JOB.bind(jobId=job_id))
 
-    def accept(self, rfq_id: str, *, data: AcceptModel | dict) -> Any:
+    def accept(self, rfq_id: str, *, data: AcceptModel | dict) -> None:
         """POST /rfq/{rfqId}/accept.
 
         Args:
@@ -42,19 +42,19 @@ class RFQEndpoint(BaseEndpoint):
         """
         return self._request(_ACCEPT.bind(rfqId=rfq_id), json=data)
 
-    def decline(self, rfq_id: str) -> Any:
+    def decline(self, rfq_id: str) -> None:
         """POST /rfq/{rfqId}/decline"""
         return self._request(_DECLINE.bind(rfqId=rfq_id))
 
-    def cancel(self, rfq_id: str) -> Any:
+    def cancel(self, rfq_id: str) -> None:
         """POST /rfq/{rfqId}/cancel"""
         return self._request(_CANCEL.bind(rfqId=rfq_id))
 
-    def accept_winner(self, rfq_id: str) -> Any:
+    def accept_winner(self, rfq_id: str) -> None:
         """POST /rfq/{rfqId}/acceptwinner"""
         return self._request(_ACCEPT_WINNER.bind(rfqId=rfq_id))
 
-    def add_comment(self, rfq_id: str, *, data: AcceptModel | dict) -> Any:
+    def add_comment(self, rfq_id: str, *, data: AcceptModel | dict) -> None:
         """POST /rfq/{rfqId}/comment.
 
         Args:

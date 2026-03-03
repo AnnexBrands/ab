@@ -10,7 +10,7 @@ pytestmark = pytest.mark.live
 class TestUsersIntegration:
     def test_list_users(self, api):
         data = load_request_fixture("ListRequest")
-        result = api.users.list(data)
+        result = api.users.list(data=data)
         # /users/list returns {totalCount, data} paginated wrapper;
         # _request with List[User] falls through to raw dict when
         # response is not a plain list.

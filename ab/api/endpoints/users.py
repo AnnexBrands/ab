@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.shared import ListRequest
@@ -35,7 +35,7 @@ class UsersEndpoint(BaseEndpoint):
         """GET /users/roles"""
         return self._request(_ROLES)
 
-    def create(self, *, data: UserCreateRequest | dict) -> Any:
+    def create(self, *, data: UserCreateRequest | dict) -> None:
         """POST /users/user.
 
         Args:
@@ -46,7 +46,7 @@ class UsersEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE, json=data)
 
-    def update(self, *, data: UserUpdateRequest | dict) -> Any:
+    def update(self, *, data: UserUpdateRequest | dict) -> None:
         """PUT /users/user.
 
         Args:

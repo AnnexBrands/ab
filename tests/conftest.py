@@ -140,6 +140,32 @@ def load_request_kwargs(model_name: str) -> dict:
     return {alias_map.get(k, k): v for k, v in raw.items()}
 
 
+def first_or_skip(data: dict | list) -> dict:
+    """Unwrap a fixture to a single model-validatable dict.
+
+    Handles:
+    - dict passthrough (return as-is)
+    - list → extract first element; ``pytest.skip`` on empty list
+    - paginated ``{"data": [...]}`` wrapper → extract first element
+
+    Args:
+        data: Parsed JSON fixture (dict or list).
+
+    Returns:
+        A single dict suitable for ``model_validate()``.
+    """
+    if isinstance(data, list):
+        if not data:
+            pytest.skip("Fixture is an empty list — nothing to validate")
+        return data[0]
+    if isinstance(data, dict) and "data" in data and isinstance(data["data"], list):
+        items = data["data"]
+        if not items:
+            pytest.skip("Fixture has empty paginated data — nothing to validate")
+        return items[0]
+    return data
+
+
 def assert_no_extra_fields(model: object) -> None:
     """Assert a Pydantic model has no undeclared extra fields.
 

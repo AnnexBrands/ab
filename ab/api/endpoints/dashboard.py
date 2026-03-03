@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.dashboard import DashboardCompanyRequest, DashboardSummary, GridViewInfo, GridViewState
@@ -41,7 +41,7 @@ class DashboardEndpoint(BaseEndpoint):
         """GET /dashboard/gridviewstate/{id}"""
         return self._request(_GET_GRID_VIEW_STATE.bind(id=view_id))
 
-    def save_grid_view_state(self, view_id: str, *, data: GridViewState | dict) -> Any:
+    def save_grid_view_state(self, view_id: str, *, data: GridViewState | dict) -> None:
         """POST /dashboard/gridviewstate/{id}.
 
         Args:
@@ -53,7 +53,7 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=data)
 
-    def inbound(self, *, data: DashboardCompanyRequest | dict) -> Any:
+    def inbound(self, *, data: DashboardCompanyRequest | dict) -> None:
         """POST /dashboard/inbound.
 
         Args:
@@ -64,7 +64,7 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_INBOUND, json=data)
 
-    def in_house(self, *, data: DashboardCompanyRequest | dict) -> Any:
+    def in_house(self, *, data: DashboardCompanyRequest | dict) -> None:
         """POST /dashboard/inhouse.
 
         Args:
@@ -75,7 +75,7 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_IN_HOUSE, json=data)
 
-    def outbound(self, *, data: DashboardCompanyRequest | dict) -> Any:
+    def outbound(self, *, data: DashboardCompanyRequest | dict) -> None:
         """POST /dashboard/outbound.
 
         Args:
@@ -86,7 +86,7 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_OUTBOUND, json=data)
 
-    def local_deliveries(self, *, data: DashboardCompanyRequest | dict) -> Any:
+    def local_deliveries(self, *, data: DashboardCompanyRequest | dict) -> None:
         """POST /dashboard/local-deliveries.
 
         Args:
@@ -97,7 +97,7 @@ class DashboardEndpoint(BaseEndpoint):
         """
         return self._request(_LOCAL_DELIVERIES, json=data)
 
-    def recent_estimates(self, *, data: DashboardCompanyRequest | dict) -> Any:
+    def recent_estimates(self, *, data: DashboardCompanyRequest | dict) -> None:
         """POST /dashboard/recentestimates.
 
         Args:

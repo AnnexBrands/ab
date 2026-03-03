@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.catalog import AddCatalogRequest, BulkInsertRequest, CatalogExpandedDto, CatalogWithSellersDto, UpdateCatalogRequest
@@ -70,7 +70,7 @@ class CatalogEndpoint(BaseEndpoint):
         """DELETE /Catalog/{id}"""
         self._request(_DELETE.bind(id=catalog_id))
 
-    def bulk_insert(self, *, data: BulkInsertRequest | dict) -> Any:
+    def bulk_insert(self, *, data: BulkInsertRequest | dict) -> None:
         """POST /Bulk/insert.
 
         Args:

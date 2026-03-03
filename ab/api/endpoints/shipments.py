@@ -6,7 +6,7 @@ and global shipment endpoints (shipment lookup, accessorial catalog, documents).
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.shared import ServiceBaseResponse
@@ -174,7 +174,7 @@ class ShipmentsEndpoint(BaseEndpoint):
         """GET /shipment/accessorials (ACPortal)"""
         return self._request(_GET_GLOBAL_ACCESSORIALS)
 
-    def get_shipment_document(self, doc_id: str) -> Any:
+    def get_shipment_document(self, doc_id: str) -> bytes:
         """GET /shipment/document/{docId} (ACPortal)"""
         return self._request(_GET_SHIPMENT_DOCUMENT.bind(docId=doc_id))
 

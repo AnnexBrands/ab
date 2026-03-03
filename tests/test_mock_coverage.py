@@ -12,8 +12,11 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from ab.progress.route_index import index_all_routes
+
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 MOCKS_DIR = FIXTURES_DIR / "mocks"
+REQUESTS_DIR = FIXTURES_DIR / "requests"
 FIXTURES_MD = Path(__file__).parent.parent / "FIXTURES.md"
 
 _SECTION_RE = re.compile(r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE)
@@ -29,13 +32,21 @@ def _strip_list_wrapper(model: str) -> str:
 
 
 def _extract_from_gate_table(content: str) -> dict[str, set[str]]:
-    """Extract response models from gate-column format FIXTURES.md.
+    """Extract models from gate-column format FIXTURES.md.
 
-    Returns dict with 'all', 'captured' (G2=PASS), 'pending' (G2=FAIL).
+    Column layout (0-indexed after splitting and filtering empties):
+      0=Path, 1=Method, 2=PyPath, 3=ReqModel, 4=RespModel,
+      5=G1, 6=G2, 7=G3, 8=G4, 9=G5, 10=G6, 11=Status, 12=Notes
+
+    Returns dict with:
+      'all'/'captured'/'pending' — response models (G2),
+      'req_all'/'req_captured' — request models (G6).
     """
     all_models: set[str] = set()
     captured: set[str] = set()
     pending: set[str] = set()
+    req_all: set[str] = set()
+    req_captured: set[str] = set()
 
     in_table = False
     header_rows = 0
@@ -58,27 +69,35 @@ def _extract_from_gate_table(content: str) -> dict[str, set[str]]:
 
         cells = [c.strip() for c in line.split("|")]
         cells = [c for c in cells if c != ""]
-        if len(cells) < 9:
+        if len(cells) < 11:
             continue
 
-        resp_model = cells[3]
-        if not resp_model or resp_model == "—":
-            continue
+        req_model = cells[3]
+        resp_model = cells[4]
+        g2 = cells[6]
+        g6 = cells[10]
 
-        clean = _strip_list_wrapper(resp_model)
-        # Skip non-model types
-        if clean in ("str", "bytes", "dict", "bool", "int"):
-            continue
+        # Track response models
+        if resp_model and resp_model != "—":
+            clean = _strip_list_wrapper(resp_model)
+            if clean not in ("str", "bytes", "dict", "bool"):
+                all_models.add(clean)
+                if g2 == "PASS":
+                    captured.add(clean)
+                else:
+                    pending.add(clean)
 
-        all_models.add(clean)
+        # Track request models
+        if req_model and req_model != "—":
+            clean_req = _strip_list_wrapper(req_model)
+            req_all.add(clean_req)
+            if g6 == "PASS":
+                req_captured.add(clean_req)
 
-        g2 = cells[5]  # G2 column
-        if g2 == "PASS":
-            captured.add(clean)
-        else:
-            pending.add(clean)
-
-    return {"all": all_models, "captured": captured, "pending": pending}
+    return {
+        "all": all_models, "captured": captured, "pending": pending,
+        "req_all": req_all, "req_captured": req_captured,
+    }
 
 
 def _extract_models_from_section(content: str, section_header: str) -> set[str]:
@@ -121,42 +140,66 @@ class TestFixtureCoverage:
         assert FIXTURES_MD.exists(), "FIXTURES.md not found at repository root"
 
     def test_all_fixture_files_tracked(self):
-        """Every fixture file on disk (live or mock) must appear in FIXTURES.md."""
-        all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        """Every fixture file on disk (live, mock, or request) must appear in FIXTURES.md."""
+        resp_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
         if MOCKS_DIR.exists():
-            all_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
+            resp_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
+        req_files: set[str] = set()
+        if REQUESTS_DIR.exists():
+            req_files = {p.stem for p in REQUESTS_DIR.glob("*.json")}
         content = FIXTURES_MD.read_text()
 
         gate_data = _extract_from_gate_table(content)
         if gate_data["all"]:
-            tracked = gate_data["all"]
+            tracked_resp = gate_data["all"]
+            # Request fixtures include request_model (body) and params_model
+            # (query params). Route definitions are authoritative — FIXTURES.md
+            # Req Model column may lag behind.
+            routes = index_all_routes()
+            route_req = {r.request_model for r in routes.values() if r.request_model}
+            route_params = {r.params_model for r in routes.values() if r.params_model}
+            tracked_req = gate_data["req_all"] | route_req | route_params
         else:
             captured = _extract_models_from_section(content, "## Captured Fixtures")
             pending = _extract_models_from_section(content, "## Pending Fixtures")
             needs_data = _extract_models_from_section(content, "## Needs Request Data")
-            tracked = captured | pending | needs_data
+            tracked_resp = captured | pending | needs_data
+            tracked_req = set()
 
-        untracked = {
-            f for f in all_files - tracked
-            if not _is_variant_tracked(f, tracked)
+        untracked_resp = {
+            f for f in resp_files - tracked_resp
+            if not _is_variant_tracked(f, tracked_resp)
         }
+        untracked_req = {
+            f for f in req_files - tracked_req
+            if not _is_variant_tracked(f, tracked_req)
+        }
+        untracked = untracked_resp | untracked_req
         assert not untracked, (
             f"Fixture files not tracked in FIXTURES.md: {untracked}"
         )
 
     def test_captured_fixtures_exist_on_disk(self):
-        """Every 'captured' entry (G2=PASS) in FIXTURES.md must have a file."""
+        """Every 'captured' entry in FIXTURES.md must have a file on disk."""
         content = FIXTURES_MD.read_text()
         gate_data = _extract_from_gate_table(content)
         if gate_data["captured"]:
-            captured = gate_data["captured"]
+            resp_captured = gate_data["captured"]
+            req_captured = gate_data.get("req_captured", set())
         else:
-            captured = _extract_models_from_section(content, "## Captured Fixtures")
+            resp_captured = _extract_models_from_section(content, "## Captured Fixtures")
+            req_captured = set()
 
-        all_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
+        resp_files = {p.stem for p in FIXTURES_DIR.glob("*.json")}
         if MOCKS_DIR.exists():
-            all_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
-        missing = captured - all_files
+            resp_files |= {p.stem for p in MOCKS_DIR.glob("*.json")}
+        req_files: set[str] = set()
+        if REQUESTS_DIR.exists():
+            req_files = {p.stem for p in REQUESTS_DIR.glob("*.json")}
+
+        missing_resp = resp_captured - resp_files
+        missing_req = req_captured - req_files
+        missing = missing_resp | missing_req
         assert not missing, (
             f"FIXTURES.md lists as captured but file missing: {missing}"
         )

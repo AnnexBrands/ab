@@ -1,0 +1,1655 @@
+{
+  "/AutoPrice/QuoteRequest POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Bulk/insert POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/Catalog GET": [
+    "G4",
+    "G6"
+  ],
+  "/Catalog POST": [
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/Catalog/{_} DELETE": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Catalog/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Catalog/{_} PUT": [
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/Lot GET": [
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot/get-overrides POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot/overrides POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot/{_} DELETE": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Lot/{_} PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Seller GET": [
+    "G4",
+    "G6"
+  ],
+  "/Seller POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/Seller/{_} DELETE": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Seller/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Seller/{_} PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/Web2Lead GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/Web2Lead/get GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/Web2Lead/post POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/address/isvalid GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/address/propertytype GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/autoprice/quickquote POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/autoprice/v2/quoterequest POST": [
+    "G3",
+    "G4",
+    "G5"
+  ],
+  "/commodity POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity-map POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity-map/search POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity-map/{_} DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity-map/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity-map/{_} PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity/search POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity/suggestions POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/commodity/{_} PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/availableByCurrentUser GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/brands GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/brandstree GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/fulldetails POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/geoAreaCompanies GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/geosettings GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/list POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/search/carrier-accounts GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/search/v2 POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/suggest-carriers GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/carrierAcounts GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/carrierAcounts POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/details GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/fulldetails GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/fulldetails PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/geosettings GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/geosettings POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/inheritedPackagingTariffs GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/inheritedpackaginglabor GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/packaginglabor GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/packaginglabor POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/packagingsettings GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/companies/{_}/packagingsettings POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/editdetails POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/user GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/v2/search POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/editdetails GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/editdetails PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/history POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/history/aggregated GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/history/graphdata GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/merge PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/merge/preview POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/contacts/{_}/primarydetails GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/dashboard GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/dashboard/gridviews GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/dashboard/gridviewstate/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/dashboard/gridviewstate/{_} POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/dashboard/inbound POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/dashboard/inhouse POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/dashboard/local-deliveries POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/dashboard/outbound POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/dashboard/recentestimates POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/documents GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents/get/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents/list GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents/update/{_} PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/save PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/search GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/searchByDetails POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/transfer/{_} POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/update POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/calendaritems GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/email POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/email/createtransactionalemail POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/email/senddocument POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/email/{_}/send POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/address-label GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/bill-of-lading GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/job/{_}/form/credit-card-authorization GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/customer-quote GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/invoice GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/job/{_}/form/invoice/editable GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/item-labels GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/operations GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/job/{_}/form/packaging-labels GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/job/{_}/form/packaging-specification GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/packing-slip GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/quick-sale GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/shipments GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/form/usar GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G6"
+  ],
+  "/job/{_}/form/usar/editable GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/freightitems POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/freightproviders GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/freightproviders POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/freightproviders/{_}/ratequote POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/item/notes POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/item/{_} PUT": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/note GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/note POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/note/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/note/{_} PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold DELETE": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/followupuser/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/followupusers GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/{_} PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/{_}/comment POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/{_}/dates PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/onhold/{_}/resolve PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/packagingcontainers GET": [
+    "G1",
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/parcel-items-with-materials GET": [
+    "G1",
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/parcelitems GET": [
+    "G1",
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/parcelitems POST": [
+    "G1",
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/parcelitems/{_} DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment GET": [
+    "G3",
+    "G6"
+  ],
+  "/job/{_}/payment/ACHCreditTransfer POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/ACHPaymentSession POST": [
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/attachCustomerBank POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/banksource POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/bysource POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/cancelJobACHVerification POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/create GET": [
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/sources GET": [
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/payment/verifyJobACHSource POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/price GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/rfq GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/rfq/statusof/{_}/forcompany/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/accessorial POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/accessorial/{_} DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/accessorials GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/book POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/exportdata GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/exportdata POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/origindestination GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/ratequotes GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G6"
+  ],
+  "/job/{_}/shipment/ratequotes POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/shipment/ratesstate GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/sms GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/sms POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/sms/read POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/sms/templatebased/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/status/quote POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/incrementjobstatus POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/undoincrementjobstatus POST": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/{_} DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/{_} PATCH": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/timeline/{_}/agent GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/tracking GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/updatePageConfig GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/PPCCampaigns GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/accessKey/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/accessKeys GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/comonInsurance GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/contactTypes GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/countries GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/densityClassMap GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/documentTypes GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/items GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/jobStatuses GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/parcelPackageTypes GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/referCategory GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/referCategoryHeirachy GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/resetMasterConstantCache GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/lookup/{_}/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/note GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/note POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/note/suggestUsers GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/note/{_} PUT": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/partner GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/partner/search POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/partner/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/insurance POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/referredBy POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/sales POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/sales/summary POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/salesDrilldown POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/topRevenueCustomers POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/topRevenueSalesReps POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/reports/web2Lead POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/forjob/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_}/accept POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_}/acceptwinner POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_}/cancel POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_}/comment POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/rfq/{_}/decline POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/shipment GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/shipment/accessorials GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/shipment/document/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/users/list POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/users/roles GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/users/user POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/users/user PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/v3/job/{_}/tracking/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views POST": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/all GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/datasetsp/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/datasetsps GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/{_} DELETE": [
+    "G2",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/{_} GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/{_}/access PUT": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/views/{_}/accessinfo GET": [
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ]
+}

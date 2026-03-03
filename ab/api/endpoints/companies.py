@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -169,7 +169,7 @@ class CompaniesEndpoint(BaseEndpoint):
 
     # ---- Geo Settings (008) -----------------------------------------------
 
-    def get_geo_area_companies(self, *, params: dict | None = None) -> Any:
+    def get_geo_area_companies(self, *, params: dict | None = None) -> None:
         """GET /companies/geoAreaCompanies.
 
         Args:
@@ -183,7 +183,7 @@ class CompaniesEndpoint(BaseEndpoint):
 
     def save_geo_settings(
         self, company_id: str, *, data: GeoSettingsSaveRequest | dict,
-    ) -> Any:
+    ) -> None:
         """POST /companies/{companyId}/geosettings.
 
         Args:
@@ -208,14 +208,14 @@ class CompaniesEndpoint(BaseEndpoint):
         *,
         current_company_id: str | None = None,
         query: str | None = None,
-    ) -> Any:
+    ) -> None:
         """GET /companies/search/carrier-accounts"""
         return self._request(
             _SEARCH_CARRIER_ACCOUNTS,
             params=dict(current_company_id=current_company_id, query=query),
         )
 
-    def suggest_carriers(self, *, tracking_number: str) -> Any:
+    def suggest_carriers(self, *, tracking_number: str) -> None:
         """GET /companies/suggest-carriers"""
         return self._request(_SUGGEST_CARRIERS, params=dict(tracking_number=tracking_number))
 
@@ -223,7 +223,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/carrierAcounts"""
         return self._request(_GET_CARRIER_ACCOUNTS.bind(companyId=self._resolve(company_id)))
 
-    def save_carrier_accounts(self, company_id: str, *, data: CarrierAccountSaveRequest | dict) -> Any:
+    def save_carrier_accounts(self, company_id: str, *, data: CarrierAccountSaveRequest | dict) -> None:
         """POST /companies/{companyId}/carrierAcounts.
 
         Args:
@@ -243,7 +243,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/packagingsettings"""
         return self._request(_GET_PACKAGING_SETTINGS.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_settings(self, company_id: str, *, data: PackagingSettingsSaveRequest | dict) -> Any:
+    def save_packaging_settings(self, company_id: str, *, data: PackagingSettingsSaveRequest | dict) -> None:
         """POST /companies/{companyId}/packagingsettings.
 
         Args:
@@ -261,7 +261,7 @@ class CompaniesEndpoint(BaseEndpoint):
         """GET /companies/{companyId}/packaginglabor"""
         return self._request(_GET_PACKAGING_LABOR.bind(companyId=self._resolve(company_id)))
 
-    def save_packaging_labor(self, company_id: str, *, data: PackagingLaborSaveRequest | dict) -> Any:
+    def save_packaging_labor(self, company_id: str, *, data: PackagingLaborSaveRequest | dict) -> None:
         """POST /companies/{companyId}/packaginglabor.
 
         Args:

@@ -4,42 +4,38 @@ import pytest
 
 from ab.api.models.address import AddressIsValidResult
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
-from tests.conftest import assert_no_extra_fields, require_fixture
+from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixture
 
 
 class TestLookupModels:
     @pytest.mark.live
     def test_contact_type_entity(self):
         data = require_fixture("ContactTypeEntity", "GET", "/lookup/contacttypes", required=True)
-        if isinstance(data, list) and data:
-            data = data[0]
-        model = ContactTypeEntity.model_validate(data)
+        item = first_or_skip(data)
+        model = ContactTypeEntity.model_validate(item)
         assert isinstance(model, ContactTypeEntity)
         assert_no_extra_fields(model)
 
     @pytest.mark.live
     def test_country_code_dto(self):
         data = require_fixture("CountryCodeDto", "GET", "/lookup/countries", required=True)
-        if isinstance(data, list) and data:
-            data = data[0]
-        model = CountryCodeDto.model_validate(data)
+        item = first_or_skip(data)
+        model = CountryCodeDto.model_validate(item)
         assert isinstance(model, CountryCodeDto)
         assert_no_extra_fields(model)
 
     @pytest.mark.live
     def test_job_status(self):
         data = require_fixture("JobStatus", "GET", "/lookup/jobstatuses", required=True)
-        if isinstance(data, list) and data:
-            data = data[0]
-        model = JobStatus.model_validate(data)
+        item = first_or_skip(data)
+        model = JobStatus.model_validate(item)
         assert isinstance(model, JobStatus)
         assert_no_extra_fields(model)
 
     def test_lookup_item(self):
         data = require_fixture("LookupItem", "GET", "/lookup/items")
-        if isinstance(data, list) and data:
-            data = data[0]
-        model = LookupItem.model_validate(data)
+        item = first_or_skip(data)
+        model = LookupItem.model_validate(item)
         assert isinstance(model, LookupItem)
         assert_no_extra_fields(model)
 

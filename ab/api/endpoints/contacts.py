@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.contacts import (
@@ -62,7 +62,7 @@ class ContactsEndpoint(BaseEndpoint):
         *,
         data: ContactEditRequest | dict,
         franchisee_id: str | None = None,
-    ) -> Any:
+    ) -> None:
         """PUT /contacts/{contactId}/editdetails.
 
         Args:
@@ -84,7 +84,7 @@ class ContactsEndpoint(BaseEndpoint):
         *,
         data: ContactEditRequest | dict,
         franchisee_id: str | None = None,
-    ) -> Any:
+    ) -> None:
         """POST /contacts/editdetails.
 
         Args:
@@ -151,7 +151,7 @@ class ContactsEndpoint(BaseEndpoint):
         """
         return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=data)
 
-    def merge(self, merge_to_id: str, *, data: ContactMergeRequest | dict) -> Any:
+    def merge(self, merge_to_id: str, *, data: ContactMergeRequest | dict) -> None:
         """PUT /contacts/{mergeToId}/merge.
 
         Args:
