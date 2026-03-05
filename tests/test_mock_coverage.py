@@ -21,6 +21,15 @@ FIXTURES_MD = Path(__file__).parent.parent / "FIXTURES.md"
 
 _SECTION_RE = re.compile(r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE)
 
+# Request fixtures used by helper layers (not directly by a Route's request_model).
+# The polymorphic timeline POST endpoint uses three per-type request models selected
+# by task_code; validation happens at helper construction, not Route level (D3).
+_HELPER_REQUEST_FIXTURES: set[str] = {
+    "InTheFieldTaskRequest",
+    "SimpleTaskRequest",
+    "CarrierTaskRequest",
+}
+
 
 def _strip_list_wrapper(model: str) -> str:
     """Strip List[]/list[] wrappers from a model name."""
@@ -158,7 +167,7 @@ class TestFixtureCoverage:
             routes = index_all_routes()
             route_req = {r.request_model for r in routes.values() if r.request_model}
             route_params = {r.params_model for r in routes.values() if r.params_model}
-            tracked_req = gate_data["req_all"] | route_req | route_params
+            tracked_req = gate_data["req_all"] | route_req | route_params | _HELPER_REQUEST_FIXTURES
         else:
             captured = _extract_models_from_section(content, "## Captured Fixtures")
             pending = _extract_models_from_section(content, "## Pending Fixtures")

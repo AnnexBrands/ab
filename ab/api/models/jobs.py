@@ -802,13 +802,120 @@ class TimelineSaveResponse(ResponseModel):
     )
 
 
-class TimelineTaskCreateRequest(RequestModel):
-    """Body for POST /job/{jobDisplayId}/timeline."""
+# ---- Timeline task nested request models (030) ----------------------------
 
-    task_code: str = Field(..., alias="taskCode", description="Task type code")
-    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Scheduled date")
-    comments: Optional[str] = Field(None, description="Notes")
-    agent_contact_id: Optional[str] = Field(None, alias="agentContactId", description="Assigned agent")
+
+class TimeLogPauseRequest(RequestModel):
+    """Pause period within a time log. Maps to C# ``TimeLogPauseModel``."""
+
+    start: Optional[str] = Field(None, description="Pause start datetime")
+    end: Optional[str] = Field(None, description="Pause end datetime")
+
+
+class TimeLogRequest(RequestModel):
+    """Time log with start/end and optional pauses. Maps to C# ``TimeLogModel``."""
+
+    start: Optional[str] = Field(None, description="Start datetime (ISO 8601)")
+    end: Optional[str] = Field(None, description="End datetime (ISO 8601)")
+    pauses: Optional[List[TimeLogPauseRequest]] = Field(None, description="Pause periods within the time log")
+
+
+class WorkTimeLogRequest(RequestModel):
+    """Work time entry. Maps to C# ``WorkTimeLogModel``."""
+
+    date: Optional[str] = Field(None, description="Work date")
+    start_time: Optional[str] = Field(None, alias="startTime", description="Start time of day (TimeSpan as string)")
+    end_time: Optional[str] = Field(None, alias="endTime", description="End time of day (TimeSpan as string)")
+
+
+class InitialNoteRequest(RequestModel):
+    """Task note on creation. Maps to C# ``InitialNoteModel``."""
+
+    comments: str = Field(..., description="Note text (1-8000 chars)")
+    due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
+    is_important: Optional[bool] = Field(None, alias="isImportant", description="Importance flag")
+    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Completion flag")
+    send_notification: Optional[bool] = Field(None, alias="sendNotification", description="Email notification flag")
+
+
+class TaskTruckInfoRequest(RequestModel):
+    """Truck assignment info. Maps to C# ``TaskTruckInfo``."""
+
+    id: int = Field(..., description="Truck lookup ID")
+    name: Optional[str] = Field(None, description="Display name")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
+
+
+# ---- Timeline task per-type request models (030) --------------------------
+
+
+class BaseTimelineTaskRequest(RequestModel):
+    """Shared base for all timeline task creation requests.
+
+    Maps to C# ``BaseTaskModel``. Three concrete subclasses correspond to
+    the server's ``TaskModelDataBinder`` polymorphic deserialization.
+    """
+
+    task_code: str = Field(..., alias="taskCode", description="Task type code (PU, PK, ST, CP, DE)")
+    planned_start_date: Optional[str] = Field(None, alias="plannedStartDate", description="Planned start (ISO 8601)")
+    work_time_logs: Optional[List[WorkTimeLogRequest]] = Field(
+        None, alias="workTimeLogs", description="Work time entries"
+    )
+    initial_note: Optional[InitialNoteRequest] = Field(
+        None, alias="initialNote", description="Task note on creation"
+    )
+
+
+class InTheFieldTaskRequest(BaseTimelineTaskRequest):
+    """Request model for PU/DE (pickup/delivery) tasks.
+
+    Maps to C# ``InTheFieldTaskModel``. Used by helpers: ``schedule()``, ``received()``.
+    """
+
+    planned_end_date: Optional[str] = Field(None, alias="plannedEndDate", description="Planned end (ISO 8601)")
+    preferred_start_date: Optional[str] = Field(
+        None, alias="preferredStartDate", description="Preferred start (ISO 8601)"
+    )
+    preferred_end_date: Optional[str] = Field(
+        None, alias="preferredEndDate", description="Preferred end (ISO 8601)"
+    )
+    truck: Optional[TaskTruckInfoRequest] = Field(None, description="Truck assignment")
+    on_site_time_log: Optional[TimeLogRequest] = Field(
+        None, alias="onSiteTimeLog", description="On-site time period"
+    )
+    trip_time_log: Optional[TimeLogRequest] = Field(
+        None, alias="tripTimeLog", description="Trip time period"
+    )
+    completed_date: Optional[str] = Field(None, alias="completedDate", description="Pickup completed date")
+
+
+class SimpleTaskRequest(BaseTimelineTaskRequest):
+    """Request model for PK/ST (packing/storage) tasks.
+
+    Maps to C# ``SimpleTaskModel``. Used by helpers: ``pack_start()``,
+    ``pack_finish()``, ``storage_begin()``, ``storage_end()``.
+    """
+
+    time_log: Optional[TimeLogRequest] = Field(None, alias="timeLog", description="Single time period")
+
+
+class CarrierTaskRequest(BaseTimelineTaskRequest):
+    """Request model for CP (carrier) tasks.
+
+    Maps to C# ``CarrierTaskModel``. Used by helpers: ``carrier_schedule()``,
+    ``carrier_pickup()``, ``carrier_delivery()``.
+    """
+
+    scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Carrier schedule date")
+    pickup_completed_date: Optional[str] = Field(
+        None, alias="pickupCompletedDate", description="Carrier pickup date"
+    )
+    delivery_completed_date: Optional[str] = Field(
+        None, alias="deliveryCompletedDate", description="Carrier delivery date"
+    )
+    expected_delivery_date: Optional[str] = Field(
+        None, alias="expectedDeliveryDate", description="Expected delivery date"
+    )
 
 
 class TimelineTaskUpdateRequest(RequestModel):

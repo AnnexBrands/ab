@@ -15,7 +15,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 - **G3 Test Quality**: 204/232 pass
 - **G4 Doc Accuracy**: 221/232 pass
 - **G5 Param Routing**: 217/232 pass
-- **G6 Request Quality**: 223/232 pass
+- **G6 Request Quality**: 224/232 pass
 
 ## Status Legend
 
@@ -249,7 +249,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/item/notes | POST | api.jobs.add_item_notes | ItemNotesRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note | POST | api.jobs.create_note | JobNoteCreateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/parcelitems | POST | api.jobs.create_parcel_item | ParcelItemCreateRequest | ParcelItem | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline | POST | api.jobs.create_timeline_task | TimelineTaskCreateRequest | TimelineSaveResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/timeline | POST | api.jobs.create_timeline_task | — | TimelineSaveResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/item/{itemId} | PUT | api.jobs.update_item | ItemUpdateRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/note/{id} | PUT | api.jobs.update_note | JobNoteUpdateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/searchByDetails | POST | api.jobs.search_by_details | JobSearchRequest | List[JobSearchResult] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
@@ -258,7 +258,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/shipment/exportdata | GET | api.shipments.get_export_data | — | ShipmentExportData | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
 | /shipment/document/{docId} | GET | api.shipments.get_shipment_document | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /Web2Lead/get | GET | api.web2lead.get | — | Web2LeadResponse | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | FAIL | incomplete | auto-discovered |
+| /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 
 ## Model Warning Summary
 

@@ -59,11 +59,13 @@ if TYPE_CHECKING:
         TimelineResponse,
         TimelineSaveResponse,
         TimelineTask,
-        TimelineTaskCreateRequest,
+        BaseTimelineTaskRequest,
         TimelineTaskUpdateRequest,
         TrackingInfo,
         TrackingInfoV3,
     )
+    from ab.api.helpers.agent import AgentHelpers
+    from ab.api.helpers.timeline import TimelineHelpers
     from ab.api.models.rfq import QuoteRequestDisplayInfo
     from ab.api.models.shared import ServiceBaseResponse
 
@@ -73,8 +75,10 @@ _SAVE = Route("PUT", "/job/save", request_model="JobSaveRequest")
 _GET = Route("GET", "/job/{jobDisplayId}", response_model="Job")
 _SEARCH = Route("GET", "/job/search", params_model="JobSearchParams", response_model="JobSearchResult")
 _SEARCH_BY_DETAILS = Route(
-    "POST", "/job/searchByDetails",
-    request_model="JobSearchRequest", response_model="List[JobSearchResult]",
+    "POST",
+    "/job/searchByDetails",
+    request_model="JobSearchRequest",
+    response_model="List[JobSearchResult]",
 )
 _GET_PRICE = Route("GET", "/job/{jobDisplayId}/price", response_model="JobPrice")
 _GET_CALENDAR = Route("GET", "/job/{jobDisplayId}/calendaritems", response_model="List[CalendarItem]")
@@ -89,122 +93,170 @@ _ABC_UPDATE = Route("POST", "/job/update", request_model="JobUpdateRequest", api
 # Timeline routes
 _GET_TIMELINE = Route("GET", "/job/{jobDisplayId}/timeline", response_model="TimelineResponse")
 _POST_TIMELINE = Route(
-    "POST", "/job/{jobDisplayId}/timeline",
-    request_model="TimelineTaskCreateRequest",
+    "POST",
+    "/job/{jobDisplayId}/timeline",
     response_model="TimelineSaveResponse",
     params_model="TimelineCreateParams",
 )
 _GET_TIMELINE_TASK = Route(
-    "GET", "/job/{jobDisplayId}/timeline/{timelineTaskIdentifier}", response_model="TimelineTask",
+    "GET",
+    "/job/{jobDisplayId}/timeline/{timelineTaskIdentifier}",
+    response_model="TimelineTask",
 )
 _PATCH_TIMELINE_TASK = Route(
-    "PATCH", "/job/{jobDisplayId}/timeline/{timelineTaskId}",
-    request_model="TimelineTaskUpdateRequest", response_model="TimelineTask",
+    "PATCH",
+    "/job/{jobDisplayId}/timeline/{timelineTaskId}",
+    request_model="TimelineTaskUpdateRequest",
+    response_model="TimelineTask",
 )
 _DELETE_TIMELINE_TASK = Route(
-    "DELETE", "/job/{jobDisplayId}/timeline/{timelineTaskId}", response_model="ServiceBaseResponse",
+    "DELETE",
+    "/job/{jobDisplayId}/timeline/{timelineTaskId}",
+    response_model="ServiceBaseResponse",
 )
 _GET_TIMELINE_AGENT = Route(
-    "GET", "/job/{jobDisplayId}/timeline/{taskCode}/agent", response_model="TimelineAgent",
+    "GET",
+    "/job/{jobDisplayId}/timeline/{taskCode}/agent",
+    response_model="TimelineAgent",
 )
 
 # Status routes
 _INCREMENT_STATUS = Route(
-    "POST", "/job/{jobDisplayId}/timeline/incrementjobstatus",
-    request_model="IncrementStatusRequest", response_model="ServiceBaseResponse",
+    "POST",
+    "/job/{jobDisplayId}/timeline/incrementjobstatus",
+    request_model="IncrementStatusRequest",
+    response_model="ServiceBaseResponse",
 )
 _UNDO_INCREMENT_STATUS = Route(
-    "POST", "/job/{jobDisplayId}/timeline/undoincrementjobstatus",
-    request_model="IncrementStatusRequest", response_model="ServiceBaseResponse",
+    "POST",
+    "/job/{jobDisplayId}/timeline/undoincrementjobstatus",
+    request_model="IncrementStatusRequest",
+    response_model="ServiceBaseResponse",
 )
 _SET_QUOTE_STATUS = Route("POST", "/job/{jobDisplayId}/status/quote", response_model="ServiceBaseResponse")
 
 # Tracking routes
 _GET_TRACKING = Route("GET", "/job/{jobDisplayId}/tracking", response_model="TrackingInfo")
 _GET_TRACKING_V3 = Route(
-    "GET", "/v3/job/{jobDisplayId}/tracking/{historyAmount}", response_model="TrackingInfoV3",
+    "GET",
+    "/v3/job/{jobDisplayId}/tracking/{historyAmount}",
+    response_model="TrackingInfoV3",
     params_model="TrackingV3Params",
 )
 
 # Note routes
 _GET_NOTES = Route("GET", "/job/{jobDisplayId}/note", params_model="JobNoteListParams", response_model="List[JobNote]")
 _POST_NOTE = Route(
-    "POST", "/job/{jobDisplayId}/note",
-    request_model="JobNoteCreateRequest", response_model="JobNote",
+    "POST",
+    "/job/{jobDisplayId}/note",
+    request_model="JobNoteCreateRequest",
+    response_model="JobNote",
 )
 _GET_NOTE = Route("GET", "/job/{jobDisplayId}/note/{id}", response_model="JobNote")
 _PUT_NOTE = Route(
-    "PUT", "/job/{jobDisplayId}/note/{id}",
-    request_model="JobNoteUpdateRequest", response_model="JobNote",
+    "PUT",
+    "/job/{jobDisplayId}/note/{id}",
+    request_model="JobNoteUpdateRequest",
+    response_model="JobNote",
 )
 
 # Parcel & Item routes
 _GET_PARCEL_ITEMS = Route("GET", "/job/{jobDisplayId}/parcelitems", response_model="List[ParcelItem]")
 _POST_PARCEL_ITEM = Route(
-    "POST", "/job/{jobDisplayId}/parcelitems",
-    request_model="ParcelItemCreateRequest", response_model="ParcelItem",
+    "POST",
+    "/job/{jobDisplayId}/parcelitems",
+    request_model="ParcelItemCreateRequest",
+    response_model="ParcelItem",
 )
 _DELETE_PARCEL_ITEM = Route(
-    "DELETE", "/job/{jobDisplayId}/parcelitems/{parcelItemId}", response_model="ServiceBaseResponse",
+    "DELETE",
+    "/job/{jobDisplayId}/parcelitems/{parcelItemId}",
+    response_model="ServiceBaseResponse",
 )
 _GET_PARCEL_ITEMS_MATERIALS = Route(
-    "GET", "/job/{jobDisplayId}/parcel-items-with-materials",
+    "GET",
+    "/job/{jobDisplayId}/parcel-items-with-materials",
     response_model="List[ParcelItemWithMaterials]",
 )
 _GET_PACKAGING_CONTAINERS = Route(
-    "GET", "/job/{jobDisplayId}/packagingcontainers", response_model="List[PackagingContainer]",
+    "GET",
+    "/job/{jobDisplayId}/packagingcontainers",
+    response_model="List[PackagingContainer]",
 )
 _PUT_ITEM = Route(
-    "PUT", "/job/{jobDisplayId}/item/{itemId}",
-    request_model="ItemUpdateRequest", response_model="ServiceBaseResponse",
+    "PUT",
+    "/job/{jobDisplayId}/item/{itemId}",
+    request_model="ItemUpdateRequest",
+    response_model="ServiceBaseResponse",
 )
 _POST_ITEM_NOTES = Route(
-    "POST", "/job/{jobDisplayId}/item/notes",
-    request_model="ItemNotesRequest", response_model="ServiceBaseResponse",
+    "POST",
+    "/job/{jobDisplayId}/item/notes",
+    request_model="ItemNotesRequest",
+    response_model="ServiceBaseResponse",
 )
 
 
 # RFQ routes (job-scoped)
-_LIST_RFQS = Route("GET", "/job/{jobDisplayId}/rfq", params_model="JobRfqListParams", response_model="List[QuoteRequestDisplayInfo]")
+_LIST_RFQS = Route(
+    "GET", "/job/{jobDisplayId}/rfq", params_model="JobRfqListParams", response_model="List[QuoteRequestDisplayInfo]"
+)
 _GET_RFQ_STATUS = Route(
-    "GET", "/job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}",
+    "GET",
+    "/job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}",
     response_model="int",
 )
 
 # On-Hold routes
 _LIST_ON_HOLD = Route("GET", "/job/{jobDisplayId}/onhold", response_model="List[ExtendedOnHoldInfo]")
 _CREATE_ON_HOLD = Route(
-    "POST", "/job/{jobDisplayId}/onhold",
-    request_model="SaveOnHoldRequest", response_model="SaveOnHoldResponse",
+    "POST",
+    "/job/{jobDisplayId}/onhold",
+    request_model="SaveOnHoldRequest",
+    response_model="SaveOnHoldResponse",
 )
 _DELETE_ON_HOLD = Route("DELETE", "/job/{jobDisplayId}/onhold")
 _GET_ON_HOLD = Route("GET", "/job/{jobDisplayId}/onhold/{id}", response_model="OnHoldDetails")
 _UPDATE_ON_HOLD = Route(
-    "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}",
-    request_model="SaveOnHoldRequest", response_model="SaveOnHoldResponse",
+    "PUT",
+    "/job/{jobDisplayId}/onhold/{onHoldId}",
+    request_model="SaveOnHoldRequest",
+    response_model="SaveOnHoldResponse",
 )
 _GET_ON_HOLD_FOLLOWUP_USER = Route(
-    "GET", "/job/{jobDisplayId}/onhold/followupuser/{contactId}", response_model="OnHoldUser",
+    "GET",
+    "/job/{jobDisplayId}/onhold/followupuser/{contactId}",
+    response_model="OnHoldUser",
 )
 _LIST_ON_HOLD_FOLLOWUP_USERS = Route(
-    "GET", "/job/{jobDisplayId}/onhold/followupusers", response_model="List[OnHoldUser]",
+    "GET",
+    "/job/{jobDisplayId}/onhold/followupusers",
+    response_model="List[OnHoldUser]",
 )
 _ADD_ON_HOLD_COMMENT = Route(
-    "POST", "/job/{jobDisplayId}/onhold/{onHoldId}/comment",
-    request_model="OnHoldCommentRequest", response_model="OnHoldNoteDetails",
+    "POST",
+    "/job/{jobDisplayId}/onhold/{onHoldId}/comment",
+    request_model="OnHoldCommentRequest",
+    response_model="OnHoldNoteDetails",
 )
 _UPDATE_ON_HOLD_DATES = Route(
-    "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/dates", request_model="SaveOnHoldDatesModel",
+    "PUT",
+    "/job/{jobDisplayId}/onhold/{onHoldId}/dates",
+    request_model="SaveOnHoldDatesModel",
 )
 _RESOLVE_ON_HOLD = Route(
-    "PUT", "/job/{jobDisplayId}/onhold/{onHoldId}/resolve",
-    request_model="ResolveOnHoldRequest", response_model="ResolveJobOnHoldResponse",
+    "PUT",
+    "/job/{jobDisplayId}/onhold/{onHoldId}/resolve",
+    request_model="ResolveOnHoldRequest",
+    response_model="ResolveJobOnHoldResponse",
 )
 
 # Email routes
 _SEND_EMAIL = Route("POST", "/job/{jobDisplayId}/email", request_model="SendEmailRequest")
 _SEND_DOCUMENT_EMAIL = Route(
-    "POST", "/job/{jobDisplayId}/email/senddocument", request_model="SendDocumentEmailModel",
+    "POST",
+    "/job/{jobDisplayId}/email/senddocument",
+    request_model="SendDocumentEmailModel",
 )
 _CREATE_TRANSACTIONAL_EMAIL = Route("POST", "/job/{jobDisplayId}/email/createtransactionalemail")
 _SEND_TEMPLATE_EMAIL = Route("POST", "/job/{jobDisplayId}/email/{emailTemplateGuid}/send")
@@ -217,25 +269,33 @@ _GET_SMS_TEMPLATE = Route("GET", "/job/{jobDisplayId}/sms/templatebased/{templat
 
 # Freight routes
 _LIST_FREIGHT_PROVIDERS = Route(
-    "GET", "/job/{jobDisplayId}/freightproviders",
-    params_model="FreightProvidersParams", response_model="List[PricedFreightProvider]",
+    "GET",
+    "/job/{jobDisplayId}/freightproviders",
+    params_model="FreightProvidersParams",
+    response_model="List[PricedFreightProvider]",
 )
 _SAVE_FREIGHT_PROVIDERS = Route(
-    "POST", "/job/{jobDisplayId}/freightproviders", request_model="ShipmentPlanProvider",
+    "POST",
+    "/job/{jobDisplayId}/freightproviders",
+    request_model="ShipmentPlanProvider",
 )
 _GET_FREIGHT_PROVIDER_RATE_QUOTE = Route(
-    "POST", "/job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote",
+    "POST",
+    "/job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote",
     request_model="RateQuoteRequest",
 )
 _ADD_FREIGHT_ITEMS = Route(
-    "POST", "/job/{jobDisplayId}/freightitems",
+    "POST",
+    "/job/{jobDisplayId}/freightitems",
     request_model="FreightItemsRequest",
 )
 
 # Agent change route (029)
 _POST_CHANGE_AGENT = Route(
-    "POST", "/job/{jobDisplayId}/changeAgent",
-    request_model="ChangeJobAgentRequest", response_model="ServiceBaseResponse",
+    "POST",
+    "/job/{jobDisplayId}/changeAgent",
+    request_model="ChangeJobAgentRequest",
+    response_model="ServiceBaseResponse",
 )
 
 
@@ -247,10 +307,11 @@ class JobsEndpoint(BaseEndpoint):
         self._abc_client = abc_client
         self._resolver = resolver
 
-        from ab.api.helpers.agent import AgentHelpers
-        from ab.api.helpers.timeline import TimelineHelpers
-        self.agent = AgentHelpers(self, self._resolver)
-        self.timeline = TimelineHelpers(self)
+        from ab.api.helpers.agent import AgentHelpers as _AgentHelpers
+        from ab.api.helpers.timeline import TimelineHelpers as _TimelineHelpers
+
+        self.agent: AgentHelpers = _AgentHelpers(self, self._resolver)
+        self.tasks: TimelineHelpers = _TimelineHelpers(self)
 
     def create(self, *, data: JobCreateRequest | dict) -> None:
         """POST /job.
@@ -370,7 +431,7 @@ class JobsEndpoint(BaseEndpoint):
         self,
         job_display_id: int,
         *,
-        data: dict,
+        data: BaseTimelineTaskRequest | dict,
         create_email: bool | None = None,
     ) -> TimelineSaveResponse:
         """POST /job/{jobDisplayId}/timeline
@@ -379,7 +440,9 @@ class JobsEndpoint(BaseEndpoint):
 
         Args:
             job_display_id: The numeric display ID of the job.
-            data: Task dict with ``taskCode`` and task-code-specific fields.
+            data: Task request model instance or dict with ``taskCode`` and
+                task-code-specific fields. Prefer passing a model instance
+                (validated at construction) — raw dicts bypass validation.
             create_email: Send status notification email (query param).
 
         Returns:
@@ -387,7 +450,9 @@ class JobsEndpoint(BaseEndpoint):
         """
         params = dict(create_email=create_email)
         return self._request(
-            _POST_TIMELINE.bind(jobDisplayId=job_display_id), json=data, params=params,
+            _POST_TIMELINE.bind(jobDisplayId=job_display_id),
+            json=data,
+            params=params,
         )
 
     def get_timeline_task(self, job_display_id: int, task_id: str) -> TimelineTask:
@@ -437,6 +502,7 @@ class JobsEndpoint(BaseEndpoint):
         if resp is None:
             return None
         from ab.api.models.jobs import TimelineAgent as _TA
+
         return _TA.model_validate(resp)
 
     def increment_status(
@@ -472,7 +538,8 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`IncrementStatusRequest`
         """
         return self._request(
-            _UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=data,
+            _UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id),
+            json=data,
         )
 
     def set_quote_status(self, job_display_id: int) -> ServiceBaseResponse:
@@ -553,7 +620,8 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`JobNoteUpdateRequest`
         """
         return self._request(
-            _PUT_NOTE.bind(jobDisplayId=job_display_id, id=note_id), json=data,
+            _PUT_NOTE.bind(jobDisplayId=job_display_id, id=note_id),
+            json=data,
         )
 
     # ---- Parcels & Items --------------------------------------------------
@@ -612,7 +680,8 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`ItemUpdateRequest`
         """
         return self._request(
-            _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id), json=data,
+            _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id),
+            json=data,
         )
 
     def add_item_notes(
@@ -640,11 +709,13 @@ class JobsEndpoint(BaseEndpoint):
 
     def get_rfq_status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> int:
         """GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} (ACPortal)"""
-        return self._request(_GET_RFQ_STATUS.bind(
-            jobDisplayId=job_display_id,
-            rfqServiceType=rfq_service_type,
-            companyId=company_id,
-        ))
+        return self._request(
+            _GET_RFQ_STATUS.bind(
+                jobDisplayId=job_display_id,
+                rfqServiceType=rfq_service_type,
+                companyId=company_id,
+            )
+        )
 
     # ---- On-Hold ----------------------------------------------------------
 
@@ -697,7 +768,8 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`SaveOnHoldRequest`
         """
         return self._request(
-            _UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id), json=data,
+            _UPDATE_ON_HOLD.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
+            json=data,
         )
 
     def get_on_hold_followup_user(self, job_display_id: int, contact_id: str) -> OnHoldUser:
@@ -711,7 +783,11 @@ class JobsEndpoint(BaseEndpoint):
         return self._request(_LIST_ON_HOLD_FOLLOWUP_USERS.bind(jobDisplayId=job_display_id))
 
     def add_on_hold_comment(
-        self, job_display_id: int, on_hold_id: str, *, data: OnHoldCommentRequest | dict,
+        self,
+        job_display_id: int,
+        on_hold_id: str,
+        *,
+        data: OnHoldCommentRequest | dict,
     ) -> OnHoldNoteDetails:
         """POST /job/{jobDisplayId}/onhold/{onHoldId}/comment.
 
@@ -751,7 +827,11 @@ class JobsEndpoint(BaseEndpoint):
         )
 
     def resolve_on_hold(
-        self, job_display_id: int, on_hold_id: str, *, data: ResolveOnHoldRequest | dict,
+        self,
+        job_display_id: int,
+        on_hold_id: str,
+        *,
+        data: ResolveOnHoldRequest | dict,
     ) -> ResolveJobOnHoldResponse:
         """PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve.
 
@@ -799,7 +879,8 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`SendDocumentEmailModel`
         """
         return self._request(
-            _SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id), json=data,
+            _SEND_DOCUMENT_EMAIL.bind(jobDisplayId=job_display_id),
+            json=data,
         )
 
     def create_transactional_email(self, job_display_id: int) -> None:
@@ -879,7 +960,10 @@ class JobsEndpoint(BaseEndpoint):
         )
 
     def save_freight_providers(
-        self, job_display_id: int, *, data: ShipmentPlanProvider | dict,
+        self,
+        job_display_id: int,
+        *,
+        data: ShipmentPlanProvider | dict,
     ) -> None:
         """POST /job/{jobDisplayId}/freightproviders.
 
@@ -891,11 +975,16 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`ShipmentPlanProvider`
         """
         return self._request(
-            _SAVE_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id), json=data,
+            _SAVE_FREIGHT_PROVIDERS.bind(jobDisplayId=job_display_id),
+            json=data,
         )
 
     def get_freight_provider_rate_quote(
-        self, job_display_id: int, option_index: int, *, data: RateQuoteRequest | dict,
+        self,
+        job_display_id: int,
+        option_index: int,
+        *,
+        data: RateQuoteRequest | dict,
     ) -> None:
         """POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote.
 
@@ -909,7 +998,8 @@ class JobsEndpoint(BaseEndpoint):
         """
         return self._request(
             _GET_FREIGHT_PROVIDER_RATE_QUOTE.bind(
-                jobDisplayId=job_display_id, optionIndex=option_index,
+                jobDisplayId=job_display_id,
+                optionIndex=option_index,
             ),
             json=data,
         )
@@ -948,5 +1038,6 @@ class JobsEndpoint(BaseEndpoint):
         Request model: :class:`ChangeJobAgentRequest`
         """
         return self._request(
-            _POST_CHANGE_AGENT.bind(jobDisplayId=job_display_id), json=data,
+            _POST_CHANGE_AGENT.bind(jobDisplayId=job_display_id),
+            json=data,
         )
