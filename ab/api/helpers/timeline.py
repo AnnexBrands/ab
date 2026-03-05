@@ -8,6 +8,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
+from ab.api.models.jobs import (
+    BaseTimelineTaskRequest,
+    CarrierTaskRequest,
+    InTheFieldTaskRequest,
+    SimpleTaskRequest,
+    TimeLogRequest,
+)
+
 if TYPE_CHECKING:
     from ab.api.endpoints.jobs import JobsEndpoint
 
@@ -21,18 +29,6 @@ CP = "CP"  # Carrier pickup/delivery
 ALL_TASK_CODES = [PU, PK, ST, CP]
 DELETE_ORDER = [CP, ST, PK, PU]
 
-# New task templates — used when a task doesn't exist yet
-_NEW_FIELD_TASK_SCH = {"taskCode": PU, "completedDate": None}
-_NEW_FIELD_TASK = {"taskCode": PU, "onSiteTimeLog": {}, "completedDate": None}
-_NEW_PACK_TASK = {"taskCode": PK, "timeLog": {}, "workTimeLogs": []}
-_NEW_STORE_TASK = {"taskCode": ST, "timeLog": {}, "workTimeLogs": []}
-_NEW_CARRIER_TASK = {
-    "taskCode": CP,
-    "scheduledDate": None,
-    "pickupCompletedDate": None,
-    "deliveryCompletedDate": None,
-}
-
 
 class TimelineHelpers:
     """High-level timeline operations with get-then-set collision prevention.
@@ -40,8 +36,8 @@ class TimelineHelpers:
     Usage::
 
         api = ABConnectAPI()
-        api.jobs.timeline.schedule(job_id, start="2026-03-01")
-        api.jobs.timeline.received(job_id, end="2026-03-02")
+        api.jobs.tasks.schedule(job_id, start="2026-03-01")
+        api.jobs.tasks.received(job_id, end="2026-03-02")
     """
 
     def __init__(self, jobs: JobsEndpoint) -> None:
@@ -73,16 +69,24 @@ class TimelineHelpers:
         self,
         job_id: int,
         taskcode: str,
-        task: dict,
+        task: BaseTimelineTaskRequest,
         create_email: bool = False,
     ) -> Any:
         """Create or update a task via POST /timeline.
 
+        Args:
+            job_id: Job display ID.
+            taskcode: Task code (PU, PK, ST, CP).
+            task: Validated request model instance.
+            create_email: Send status notification email.
+
+        The model is serialized to a camelCase dict before sending.
         The API automatically handles create vs update based on
         whether the task already exists.
         """
+        data = task.model_dump(by_alias=True, exclude_none=True, exclude_unset=True, mode="json")
         return self._jobs.create_timeline_task(
-            job_id, data=task, create_email=create_email,
+            job_id, data=data, create_email=create_email,
         )
 
     # ---- Status helpers (PU) ------------------------------------------------
@@ -102,12 +106,12 @@ class TimelineHelpers:
         if curr >= 2:
             return None
 
-        if task is None:
-            task = _NEW_FIELD_TASK_SCH.copy()
-        task["plannedStartDate"] = start
-        if end is not None:
-            task["plannedEndDate"] = end
-        return self.set_task(job_id, PU, task)
+        model = InTheFieldTaskRequest(
+            task_code=PU,
+            planned_start_date=start,
+            planned_end_date=end,
+        )
+        return self.set_task(job_id, PU, model)
 
     _2 = schedule
 
@@ -130,19 +134,18 @@ class TimelineHelpers:
         if curr >= 3:
             return None
 
-        if task is None:
-            task = _NEW_FIELD_TASK.copy()
-
-        if end:
-            task["completedDate"] = end
+        on_site_time_log = None
         if start and end:
-            task["onSiteTimeLog"] = {"start": start, "end": end}
+            on_site_time_log = TimeLogRequest(start=start, end=end)
         elif start:
-            task["onSiteTimeLog"] = {"start": start, "end": start}
-        else:
-            task.pop("onSiteTimeLog", None)
+            on_site_time_log = TimeLogRequest(start=start, end=start)
 
-        return self.set_task(job_id, PU, task)
+        model = InTheFieldTaskRequest(
+            task_code=PU,
+            completed_date=end,
+            on_site_time_log=on_site_time_log,
+        )
+        return self.set_task(job_id, PU, model)
 
     _3 = received
 
@@ -158,10 +161,11 @@ class TimelineHelpers:
         if curr >= 4:
             return None
 
-        if task is None:
-            task = _NEW_PACK_TASK.copy()
-        task["timeLog"] = {"start": start}
-        return self.set_task(job_id, PK, task)
+        model = SimpleTaskRequest(
+            task_code=PK,
+            time_log=TimeLogRequest(start=start),
+        )
+        return self.set_task(job_id, PK, model)
 
     _4 = pack_start
 
@@ -175,13 +179,16 @@ class TimelineHelpers:
         if curr >= 5:
             return None
 
-        if task is None:
-            task = _NEW_PACK_TASK.copy()
-            task["timeLog"] = {}
-        if "timeLog" not in task or task["timeLog"] is None:
-            task["timeLog"] = {}
-        task["timeLog"]["end"] = end
-        return self.set_task(job_id, PK, task)
+        # Preserve existing start time from a prior pack_start call
+        existing_start = None
+        if task and task.get("timeLog"):
+            existing_start = task["timeLog"].get("start")
+
+        model = SimpleTaskRequest(
+            task_code=PK,
+            time_log=TimeLogRequest(start=existing_start, end=end),
+        )
+        return self.set_task(job_id, PK, model)
 
     _5 = pack_finish
 
@@ -194,12 +201,16 @@ class TimelineHelpers:
         """
         status_info, task = self.get_task(job_id, ST)
 
-        if task is None:
-            task = _NEW_STORE_TASK.copy()
-        if "timeLog" not in task or task["timeLog"] is None:
-            task["timeLog"] = {}
-        task["timeLog"]["start"] = start
-        return self.set_task(job_id, ST, task)
+        # Preserve existing end time if present
+        existing_end = None
+        if task and task.get("timeLog"):
+            existing_end = task["timeLog"].get("end")
+
+        model = SimpleTaskRequest(
+            task_code=ST,
+            time_log=TimeLogRequest(start=start, end=existing_end),
+        )
+        return self.set_task(job_id, ST, model)
 
     _6 = storage_begin
 
@@ -210,12 +221,16 @@ class TimelineHelpers:
         """
         status_info, task = self.get_task(job_id, ST)
 
-        if task is None:
-            task = _NEW_STORE_TASK.copy()
-        if "timeLog" not in task or task["timeLog"] is None:
-            task["timeLog"] = {}
-        task["timeLog"]["end"] = end
-        return self.set_task(job_id, ST, task)
+        # Preserve existing start time if present
+        existing_start = None
+        if task and task.get("timeLog"):
+            existing_start = task["timeLog"].get("start")
+
+        model = SimpleTaskRequest(
+            task_code=ST,
+            time_log=TimeLogRequest(start=existing_start, end=end),
+        )
+        return self.set_task(job_id, ST, model)
 
     # ---- Status helpers (CP) ------------------------------------------------
 
@@ -229,10 +244,11 @@ class TimelineHelpers:
         if curr >= 7:
             return None
 
-        if task is None:
-            task = _NEW_CARRIER_TASK.copy()
-        task["scheduledDate"] = start
-        return self.set_task(job_id, CP, task)
+        model = CarrierTaskRequest(
+            task_code=CP,
+            scheduled_date=start,
+        )
+        return self.set_task(job_id, CP, model)
 
     _7 = carrier_schedule
 
@@ -246,10 +262,11 @@ class TimelineHelpers:
         if curr >= 8:
             return None
 
-        if task is None:
-            task = _NEW_CARRIER_TASK.copy()
-        task["pickupCompletedDate"] = start
-        return self.set_task(job_id, CP, task)
+        model = CarrierTaskRequest(
+            task_code=CP,
+            pickup_completed_date=start,
+        )
+        return self.set_task(job_id, CP, model)
 
     _8 = carrier_pickup
 
@@ -260,10 +277,11 @@ class TimelineHelpers:
         """
         status_info, task = self.get_task(job_id, CP)
 
-        if task is None:
-            task = _NEW_CARRIER_TASK.copy()
-        task["deliveryCompletedDate"] = end
-        return self.set_task(job_id, CP, task)
+        model = CarrierTaskRequest(
+            task_code=CP,
+            delivery_completed_date=end,
+        )
+        return self.set_task(job_id, CP, model)
 
     _10 = carrier_delivery
 

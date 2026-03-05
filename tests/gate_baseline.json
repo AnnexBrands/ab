@@ -663,7 +663,8 @@
   "/job/{_}/changeAgent POST": [
     "G2",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/job/{_}/email POST": [
     "G1",
@@ -1192,8 +1193,7 @@
     "G2",
     "G3",
     "G4",
-    "G5",
-    "G6"
+    "G5"
   ],
   "/job/{_}/timeline/incrementjobstatus POST": [
     "G2",

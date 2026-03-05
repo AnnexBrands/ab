@@ -83,7 +83,7 @@ class TestJobsIntegration:
     def test_timeline_get_task(self, api):
         """Test TimelineHelpers.get_task returns correct task for each code."""
         for code in ["PU", "PK", "ST", "CP"]:
-            status_info, task = api.jobs.timeline.get_task(TEST_JOB_DISPLAY_ID, code)
+            status_info, task = api.jobs.tasks.get_task(TEST_JOB_DISPLAY_ID, code)
             assert isinstance(status_info, dict)
             if task is not None:
                 assert task.get("taskCode") == code
