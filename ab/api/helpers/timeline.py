@@ -2,8 +2,9 @@
 
 Provides get-then-set helpers for advancing job status through the timeline
 workflow (schedule -> received -> pack -> storage -> carrier).  When a task
-already exists the helper carries forward ``id`` and ``modifiedDate`` from the
-server so that the POST payload enables optimistic concurrency checking.
+already exists the helper deep-merges its new fields onto the full server task
+dict, preserving all prior data (notes, preferred dates, work time logs, etc.)
+while updating only the fields the helper touches.
 """
 
 from __future__ import annotations
@@ -36,15 +37,24 @@ ALL_TASK_CODES = [PU, PK, ST, CP]
 DELETE_ORDER = [CP, ST, PK, PU]
 
 
-def _enrich(model: BaseTimelineTaskRequest, existing: dict | None) -> None:
-    """Carry forward server ``id`` and ``modifiedDate`` for upsert."""
-    if existing:
-        task_id = existing.get("id")
-        if task_id is not None:
-            model.id = task_id
-        modified = existing.get("modifiedDate")
-        if modified is not None:
-            model.modified_date = modified
+def _deep_merge(base: dict, overlay: dict) -> dict:
+    """Recursively merge *overlay* onto *base*.
+
+    Nested dicts are merged so that keys present in *base* but absent from
+    *overlay* are preserved.  All other types (scalars, lists) in *overlay*
+    replace the corresponding *base* value.
+    """
+    result = dict(base)
+    for key, value in overlay.items():
+        if (
+            key in result
+            and isinstance(result[key], dict)
+            and isinstance(value, dict)
+        ):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
 
 
 class TimelineHelpers:
@@ -97,15 +107,35 @@ class TimelineHelpers:
             task: Validated request model instance.
             create_email: Send status notification email.
 
-        The model is serialized to a camelCase dict before sending.
-        When ``id`` and ``modifiedDate`` are set on the model (from a
-        prior ``get_task`` call), they are included in the payload so
-        the server can enforce optimistic concurrency.
+        Serializes the model to a camelCase dict and sends it as-is.
+        Callers that need to preserve existing task data should use
+        ``_upsert`` instead.
         """
         data = task.model_dump(by_alias=True, exclude_none=True, exclude_unset=True, mode="json")
         return self._jobs.create_timeline_task(
             job_id, data=data, create_email=create_email,
         )
+
+    def _upsert(
+        self,
+        job_id: int,
+        model: BaseTimelineTaskRequest,
+        existing: dict | None,
+    ) -> TimelineSaveResponse:
+        """Serialize *model* and deep-merge onto *existing* task, then POST.
+
+        When *existing* is ``None`` (new task), the model is sent as-is.
+        When *existing* is a task dict from the server, the model's
+        explicitly-set fields are overlaid onto the full server dict so
+        that all prior data (notes, preferred dates, work-time logs, etc.)
+        is preserved.
+        """
+        data = model.model_dump(
+            by_alias=True, exclude_none=True, exclude_unset=True, mode="json",
+        )
+        if existing is not None:
+            data = _deep_merge(existing, data)
+        return self._jobs.create_timeline_task(job_id, data=data)
 
     # ---- Status helpers (PU) ------------------------------------------------
 
@@ -129,8 +159,7 @@ class TimelineHelpers:
             planned_start_date=start,
             planned_end_date=end,
         )
-        _enrich(model, task)
-        return self.set_task(job_id, PU, model)
+        return self._upsert(job_id, model, task)
 
     _2 = schedule
 
@@ -164,8 +193,7 @@ class TimelineHelpers:
             completed_date=end,
             on_site_time_log=on_site_time_log,
         )
-        _enrich(model, task)
-        return self.set_task(job_id, PU, model)
+        return self._upsert(job_id, model, task)
 
     _3 = received
 
@@ -185,8 +213,7 @@ class TimelineHelpers:
             task_code=PK,
             time_log=TimeLogRequest(start=start),
         )
-        _enrich(model, task)
-        return self.set_task(job_id, PK, model)
+        return self._upsert(job_id, model, task)
 
     _4 = pack_start
 
@@ -200,17 +227,11 @@ class TimelineHelpers:
         if curr >= 5:
             logger.warning("pack_finish() called at status %.1f (>= 5); proceeding", curr)
 
-        # Preserve existing start time from a prior pack_start call
-        existing_start = None
-        if task and task.get("timeLog"):
-            existing_start = task["timeLog"].get("start")
-
         model = SimpleTaskRequest(
             task_code=PK,
-            time_log=TimeLogRequest(start=existing_start, end=end),
+            time_log=TimeLogRequest(end=end),
         )
-        _enrich(model, task)
-        return self.set_task(job_id, PK, model)
+        return self._upsert(job_id, model, task)
 
     _5 = pack_finish
 
@@ -220,17 +241,11 @@ class TimelineHelpers:
         """Status 6 — Set storage start time on ST task."""
         status_info, task = self.get_task(job_id, ST)
 
-        # Preserve existing end time if present
-        existing_end = None
-        if task and task.get("timeLog"):
-            existing_end = task["timeLog"].get("end")
-
         model = SimpleTaskRequest(
             task_code=ST,
-            time_log=TimeLogRequest(start=start, end=existing_end),
+            time_log=TimeLogRequest(start=start),
         )
-        _enrich(model, task)
-        return self.set_task(job_id, ST, model)
+        return self._upsert(job_id, model, task)
 
     _6 = storage_begin
 
@@ -238,17 +253,11 @@ class TimelineHelpers:
         """Status 6 — Set storage end time on ST task."""
         status_info, task = self.get_task(job_id, ST)
 
-        # Preserve existing start time if present
-        existing_start = None
-        if task and task.get("timeLog"):
-            existing_start = task["timeLog"].get("start")
-
         model = SimpleTaskRequest(
             task_code=ST,
-            time_log=TimeLogRequest(start=existing_start, end=end),
+            time_log=TimeLogRequest(end=end),
         )
-        _enrich(model, task)
-        return self.set_task(job_id, ST, model)
+        return self._upsert(job_id, model, task)
 
     # ---- Status helpers (CP) ------------------------------------------------
 
@@ -266,8 +275,7 @@ class TimelineHelpers:
             task_code=CP,
             scheduled_date=start,
         )
-        _enrich(model, task)
-        return self.set_task(job_id, CP, model)
+        return self._upsert(job_id, model, task)
 
     _7 = carrier_schedule
 
@@ -285,8 +293,7 @@ class TimelineHelpers:
             task_code=CP,
             pickup_completed_date=start,
         )
-        _enrich(model, task)
-        return self.set_task(job_id, CP, model)
+        return self._upsert(job_id, model, task)
 
     _8 = carrier_pickup
 
@@ -298,8 +305,7 @@ class TimelineHelpers:
             task_code=CP,
             delivery_completed_date=end,
         )
-        _enrich(model, task)
-        return self.set_task(job_id, CP, model)
+        return self._upsert(job_id, model, task)
 
     _10 = carrier_delivery
 

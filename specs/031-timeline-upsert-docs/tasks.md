@@ -105,7 +105,7 @@
 - [x] T032 Run linter `ruff check .` — changed files clean; pre-existing errors in other files unchanged
 - [x] T033 Run `cd docs && make html` — final Sphinx build verification (no new warnings)
 - [x] T034 Validate quickstart.md code examples match actual API (spot-check 2-3 examples against staging)
-- [ ] T035 Checkpoint commit with all changes per Constitution Principle VIII
+- [x] T035 Checkpoint commit with all changes per Constitution Principle VIII
 
 ---
 

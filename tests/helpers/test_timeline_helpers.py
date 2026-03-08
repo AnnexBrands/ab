@@ -91,10 +91,13 @@ class TestTimelineHelperSequence:
         assert isinstance(resp, TimelineSaveResponse)
         assert resp.success is True
 
-        # Verify PU task now has completed date
+        # Verify PU task now has completed date AND preserved plannedStartDate
         _, task = api.jobs.tasks.get_task(JOB, "PU")
         assert task is not None
         assert task.get("completedDate") is not None, "PU completedDate should be set"
+        assert task.get("plannedStartDate") is not None, (
+            "PU plannedStartDate should be preserved from schedule()"
+        )
 
     def test_step_05_pack_finish(self, api):
         """Pack finish — upserts existing PK task with end time."""
@@ -143,7 +146,7 @@ class TestTimelineHelperSequence:
         assert task.get("scheduledDate") is not None, "CP scheduledDate should be set"
 
     def test_step_09_carrier_pickup(self, api):
-        """Carrier pickup — upserts existing CP task with pickup date."""
+        """Carrier pickup — upserts existing CP task, preserves scheduledDate."""
         resp = api.jobs.tasks.carrier_pickup(JOB, start=TEST_TR_PICKUP_COMPLETED_DATE)
         assert isinstance(resp, TimelineSaveResponse)
         assert resp.success is True
@@ -151,9 +154,12 @@ class TestTimelineHelperSequence:
         _, task = api.jobs.tasks.get_task(JOB, "CP")
         assert task is not None
         assert task.get("pickupCompletedDate") is not None, "CP pickupCompletedDate should be set"
+        assert task.get("scheduledDate") is not None, (
+            "CP scheduledDate should be preserved from carrier_schedule()"
+        )
 
     def test_step_10_carrier_delivery(self, api):
-        """Carrier delivery — upserts existing CP task with delivery date."""
+        """Carrier delivery — upserts existing CP task, preserves prior dates."""
         resp = api.jobs.tasks.carrier_delivery(JOB, end=TEST_TR_DELIVERY_COMPLETED_DATE)
         assert isinstance(resp, TimelineSaveResponse)
         assert resp.success is True
@@ -161,14 +167,20 @@ class TestTimelineHelperSequence:
         _, task = api.jobs.tasks.get_task(JOB, "CP")
         assert task is not None
         assert task.get("deliveryCompletedDate") is not None, "CP deliveryCompletedDate should be set"
+        assert task.get("scheduledDate") is not None, (
+            "CP scheduledDate should be preserved"
+        )
+        assert task.get("pickupCompletedDate") is not None, (
+            "CP pickupCompletedDate should be preserved"
+        )
 
     def test_step_11_verify_final_state(self, api):
         """Verify all 4 task types have expected dates after full sequence."""
-        # PU task — received() overwrites the task so plannedStartDate may
-        # not survive, but completedDate must be present
+        # PU task — received() should preserve plannedStartDate from schedule()
         _, pu = api.jobs.tasks.get_task(JOB, "PU")
         assert pu is not None, "PU task should exist"
         assert pu.get("completedDate") is not None, "PU completedDate"
+        assert pu.get("plannedStartDate") is not None, "PU plannedStartDate preserved"
 
         # PK task — should have timeLog with start and end
         _, pk = api.jobs.tasks.get_task(JOB, "PK")
@@ -184,9 +196,9 @@ class TestTimelineHelperSequence:
         assert st_log.get("start") is not None, "ST timeLog.start"
         assert st_log.get("end") is not None, "ST timeLog.end"
 
-        # CP task — each carrier helper upserts with its own field;
-        # the server preserves only the last-written fields.
-        # deliveryCompletedDate should be set (last carrier helper called).
+        # CP task — all three carrier dates should be preserved
         _, cp = api.jobs.tasks.get_task(JOB, "CP")
         assert cp is not None, "CP task should exist"
+        assert cp.get("scheduledDate") is not None, "CP scheduledDate"
+        assert cp.get("pickupCompletedDate") is not None, "CP pickupCompletedDate"
         assert cp.get("deliveryCompletedDate") is not None, "CP deliveryCompletedDate"
