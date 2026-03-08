@@ -856,6 +856,8 @@ class BaseTimelineTaskRequest(RequestModel):
     the server's ``TaskModelDataBinder`` polymorphic deserialization.
     """
 
+    id: Optional[int] = Field(None, description="Server-assigned task ID (for upsert)")
+    modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Optimistic concurrency token")
     task_code: str = Field(..., alias="taskCode", description="Task type code (PU, PK, ST, CP, DE)")
     planned_start_date: Optional[str] = Field(None, alias="plannedStartDate", description="Planned start (ISO 8601)")
     work_time_logs: Optional[List[WorkTimeLogRequest]] = Field(
