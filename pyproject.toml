@@ -36,15 +36,21 @@ abs = "ab.cli:main_staging"
 [project.urls]
 "Repository" = "https://github.com/AnnexBrands/ABConnnect"
 
-[project.optional-dependencies]
-dev = [
+[dependency-groups]
+test = [
     "pytest>=7.0",
+]
+lint = [
     "ruff>=0.4",
 ]
 docs = [
     "sphinx>=7.0",
     "sphinx-rtd-theme>=2.0",
     "myst-parser>=3.0",
+]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
 ]
 
 [tool.setuptools.packages.find]
@@ -53,6 +59,9 @@ include = ["ab*", "examples*"]
 
 [tool.setuptools.package-data]
 ab = ["py.typed", "api/schemas/*.json"]
+
+[tool.uv]
+default-groups = ["dev"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
