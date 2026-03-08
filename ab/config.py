@@ -106,14 +106,15 @@ def load_settings(
     if env_file:
         if os.path.isfile(env_file):
             kwargs["_env_file"] = env_file
-    elif env:
-        candidate = f".env.{env}"
-        if os.path.isfile(candidate):
-            kwargs["_env_file"] = candidate
-        kwargs["environment"] = env  # type: ignore[arg-type]
-    else:
-        # Production default: load .env if present
+    elif env is None:
         if os.path.isfile(".env"):
             kwargs["_env_file"] = ".env"
+    else:
+        env_specific_file = f".env.{env}"
+        if os.path.isfile(env_specific_file):
+            kwargs["_env_file"] = env_specific_file
+        elif os.path.isfile(".env"):
+            kwargs["_env_file"] = ".env"
+        kwargs["environment"] = env  # type: ignore[arg-type]
 
     return ABConnectSettings(**kwargs)

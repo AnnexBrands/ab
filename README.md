@@ -13,7 +13,19 @@ Python SDK for the ABConnect API ecosystem.
 ## Installation
 
 ```bash
-pip install -e .
+uv sync
+```
+
+This creates or updates the local `.venv`, installs the package in editable mode, and includes the default `dev` dependency group.
+
+Additional groups:
+
+```bash
+# Docs toolchain
+uv sync --group docs
+
+# Install everything declared for local development
+uv sync --all-groups
 ```
 
 ## Quick Start
@@ -118,17 +130,23 @@ Each example authenticates against the configured environment, calls the endpoin
 Build Sphinx docs:
 
 ```bash
-cd docs && make html
+uv run --group docs make -C docs html
 ```
 
 ## Testing
 
 ```bash
 # Unit + fixture validation tests (no network)
-pytest tests/ --ignore=tests/integration -v
+uv run pytest tests/ --ignore=tests/integration -v
 
 # Live integration tests (requires staging credentials)
-pytest tests/integration/ -m live -v
+uv run pytest tests/integration/ -m live -v
+```
+
+## Linting
+
+```bash
+uv run ruff check .
 ```
 
 ## UAT Guide
