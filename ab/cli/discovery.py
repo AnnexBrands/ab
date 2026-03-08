@@ -177,9 +177,9 @@ def discover_endpoints_from_class() -> dict[str, EndpointInfo]:
 
     # Inspect _init_endpoints source to find attribute name → class mappings
     source = inspect.getsource(ABConnectAPI._init_endpoints)
-    # Parse lines like: self.address = AddressEndpoint(self._acportal)
+    # Parse lines like: self.address: AddressEndpoint = AddressEndpoint(self._acportal)
 
-    for match in re.finditer(r"self\.(\w+)\s*=\s*(\w+Endpoint)\(", source):
+    for match in re.finditer(r"self\.(\w+)(?:\s*:\s*\w+)?\s*=\s*(\w+Endpoint)\(", source):
         attr_name = match.group(1)
         class_name = match.group(2)
 

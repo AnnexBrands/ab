@@ -45,7 +45,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 032-client-type-hints: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 031-timeline-upsert-docs: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps -- no new dependencies)
 - 030-fix-timeline-helpers: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 029-agent-helpers: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

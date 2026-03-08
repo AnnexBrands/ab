@@ -90,35 +90,35 @@ class ABConnectAPI:
         )
 
         # ACPortal endpoints
-        self.companies = CompaniesEndpoint(self._acportal, self._resolver)
-        self.contacts = ContactsEndpoint(self._acportal)
-        self.jobs = JobsEndpoint(self._acportal, self._abc, self._resolver)
-        self.documents = DocumentsEndpoint(self._acportal)
-        self.address = AddressEndpoint(self._acportal)
-        self.lookup = LookupEndpoint(self._acportal)
-        self.users = UsersEndpoint(self._acportal)
-        self.forms = FormsEndpoint(self._acportal)
-        self.shipments = ShipmentsEndpoint(self._acportal)
-        self.payments = PaymentsEndpoint(self._acportal)
-        self.rfq = RFQEndpoint(self._acportal)
-        self.reports = ReportsEndpoint(self._acportal)
-        self.dashboard = DashboardEndpoint(self._acportal)
-        self.views = ViewsEndpoint(self._acportal)
-        self.commodities = CommoditiesEndpoint(self._acportal)
-        self.commodity_maps = CommodityMapsEndpoint(self._acportal)
-        self.notes = NotesEndpoint(self._acportal)
-        self.partners = PartnersEndpoint(self._acportal)
+        self.companies: CompaniesEndpoint = CompaniesEndpoint(self._acportal, self._resolver)
+        self.contacts: ContactsEndpoint = ContactsEndpoint(self._acportal)
+        self.jobs: JobsEndpoint = JobsEndpoint(self._acportal, self._abc, self._resolver)
+        self.documents: DocumentsEndpoint = DocumentsEndpoint(self._acportal)
+        self.address: AddressEndpoint = AddressEndpoint(self._acportal)
+        self.lookup: LookupEndpoint = LookupEndpoint(self._acportal)
+        self.users: UsersEndpoint = UsersEndpoint(self._acportal)
+        self.forms: FormsEndpoint = FormsEndpoint(self._acportal)
+        self.shipments: ShipmentsEndpoint = ShipmentsEndpoint(self._acportal)
+        self.payments: PaymentsEndpoint = PaymentsEndpoint(self._acportal)
+        self.rfq: RFQEndpoint = RFQEndpoint(self._acportal)
+        self.reports: ReportsEndpoint = ReportsEndpoint(self._acportal)
+        self.dashboard: DashboardEndpoint = DashboardEndpoint(self._acportal)
+        self.views: ViewsEndpoint = ViewsEndpoint(self._acportal)
+        self.commodities: CommoditiesEndpoint = CommoditiesEndpoint(self._acportal)
+        self.commodity_maps: CommodityMapsEndpoint = CommodityMapsEndpoint(self._acportal)
+        self.notes: NotesEndpoint = NotesEndpoint(self._acportal)
+        self.partners: PartnersEndpoint = PartnersEndpoint(self._acportal)
 
         # Catalog endpoints
-        self.catalog = CatalogEndpoint(self._catalog)
-        self.lots = LotsEndpoint(self._catalog)
-        self.sellers = SellersEndpoint(self._catalog)
+        self.catalog: CatalogEndpoint = CatalogEndpoint(self._catalog)
+        self.lots: LotsEndpoint = LotsEndpoint(self._catalog)
+        self.sellers: SellersEndpoint = SellersEndpoint(self._catalog)
 
         # ABC endpoints
-        self.autoprice = AutoPriceEndpoint(self._abc)
-        self.web2lead = Web2LeadEndpoint(self._abc)
+        self.autoprice: AutoPriceEndpoint = AutoPriceEndpoint(self._abc)
+        self.web2lead: Web2LeadEndpoint = Web2LeadEndpoint(self._abc)
 
         # ---- Backwards Compatibility Aliases --------------------------------
 
-        self.docs = self.documents
-        self.cmaps = self.commodity_maps
+        self.docs: DocumentsEndpoint = self.documents
+        self.cmaps: CommodityMapsEndpoint = self.commodity_maps
