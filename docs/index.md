@@ -58,6 +58,10 @@ api/lots
 api/sellers
 api/autoprice
 api/web2lead
+api/commodities
+api/payments
+api/shipments
+api/views
 ```
 
 ## Model Reference
@@ -79,6 +83,10 @@ models/lots
 models/sellers
 models/autoprice
 models/web2lead
+models/commodities
+models/payments
+models/shipments
+models/views
 ```
 
 ## Guides

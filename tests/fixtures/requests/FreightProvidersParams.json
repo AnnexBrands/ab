@@ -1,5 +1,5 @@
 {
-  "ProviderIndexes": null,
-  "ShipmentTypes": null,
-  "OnlyActive": null
+  "ProviderIndexes": [0, 1],
+  "ShipmentTypes": ["778a28ef-4866-4878-a87a-9fa6333a48a6"],
+  "OnlyActive": true
 }

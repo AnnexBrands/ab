@@ -15,16 +15,27 @@ class DocumentType(int, Enum):
     OTHER = 6
 
 
-class CarrierAPI(str, Enum):
-    """Carrier API identifiers for quoting and shipping."""
+class CarrierAPI(int, Enum):
+    """Carrier API type identifiers — int32 enum per swagger CarrierAPI schema.
 
-    USHIP = "uship"
-    ESTES = "estes"
-    XPO = "xpo"
-    SAIA = "saia"
-    ABF = "abf"
-    FEDEX = "fedex"
-    UPS = "ups"
+    Values correspond to specific carrier integration APIs used by the
+    freight quoting and shipping subsystem.
+    """
+
+    API_0 = 0
+    API_1 = 1
+    API_2 = 2
+    API_3 = 3
+    API_4 = 4
+    API_6 = 6
+    API_7 = 7
+    API_8 = 8
+    API_9 = 9
+    API_10 = 10
+    API_11 = 11
+    API_12 = 12
+    API_14 = 14
+    API_20 = 20
 
 
 class ServiceType(int, Enum):

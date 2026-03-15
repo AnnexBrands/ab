@@ -486,11 +486,11 @@ The JOB group contains 99 routes. Organized by sub-domain:
 
 | # | Route Key | Method | Path | Response Model | AB | Ref |
 |---|-----------|--------|------|---------------|-----|-----|
-| 1 | GET_FREIGHTPROVIDERS | GET | /job/{id}/freightproviders | List[PricedFreightProvider] | — | — |
-| 2 | POST_FREIGHTPROVIDERS | POST | /job/{id}/freightproviders | ServiceBaseResponse | — | — |
-| 3 | POST_FREIGHTPROVIDERS_RATEQUOTE | POST | /job/{id}/freightproviders/{optionIndex}/ratequote | ServiceBaseResponse | — | — |
+| 1 | GET_FREIGHTPROVIDERS | GET | /job/{id}/freightproviders | List[PricedFreightProvider] | done | 008,033 |
+| 2 | POST_FREIGHTPROVIDERS | POST | /job/{id}/freightproviders | ServiceBaseResponse | done | 008,033 |
+| 3 | POST_FREIGHTPROVIDERS_RATEQUOTE | POST | /job/{id}/freightproviders/{optionIndex}/ratequote | ServiceBaseResponse | done | 008,033 |
 
-**AB done**: 0 of 3
+**AB done**: 3 of 3 (feature 008, models expanded 033)
 
 ---
 

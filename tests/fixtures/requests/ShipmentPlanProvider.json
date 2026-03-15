@@ -1,3 +1,31 @@
 {
-  "providerData": null
+  "jobID": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "freightQuoteOptionsId": "11111111-2222-3333-4444-555555555555",
+  "providerID": "f840ba84-913e-e611-ba2b-00155d426802",
+  "isPrimary": true,
+  "providerCompanyCode": "UPS03",
+  "providerCompanyName": "UPS Ground",
+  "originalCompanyName": "UPS Ground",
+  "freightAmount": 35.11,
+  "accessorialAmount": 0.0,
+  "cafNote": null,
+  "quoteNo": "ups_17761269",
+  "proNum": null,
+  "transit": 5,
+  "shipmentType": "778a28ef-4866-4878-a87a-9fa6333a48a6",
+  "miles": 2200.0,
+  "logo": null,
+  "optionIndex": 3,
+  "optionActive": true,
+  "shipmentAccepted": false,
+  "shipmentAcceptedDate": null,
+  "usedAPI": 3,
+  "billToFranchiseeId": null,
+  "billToCompanyCode": null,
+  "obtainNFMJobState": null,
+  "usedCarrierAccountInfo": {
+    "id": 25,
+    "key": null,
+    "friendlyName": null
+  }
 }

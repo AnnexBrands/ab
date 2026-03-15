@@ -192,6 +192,7 @@
     "G6"
   ],
   "/commodity-map/{_} DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -661,6 +662,7 @@
     "G6"
   ],
   "/job/{_}/changeAgent POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -845,12 +847,14 @@
     "G6"
   ],
   "/job/{_}/item/notes POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/item/{_} PUT": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -987,6 +991,7 @@
     "G6"
   ],
   "/job/{_}/parcelitems/{_} DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -997,6 +1002,7 @@
     "G6"
   ],
   "/job/{_}/payment/ACHCreditTransfer POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1008,24 +1014,28 @@
     "G6"
   ],
   "/job/{_}/payment/attachCustomerBank POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/banksource POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/bysource POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/cancelJobACHVerification POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1042,6 +1052,7 @@
     "G6"
   ],
   "/job/{_}/payment/verifyJobACHSource POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1072,18 +1083,21 @@
     "G6"
   ],
   "/job/{_}/shipment DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/shipment/accessorial POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/shipment/accessorial/{_} DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1097,6 +1111,7 @@
     "G6"
   ],
   "/job/{_}/shipment/book POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1110,6 +1125,7 @@
     "G6"
   ],
   "/job/{_}/shipment/exportdata POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1175,6 +1191,7 @@
     "G6"
   ],
   "/job/{_}/status/quote POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1196,18 +1213,21 @@
     "G5"
   ],
   "/job/{_}/timeline/incrementjobstatus POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/timeline/undoincrementjobstatus POST": [
+    "G1",
     "G2",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/timeline/{_} DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
@@ -1632,6 +1652,7 @@
     "G6"
   ],
   "/views/{_} DELETE": [
+    "G1",
     "G2",
     "G4",
     "G5",
