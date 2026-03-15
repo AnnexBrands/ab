@@ -1,7 +1,7 @@
 """Fixture validation tests for Freight Provider models."""
 
-from ab.api.models.jobs import CarrierAccountInfo, PricedFreightProvider
-from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixture
+from ab.api.models.jobs import CarrierAccountInfo, PricedFreightProvider, ShipmentPlanProvider
+from tests.conftest import assert_no_extra_fields, first_or_skip, load_request_fixture, require_fixture
 
 
 class TestFreightModels:
@@ -32,3 +32,12 @@ class TestFreightModels:
         assert isinstance(info, CarrierAccountInfo)
         assert_no_extra_fields(info)
         assert info.id is not None
+
+    def test_shipment_plan_provider(self):
+        """Verify ShipmentPlanProvider parses fixture with typed CarrierAccountInfo."""
+        data = load_request_fixture("ShipmentPlanProvider")
+        model = ShipmentPlanProvider.model_validate(data)
+        assert isinstance(model, ShipmentPlanProvider)
+        assert_no_extra_fields(model)
+        assert model.used_carrier_account_info is not None
+        assert isinstance(model.used_carrier_account_info, CarrierAccountInfo)

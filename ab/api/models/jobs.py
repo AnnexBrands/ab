@@ -1287,8 +1287,8 @@ class ShipmentPlanProvider(RequestModel):
     )
     bill_to_company_code: Optional[str] = Field(None, alias="billToCompanyCode", description="Bill-to company code")
     obtain_nfm_job_state: Optional[str] = Field(None, alias="obtainNFMJobState", description="NFM job state")
-    used_carrier_account_info: Optional[dict] = Field(
-        None, alias="usedCarrierAccountInfo", description="Carrier account info object"
+    used_carrier_account_info: Optional[CarrierAccountInfo] = Field(
+        None, alias="usedCarrierAccountInfo", description="Carrier account info"
     )
 
 
