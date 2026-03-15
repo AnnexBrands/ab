@@ -113,23 +113,36 @@ from ab.api.models.contacts import (
     PhoneDetails,
     SearchContactEntityResult,
 )
-from ab.api.models.dashboard import DashboardCompanyParams, DashboardCompanyRequest, DashboardParams, DashboardSummary, GridViewInfo, GridViewState
+from ab.api.models.dashboard import (
+    DashboardCompanyParams,
+    DashboardCompanyRequest,
+    DashboardParams,
+    DashboardSummary,
+    GridViewInfo,
+    GridViewState,
+)
 from ab.api.models.documents import Document, DocumentListParams, DocumentUpdateRequest
 from ab.api.models.enums import CarrierAPI, DocumentType
 from ab.api.models.forms import (
     BillOfLadingParams,
-    FormTypeParams,
     FormsShipmentPlan,
+    FormTypeParams,
     OperationsFormParams,
     PackagingLabelsParams,
 )
 from ab.api.models.jobs import (
+    BaseTimelineTaskRequest,
     CalendarItem,
+    CarrierAccountInfo,
+    CarrierTaskRequest,
     ChangeJobAgentRequest,
     ExtendedOnHoldInfo,
     FreightItemsRequest,
     FreightProvidersParams,
+    FreightShipment,
     IncrementStatusRequest,
+    InitialNoteRequest,
+    InTheFieldTaskRequest,
     ItemNotesRequest,
     ItemUpdateRequest,
     Job,
@@ -138,6 +151,7 @@ from ab.api.models.jobs import (
     JobNoteCreateRequest,
     JobNoteListParams,
     JobNoteUpdateRequest,
+    JobParcelItemMaterial,
     JobPrice,
     JobRfqListParams,
     JobSaveRequest,
@@ -151,7 +165,6 @@ from ab.api.models.jobs import (
     OnHoldDetails,
     OnHoldNoteDetails,
     OnHoldUser,
-    JobParcelItemMaterial,
     PackagingContainer,
     ParcelItem,
     ParcelItemCreateRequest,
@@ -165,28 +178,24 @@ from ab.api.models.jobs import (
     SaveOnHoldResponse,
     SendDocumentEmailModel,
     SendEmailRequest,
-    SortByModel,
     SendSMSModel,
     ShipmentPlanProvider,
-    BaseTimelineTaskRequest,
-    CarrierTaskRequest,
-    InTheFieldTaskRequest,
-    InitialNoteRequest,
     SimpleTaskRequest,
+    SortByModel,
     TaskTruckInfoRequest,
-    TimeLogPauseRequest,
-    TimeLogRequest,
     TimelineAgent,
     TimelineCreateParams,
     TimelineResponse,
     TimelineSaveResponse,
     TimelineTask,
     TimelineTaskUpdateRequest,
-    WorkTimeLogRequest,
+    TimeLogPauseRequest,
+    TimeLogRequest,
     TrackingInfo,
     TrackingInfoV3,
     TrackingV3Params,
     TransferModel,
+    WorkTimeLogRequest,
 )
 from ab.api.models.lookup import (
     AccessKey,
@@ -202,8 +211,8 @@ from ab.api.models.lookup import (
     LookupItem,
     LookupItemsParams,
     LookupValue,
-    PPCCampaign,
     ParcelPackageType,
+    PPCCampaign,
 )
 from ab.api.models.lots import (
     AddLotRequest,
@@ -262,7 +271,13 @@ from ab.api.models.reports import (
     Web2LeadRevenueFilter,
     Web2LeadV2RequestModel,
 )
-from ab.api.models.rfq import AcceptModel, QuoteRequestDisplayInfo, QuoteRequestStatus, RfqAcceptWinnerParams, RfqForJobParams
+from ab.api.models.rfq import (
+    AcceptModel,
+    QuoteRequestDisplayInfo,
+    QuoteRequestStatus,
+    RfqAcceptWinnerParams,
+    RfqForJobParams,
+)
 from ab.api.models.sellers import (
     AddSellerRequest,
     SellerDto,
@@ -371,8 +386,9 @@ __all__ = [
     "ExtendedOnHoldInfo", "OnHoldDetails", "SaveOnHoldRequest", "SaveOnHoldResponse",
     "ResolveJobOnHoldResponse", "SaveOnHoldDatesModel", "OnHoldUser", "OnHoldNoteDetails",
     "SendDocumentEmailModel", "SendEmailRequest", "SendSMSModel", "MarkSmsAsReadModel",
-    "PricedFreightProvider", "ShipmentPlanProvider",
-    "OnHoldCommentRequest", "ResolveOnHoldRequest", "RateQuoteRequest", "FreightItemsRequest",
+    "CarrierAccountInfo", "PricedFreightProvider", "ShipmentPlanProvider",
+    "OnHoldCommentRequest", "ResolveOnHoldRequest", "RateQuoteRequest",
+    "FreightItemsRequest", "FreightShipment",
     # Shipments
     "ShipmentParams", "RateQuotesParams", "ShipmentDocumentParams",
     "RateQuote", "ShipmentOriginDestination", "Accessorial",

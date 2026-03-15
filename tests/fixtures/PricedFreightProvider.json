@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "optionIndex": 3,
+    "shipmentType": "778a28ef-4866-4878-a87a-9fa6333a48a6",
+    "providerAPI": 3,
+    "providerId": "f840ba84-913e-e611-ba2b-00155d426802",
+    "providerCode": "UPS03",
+    "providerCompanyName": "UPS Ground",
+    "totalSell": 35.11,
+    "transit": null,
+    "quoteNo": "ups_17761269",
+    "proNum": null,
+    "optionActive": true,
+    "shipmentAccepted": false,
+    "shipmentAcceptedDate": null,
+    "obtainNFMJobState": "{\"fromZip\":\"59715\",\"toZip\":\"19107\",\"itemWeight\":16.0,\"services\":[\"bf148c38-9cfc-4e05-b3b1-1e0a84e600b6\",\"7c9b595a-8a23-4f92-8147-0332d5c860b1\"],\"parcelItems\":[{\"qty\":1,\"weight\":8.9056296274066,\"parcelValue\":0.0,\"width\":18.5,\"length\":18.5,\"height\":12.5,\"parcelPackageTypeId\":null}],\"parcelServices\":[{\"id\":10,\"params\":[{\"name\":\"signatureoption\",\"value\":\"indirect\"}]},{\"id\":1,\"params\":[{\"name\":\"signatureoption\",\"value\":\"direct\"}]},{\"id\":17,\"params\":[{\"name\":\"signatureoption\",\"value\":\"confirmation\"}]}],\"shipOutDate\":\"2025-07-29T12:00:00\"}",
+    "usedCarrierAccountInfo": {
+      "id": 25,
+      "key": null,
+      "friendlyName": null
+    }
+  }
+]

@@ -1,3 +1,24 @@
 {
-  "items": null
+  "jobModifiedDate": "2025-07-29T12:00:00Z",
+  "forceUpdate": false,
+  "freightItems": [
+    {
+      "itemID": "26611EB7-0B0B-403C-3685-08DE5FE859C2",
+      "freightItemId": "a1b2c3d4-0000-0000-0000-000000000001",
+      "freightItemClassId": "a1b2c3d4-0000-0000-0000-000000000002",
+      "jobID": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "jobDisplayId": "4000000",
+      "quantity": 1,
+      "itemLength": 18.5,
+      "itemWidth": 18.5,
+      "itemHeight": 12.5,
+      "itemWeight": 8.91,
+      "itemValue": 0.0,
+      "totalWeight": 16.0,
+      "freightDescription": "Household goods",
+      "freightItemClass": "70",
+      "nmfcItem": null,
+      "bolDescription": "Household goods - packed"
+    }
+  ]
 }

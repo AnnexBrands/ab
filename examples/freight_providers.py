@@ -4,7 +4,7 @@ Covers list, save, rate quote, and add freight items.
 """
 
 from examples._runner import ExampleRunner
-from tests.constants import TEST_JOB_DISPLAY_ID
+from tests.constants import TEST_JOB_DISPLAY_ID, TEST_JOB_DISPLAY_ID2
 
 runner = ExampleRunner("Freight Providers", env="staging")
 
@@ -14,7 +14,7 @@ runner = ExampleRunner("Freight Providers", env="staging")
 
 runner.add(
     "list_freight_providers",
-    lambda api: api.jobs.list_freight_providers(TEST_JOB_DISPLAY_ID),
+    lambda api: api.jobs.list_freight_providers(TEST_JOB_DISPLAY_ID2),
     response_model="List[PricedFreightProvider]",
     fixture_file="PricedFreightProvider.json",
 )
@@ -28,12 +28,16 @@ runner.add(
 
 runner.add(
     "get_freight_provider_rate_quote",
-    lambda api: api.jobs.get_freight_provider_rate_quote(TEST_JOB_DISPLAY_ID, 0),
+    lambda api: api.jobs.get_freight_provider_rate_quote(TEST_JOB_DISPLAY_ID, 0, data={}),
+    request_model="RateQuoteRequest",
+    request_fixture_file="RateQuoteRequest.json",
 )
 
 runner.add(
     "add_freight_items",
-    lambda api: api.jobs.add_freight_items(TEST_JOB_DISPLAY_ID, items=[]),
+    lambda api: api.jobs.add_freight_items(TEST_JOB_DISPLAY_ID, data={}),
+    request_model="FreightItemsRequest",
+    request_fixture_file="FreightItemsRequest.json",
 )
 
 if __name__ == "__main__":

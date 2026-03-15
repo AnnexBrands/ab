@@ -1197,21 +1197,99 @@ class MarkSmsAsReadModel(RequestModel):
     sms_ids: Optional[List[str]] = Field(None, alias="smsIds", description="SMS IDs to mark read")
 
 
-# ---- Freight provider models (008) ----------------------------------------
+# ---- Freight provider models (008, expanded 033) ----------------------------
+
+
+class CarrierAccountInfo(ResponseModel):
+    """Carrier account details — nested in PricedFreightProvider and ShipmentPlanProvider.
+
+    Maps to C# ``CarrierAccountInfo`` DTO.
+    """
+
+    id: Optional[int] = Field(None, description="Carrier account identifier")
+    key: Optional[str] = Field(None, description="Account key")
+    friendly_name: Optional[str] = Field(None, alias="friendlyName", description="Human-readable account name")
 
 
 class PricedFreightProvider(ResponseModel):
-    """Freight provider with pricing — GET /job/{jobDisplayId}/freightproviders."""
+    """Freight provider with pricing — GET /job/{jobDisplayId}/freightproviders.
 
-    provider_name: Optional[str] = Field(None, alias="providerName", description="Provider name")
-    service_types: Optional[List[dict]] = Field(None, alias="serviceTypes", description="Available service types")
-    rate_available: Optional[bool] = Field(None, alias="rateAvailable", description="Whether rate is available")
+    Expanded in feature 033 to match full swagger PricedFreightProvider schema
+    (15 fields + nested CarrierAccountInfo).
+    """
+
+    option_index: Optional[int] = Field(None, alias="optionIndex", description="Provider option index")
+    shipment_type: Optional[str] = Field(None, alias="shipmentType", description="Shipment type UUID")
+    provider_api: Optional[int] = Field(None, alias="providerAPI", description="Carrier API type (CarrierAPI enum int)")
+    provider_id: Optional[str] = Field(None, alias="providerId", description="Provider company UUID")
+    provider_code: Optional[str] = Field(None, alias="providerCode", description="Provider code")
+    provider_company_name: Optional[str] = Field(None, alias="providerCompanyName", description="Provider company name")
+    total_sell: Optional[float] = Field(None, alias="totalSell", description="Total sell price")
+    transit: Optional[int] = Field(None, description="Transit days")
+    quote_no: Optional[str] = Field(None, alias="quoteNo", description="Quote number")
+    pro_num: Optional[str] = Field(None, alias="proNum", description="PRO number")
+    option_active: Optional[bool] = Field(
+        None, alias="optionActive", description="Whether option is active"
+    )
+    shipment_accepted: Optional[bool] = Field(
+        None, alias="shipmentAccepted", description="Whether shipment is accepted"
+    )
+    shipment_accepted_date: Optional[str] = Field(
+        None, alias="shipmentAcceptedDate", description="Shipment accepted timestamp"
+    )
+    obtain_nfm_job_state: Optional[str] = Field(
+        None, alias="obtainNFMJobState", description="NFM job state"
+    )
+    used_carrier_account_info: Optional[CarrierAccountInfo] = Field(
+        None, alias="usedCarrierAccountInfo", description="Carrier account info"
+    )
 
 
 class ShipmentPlanProvider(RequestModel):
-    """Save freight provider selection — POST /job/{jobDisplayId}/freightproviders."""
+    """Save freight provider selection — POST /job/{jobDisplayId}/freightproviders.
 
-    provider_data: Optional[dict] = Field(None, alias="providerData", description="Provider selection data")
+    Expanded in feature 033 to match full swagger ShipmentPlanProvider schema (22+ fields).
+    """
+
+    job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
+    freight_quote_options_id: Optional[str] = Field(
+        None, alias="freightQuoteOptionsId", description="Freight quote options UUID"
+    )
+    provider_id: Optional[str] = Field(None, alias="providerID", description="Provider company UUID")
+    is_primary: Optional[bool] = Field(None, alias="isPrimary", description="Whether this is the primary provider")
+    provider_company_code: Optional[str] = Field(None, alias="providerCompanyCode", description="Provider company code")
+    provider_company_name: Optional[str] = Field(None, alias="providerCompanyName", description="Provider company name")
+    original_company_name: Optional[str] = Field(None, alias="originalCompanyName", description="Original company name")
+    freight_amount: Optional[float] = Field(None, alias="freightAmount", description="Freight amount")
+    accessorial_amount: Optional[float] = Field(
+        None, alias="accessorialAmount", description="Accessorial charges amount"
+    )
+    caf_note: Optional[str] = Field(None, alias="cafNote", description="CAF note")
+    quote_no: Optional[str] = Field(None, alias="quoteNo", description="Quote number")
+    pro_num: Optional[str] = Field(None, alias="proNum", description="PRO number")
+    transit: Optional[int] = Field(None, description="Transit days")
+    shipment_type: Optional[str] = Field(None, alias="shipmentType", description="Shipment type UUID")
+    miles: Optional[float] = Field(None, description="Distance in miles")
+    logo: Optional[str] = Field(None, description="Provider logo URL")
+    option_index: Optional[int] = Field(None, alias="optionIndex", description="Provider option index")
+    option_active: Optional[bool] = Field(None, alias="optionActive", description="Whether option is active")
+    shipment_accepted: Optional[bool] = Field(
+        None, alias="shipmentAccepted", description="Whether shipment is accepted"
+    )
+    shipment_accepted_date: Optional[str] = Field(
+        None, alias="shipmentAcceptedDate", description="Shipment accepted timestamp"
+    )
+    used_api: Optional[int] = Field(
+        None, alias="usedAPI", description="Carrier API type (CarrierAPI enum int)"
+    )
+    bill_to_franchisee_id: Optional[str] = Field(
+        None, alias="billToFranchiseeId", description="Bill-to franchisee UUID"
+    )
+    bill_to_company_code: Optional[str] = Field(None, alias="billToCompanyCode", description="Bill-to company code")
+    obtain_nfm_job_state: Optional[str] = Field(None, alias="obtainNFMJobState", description="NFM job state")
+    used_carrier_account_info: Optional[dict] = Field(
+        None, alias="usedCarrierAccountInfo", description="Carrier account info object"
+    )
 
 
 # ---- Pattern C → B placeholder models (020) ---------------------------------
@@ -1240,15 +1318,63 @@ class SendEmailRequest(RequestModel):
 
 
 class RateQuoteRequest(RequestModel):
-    """Body for POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote."""
+    """Body for POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote.
 
-    options: Optional[dict] = Field(None, description="Rate quote options")
+    Maps to C# ``SetRateModel`` DTO per swagger. Expanded in feature 033.
+    """
+
+    rates_key: Optional[str] = Field(None, alias="ratesKey", description="Rates key identifier")
+    carrier_code: Optional[str] = Field(None, alias="carrierCode", description="Carrier code")
+    carrier_account_id: Optional[int] = Field(None, alias="carrierAccountId", description="Carrier account ID")
+    active: Optional[bool] = Field(None, description="Whether rate is active")
+
+
+class FreightShipment(RequestModel):
+    """Individual freight item — nested in FreightItemsRequest.freightItems.
+
+    Maps to C# ``FreightShimpment`` DTO per swagger (note: swagger has typo
+    'Shimpment'; our model uses corrected spelling). Expanded in feature 033.
+    """
+
+    item_id: Optional[str] = Field(None, alias="itemID", description="Item UUID")
+    freight_item_id: Optional[str] = Field(None, alias="freightItemId", description="Freight item UUID")
+    freight_item_class_id: Optional[str] = Field(
+        None, alias="freightItemClassId", description="Freight item class UUID"
+    )
+    job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
+    job_display_id: Optional[str] = Field(None, alias="jobDisplayId", description="Job display ID")
+    job_freight_id: Optional[str] = Field(None, alias="jobFreightID", description="Job freight UUID")
+    quantity: Optional[int] = Field(None, description="Item quantity")
+    item_length: Optional[float] = Field(None, alias="itemLength", description="Item length")
+    item_width: Optional[float] = Field(None, alias="itemWidth", description="Item width")
+    item_height: Optional[float] = Field(None, alias="itemHeight", description="Item height")
+    item_weight: Optional[float] = Field(None, alias="itemWeight", description="Item weight")
+    item_value: Optional[float] = Field(None, alias="itemValue", description="Item value")
+    cube: Optional[float] = Field(None, description="Cube measurement")
+    total_weight: Optional[float] = Field(None, alias="totalWeight", description="Total weight")
+    freight_description: Optional[str] = Field(None, alias="freightDescription", description="Freight description")
+    freight_item_value: Optional[str] = Field(None, alias="freightItemValue", description="Freight item value label")
+    freight_item_class: Optional[str] = Field(None, alias="freightItemClass", description="Freight item class label")
+    nmfc_item: Optional[str] = Field(None, alias="nmfcItem", description="NMFC item number")
+    bol_description: Optional[str] = Field(None, alias="bolDescription", description="BOL description")
+    job_freight_report: Optional[str] = Field(None, alias="jobFreightReport", description="Job freight report")
+    modified_by: Optional[str] = Field(None, alias="modifiedBy", description="Modified by user UUID")
+    created_by: Optional[str] = Field(None, alias="createdBy", description="Created by user UUID")
+    created_date: Optional[str] = Field(None, alias="createdDate", description="Created timestamp")
+    modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Modified timestamp")
 
 
 class FreightItemsRequest(RequestModel):
-    """Body for POST /job/{jobDisplayId}/freightitems."""
+    """Body for POST /job/{jobDisplayId}/freightitems.
 
-    items: Optional[List[dict]] = Field(None, description="Freight items to add")
+    Maps to C# ``SaveAllFreightItemsRequest`` DTO per swagger. Expanded in feature 033.
+    """
+
+    job_modified_date: Optional[str] = Field(None, alias="jobModifiedDate", description="Job modified timestamp")
+    force_update: Optional[bool] = Field(None, alias="forceUpdate", description="Force update flag")
+    freight_items: Optional[List[FreightShipment]] = Field(
+        None, alias="freightItems", description="Freight items to save"
+    )
 
 
 # ---- Agent change models (029) -------------------------------------------
