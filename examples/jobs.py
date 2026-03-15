@@ -1,7 +1,7 @@
 """Example: Job operations (31 methods).
 
 Covers the full JobsEndpoint surface area, grouped by domain:
-Core CRUD, Pricing, Status, Timeline, Tracking, Notes, Parcels, Items.
+Core CRUD, Pricing, Status, Timeline, Tracking, Notes, Parcels, Items, Agent.
 """
 
 from examples._runner import ExampleRunner
@@ -276,6 +276,21 @@ runner.add(
     lambda api: api.jobs.get_packaging_containers(TEST_JOB_DISPLAY_ID),
     response_model="List[PackagingContainer]",
     fixture_file="PackagingContainer.json",
+)
+
+# ═══════════════════════════════════════════════════════════════════════
+# Agent
+# ═══════════════════════════════════════════════════════════════════════
+
+# ── Uses request fixtures ────────────────────────────────────────────
+
+runner.add(
+    "change_agent",
+    lambda api, data=None: api.jobs.change_agent(TEST_JOB_DISPLAY_ID, data=data or {}),
+    request_model="ChangeJobAgentRequest",
+    request_fixture_file="ChangeJobAgentRequest.json",
+    response_model="ServiceBaseResponse",
+    fixture_file="ServiceBaseResponse.json",
 )
 
 # ═══════════════════════════════════════════════════════════════════════

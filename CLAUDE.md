@@ -45,7 +45,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 034-g1-model-fidelity-sweep: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 033-fix-freightproviders-drift: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 032-client-type-hints: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 031-timeline-upsert-docs: Added Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps -- no new dependencies)
 
