@@ -2,8 +2,8 @@
 
 import pytest
 
-from ab.api.models.catalog import CatalogExpandedDto, CatalogWithSellersDto
-from ab.api.models.lots import LotDataDto, LotDto, LotOverrideDto
+from ab.api.models.catalog import CatalogDto, CatalogExpandedDto, CatalogWithSellersDto
+from ab.api.models.lots import LotCatalogInformationDto, LotDataDto, LotDto, LotOverrideDto
 from ab.api.models.sellers import SellerDto, SellerExpandedDto
 from tests.conftest import assert_no_extra_fields, require_fixture
 
@@ -20,6 +20,10 @@ class TestCatalogModels:
         model = CatalogExpandedDto.model_validate(data)
         assert isinstance(model, CatalogExpandedDto)
         assert_no_extra_fields(model)
+        if model.sellers:
+            assert isinstance(model.sellers[0], SellerDto)
+        if model.lots:
+            assert isinstance(model.lots[0], LotCatalogInformationDto)
 
     def test_lot_dto(self):
         data = require_fixture("LotDto", "GET", "/Lot")
@@ -57,3 +61,5 @@ class TestCatalogModels:
         model = SellerExpandedDto.model_validate(data)
         assert isinstance(model, SellerExpandedDto)
         assert_no_extra_fields(model)
+        if model.catalogs:
+            assert isinstance(model.catalogs[0], CatalogDto)

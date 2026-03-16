@@ -21,6 +21,27 @@ class LotDataDto(ResponseModel):
     description: Optional[str] = Field(None, description="Item description")
 
 
+class LotCatalogInformationDto(ResponseModel):
+    """Lightweight lot summary embedded in catalog responses."""
+
+    id: Optional[int] = Field(None, description="Lot ID")
+    lot_number: Optional[str] = Field(None, alias="lotNumber", description="Lot number")
+
+
+class LotCatalogDto(ResponseModel):
+    """Lot-catalog association embedded in lot responses."""
+
+    catalog_id: Optional[int] = Field(None, alias="catalogId", description="Associated catalog ID")
+    lot_number: Optional[str] = Field(None, alias="lotNumber", description="Lot number within catalog")
+
+
+class ImageLinkDto(ResponseModel):
+    """Image reference embedded in lot responses."""
+
+    id: Optional[int] = Field(None, description="Image link ID")
+    link: Optional[str] = Field(None, description="Image URL")
+
+
 class LotDto(ResponseModel):
     """A single lot — returned by CRUD operations."""
 
@@ -29,8 +50,8 @@ class LotDto(ResponseModel):
     lot_number: Optional[str] = Field(None, alias="lotNumber", description="Lot number")
     customer_item_id: Optional[str] = Field(None, alias="customerItemId", description="Customer item ID")
     data: Optional[LotDataDto] = Field(None, description="Lot data payload")
-    catalogs: Optional[list] = Field(None, alias="catalogs", description="Associated catalogs")
-    image_links: Optional[list] = Field(None, alias="imageLinks", description="Image links")
+    catalogs: Optional[List[LotCatalogDto]] = Field(None, alias="catalogs", description="Associated catalogs")
+    image_links: Optional[List[ImageLinkDto]] = Field(None, alias="imageLinks", description="Image links")
     initial_data: Optional[LotDataDto] = Field(None, alias="initialData", description="Initial lot data")
     overriden_data: Optional[List[LotDataDto]] = Field(
         None, alias="overridenData", description="Overridden lot data entries",

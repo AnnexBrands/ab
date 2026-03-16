@@ -2,11 +2,29 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+
+if TYPE_CHECKING:
+    from ab.api.models.lots import LotCatalogInformationDto
+    from ab.api.models.sellers import SellerDto
+
+
+class CatalogDto(ResponseModel):
+    """Base catalog summary — used as nested type in SellerExpandedDto."""
+
+    id: Optional[int] = Field(None, description="Catalog ID")
+    customer_catalog_id: Optional[str] = Field(
+        None, alias="customerCatalogId", description="Customer-facing catalog ID",
+    )
+    agent: Optional[str] = Field(None, description="Assigned agent")
+    title: Optional[str] = Field(None, description="Catalog title")
+    start_date: Optional[str] = Field(None, alias="startDate", description="Catalog start date-time")
+    end_date: Optional[str] = Field(None, alias="endDate", description="Catalog end date-time")
+    is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Whether the catalog is completed")
 
 
 class CatalogWithSellersDto(ResponseModel):
@@ -15,22 +33,26 @@ class CatalogWithSellersDto(ResponseModel):
     id: Optional[int] = Field(None, description="Catalog ID")
     title: Optional[str] = Field(None, description="Catalog title")
     agent_id: Optional[str] = Field(None, alias="agentId", description="Assigned agent ID")
-    sellers: Optional[List[dict]] = Field(None, description="Seller list")
-    lots: Optional[List[dict]] = Field(None, description="Lot list")
+    sellers: Optional[List[SellerDto]] = Field(None, description="Seller list")
+    lots: Optional[List[LotCatalogInformationDto]] = Field(None, description="Lot list")
 
 
 class CatalogExpandedDto(ResponseModel):
     """Catalog summary with seller/lot counts — returned by GET /Catalog/{id}."""
 
     id: Optional[int] = Field(None, description="Catalog ID")
-    customer_catalog_id: Optional[str] = Field(None, alias="customerCatalogId", description="Customer-facing catalog ID")
+    customer_catalog_id: Optional[str] = Field(
+        None, alias="customerCatalogId", description="Customer-facing catalog ID",
+    )
     agent: Optional[str] = Field(None, alias="agent", description="Assigned agent")
     title: Optional[str] = Field(None, description="Catalog title")
     start_date: Optional[str] = Field(None, alias="startDate", description="Catalog start date-time")
     end_date: Optional[str] = Field(None, alias="endDate", description="Catalog end date-time")
     is_completed: Optional[bool] = Field(None, alias="isCompleted", description="Whether the catalog is completed")
-    sellers: Optional[List[dict]] = Field(None, description="Seller summaries")
-    lots: Optional[list] = Field(None, alias="lots", description="Lot catalog information list")
+    sellers: Optional[List[SellerDto]] = Field(None, description="Seller summaries")
+    lots: Optional[List[LotCatalogInformationDto]] = Field(
+        None, alias="lots", description="Lot catalog information list",
+    )
     lot_count: Optional[int] = Field(None, alias="lotCount", description="Number of lots")
     status: Optional[str] = Field(None, description="Catalog status")
 
@@ -73,3 +95,15 @@ class BulkInsertRequest(RequestModel):
 
     catalog_id: Optional[int] = Field(None, alias="catalogId", description="Target catalog ID")
     items: Optional[List[dict]] = Field(None, description="Items to insert")
+
+
+def _rebuild_catalog_models() -> None:
+    """Resolve deferred TYPE_CHECKING annotations for catalog models."""
+    from ab.api.models.lots import LotCatalogInformationDto  # noqa: F401
+    from ab.api.models.sellers import SellerDto  # noqa: F401
+
+    CatalogWithSellersDto.model_rebuild()
+    CatalogExpandedDto.model_rebuild()
+
+
+_rebuild_catalog_models()
