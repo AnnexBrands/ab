@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from ab.api.models.lots import AddLotRequest, LotDto, LotOverrideDto, UpdateLotRequest
@@ -36,15 +36,46 @@ class LotsEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE, json=data)
 
-    def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[LotDto]:
-        """GET /Lot — paginated list."""
-        return self._paginated_request(
-            _LIST, "LotDto",
-            params={"pageNumber": page, "pageSize": page_size},
-        )
+    def list(
+        self,
+        *,
+        id: int | None = None,
+        customer_item_id: str | None = None,
+        lot_number: str | None = None,
+        page_size: int = 25,
+        page_number: int = 1,
+    ) -> PaginatedList[LotDto]:
+        """List lots with optional filters.
+
+        Args:
+            id: Filter by lot ID.
+            customer_item_id: Filter by customer item ID.
+            lot_number: Filter by lot number.
+            page_size: Number of items per page.
+            page_number: Page number (1-based).
+
+        Returns:
+            PaginatedList[LotDto]: Paginated lot results.
+        """
+        params = {
+            "id": id,
+            "customer_item_id": customer_item_id,
+            "lot_number": lot_number,
+            "page_size": page_size,
+            "page_number": page_number,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        return self._paginated_request(_LIST, "LotDto", params=params)
 
     def get(self, lot_id: int) -> LotDto:
-        """GET /Lot/{id}"""
+        """Retrieve a single lot by ID.
+
+        Args:
+            lot_id: Lot identifier.
+
+        Returns:
+            LotDto: Lot details.
+        """
         return self._request(_GET.bind(id=lot_id))
 
     def update(self, lot_id: int, *, data: UpdateLotRequest | dict) -> LotDto:
@@ -60,9 +91,20 @@ class LotsEndpoint(BaseEndpoint):
         return self._request(_UPDATE.bind(id=lot_id), json=data)
 
     def delete(self, lot_id: int) -> None:
-        """DELETE /Lot/{id}"""
+        """Delete a lot.
+
+        Args:
+            lot_id: Lot identifier.
+        """
         self._request(_DELETE.bind(id=lot_id))
 
     def get_overrides(self, customer_item_ids: List[str]) -> list[LotOverrideDto]:
-        """POST /Lot/get-overrides"""
+        """Retrieve lot overrides for the given customer item IDs.
+
+        Args:
+            customer_item_ids: List of customer item ID strings.
+
+        Returns:
+            list[LotOverrideDto]: Override data for matched lots.
+        """
         return self._request(_GET_OVERRIDES, json=customer_item_ids)

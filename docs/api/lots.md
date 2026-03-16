@@ -21,12 +21,16 @@ api.lots.create({"catalogId": 1, "name": "New Lot"})
 
 ### list
 
-`GET /Lot` — List lots (paginated).
+`GET /Lot` — List lots with optional filters (paginated).
 
-**Returns:** `list[`{class}`~ab.api.models.lots.LotDto`]`
+**Returns:** {class}`~ab.api.models.shared.PaginatedList`\[{class}`~ab.api.models.lots.LotDto`\]
 
 ```python
-lots = api.lots.list(page=1, page_size=25)
+# List all lots
+lots = api.lots.list(page_number=1, page_size=25)
+
+# Filter by lot number
+lots = api.lots.list(lot_number="L001")
 ```
 
 ### get

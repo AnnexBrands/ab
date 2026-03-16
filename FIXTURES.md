@@ -180,10 +180,10 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /partner/{id} | GET | api.partners.get | — | Partner | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /partner/search | POST | api.partners.search | PartnerSearchRequest | List[Partner] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /Seller/{id} | GET | api.sellers.get | — | SellerExpandedDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
-| /Seller | GET | — | — | PaginatedList[SellerExpandedDto] | FAIL | FAIL | FAIL | PASS | FAIL | PASS | incomplete | 2026-02-14, staging |
-| /Catalog | GET | — | — | PaginatedList[CatalogExpandedDto] | FAIL | FAIL | FAIL | PASS | FAIL | PASS | incomplete | Returns empty — research ABConnectTools for required params |
+| /Seller | GET | api.sellers.list | SellerListParams | PaginatedList[SellerExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
+| /Catalog | GET | api.catalog.list | CatalogListParams | PaginatedList[CatalogExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
 | /Catalog/{id} | GET | api.catalog.get | — | CatalogExpandedDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs valid catalog ID |
-| /Lot | GET | — | — | PaginatedList[LotDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | Needs valid catalog ID param |
+| /Lot | GET | api.lots.list | LotListParams | PaginatedList[LotDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
 | /Lot/{id} | GET | api.lots.get | — | LotDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs valid lot ID |
 | /Lot/overrides | POST | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs lot override params |
 | /Web2Lead | GET | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |

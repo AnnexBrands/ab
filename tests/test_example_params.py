@@ -316,10 +316,14 @@ def test_query_params_match_swagger(
     if swagger_params is None:
         pytest.skip(f"No swagger entry for {http_method} {swagger_path}")
 
-    # Case-insensitive comparison — some servers accept camelCase variants
-    # of PascalCase swagger params (e.g. pageNumber vs PageNumber).
-    swagger_lower = {p.lower() for p in swagger_params}
-    unknown = {p for p in param_keys if p.lower() not in swagger_lower}
+    # Normalize comparison: strip underscores and lowercase so that
+    # snake_case Python field names (page_number) match PascalCase swagger
+    # names (PageNumber) and camelCase variants (pageNumber).
+    def _norm(s: str) -> str:
+        return s.replace("_", "").lower()
+
+    swagger_normed = {_norm(p) for p in swagger_params}
+    unknown = {p for p in param_keys if _norm(p) not in swagger_normed}
     assert not unknown, (
         f"{ep_file}::{method_name} sends unknown query params {unknown} "
         f"to {http_method} {swagger_path}. "

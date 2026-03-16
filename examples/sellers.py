@@ -9,7 +9,7 @@ runner = ExampleRunner("Sellers", env="staging")
 
 runner.add(
     "list",
-    lambda api: api.sellers.list(page=1, page_size=25),
+    lambda api: api.sellers.list(is_active=True, page_number=1, page_size=25),
     response_model="PaginatedList[SellerExpandedDto]",
     fixture_file="SellerExpandedDto.json",
 )

@@ -1,7 +1,7 @@
 """Example: Catalog operations (6 methods)."""
 
 from examples._runner import ExampleRunner
-from tests.constants import TEST_CATALOG_ID
+from tests.constants import CATALOG_CUSTOMER_SELLER_ID, TEST_CATALOG_ID
 
 runner = ExampleRunner("Catalog", env="staging")
 
@@ -9,7 +9,7 @@ runner = ExampleRunner("Catalog", env="staging")
 
 runner.add(
     "list",
-    lambda api: api.catalog.list(page=1, page_size=25),
+    lambda api: api.catalog.list(seller_ids=[CATALOG_CUSTOMER_SELLER_ID], page_number=1, page_size=25),
     response_model="PaginatedList[CatalogExpandedDto]",
     fixture_file="CatalogExpandedDto.json",
 )
