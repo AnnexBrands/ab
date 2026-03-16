@@ -43,15 +43,61 @@ class CatalogEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE, json=data)
 
-    def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[CatalogExpandedDto]:
-        """GET /Catalog — paginated list of catalogs."""
-        return self._paginated_request(
-            _LIST, "CatalogExpandedDto",
-            params={"pageNumber": page, "pageSize": page_size},
-        )
+    def list(
+        self,
+        *,
+        id: int | None = None,
+        customer_catalog_id: str | None = None,
+        agent: str | None = None,
+        title: str | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        is_completed: bool | None = None,
+        seller_ids: list[int] | None = None,
+        page_size: int = 25,
+        page_number: int = 1,
+    ) -> PaginatedList[CatalogExpandedDto]:
+        """List catalogs with optional filters.
+
+        Args:
+            id: Filter by catalog ID.
+            customer_catalog_id: Filter by customer-facing catalog ID.
+            agent: Filter by assigned agent name.
+            title: Filter by catalog title.
+            start_date: Filter by start date (ISO 8601 date-time string).
+            end_date: Filter by end date (ISO 8601 date-time string).
+            is_completed: Filter by completion status.
+            seller_ids: Filter by seller IDs.
+            page_size: Number of items per page.
+            page_number: Page number (1-based).
+
+        Returns:
+            PaginatedList[CatalogExpandedDto]: Paginated catalog results.
+        """
+        params = {
+            "id": id,
+            "customer_catalog_id": customer_catalog_id,
+            "agent": agent,
+            "title": title,
+            "start_date": start_date,
+            "end_date": end_date,
+            "is_completed": is_completed,
+            "seller_ids": seller_ids,
+            "page_size": page_size,
+            "page_number": page_number,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        return self._paginated_request(_LIST, "CatalogExpandedDto", params=params)
 
     def get(self, catalog_id: int) -> CatalogExpandedDto:
-        """GET /Catalog/{id}"""
+        """Retrieve a single catalog by ID.
+
+        Args:
+            catalog_id: Catalog identifier.
+
+        Returns:
+            CatalogExpandedDto: Catalog details with seller/lot counts.
+        """
         return self._request(_GET.bind(id=catalog_id))
 
     def update(self, catalog_id: int, *, data: UpdateCatalogRequest | dict) -> CatalogWithSellersDto:
@@ -67,7 +113,11 @@ class CatalogEndpoint(BaseEndpoint):
         return self._request(_UPDATE.bind(id=catalog_id), json=data)
 
     def delete(self, catalog_id: int) -> None:
-        """DELETE /Catalog/{id}"""
+        """Delete a catalog.
+
+        Args:
+            catalog_id: Catalog identifier.
+        """
         self._request(_DELETE.bind(id=catalog_id))
 
     def bulk_insert(self, *, data: BulkInsertRequest | dict) -> None:

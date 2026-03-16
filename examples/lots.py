@@ -1,6 +1,7 @@
 """Example: Lot operations (6 methods)."""
 
 from examples._runner import ExampleRunner
+from tests.constants import TEST_LOT_ID, TEST_LOT_NUMBER
 
 runner = ExampleRunner("Lots", env="staging")
 
@@ -8,14 +9,14 @@ runner = ExampleRunner("Lots", env="staging")
 
 runner.add(
     "list",
-    lambda api: api.lots.list(page=1, page_size=25),
+    lambda api: api.lots.list(lot_number=TEST_LOT_NUMBER, page_number=1, page_size=25),
     response_model="PaginatedList[LotDto]",
     fixture_file="LotDto.json",
 )
 
 runner.add(
     "get",
-    lambda api: api.lots.get(1),
+    lambda api: api.lots.get(TEST_LOT_ID),
     response_model="LotDto",
     fixture_file="LotDto.json",
 )
@@ -33,7 +34,7 @@ runner.add(
 
 runner.add(
     "update",
-    lambda api, data=None: api.lots.update(1, data=data or {}),
+    lambda api, data=None: api.lots.update(TEST_LOT_ID, data=data or {}),
     request_model="UpdateLotRequest",
     request_fixture_file="UpdateLotRequest.json",
     response_model="LotDto",
@@ -42,7 +43,7 @@ runner.add(
 
 runner.add(
     "delete",
-    lambda api: api.lots.delete(1),
+    lambda api: api.lots.delete(TEST_LOT_ID),
 )
 
 runner.add(

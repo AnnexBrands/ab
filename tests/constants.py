@@ -18,9 +18,14 @@ TEST_USER_CONTACT_ID = 1271
 TEST_JOB_DISPLAY_ID = 2000000
 TEST_JOB_DISPLAY_ID2 = 4000000
 
-# Seller / Catalog IDs (staging — sourced from Catalog fixtures)
+# Seller / Catalog / Lot IDs (staging — sourced from Catalog fixtures)
 TEST_SELLER_ID = 2
 TEST_CATALOG_ID = 1
+TEST_LOT_ID = 1
+CATALOG_CUSTOMER_SELLER_ID = 1103
+CATALOG_CUSTOMER_CATALOG_ID = 398425
+TEST_LOT_NUMBER = "1"
+
 
 # Company code (staging — sourced from CompanySimple fixture)
 TEST_COMPANY_CODE = "TRAINING"

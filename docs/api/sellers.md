@@ -21,12 +21,16 @@ api.sellers.create({"name": "New Seller"})
 
 ### list
 
-`GET /Seller` — List sellers (paginated).
+`GET /Seller` — List sellers with optional filters (paginated).
 
-**Returns:** `list[`{class}`~ab.api.models.sellers.SellerExpandedDto`]`
+**Returns:** {class}`~ab.api.models.shared.PaginatedList`\[{class}`~ab.api.models.sellers.SellerExpandedDto`\]
 
 ```python
-sellers = api.sellers.list(page=1, page_size=25)
+# List all sellers
+sellers = api.sellers.list(page_number=1, page_size=25)
+
+# Filter by active status
+sellers = api.sellers.list(is_active=True)
 ```
 
 ### get

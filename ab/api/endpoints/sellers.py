@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.api.models.sellers import AddSellerRequest, SellerDto, SellerExpandedDto, UpdateSellerRequest
@@ -38,15 +38,49 @@ class SellersEndpoint(BaseEndpoint):
         """
         return self._request(_CREATE, json=data)
 
-    def list(self, *, page: int = 1, page_size: int = 25) -> PaginatedList[SellerExpandedDto]:
-        """GET /Seller — paginated list."""
-        return self._paginated_request(
-            _LIST, "SellerExpandedDto",
-            params={"pageNumber": page, "pageSize": page_size},
-        )
+    def list(
+        self,
+        *,
+        id: int | None = None,
+        name: str | None = None,
+        customer_display_id: int | None = None,
+        is_active: bool | None = None,
+        page_size: int = 25,
+        page_number: int = 1,
+    ) -> PaginatedList[SellerExpandedDto]:
+        """List sellers with optional filters.
+
+        Args:
+            id: Filter by seller ID.
+            name: Filter by seller name.
+            customer_display_id: Filter by customer display ID.
+            is_active: Filter by active status.
+            page_size: Number of items per page.
+            page_number: Page number (1-based).
+
+        Returns:
+            PaginatedList[SellerExpandedDto]: Paginated seller results.
+        """
+        params = {
+            "id": id,
+            "name": name,
+            "customer_display_id": customer_display_id,
+            "is_active": is_active,
+            "page_size": page_size,
+            "page_number": page_number,
+        }
+        params = {k: v for k, v in params.items() if v is not None}
+        return self._paginated_request(_LIST, "SellerExpandedDto", params=params)
 
     def get(self, seller_id: int) -> SellerExpandedDto:
-        """GET /Seller/{id}"""
+        """Retrieve a single seller by ID.
+
+        Args:
+            seller_id: Seller identifier.
+
+        Returns:
+            SellerExpandedDto: Seller details with catalog associations.
+        """
         return self._request(_GET.bind(id=seller_id))
 
     def update(self, seller_id: int, *, data: UpdateSellerRequest | dict) -> SellerDto:
@@ -62,5 +96,9 @@ class SellersEndpoint(BaseEndpoint):
         return self._request(_UPDATE.bind(id=seller_id), json=data)
 
     def delete(self, seller_id: int) -> None:
-        """DELETE /Seller/{id}"""
+        """Delete a seller.
+
+        Args:
+            seller_id: Seller identifier.
+        """
         self._request(_DELETE.bind(id=seller_id))
