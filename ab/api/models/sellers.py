@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+
+if TYPE_CHECKING:
+    from ab.api.models.catalog import CatalogDto
 
 
 class SellerDto(ResponseModel):
@@ -23,7 +26,7 @@ class SellerExpandedDto(ResponseModel):
     id: Optional[int] = Field(None, description="Seller ID")
     name: Optional[str] = Field(None, description="Seller name")
     display_id: Optional[str] = Field(None, alias="displayId", description="Display identifier")
-    catalogs: Optional[List[dict]] = Field(None, description="Associated catalogs")
+    catalogs: Optional[List[CatalogDto]] = Field(None, description="Associated catalogs")
     customer_display_id: Optional[int] = Field(None, alias="customerDisplayId", description="Customer display ID")
     is_active: Optional[bool] = Field(None, alias="isActive", description="Whether seller is active")
 
@@ -53,3 +56,13 @@ class SellerListParams(RequestModel):
     is_active: Optional[bool] = Field(None, alias="IsActive", description="Filter by active status")
     page_size: Optional[int] = Field(None, alias="PageSize", description="Number of items per page")
     page_number: Optional[int] = Field(None, alias="PageNumber", description="Page number")
+
+
+def _rebuild_seller_models() -> None:
+    """Resolve deferred TYPE_CHECKING annotations for seller models."""
+    from ab.api.models.catalog import CatalogDto  # noqa: F401
+
+    SellerExpandedDto.model_rebuild()
+
+
+_rebuild_seller_models()
