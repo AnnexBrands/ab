@@ -18,7 +18,11 @@ from ab.api.models.base import ABConnectBaseModel, RequestModel, ResponseModel
 # Domain models
 from ab.api.models.catalog import (
     AddCatalogRequest,
+    BulkInsertCatalogRequest,
+    BulkInsertLotRequest,
     BulkInsertRequest,
+    BulkInsertSellerRequest,
+    CatalogDto,
     CatalogExpandedDto,
     CatalogListParams,
     CatalogWithSellersDto,
@@ -216,6 +220,9 @@ from ab.api.models.lookup import (
 )
 from ab.api.models.lots import (
     AddLotRequest,
+    ImageLinkDto,
+    LotCatalogDto,
+    LotCatalogInformationDto,
     LotDataDto,
     LotDto,
     LotListParams,
@@ -337,11 +344,14 @@ __all__ = [
     "DocumentType", "CarrierAPI",
     # Catalog
     "CatalogListParams",
-    "CatalogWithSellersDto", "CatalogExpandedDto",
-    "AddCatalogRequest", "UpdateCatalogRequest", "BulkInsertRequest",
+    "CatalogDto", "CatalogWithSellersDto", "CatalogExpandedDto",
+    "AddCatalogRequest", "UpdateCatalogRequest",
+    "BulkInsertRequest", "BulkInsertCatalogRequest",
+    "BulkInsertLotRequest", "BulkInsertSellerRequest",
     # Lots
     "LotListParams",
     "LotDto", "LotDataDto", "LotOverrideDto", "AddLotRequest", "UpdateLotRequest",
+    "LotCatalogDto", "LotCatalogInformationDto", "ImageLinkDto",
     # Sellers
     "SellerListParams",
     "SellerDto", "SellerExpandedDto", "AddSellerRequest", "UpdateSellerRequest",

@@ -29,7 +29,10 @@ class LotsEndpoint(BaseEndpoint):
         """POST /Lot.
 
         Args:
-            data: Lot creation payload with catalog_id, lot_number, and data.
+            data: Lot creation payload with ``customer_item_id``,
+                ``image_links``, ``initial_data`` (a :class:`LotDataDto`
+                with the measurements), ``catalogs`` (list of
+                :class:`LotCatalogDto`), and ``overriden_data``.
                 Accepts an :class:`AddLotRequest` instance or a dict.
 
         Request model: :class:`AddLotRequest`
@@ -52,8 +55,11 @@ class LotsEndpoint(BaseEndpoint):
 
         Args:
             lot_id: Lot identifier.
-            data: Lot update payload with lot_number and data.
-                Accepts an :class:`UpdateLotRequest` instance or a dict.
+            data: Lot update payload with ``customer_item_id``,
+                ``image_links``, ``overriden_data``, and ``catalogs``.
+                (``initial_data`` is create-only — it cannot be updated
+                via PUT.) Accepts an :class:`UpdateLotRequest` instance
+                or a dict.
 
         Request model: :class:`UpdateLotRequest`
         """

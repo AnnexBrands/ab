@@ -26,6 +26,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - Filesystem (JSON baseline file in `tests/`, generated test stubs in `tests/models/`) (028-quality-infra)
 - Python 3.11+ (existing SDK) + pydantic>=2.0, requests (existing SDK deps -- no new dependencies) (031-timeline-upsert-docs)
 - N/A -- SDK, no local storage (031-timeline-upsert-docs)
+- Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps). Audit tooling uses stdlib only (`ast`, `json`, `pathlib`). (036-lotsdb-migration-prep)
+- Filesystem — fixture JSON under `tests/fixtures/` and `tests/fixtures/requests/`; audit/inventory/guide as Markdown under the repo. (036-lotsdb-migration-prep)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -45,7 +47,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 036-lotsdb-migration-prep: Added Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps). Audit tooling uses stdlib only (`ast`, `json`, `pathlib`).
 - 034-g1-model-fidelity-sweep: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 033-fix-freightproviders-drift: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 032-client-type-hints: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

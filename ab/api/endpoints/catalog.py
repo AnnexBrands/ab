@@ -36,7 +36,9 @@ class CatalogEndpoint(BaseEndpoint):
         """POST /Catalog.
 
         Args:
-            data: Catalog creation payload.
+            data: Catalog creation payload with ``customer_catalog_id``,
+                ``agent``, ``title``, ``start_date`` (required datetime),
+                ``end_date`` (required datetime), and ``seller_ids``.
                 Accepts an :class:`AddCatalogRequest` instance or a dict.
 
         Request model: :class:`AddCatalogRequest`
@@ -59,8 +61,10 @@ class CatalogEndpoint(BaseEndpoint):
 
         Args:
             catalog_id: Catalog identifier.
-            data: Catalog update payload.
-                Accepts an :class:`UpdateCatalogRequest` instance or a dict.
+            data: Catalog update payload — same shape as
+                :class:`AddCatalogRequest`, including required
+                ``start_date`` and ``end_date``. Accepts an
+                :class:`UpdateCatalogRequest` instance or a dict.
 
         Request model: :class:`UpdateCatalogRequest`
         """
@@ -74,7 +78,12 @@ class CatalogEndpoint(BaseEndpoint):
         """POST /Bulk/insert.
 
         Args:
-            data: Bulk insert payload with catalog_id and items.
+            data: Bulk insert payload — a :class:`BulkInsertRequest`
+                with a single ``catalogs`` list. Each entry is a
+                :class:`BulkInsertCatalogRequest` containing nested
+                ``lots`` (:class:`BulkInsertLotRequest`) and
+                ``sellers`` (:class:`BulkInsertSellerRequest`). The
+                top-level shape is a nested tree, *not* a flat list.
                 Accepts a :class:`BulkInsertRequest` instance or a dict.
 
         Request model: :class:`BulkInsertRequest`
