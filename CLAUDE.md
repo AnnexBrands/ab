@@ -47,7 +47,8 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
-- 036-lotsdb-migration-prep: Added Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps). Audit tooling uses stdlib only (`ast`, `json`, `pathlib`).
+- 036-lotsdb-migration-prep: Added Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps).
+- 035-catalog-endpoint-params: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
+- 033-fix-catalog-model-typing: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 - 034-g1-model-fidelity-sweep: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 033-fix-freightproviders-drift: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

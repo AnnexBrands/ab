@@ -86,7 +86,7 @@ class PaginatedList(ResponseModel, Generic[T]):
 
     Example::
 
-        result: PaginatedList[CatalogExpandedDto] = api.catalog.list(page=1)
+        result: PaginatedList[CatalogExpandedDto] = api.catalog.list(page_number=1)
         for item in result.items:
             print(item.title)
     """

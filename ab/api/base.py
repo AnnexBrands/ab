@@ -154,6 +154,13 @@ class BaseEndpoint:
         """Dispatch a route expecting a PaginatedList response."""
         from ab.api.models.shared import PaginatedList
 
+        # Validate outbound query params (mirrors _request logic)
+        if "params" in kwargs and route.params_model:
+            model_cls = self._resolve_model(route.params_model)
+            params = kwargs["params"]
+            if hasattr(model_cls, "check"):
+                kwargs["params"] = model_cls.check(params)
+
         response = self._client.request(route.method, route.path, **kwargs)
         if response is None:
             return None

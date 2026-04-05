@@ -21,12 +21,19 @@ result = api.catalog.create({"name": "New Catalog"})
 
 ### list
 
-`GET /Catalog` — List catalogs (paginated).
+`GET /Catalog` — List catalogs with optional filters (paginated).
 
-**Returns:** `list[`{class}`~ab.api.models.catalog.CatalogWithSellersDto`]`
+**Returns:** {class}`~ab.api.models.shared.PaginatedList`\[{class}`~ab.api.models.catalog.CatalogExpandedDto`\]
 
 ```python
-catalogs = api.catalog.list(page=1, page_size=25)
+# List all catalogs
+catalogs = api.catalog.list(page_number=1, page_size=25)
+
+# Filter by agent and completion status
+catalogs = api.catalog.list(agent="Smith", is_completed=False)
+
+# Filter by seller IDs
+catalogs = api.catalog.list(seller_ids=[1103])
 ```
 
 ### get

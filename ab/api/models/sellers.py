@@ -9,15 +9,24 @@ secondary reference. The prior placeholder had an invented
 always-null ``displayId`` key not declared in swagger — kept as an
 optional field on the response models to absorb the drift without
 failing ``assert_no_extra_fields``.
+
+``SellerExpandedDto.catalogs`` is typed against
+:class:`~ab.api.models.catalog.CatalogDto` via a deferred
+``TYPE_CHECKING`` import plus :func:`_rebuild_seller_models` — mirrors
+the pattern used in ``catalog.py`` to resolve the
+``sellers`` ↔ ``catalog`` circular type reference.
 """
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
+
+if TYPE_CHECKING:
+    from ab.api.models.catalog import CatalogDto
 
 
 class SellerDto(ResponseModel):
@@ -42,11 +51,7 @@ class SellerExpandedDto(SellerDto):
     """Seller with embedded catalog associations — returned by
     ``GET /Seller/{id}``."""
 
-    # Typed as ``List[dict]`` rather than ``List[CatalogDto]`` to avoid a
-    # circular import with ``catalog.py`` (which imports ``SellerDto`` from
-    # this module). Tighten to ``CatalogDto`` if both models move into a
-    # shared sub-module later.
-    catalogs: Optional[List[dict]] = Field(None, description="Associated catalogs")
+    catalogs: Optional[List["CatalogDto"]] = Field(None, description="Associated catalogs")
 
 
 class AddSellerRequest(RequestModel):
@@ -72,3 +77,13 @@ class SellerListParams(RequestModel):
     is_active: Optional[bool] = Field(None, alias="IsActive", description="Filter by active status")
     page_size: Optional[int] = Field(None, alias="PageSize", description="Number of items per page")
     page_number: Optional[int] = Field(None, alias="PageNumber", description="Page number")
+
+
+def _rebuild_seller_models() -> None:
+    """Resolve deferred TYPE_CHECKING annotations for seller models."""
+    from ab.api.models.catalog import CatalogDto  # noqa: F401
+
+    SellerExpandedDto.model_rebuild()
+
+
+_rebuild_seller_models()

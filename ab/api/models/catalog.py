@@ -6,18 +6,25 @@ secondary reference (Tier 4). The prior placeholder implementation
 had invented field names for ``AddCatalogRequest``,
 ``UpdateCatalogRequest``, and ``BulkInsertRequest`` that did not match
 either source — see ``specs/036-lotsdb-migration-prep/gap-recommendations.md``.
+
+``SellerDto`` is a TYPE_CHECKING-only import to break the
+``catalog`` ↔ ``sellers`` circular reference; :func:`_rebuild_catalog_models`
+at the bottom of the module does the runtime import and calls
+``model_rebuild()`` on any class whose annotations need it.
 """
 
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.lots import LotCatalogInformationDto, LotDataDto
-from ab.api.models.sellers import SellerDto
+
+if TYPE_CHECKING:
+    from ab.api.models.sellers import SellerDto
 
 
 class CatalogDto(ResponseModel):
@@ -37,14 +44,14 @@ class CatalogWithSellersDto(CatalogDto):
     """Catalog with embedded sellers — returned by ``POST /Catalog`` and
     ``PUT /Catalog/{id}``."""
 
-    sellers: Optional[List[SellerDto]] = Field(None, description="Attached sellers")
+    sellers: Optional[List["SellerDto"]] = Field(None, description="Attached sellers")
 
 
 class CatalogExpandedDto(CatalogDto):
     """Catalog with sellers and lot summaries — returned by
     ``GET /Catalog/{id}``."""
 
-    sellers: Optional[List[SellerDto]] = Field(None, description="Attached sellers")
+    sellers: Optional[List["SellerDto"]] = Field(None, description="Attached sellers")
     lots: Optional[List[LotCatalogInformationDto]] = Field(
         None, description="Lot summaries belonging to the catalog",
     )
@@ -136,3 +143,19 @@ class BulkInsertRequest(RequestModel):
     catalogs: Optional[List[BulkInsertCatalogRequest]] = Field(
         None, description="Catalogs to insert, each with nested lots and sellers",
     )
+
+
+def _rebuild_catalog_models() -> None:
+    """Resolve the TYPE_CHECKING forward reference to ``SellerDto``.
+
+    Deferred because ``sellers.py`` imports :class:`CatalogDto` from
+    this module — a real import of ``SellerDto`` at the top of this
+    file would create a load-time cycle.
+    """
+    from ab.api.models.sellers import SellerDto  # noqa: F401
+
+    CatalogWithSellersDto.model_rebuild()
+    CatalogExpandedDto.model_rebuild()
+
+
+_rebuild_catalog_models()

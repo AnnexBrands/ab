@@ -57,7 +57,22 @@ for r in results:
 ### List Catalogs
 
 ```python
+# Basic listing
 catalogs = api.catalog.list()
+
+# With filter parameters
+catalogs = api.catalog.list(agent="Smith", is_completed=False, page_size=10)
+```
+
+### Paginate Through All Results
+
+```python
+from ab import ABConnectAPI, paginate
+
+api = ABConnectAPI(env="staging")
+for page in paginate(api.catalog.list, page_size=10):
+    for item in page.items:
+        print(item.title)
 ```
 
 ### Get Lookup Data

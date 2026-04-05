@@ -1,5 +1,6 @@
 """ABConnect SDK — typed Python client for ABConnect APIs."""
 
+from ab.api.pagination import paginate
 from ab.client import ABConnectAPI
 from ab.exceptions import (
     ABConnectError,
@@ -16,4 +17,5 @@ __all__ = [
     "ConfigurationError",
     "RequestError",
     "ValidationError",
+    "paginate",
 ]
