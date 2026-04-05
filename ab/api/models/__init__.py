@@ -18,7 +18,10 @@ from ab.api.models.base import ABConnectBaseModel, RequestModel, ResponseModel
 # Domain models
 from ab.api.models.catalog import (
     AddCatalogRequest,
+    BulkInsertCatalogRequest,
+    BulkInsertLotRequest,
     BulkInsertRequest,
+    BulkInsertSellerRequest,
     CatalogDto,
     CatalogExpandedDto,
     CatalogListParams,
@@ -342,12 +345,13 @@ __all__ = [
     # Catalog
     "CatalogListParams",
     "CatalogDto", "CatalogWithSellersDto", "CatalogExpandedDto",
-    "AddCatalogRequest", "UpdateCatalogRequest", "BulkInsertRequest",
+    "AddCatalogRequest", "UpdateCatalogRequest",
+    "BulkInsertRequest", "BulkInsertCatalogRequest",
+    "BulkInsertLotRequest", "BulkInsertSellerRequest",
     # Lots
     "LotListParams",
-    "LotDto", "LotDataDto", "LotOverrideDto",
-    "LotCatalogInformationDto", "LotCatalogDto", "ImageLinkDto",
-    "AddLotRequest", "UpdateLotRequest",
+    "LotDto", "LotDataDto", "LotOverrideDto", "AddLotRequest", "UpdateLotRequest",
+    "LotCatalogDto", "LotCatalogInformationDto", "ImageLinkDto",
     # Sellers
     "SellerListParams",
     "SellerDto", "SellerExpandedDto", "AddSellerRequest", "UpdateSellerRequest",

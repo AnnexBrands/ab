@@ -1,4 +1,5 @@
 {
   "name": null,
-  "displayId": null
+  "customerDisplayId": 0,
+  "isActive": true
 }

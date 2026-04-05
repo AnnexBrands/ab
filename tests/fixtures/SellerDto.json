@@ -1,5 +1,7 @@
 {
   "id": 1,
   "name": "Estate Co",
-  "displayId": "EST001"
+  "customerDisplayId": 1001,
+  "isActive": true,
+  "displayId": null
 }
