@@ -37,12 +37,15 @@ class ABConnectAPI:
         env: Optional[str] = None,
         env_file: Optional[str] = None,
         request: Any = None,
+        token_storage: Optional[TokenStorage] = None,
     ) -> None:
         self._settings = load_settings(env=env, env_file=env_file)
 
-        # Token storage
-        if request is not None:
-            self._token_storage: TokenStorage = SessionTokenStorage(request)
+        # Token storage: explicit > Django request > file
+        if token_storage is not None:
+            self._token_storage: TokenStorage = token_storage
+        elif request is not None:
+            self._token_storage = SessionTokenStorage(request)
         else:
             self._token_storage = FileTokenStorage(environment=self._settings.environment)
 

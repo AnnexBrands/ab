@@ -1,6 +1,7 @@
 """Authentication backends for the ABConnect SDK."""
 
 from ab.auth.base import Token, TokenStorage
+from ab.auth.db import DbTokenStorage
 from ab.auth.file import FileTokenStorage
 from ab.auth.session import SessionTokenStorage
 
@@ -9,4 +10,5 @@ __all__ = [
     "TokenStorage",
     "FileTokenStorage",
     "SessionTokenStorage",
+    "DbTokenStorage",
 ]

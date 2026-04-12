@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import sqlite3
 import time
 from unittest.mock import MagicMock
+
+import pytest
 
 from ab.auth.base import Token
 from ab.auth.file import FileTokenStorage
@@ -94,3 +97,90 @@ class TestSessionTokenStorage:
         storage.clear_token()
         assert storage.get_token() is None
         assert "ab_token" not in request.session
+
+
+class TestDbTokenStorage:
+    """Tests for the database-backed TokenStorage implementation."""
+
+    def _conn(self):
+        """Return a fresh in-memory sqlite3 connection."""
+        return sqlite3.connect(":memory:")
+
+    def test_init_schema_idempotent(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        DbTokenStorage.init_schema(conn)
+        # Calling again should not raise
+        DbTokenStorage.init_schema(conn)
+
+    def test_save_and_get_round_trips(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        storage = DbTokenStorage(conn, "session-1")
+        token = Token(access_token="abc", refresh_token="ref", expires_at=time.time() + 600)
+        storage.save_token(token)
+
+        result = storage.get_token()
+        assert result is not None
+        assert result.access_token == "abc"
+        assert result.refresh_token == "ref"
+
+    def test_clear_removes_row(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        storage = DbTokenStorage(conn, "session-1")
+        storage.save_token(Token(access_token="x", expires_at=0))
+        storage.clear_token()
+        assert storage.get_token() is None
+
+    def test_independent_sessions(self):
+        """Different session_ids in the same DB don't interfere."""
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        a = DbTokenStorage(conn, "session-A")
+        b = DbTokenStorage(conn, "session-B")
+        a.save_token(Token(access_token="token-A", expires_at=time.time() + 600))
+        b.save_token(Token(access_token="token-B", expires_at=time.time() + 600))
+
+        assert a.get_token().access_token == "token-A"
+        assert b.get_token().access_token == "token-B"
+
+    def test_get_token_unknown_session(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        DbTokenStorage.init_schema(conn)
+        storage = DbTokenStorage(conn, "nonexistent")
+        assert storage.get_token() is None
+
+    def test_from_path_creates_file(self, tmp_path):
+        from ab.auth.db import DbTokenStorage
+        path = tmp_path / "auth.sqlite"
+        storage = DbTokenStorage.from_path(path, "session-1")
+        storage.save_token(Token(access_token="filed", expires_at=time.time() + 600))
+        assert path.is_file()
+
+        # New storage on same file sees the same token
+        storage2 = DbTokenStorage.from_path(path, "session-1")
+        assert storage2.get_token().access_token == "filed"
+
+    def test_corrupted_json_raises(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        DbTokenStorage.init_schema(conn)
+        # Inject invalid JSON directly
+        conn.execute(
+            "INSERT INTO ab_token_sessions (session_id, token_json, created_at, updated_at) VALUES (?, ?, ?, ?)",
+            ("session-1", "{not valid json", time.time(), time.time()),
+        )
+        conn.commit()
+        storage = DbTokenStorage(conn, "session-1")
+        with pytest.raises(Exception):
+            storage.get_token()
+
+    def test_overwrite_existing_token(self):
+        from ab.auth.db import DbTokenStorage
+        conn = self._conn()
+        storage = DbTokenStorage(conn, "session-1")
+        storage.save_token(Token(access_token="first", expires_at=time.time() + 600))
+        storage.save_token(Token(access_token="second", expires_at=time.time() + 600))
+        assert storage.get_token().access_token == "second"
