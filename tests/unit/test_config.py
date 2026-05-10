@@ -58,6 +58,22 @@ class TestABConnectSettings:
             with pytest.raises(ConfigurationError, match="ABCONNECT_USERNAME"):
                 ABConnectSettings()
 
+    def test_can_skip_username_password_requirement(self):
+        env = {
+            "ABCONNECT_CLIENT_ID": "cid",
+            "ABCONNECT_CLIENT_SECRET": "csecret",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            settings = ABConnectSettings(require_credentials=False)
+        assert settings.username == ""
+        assert settings.password == ""
+        assert settings.client_id == "cid"
+
+    def test_still_requires_client_credentials_when_credentials_optional(self):
+        with patch.dict(os.environ, {}, clear=True):
+            with pytest.raises(ConfigurationError, match="ABCONNECT_CLIENT_ID"):
+                ABConnectSettings(require_credentials=False)
+
     def test_raises_on_missing_multiple(self):
         with patch.dict(os.environ, {}, clear=True):
             with pytest.raises(ConfigurationError, match="ABCONNECT_USERNAME"):

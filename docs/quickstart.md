@@ -103,6 +103,17 @@ def my_view(request):
 
 When using `request=`, tokens are stored in the Django session instead of the filesystem.
 
+For a login view, authenticate explicitly with form credentials:
+
+```python
+def login_view(request):
+    api = ABConnectAPI(request=request, allow_password_fallback=False)
+    api.login(request.POST["username"], request.POST["password"])
+```
+
+`allow_password_fallback=False` is recommended for user-session flows so an
+expired session token cannot fall back to service-account credentials.
+
 ## Error Handling
 
 ```python

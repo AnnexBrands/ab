@@ -120,6 +120,7 @@ from ab.api.models.contacts import (
 from ab.api.models.dashboard import (
     DashboardCompanyParams,
     DashboardCompanyRequest,
+    DashboardItem,
     DashboardParams,
     DashboardSummary,
     GridViewInfo,
@@ -440,8 +441,8 @@ __all__ = [
     "ReferredByReport", "ReferredByReportRequest",
     "Web2LeadReport", "Web2LeadV2RequestModel",
     # Dashboard
-    "DashboardCompanyParams", "DashboardCompanyRequest", "DashboardParams",
-    "DashboardSummary", "GridViewState", "GridViewInfo",
+    "DashboardCompanyParams", "DashboardCompanyRequest", "DashboardItem",
+    "DashboardParams", "DashboardSummary", "GridViewState", "GridViewInfo",
     # Views
     "GridViewDetails", "GridViewAccess", "StoredProcedureColumn", "GridViewCreateRequest",
     # Commodities

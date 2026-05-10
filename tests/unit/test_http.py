@@ -10,7 +10,7 @@ import pytest
 
 from ab.auth.base import Token, TokenStorage
 from ab.config import ABConnectSettings
-from ab.exceptions import RequestError
+from ab.exceptions import AuthenticationError, RequestError
 from ab.http import HttpClient
 
 
@@ -25,6 +25,22 @@ class _StubTokenStorage(TokenStorage):
         self._token = token
 
     def clear_token(self):
+        self._token = None
+
+
+class _ExpiredRefreshStorage(TokenStorage):
+    def __init__(self):
+        self._token = Token(access_token="old", refresh_token="refresh", expires_at=time.time() - 1)
+        self.cleared = False
+
+    def get_token(self):
+        return self._token
+
+    def save_token(self, token):
+        self._token = token
+
+    def clear_token(self):
+        self.cleared = True
         self._token = None
 
 
@@ -125,3 +141,48 @@ class TestHttpClient:
 
             result = client.request("DELETE", "/resource/1")
             assert result is None
+
+    def test_expired_refresh_without_password_fallback_raises(self):
+        env = {
+            "ABCONNECT_CLIENT_ID": "c",
+            "ABCONNECT_CLIENT_SECRET": "s",
+        }
+        with patch.dict(os.environ, env, clear=True):
+            settings = ABConnectSettings(require_credentials=False)
+        storage = _ExpiredRefreshStorage()
+        client = HttpClient(
+            "https://example.com/api",
+            settings,
+            storage,
+            allow_password_fallback=False,
+        )
+        with patch("ab.http.requests.post") as mock_post:
+            mock_resp = MagicMock()
+            mock_resp.ok = False
+            mock_resp.status_code = 400
+            mock_resp.text = "bad refresh"
+            mock_post.return_value = mock_resp
+
+            with pytest.raises(AuthenticationError, match="No valid ABConnect token"):
+                client.request("GET", "/test")
+
+        assert storage.cleared is True
+
+    def test_password_grant_with_uses_explicit_credentials(self):
+        client = _make_client()
+        with patch("ab.http.requests.post") as mock_post:
+            mock_resp = MagicMock()
+            mock_resp.ok = True
+            mock_resp.json.return_value = {
+                "access_token": "new-token",
+                "refresh_token": "new-refresh",
+                "expires_in": 3600,
+                "token_type": "Bearer",
+            }
+            mock_post.return_value = mock_resp
+
+            token = client._password_grant_with(username="form-user", password="form-pass")
+
+        assert token.access_token == "new-token"
+        assert mock_post.call_args.kwargs["data"]["username"] == "form-user"
+        assert mock_post.call_args.kwargs["data"]["password"] == "form-pass"

@@ -1,4 +1,24 @@
-"""Example runner with structured entries and automated fixture capture.
+"""DEPRECATED: ExampleRunner -- being phased out, see ``examples/dashboard.py``.
+
+The runner abstracts over the SDK in ways that hide drift between
+swagger, source-of-truth models, examples, fixtures, and tests. New
+example files are written as plain top-level scripts that read like docs::
+
+    from ab import ABConnectAPI
+    from examples.constants import TEST_VIEW_ID, TEST_COMPANY_ID
+
+    api = ABConnectAPI(env="staging")
+    summary = api.dashboard.get(view_id=TEST_VIEW_ID, company_id=TEST_COMPANY_ID)
+
+Migration tracker: ``html/rm_runner.html``.
+Reference example: ``examples/dashboard.py``.
+
+This module remains in place to support the example files that have not
+yet been converted; do not write new code against ``ExampleRunner``.
+
+----
+
+Original documentation kept for the remaining callers:
 
 Provides :class:`ExampleRunner` for registering endpoint method
 demonstrations as structured entries, executing them via CLI, and
@@ -31,9 +51,17 @@ from __future__ import annotations
 
 import json
 import sys
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Optional
+
+warnings.warn(
+    "examples._runner.ExampleRunner is deprecated; rewrite example files as "
+    "plain SDK scripts (see examples/dashboard.py). Tracker: html/rm_runner.html.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
 REQUESTS_DIR = FIXTURES_DIR / "requests"

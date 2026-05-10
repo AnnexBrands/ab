@@ -62,6 +62,12 @@ export ABCONNECT_ENVIRONMENT=staging
 
 Or use `.env.staging` / `.env.production` files.
 
+`ABCONNECT_USERNAME` and `ABCONNECT_PASSWORD` are required for the default
+file-backed service-account mode. Django request sessions and explicit
+`token_storage=` integrations can construct the client with only
+`ABCONNECT_CLIENT_ID` and `ABCONNECT_CLIENT_SECRET`, then call
+`api.login(username, password)` to prime the selected token storage.
+
 ## Endpoint Groups
 
 | Group | Methods | API Surface |

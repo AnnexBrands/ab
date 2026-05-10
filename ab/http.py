@@ -36,11 +36,14 @@ class HttpClient:
         base_url: str,
         settings: ABConnectSettings,
         token_storage: TokenStorage,
+        *,
+        allow_password_fallback: bool = True,
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._settings = settings
         self._token_storage = token_storage
         self._session = requests.Session()
+        self._allow_password_fallback = allow_password_fallback
 
     # ------------------------------------------------------------------
     # Authentication
@@ -59,14 +62,28 @@ class HttpClient:
             if refreshed:
                 return refreshed
 
+        if not self._allow_password_fallback:
+            if token is not None:
+                self._token_storage.clear_token()
+            raise AuthenticationError("No valid ABConnect token is available for this session")
+
         # Fall back to password grant
         return self._password_grant()
 
     def _password_grant(self) -> Token:
+        return self._password_grant_with(
+            username=self._settings.username,
+            password=self._settings.password,
+        )
+
+    def _password_grant_with(self, *, username: str, password: str) -> Token:
+        """Password grant using caller-supplied credentials."""
+        if not username or not password:
+            raise AuthenticationError("Password grant requires username and password")
         data = {
             "grant_type": "password",
-            "username": self._settings.username,
-            "password": self._settings.password,
+            "username": username,
+            "password": password,
             "client_id": self._settings.client_id,
             "client_secret": self._settings.client_secret,
             "scope": "offline_access",
@@ -74,7 +91,7 @@ class HttpClient:
         resp = requests.post(self._settings.identity_url, data=data, timeout=self._settings.timeout)
         if not resp.ok:
             raise AuthenticationError(
-                f"Login failed for {self._settings.username}: {resp.status_code} {resp.text}"
+                f"Login failed for {username}: {resp.status_code} {resp.text}"
             )
         return self._store_token(resp.json())
 

@@ -121,6 +121,7 @@ class TimelineHelpers:
         job_id: int,
         model: BaseTimelineTaskRequest,
         existing: dict | None,
+        create_email: bool = False,
     ) -> TimelineSaveResponse:
         """Serialize *model* and deep-merge onto *existing* task, then POST.
 
@@ -135,7 +136,9 @@ class TimelineHelpers:
         )
         if existing is not None:
             data = _deep_merge(existing, data)
-        return self._jobs.create_timeline_task(job_id, data=data)
+        return self._jobs.create_timeline_task(
+            job_id, data=data, create_email=create_email,
+        )
 
     # ---- Status helpers (PU) ------------------------------------------------
 
@@ -144,6 +147,7 @@ class TimelineHelpers:
         job_id: int,
         start: str,
         end: str | None = None,
+        create_email: bool = False,
     ) -> TimelineSaveResponse:
         """Status 2 — Set planned pickup dates on PU task.
 
@@ -159,7 +163,7 @@ class TimelineHelpers:
             planned_start_date=start,
             planned_end_date=end,
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _2 = schedule
 
@@ -168,6 +172,7 @@ class TimelineHelpers:
         job_id: int,
         end: str | None = None,
         start: str | None = None,
+        create_email: bool = False,
     ) -> TimelineSaveResponse:
         """Status 3 — Mark pickup completed on PU task.
 
@@ -193,13 +198,15 @@ class TimelineHelpers:
             completed_date=end,
             on_site_time_log=on_site_time_log,
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _3 = received
 
     # ---- Status helpers (PK) ------------------------------------------------
 
-    def pack_start(self, job_id: int, start: str) -> TimelineSaveResponse:
+    def pack_start(
+        self, job_id: int, start: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 4 — Set packaging start time on PK task.
 
         Logs a warning if job is already at or past status 4.
@@ -213,11 +220,13 @@ class TimelineHelpers:
             task_code=PK,
             time_log=TimeLogRequest(start=start),
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _4 = pack_start
 
-    def pack_finish(self, job_id: int, end: str) -> TimelineSaveResponse:
+    def pack_finish(
+        self, job_id: int, end: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 5 — Set packaging end time on PK task.
 
         Logs a warning if job is already at or past status 5.
@@ -231,13 +240,15 @@ class TimelineHelpers:
             task_code=PK,
             time_log=TimeLogRequest(end=end),
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _5 = pack_finish
 
     # ---- Status helpers (ST) ------------------------------------------------
 
-    def storage_begin(self, job_id: int, start: str) -> TimelineSaveResponse:
+    def storage_begin(
+        self, job_id: int, start: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 6 — Set storage start time on ST task."""
         status_info, task = self.get_task(job_id, ST)
 
@@ -245,11 +256,13 @@ class TimelineHelpers:
             task_code=ST,
             time_log=TimeLogRequest(start=start),
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _6 = storage_begin
 
-    def storage_end(self, job_id: int, end: str) -> TimelineSaveResponse:
+    def storage_end(
+        self, job_id: int, end: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 6 — Set storage end time on ST task."""
         status_info, task = self.get_task(job_id, ST)
 
@@ -257,11 +270,13 @@ class TimelineHelpers:
             task_code=ST,
             time_log=TimeLogRequest(end=end),
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     # ---- Status helpers (CP) ------------------------------------------------
 
-    def carrier_schedule(self, job_id: int, start: str) -> TimelineSaveResponse:
+    def carrier_schedule(
+        self, job_id: int, start: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 7 — Set carrier scheduled date on CP task.
 
         Logs a warning if job is already at or past status 7.
@@ -275,11 +290,13 @@ class TimelineHelpers:
             task_code=CP,
             scheduled_date=start,
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _7 = carrier_schedule
 
-    def carrier_pickup(self, job_id: int, start: str) -> TimelineSaveResponse:
+    def carrier_pickup(
+        self, job_id: int, start: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 8 — Set carrier pickup completed date on CP task.
 
         Logs a warning if job is already at or past status 8.
@@ -293,11 +310,13 @@ class TimelineHelpers:
             task_code=CP,
             pickup_completed_date=start,
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _8 = carrier_pickup
 
-    def carrier_delivery(self, job_id: int, end: str) -> TimelineSaveResponse:
+    def carrier_delivery(
+        self, job_id: int, end: str, create_email: bool = False,
+    ) -> TimelineSaveResponse:
         """Status 10 — Set carrier delivery completed date on CP task."""
         status_info, task = self.get_task(job_id, CP)
 
@@ -305,7 +324,7 @@ class TimelineHelpers:
             task_code=CP,
             delivery_completed_date=end,
         )
-        return self._upsert(job_id, model, task)
+        return self._upsert(job_id, model, task, create_email=create_email)
 
     _10 = carrier_delivery
 

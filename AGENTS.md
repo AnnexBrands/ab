@@ -47,4 +47,3 @@
 
 ## Coexisting Agents
   Claude (using speckit commands) handle planning and implementation
-- Codex is only to write PR at end of implementation cycle

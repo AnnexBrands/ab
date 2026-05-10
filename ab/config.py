@@ -36,6 +36,11 @@ class ABConnectSettings(BaseSettings):
     password: str = Field(default="", description="ABConnect password")
     client_id: str = Field(default="", description="OAuth2 client ID")
     client_secret: str = Field(default="", description="OAuth2 client secret")
+    require_credentials: bool = Field(
+        default=True,
+        exclude=True,
+        description="Require username/password at settings load time",
+    )
     environment: Literal["staging", "production"] = Field(
         default="production", description="Target environment"
     )
@@ -46,10 +51,11 @@ class ABConnectSettings(BaseSettings):
     @model_validator(mode="after")
     def _validate_required(self) -> "ABConnectSettings":
         missing = []
-        if not self.username:
-            missing.append("ABCONNECT_USERNAME")
-        if not self.password:
-            missing.append("ABCONNECT_PASSWORD")
+        if self.require_credentials:
+            if not self.username:
+                missing.append("ABCONNECT_USERNAME")
+            if not self.password:
+                missing.append("ABCONNECT_PASSWORD")
         if not self.client_id:
             missing.append("ABCONNECT_CLIENT_ID")
         if not self.client_secret:
@@ -90,6 +96,7 @@ def load_settings(
     *,
     env: str | None = None,
     env_file: str | None = None,
+    require_credentials: bool = True,
 ) -> ABConnectSettings:
     """Create an :class:`ABConnectSettings` for the given environment.
 
@@ -117,4 +124,5 @@ def load_settings(
             kwargs["_env_file"] = ".env"
         kwargs["environment"] = env  # type: ignore[arg-type]
 
+    kwargs["require_credentials"] = require_credentials
     return ABConnectSettings(**kwargs)
