@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sqlite3
 import time
 from unittest.mock import MagicMock
@@ -60,6 +61,27 @@ class TestFileTokenStorage:
         storage.clear_token()
         assert storage.get_token() is None
         assert not storage._path.exists()
+
+    def test_scoped_storage_reads_legacy_path_and_writes_private_file(self, tmp_path):
+        legacy = tmp_path / "token.staging.json"
+        legacy.write_text(json.dumps(Token(access_token="legacy", expires_at=time.time() + 600).as_dict()))
+
+        storage = FileTokenStorage(
+            environment="staging",
+            username="User@Test.com",
+            client_id="client/one",
+            token_dir=tmp_path,
+        )
+
+        assert storage.get_token().access_token == "legacy"
+        assert storage._path != legacy
+        assert storage._path.name == "token.staging.user@test.com.client_one.json"
+
+        storage.save_token(Token(access_token="scoped", expires_at=time.time() + 600))
+
+        assert storage._path.is_file()
+        assert storage._path.stat().st_mode & 0o777 == 0o600
+        assert json.loads(storage._path.read_text())["access_token"] == "scoped"
 
     def test_expiry_buffer(self):
         """Token with 300s buffer — 300s subtracted from expires_in."""

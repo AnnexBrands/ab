@@ -131,7 +131,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /commodity-map | POST | api.commodity_maps.create | CommodityMapCreateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/search | POST | api.commodity_maps.search | CommodityMapSearchRequest | List[CommodityMap] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard | GET | api.dashboard.get | — | DashboardSummary | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /dashboard/gridviews | GET | api.dashboard.get_grid_views | — | List[GridViewInfo] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /dashboard/gridviews | GET | api.dashboard.get_grid_views | — | List[GridViewInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger GridViewDetails (id/name/dataKey/isActive); fixture seeded with 6 representative rows |
 | /dashboard/gridviewstate/{id} | GET | api.dashboard.get_grid_view_state | — | GridViewState | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard/gridviewstate/{id} | POST | api.dashboard.save_grid_view_state | GridViewState | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /dashboard/inbound | POST | api.dashboard.inbound | DashboardCompanyRequest | — | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | 008 |

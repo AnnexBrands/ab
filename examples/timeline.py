@@ -1,71 +1,93 @@
-"""Example: Timeline operations (8 methods, via api.jobs.*)."""
+"""Timeline API examples.
 
-from examples._runner import ExampleRunner
-from tests.constants import TEST_JOB_DISPLAY_ID
+These snippets are intended to be copied into Sphinx docs. They use real
+request JSON fixtures where a request body is required and show the response
+model shape returned by each call.
+"""
 
-runner = ExampleRunner("Timeline", env="staging")
+from __future__ import annotations
 
-# ── Needs request data ───────────────────────────────────────────────
+import json
+from pathlib import Path
+from typing import Any
 
-runner.add(
-    "get_timeline",
-    lambda api: api.jobs.get_timeline(TEST_JOB_DISPLAY_ID),
-    response_model="List[TimelineTask]",
-    fixture_file="TimelineTask.json",
-)
+from ab import ABConnectAPI
+from examples.constants import TEST_JOB_DISPLAY_ID, TEST_TIMELINE_TASK_CODE, TEST_TIMELINE_TASK_ID
 
-runner.add(
-    "create_timeline_task",
-    lambda api, data=None: api.jobs.create_timeline_task(TEST_JOB_DISPLAY_ID, data=data or {}),
-    request_model="TimelineTaskCreateRequest",
-    request_fixture_file="TimelineTaskCreateRequest.json",
-    response_model="TimelineTask",
-    fixture_file="TimelineTask.json",
-)
 
-runner.add(
-    "get_timeline_task",
-    lambda api: api.jobs.get_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder"),
-    response_model="TimelineTask",
-    fixture_file="TimelineTask.json",
-)
+REQUESTS_DIR = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "requests"
 
-runner.add(
-    "update_timeline_task",
-    lambda api, data=None: api.jobs.update_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder", data=data or {}),
-    request_model="TimelineTaskUpdateRequest",
-    request_fixture_file="TimelineTaskUpdateRequest.json",
-    response_model="TimelineTask",
-    fixture_file="TimelineTask.json",
-)
 
-runner.add(
-    "delete_timeline_task",
-    lambda api: api.jobs.delete_timeline_task(TEST_JOB_DISPLAY_ID, "task-id-placeholder"),
-)
+def load_request_json(filename: str) -> dict[str, Any]:
+    """Load a captured request body from tests/fixtures/requests."""
+    return json.loads((REQUESTS_DIR / filename).read_text())
 
-runner.add(
-    "get_timeline_agent",
-    lambda api: api.jobs.get_timeline_agent(TEST_JOB_DISPLAY_ID, "SCH"),
-    response_model="TimelineAgent",
-    fixture_file="TimelineAgent.json",
-)
 
-runner.add(
-    "increment_status",
-    lambda api: api.jobs.increment_status(TEST_JOB_DISPLAY_ID),
-    request_model="IncrementStatusRequest",
-    response_model="ServiceBaseResponse",
-    fixture_file="ServiceBaseResponse.json",
-)
+api = ABConnectAPI(env="staging")
 
-runner.add(
-    "undo_increment_status",
-    lambda api: api.jobs.undo_increment_status(TEST_JOB_DISPLAY_ID),
-    request_model="IncrementStatusRequest",
-    response_model="ServiceBaseResponse",
-    fixture_file="ServiceBaseResponse.json",
-)
+
+# GET /job/{jobDisplayId}/timeline
+# Returns list[TimelineTask]. Use get_timeline_response() for the full wrapper.
+tasks = api.jobs.get_timeline(TEST_JOB_DISPLAY_ID)
+
+
+# GET /job/{jobDisplayId}/timeline
+# Returns TimelineResponse with tasks, onHolds, SLA metadata, and job status.
+timeline_response = api.jobs.get_timeline_response(TEST_JOB_DISPLAY_ID)
+
+
+# GET /job/{jobDisplayId}/timeline/{timelineTaskIdentifier}
+# Returns a single TimelineTask.
+task = api.jobs.get_timeline_task(TEST_JOB_DISPLAY_ID, str(TEST_TIMELINE_TASK_ID))
+
+
+# GET /job/{jobDisplayId}/timeline/{taskCode}/agent
+# Returns TimelineAgent, or None when no agent is assigned for the task code.
+agent = api.jobs.get_timeline_agent(TEST_JOB_DISPLAY_ID, TEST_TIMELINE_TASK_CODE)
+
+
+def create_timeline_task_example() -> None:
+    # POST /job/{jobDisplayId}/timeline?createEmail=false
+    # Request body is a SimpleTaskRequest captured in tests/fixtures/requests.
+    # Returns TimelineSaveResponse with success, taskExists, and task.
+    request_body = load_request_json("SimpleTaskRequest.json")
+
+    save_response = api.jobs.create_timeline_task(
+        TEST_JOB_DISPLAY_ID,
+        data=request_body,
+        create_email=False,
+    )
+
+    print(save_response)
+
+
+def update_timeline_task_example() -> None:
+    # PATCH /job/{jobDisplayId}/timeline/{timelineTaskId}
+    # Request body is TimelineTaskUpdateRequest.
+    # Returns the updated TimelineTask.
+    request_body = load_request_json("TimelineTaskUpdateRequest.json")
+
+    updated_task = api.jobs.update_timeline_task(
+        TEST_JOB_DISPLAY_ID,
+        str(TEST_TIMELINE_TASK_ID),
+        data=request_body,
+    )
+
+    print(updated_task)
+
+
+def delete_timeline_task_example() -> None:
+    # DELETE /job/{jobDisplayId}/timeline/{timelineTaskId}
+    # Returns ServiceBaseResponse.
+    response = api.jobs.delete_timeline_task(TEST_JOB_DISPLAY_ID, str(TEST_TIMELINE_TASK_ID))
+
+    print(response)
+
 
 if __name__ == "__main__":
-    runner.run()
+    # Safe read examples run by default. Mutating examples are defined above
+    # for documentation copy-paste, but are not executed automatically.
+    print(tasks)
+    print(timeline_response)
+    print(task)
+    print(agent)

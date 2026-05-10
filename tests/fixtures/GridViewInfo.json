@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Inbound",
+    "dataKey": "inbound",
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "name": "In House",
+    "dataKey": "inhouse",
+    "isActive": true
+  },
+  {
+    "id": 3,
+    "name": "Outbound",
+    "dataKey": "outbound",
+    "isActive": true
+  },
+  {
+    "id": 4,
+    "name": "Local Deliveries",
+    "dataKey": "local-deliveries",
+    "isActive": true
+  },
+  {
+    "id": 5,
+    "name": "Recent Estimates",
+    "dataKey": "recentestimates",
+    "isActive": true
+  },
+  {
+    "id": 99,
+    "name": "Archived",
+    "dataKey": "archived",
+    "isActive": false
+  }
+]

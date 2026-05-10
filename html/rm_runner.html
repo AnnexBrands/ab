@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>AB SDK — ExampleRunner Removal Tracker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+       max-width: 1100px; margin: 0 auto; padding: 24px; color: #1a1a1a;
+       background: #fafafa; line-height: 1.55; }
+h1 { font-size: 1.6rem; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 0.9rem; margin-bottom: 24px; }
+h2 { font-size: 1.2rem; margin: 28px 0 10px; border-bottom: 2px solid #e0e0e0;
+     padding-bottom: 6px; }
+h3 { font-size: 1.02rem; margin: 18px 0 8px; }
+p { margin-bottom: 10px; }
+ul, ol { margin: 6px 0 12px 22px; }
+li { margin-bottom: 4px; font-size: 0.92rem; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 16px;
+        font-size: 0.9rem; }
+th, td { padding: 7px 11px; text-align: left; border: 1px solid #ddd; }
+th { background: #f3f3f3; font-weight: 600; }
+tr:hover { background: #fcfcfc; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 3px;
+         font-size: 0.74rem; font-weight: 600; letter-spacing: 0.2px; }
+.badge-done { background: #28a745; color: #fff; }
+.badge-stub { background: #6c757d; color: #fff; }
+.badge-todo { background: #ffc107; color: #333; }
+.badge-deprecated { background: #c757b8; color: #fff; }
+code { background: #eef0f2; padding: 1px 5px; border-radius: 2px;
+       font-size: 0.86em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+pre { background: #1e1e1e; color: #f1f1f1; padding: 12px 14px;
+      border-radius: 5px; overflow-x: auto; font-size: 0.84rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin: 8px 0 14px; }
+.note { background: #fff8e1; border-left: 4px solid #ffc107; padding: 10px 14px;
+        margin: 10px 0; border-radius: 3px; font-size: 0.92rem; }
+.warn { background: #f8d7da; border-left: 4px solid #dc3545; padding: 10px 14px;
+        margin: 10px 0; border-radius: 3px; font-size: 0.92rem; }
+.kv { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.86rem; }
+.checklist { list-style: none; margin-left: 4px; }
+.checklist li::before { content: '[ ] '; font-family: ui-monospace, monospace; color: #888; }
+.checklist li.done::before { content: '[x] '; color: #28a745; }
+.totals-row { font-weight: 700; background: #eef0f2 !important; }
+hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<h1>AB SDK &mdash; <code>ExampleRunner</code> Removal Tracker</h1>
+<p class='subtitle'>Hand-curated, operator-in-the-loop. <strong>Not auto-generated.</strong></p>
+
+<div class='warn'>
+<strong>Why this exists:</strong> the previous <code>generate_progress.py</code>
+output (<a href='progress.html'>progress.html</a>) papered over real drift between
+swagger, source-of-truth models, examples, fixtures, and tests. Generated
+scripts cannot enforce harmony &mdash; they just describe state. This page
+tracks the migration to plain example scripts where each conversion forces
+a real reconciliation between the five artefacts.
+</div>
+
+<h2>Goal</h2>
+<ol>
+  <li>Deprecate <code>examples/_runner.py</code> (the <code>ExampleRunner</code>
+      indirection).</li>
+  <li>Convert each example file in <code>examples/</code> into a plain SDK
+      script of the form
+      <code>from ab import ABConnectAPI; api = ABConnectAPI(env='staging')</code>
+      followed by direct method calls.</li>
+  <li>Each conversion must include:
+      <ul>
+        <li>a <strong>fixture</strong> capture path (the script writes
+            <code>tests/fixtures/&lt;Model&gt;.json</code>);</li>
+        <li>a <strong>unit test</strong> with a mocked <code>HttpClient</code>
+            that locks the wire-level call shape (route, params/body keys);</li>
+        <li>an <strong>integration test</strong> in <code>tests/integration/</code>
+            that documents real-world behaviour, including divergences from
+            swagger;</li>
+        <li>any newly discovered <strong>forward references</strong> between
+            endpoints (output of one feeds input of another) explicitly
+            documented in the example and asserted in tests.</li>
+      </ul>
+  </li>
+  <li>Once an example is converted, the corresponding row below moves from
+      <span class='badge badge-stub'>stub</span> to
+      <span class='badge badge-done'>done</span>.</li>
+</ol>
+
+<h2>Reference conversion: <code>dashboard</code></h2>
+
+<p>The <code>dashboard</code> group is the first endpoint to be fully
+converted under the new methodology. Treat it as the template for every
+other group.</p>
+
+<h3>What was produced</h3>
+<ul>
+  <li><code>examples/dashboard.py</code> &mdash; plain SDK script. No runner.</li>
+  <li><code>examples/constants.py::TEST_VIEW_ID</code> &mdash; staging view ID
+      sourced from the discovery chain.</li>
+  <li><code>tests/fixtures/GridViewInfo.json</code> &mdash; six representative
+      view rows shaped to swagger <code>GridViewDetails</code>.</li>
+  <li><code>tests/unit/test_dashboard.py</code> &mdash; 15 wire-level tests
+      with a mocked <code>HttpClient</code>.</li>
+  <li><code>tests/integration/test_dashboard.py</code> &mdash; 3 live tests
+      covering the no-params default and the <code>gridviews &rarr; get</code>
+      chain.</li>
+  <li><code>ab/api/models/dashboard.py::GridViewInfo</code> &mdash; fields
+      realigned to swagger <code>GridViewDetails</code>
+      (<code>id</code>, <code>name</code>, <code>dataKey</code>,
+      <code>isActive</code>, plus optional sp metadata). Previously had
+      <code>isDefault</code> which is not in swagger.</li>
+</ul>
+
+<h3>Operator-in-the-loop discovery sequence</h3>
+
+<p>This is the loop the operator follows when capturing or refreshing
+the dashboard fixture. The same loop becomes the test
+<code>test_grid_views_chain_to_get</code>.</p>
+
+<ol>
+  <li>Call <code>api.dashboard.get_grid_views()</code> &mdash; returns
+      <code>List[GridViewInfo]</code>.</li>
+  <li>From that list, pick the entry whose <code>id</code> matches the
+      view you want; ensure <code>is_active</code> is true.</li>
+  <li>Set <code>TEST_VIEW_ID = &lt;id&gt;</code> in
+      <code>examples/constants.py</code>.</li>
+  <li>Call <code>api.dashboard.get(view_id=TEST_VIEW_ID, company_id=TEST_COMPANY_ID)</code>
+      &mdash; returns <code>DashboardSummary</code>.</li>
+  <li>Capture <code>tests/fixtures/DashboardSummary.json</code> by running
+      <code>python -m examples.dashboard</code>.</li>
+</ol>
+
+<h3>Forward references</h3>
+<table>
+  <tr><th>Producer</th><th>Field</th><th>Consumer</th><th>Field</th></tr>
+  <tr>
+    <td><code>GET /dashboard/gridviews</code> &rarr; <code>GridViewInfo</code></td>
+    <td><code>id</code> <span class='kv'>(int)</span></td>
+    <td><code>GET /dashboard</code> &rarr; <code>DashboardParams</code></td>
+    <td><code>view_id</code> <span class='kv'>(int)</span></td>
+  </tr>
+</table>
+
+<h3>Documented divergences from swagger</h3>
+<div class='note'>
+  <strong>Swagger says</strong>: <code>GET /dashboard</code> takes
+  <code>viewId</code> and <code>companyId</code> as query parameters.
+  Both are optional in the spec.<br>
+  <strong>Live API actually does</strong>: when <code>companyId</code> is
+  omitted, the API substitutes the active user's primary company &mdash; so
+  the call succeeds rather than 4xx-ing. The test
+  <code>test_no_params_does_not_fail_and_sends_empty_query</code>
+  (unit) and <code>test_get_no_params_defaults_to_user_primary_company</code>
+  (integration) lock this in.
+</div>
+
+<h3>Canonical example shape</h3>
+<pre>from ab import ABConnectAPI
+from examples.constants import TEST_COMPANY_ID, TEST_VIEW_ID
+
+api = ABConnectAPI(env="staging")
+
+# Discovery chain (only needed when TEST_VIEW_ID is unknown):
+views = api.dashboard.get_grid_views()  # -&gt; List[GridViewInfo]
+
+# Documented call (swagger contract: both params optional):
+summary = api.dashboard.get(view_id=TEST_VIEW_ID, company_id=TEST_COMPANY_ID)
+
+# Documented divergence (no-params is supported in practice):
+default_summary = api.dashboard.get()</pre>
+
+<h2>Migration status by endpoint group</h2>
+
+<p>23 discovered groups, 208 methods total. Only <code>dashboard</code> has
+been converted under the new methodology. All other rows are stubs &mdash;
+they still depend on <code>examples/_runner.py</code> and have not yet been
+audited for swagger / fixture / test alignment.</p>
+
+<table>
+  <tr>
+    <th>Group</th>
+    <th>Methods</th>
+    <th>Example file</th>
+    <th>Status</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td><strong>dashboard</strong></td>
+    <td>9</td>
+    <td><code>examples/dashboard.py</code></td>
+    <td><span class='badge badge-done'>done</span></td>
+    <td>Reference conversion. 15 unit + 3 integration tests, fixture, forward ref documented.</td>
+  </tr>
+  <tr><td>address</td><td>2</td><td><code>examples/address.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>autoprice</td><td>2</td><td><code>examples/autoprice.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>catalog</td><td>5</td><td><code>examples/catalog.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>commodities</td><td>5</td><td><code>examples/commodities.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>commodity_maps</td><td>5</td><td>(none)</td><td><span class='badge badge-todo'>todo</span></td><td>Endpoint group exists; no example file present.</td></tr>
+  <tr><td>companies</td><td>24</td><td><code>examples/companies.py</code> + <code>companies_extended.py</code> + <code>companies_elabel_compare.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Largest single conversion; expect multiple forward refs (brand tree, geo settings, packaging).</td></tr>
+  <tr><td>contacts</td><td>12</td><td><code>examples/contacts.py</code> + <code>contacts_extended.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>documents</td><td>2</td><td><code>examples/documents.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>forms</td><td>1</td><td><code>examples/forms.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>jobs</td><td>56</td><td><code>examples/jobs.py</code> (+ extras)</td><td><span class='badge badge-stub'>stub</span></td><td>Largest group. <code>examples/timeline.py</code> already partially converted (top-level live calls, no runner).</td></tr>
+  <tr><td>lookup</td><td>16</td><td><code>examples/lookup.py</code> + <code>lookup_extended.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>lots</td><td>5</td><td><code>examples/lots.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner. Note 036-lotsdb migration prep.</td></tr>
+  <tr><td>notes</td><td>4</td><td><code>examples/notes.py</code> + <code>notes_global.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>partners</td><td>3</td><td><code>examples/partners.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>payments</td><td>10</td><td><code>examples/payments.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>reports</td><td>8</td><td><code>examples/reports.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>rfq</td><td>7</td><td><code>examples/rfq.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>sellers</td><td>4</td><td><code>examples/sellers.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>shipments</td><td>14</td><td><code>examples/shipments.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>users</td><td>4</td><td><code>examples/users.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr><td>views</td><td>8</td><td><code>examples/views.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Note: <code>GridViewDetails</code> in <code>ab/api/models/views.py</code> diverges from swagger; revisit during conversion.</td></tr>
+  <tr><td>web2lead</td><td>2</td><td><code>examples/web2lead.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Uses ExampleRunner.</td></tr>
+  <tr class='totals-row'>
+    <td>Total</td><td>208</td><td>&mdash;</td>
+    <td>1 done / 21 stub / 1 todo</td><td>&mdash;</td>
+  </tr>
+</table>
+
+<h2>Per-conversion checklist (operator drives)</h2>
+<p>For each row above, the operator must:</p>
+<ul class='checklist'>
+  <li>Confirm every method's swagger entry vs. its <code>Route(...)</code> call (path, request_model, response_model, params_model). Patch source-of-truth before continuing.</li>
+  <li>Replace the example file with a plain script: top-level <code>api = ABConnectAPI(env="staging")</code> followed by named call sections.</li>
+  <li>Add any missing constants to <code>examples/constants.py</code> (sourced from real fixtures, not invented).</li>
+  <li>Capture or refresh response fixtures under <code>tests/fixtures/</code>.</li>
+  <li>Add a <code>tests/unit/test_&lt;group&gt;.py</code> with a mocked HttpClient asserting wire-level call shape (route + params/body alias keys).</li>
+  <li>Add a <code>tests/integration/test_&lt;group&gt;.py</code> covering no-params behaviour, the discovery chain, and any documented swagger divergence.</li>
+  <li>Document forward references in the example docstring and assert at least one in tests.</li>
+  <li>Move the row in this file from <code>stub</code> to <code>done</code>.</li>
+</ul>
+
+<h2>Artefact links</h2>
+<ul>
+  <li>Reference example: <code>examples/dashboard.py</code></li>
+  <li>Reference unit tests: <code>tests/unit/test_dashboard.py</code></li>
+  <li>Reference integration tests: <code>tests/integration/test_dashboard.py</code></li>
+  <li>Reference fixture: <code>tests/fixtures/GridViewInfo.json</code></li>
+  <li>Public docs (forthcoming): <a href='https://ab-sdk.readthedocs.io/'>https://ab-sdk.readthedocs.io/</a> &mdash; configured by <code>.readthedocs.yaml</code></li>
+  <li>Deprecated runner: <code>examples/_runner.py</code> &mdash; emits a <code>DeprecationWarning</code> on import.</li>
+  <li>Old generated report: <a href='progress.html'>progress.html</a> &mdash; retained for historical context only; do not regenerate.</li>
+</ul>
+
+</body>
+</html>
