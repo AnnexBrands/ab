@@ -51,6 +51,21 @@ class DashboardItem(ResponseModel):
     actual: Optional[float] = Field(None, description="Actual labor hours")
     item_count: Optional[int] = Field(None, alias="item_Count", description="Item count")
 
+    def cli_format(self) -> str:
+        """One-line pretty row used by the CLI and examples (vs. JSON)."""
+        ship = self.ship_by.strftime("%Y-%m-%d %H:%M") if self.ship_by else "—"
+        job = "—" if self.job_display_id is None else str(self.job_display_id)
+        step = "—" if self.step is None else str(self.step)
+        return (
+            f"job={job:<8} "
+            f"loc={(self.location or '—'):<6} "
+            f"customer={(self.customer or '—')[:30]:<30} "
+            f"step={step:<3} "
+            f"next={(self.next or '—')[:14]:<14} "
+            f"ship_by={ship:<16} "
+            f"carrier={(self.carrier or '—')[:18]}"
+        )
+
 
 class DashboardSummary(ResponseModel):
     """Aggregated dashboard data — GET /dashboard."""
@@ -65,6 +80,27 @@ class DashboardSummary(ResponseModel):
         None, alias="recentEstimatesCount", description="Recent estimates count",
     )
     data: Optional[List[DashboardItem]] = Field(None, description="Grid view rows")
+
+    def cli_format(self) -> str:
+        """Pretty summary line + one line per row (vs. JSON).
+
+        ``data`` is the active grid view's rows; counts are populated only
+        when the API includes them. The header surfaces both so it's clear
+        which fields were returned.
+        """
+        rows = self.data or []
+        header = (
+            f"inbound={self.inbound_count} "
+            f"outbound={self.outbound_count} "
+            f"in_house={self.in_house_count} "
+            f"local_deliveries={self.local_deliveries_count} "
+            f"recent_estimates={self.recent_estimates_count} "
+            f"rows={len(rows)}"
+        )
+        if not rows:
+            return header
+        body = "\n".join(item.cli_format() for item in rows)
+        return f"{header}\n{body}"
 
 
 class GridViewState(ResponseModel):
@@ -97,3 +133,13 @@ class GridViewInfo(ResponseModel):
     sp_columns: Optional[List[dict]] = Field(
         None, alias="spColumns", description="Stored procedure column metadata",
     )
+
+    def cli_format(self) -> str:
+        """One-line pretty row used by the CLI and examples (vs. JSON)."""
+        id_str = "—" if self.id is None else str(self.id)
+        return (
+            f"id={id_str:<5} "
+            f"name={self.name!r:<30} "
+            f"dataKey={self.data_key!r:<20} "
+            f"active={self.is_active}"
+        )

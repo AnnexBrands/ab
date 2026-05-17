@@ -16,6 +16,15 @@ from ab.cli.discovery import MethodInfo, ParamInfo
 
 _RST_ROLE_RE = re.compile(r":\w+:`([^`]+)`")
 
+# Help tokens recognised at every level of the CLI. Includes the bare-word
+# forms so users don't have to type dashes (or quote a shell-glob ``?``).
+HELP_TOKENS: frozenset[str] = frozenset({"?", "-h", "help", "--help"})
+
+
+def is_help_token(arg: str) -> bool:
+    """Return True if *arg* is one of the recognised help tokens."""
+    return arg in HELP_TOKENS
+
 
 def _strip_rst(text: str) -> str:
     """Remove RST role markup from docstrings.
@@ -241,7 +250,7 @@ def parse_cli_args(
 
     Returns (positional_args, keyword_args).
     """
-    if "--help" in args:
+    if any(is_help_token(a) for a in args):
         print_method_help(method)
         sys.exit(0)
 

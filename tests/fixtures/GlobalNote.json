@@ -1,0 +1,29 @@
+[
+  {
+    "noteID": 5766382,
+    "isImportant": false,
+    "comments": "Company merged (860067) By Brett with Company ID 852949 on 10/26/2022",
+    "category": "bdff4ec5-0f8a-4745-8f74-4a6f53c69302",
+    "dueDate": null,
+    "jobId": null,
+    "crmContactId": null,
+    "contactId": null,
+    "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+    "userID": null,
+    "importance": null,
+    "author": "Brett",
+    "dueDates": null,
+    "categoryName": "Event Log",
+    "createdDate": "2022-10-26T08:44:35.543000",
+    "createdBy": "e8e9b469-3d67-44db-8f78-d768433cd498",
+    "modifiedBy": null,
+    "modifiyDate": null,
+    "franchiseID": null,
+    "isCompleted": false,
+    "isGlobal": false,
+    "isShared": false,
+    "assignedContactNames": null,
+    "assignedUsers": [],
+    "isJobLevel": false
+  }
+]

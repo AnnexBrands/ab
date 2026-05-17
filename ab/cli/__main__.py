@@ -19,7 +19,7 @@ from typing import Any
 from ab.cli.aliases import ALIASES
 from ab.cli.discovery import EndpointInfo, MethodInfo, discover_endpoints_from_class
 from ab.cli.formatter import format_result
-from ab.cli.parser import parse_cli_args
+from ab.cli.parser import HELP_TOKENS, is_help_token, parse_cli_args
 
 # ------------------------------------------------------------------
 # Resolution helpers (mirrors examples/__main__.py semantics)
@@ -194,11 +194,16 @@ def main(env: str | None = None) -> None:
     """
     args = sys.argv[1:]
 
-    # --list at top level doesn't need credentials
-    if not args or args == ["--list"]:
+    # Pop the global --json flag before per-method arg parsing sees it.
+    as_json = "--json" in args
+    if as_json:
+        args = [a for a in args if a != "--json"]
+
+    # --list / help at top level don't need credentials
+    if not args or args == ["--list"] or (len(args) == 1 and is_help_token(args[0])):
         registry = discover_endpoints_from_class()
         _list_all(registry)
-        return
+        sys.exit(0)
 
     raw = args[0]
 
@@ -219,16 +224,31 @@ def main(env: str | None = None) -> None:
         sys.exit(1)
     mod_name, endpoint_info = resolved
 
-    # module with no method → list methods (no credentials needed)
-    if method_part is None and (not rest or rest == ["--list"]):
+    # Subgroup resolution (space syntax): `ab jobs note list` -> mod=jobs.note,
+    # method=list. The check fires only when no method has been specified
+    # yet (no dot syntax) and the first remaining token names a registered
+    # sub-endpoint under the current module.
+    if method_part is None and rest:
+        sub_candidate = f"{mod_name}.{rest[0]}"
+        if sub_candidate in registry:
+            mod_name = sub_candidate
+            endpoint_info = registry[sub_candidate]
+            rest = rest[1:]
+
+    # module with no method (or a bare help token) → list methods (no creds needed)
+    if method_part is None and (
+        not rest
+        or rest == ["--list"]
+        or (len(rest) == 1 and is_help_token(rest[0]))
+    ):
         _list_methods(endpoint_info)
-        return
+        sys.exit(0)
 
     # Resolve method name
     method_name = method_part or (rest[0] if rest else None)
     if method_name is None:
         _list_methods(endpoint_info)
-        return
+        sys.exit(0)
 
     # Remove method name from rest if it came from space syntax
     if method_part is None and rest:
@@ -238,8 +258,8 @@ def main(env: str | None = None) -> None:
     if method is None:
         sys.exit(1)
 
-    # --help doesn't need credentials
-    if "--help" in rest:
+    # Help tokens (?, -h, help, --help) — no credentials needed.
+    if any(is_help_token(a) for a in rest):
         from ab.cli.parser import print_method_help
 
         print_method_help(method, module_name=mod_name)
@@ -251,8 +271,11 @@ def main(env: str | None = None) -> None:
     # Now we need a live client — create it
     api = _create_api(env)
 
-    # Get the live endpoint instance and bound method
-    live_endpoint = getattr(api, mod_name)
+    # Get the live endpoint instance (walking dotted path for subgroups
+    # such as "jobs.note" -> api.jobs.note) and the bound method.
+    live_endpoint: Any = api
+    for part in mod_name.split("."):
+        live_endpoint = getattr(live_endpoint, part)
     live_method = getattr(live_endpoint, method.name)
 
     # Handle --body for JSON request bodies
@@ -272,5 +295,5 @@ def main(env: str | None = None) -> None:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(2)
 
-    # Format and print result
-    print(format_result(result))
+    # Format and print result (pretty by default; --json forces JSON)
+    print(format_result(result, as_json=as_json))

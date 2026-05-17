@@ -10,6 +10,102 @@ The Jobs endpoint handles two API surfaces: ACPortal and ABC.
 Access it via `api.jobs` for direct endpoint methods, `api.jobs.tasks` for timeline helpers,
 and `api.jobs.agent` for agent assignment helpers.
 
+## Subgroups
+
+Job-scoped operations are organised into subgroups named for their swagger
+tag (lowercase, with `Job` dropped and snake_case applied to multi-word
+tags). Each subgroup is a `BaseEndpoint` instance attached to
+`JobsEndpoint`:
+
+| Attribute | Swagger tag | Class | Methods |
+|---|---|---|---|
+| `api.jobs.note` | `JobNote` | {class}`ab.api.endpoints.jobs.note.JobNoteEndpoint` | 4 |
+| `api.jobs.on_hold` | `JobOnHold` | {class}`ab.api.endpoints.jobs.on_hold.JobOnHoldEndpoint` | 10 |
+| | | Example: [`examples/jobs/on_hold.py`](https://github.com/AnnexBrands/ab/blob/main/examples/jobs/on_hold.py) — create / assign-to-user / email / resolve chain. | |
+| `api.jobs.form` | `JobForm` + `InvoiceJobForm` + `UsarJobForm` | {class}`ab.api.endpoints.jobs.form.JobFormEndpoint` | 20 |
+| `api.jobs.timeline` | `JobTimeline` | {class}`ab.api.endpoints.jobs.timeline.JobTimelineEndpoint` | 9 |
+| `api.jobs.email` | `JobEmail` | {class}`ab.api.endpoints.jobs.email.JobEmailEndpoint` | 4 |
+| `api.jobs.sms` | `JobSms` | {class}`ab.api.endpoints.jobs.sms.JobSmsEndpoint` | 4 |
+| `api.jobs.freight_providers` | `JobFreightProviders` | {class}`ab.api.endpoints.jobs.freight_providers.JobFreightProvidersEndpoint` | 3 |
+| `api.jobs.parcel_items` | `JobParcelItems` | {class}`ab.api.endpoints.jobs.parcel_items.JobParcelItemsEndpoint` | 4 |
+| `api.jobs.tracking` | `JobTracking` | {class}`ab.api.endpoints.jobs.tracking.JobTrackingEndpoint` | 2 |
+| `api.jobs.status` | `JobStatus` | {class}`ab.api.endpoints.jobs.status.JobStatusEndpoint` | 1 |
+| `api.jobs.payment` | `JobPayment` | {class}`ab.api.endpoints.jobs.payment.JobPaymentEndpoint` | 10 |
+| `api.jobs.shipment` | `JobShipment` | {class}`ab.api.endpoints.jobs.shipment.JobShipmentEndpoint` | 11 |
+| `api.jobs.rfq` | `JobRfq` | {class}`ab.api.endpoints.jobs.rfq.JobRfqEndpoint` | 2 |
+
+### Migration notes
+
+- Legacy flat method names on `api.jobs.*` (`get_notes`, `list_on_hold`,
+  `get_timeline_response`, `send_email`, `list_sms`, `get_tracking`,
+  `set_quote_status`, `list_rfqs`, …) all remain as
+  **deprecation shims** that emit a `DeprecationWarning` and forward to
+  the subgroup method.
+- `api.forms` is now a deprecation shim that forwards to `api.jobs.form`.
+- `api.payments` is now a deprecation shim that forwards to
+  `api.jobs.payment`.
+- `api.shipments` retains its 3 non-job-scoped methods (`get_shipment`,
+  `get_global_accessorials`, `get_shipment_document`) as canonical. The
+  11 job-scoped methods are now deprecation shims forwarding to
+  `api.jobs.shipment`.
+- `api.rfq` retains its 7 lifecycle methods unchanged; the 2 job-scoped
+  `/job/{id}/rfq/*` routes that used to live on `api.jobs.*` are now at
+  `api.jobs.rfq`.
+
+```{eval-rst}
+.. autoclass:: ab.api.endpoints.jobs.note.JobNoteEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.on_hold.JobOnHoldEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.form.JobFormEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.timeline.JobTimelineEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.email.JobEmailEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.sms.JobSmsEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.freight_providers.JobFreightProvidersEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.parcel_items.JobParcelItemsEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.tracking.JobTrackingEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.status.JobStatusEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.payment.JobPaymentEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.shipment.JobShipmentEndpoint
+   :members:
+   :undoc-members:
+
+.. autoclass:: ab.api.endpoints.jobs.rfq.JobRfqEndpoint
+   :members:
+   :undoc-members:
+```
+
 ## Endpoint Paths by Tag
 
 | Tag | Method | Path | Description |

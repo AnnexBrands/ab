@@ -209,7 +209,56 @@ def discover_endpoints_from_class() -> dict[str, EndpointInfo]:
             path_root=path_root,
         )
 
+        # Discover subgroups declared as class-level annotations whose type
+        # is a BaseEndpoint subclass. Register each under the namespaced
+        # name "<parent>.<sub>" so the CLI can dispatch "ab jobs note ...".
+        for sub_attr_name, sub_cls in _discover_subgroups(cls).items():
+            sub_methods = _extract_methods(sub_cls)
+            sub_method_routes = resolve_routes_for_class(sub_cls)
+            for sm in sub_methods:
+                if sm.name in sub_method_routes:
+                    sm.route = sub_method_routes[sm.name]
+
+            sub_name = f"{attr_name}.{sub_attr_name}"
+            endpoints[sub_name] = EndpointInfo(
+                name=sub_name,
+                endpoint_class=sub_cls,
+                methods=sub_methods,
+                aliases=[],
+                path_root=_compute_path_root(sub_method_routes),
+            )
+
     return endpoints
+
+
+def _discover_subgroups(parent_cls: type) -> dict[str, type]:
+    """Find class-level annotations whose type is a ``BaseEndpoint`` subclass.
+
+    Used to expose ``api.jobs.note``, ``api.jobs.on_hold``, etc. as
+    discoverable CLI endpoints with hierarchical names like ``jobs.note``.
+    """
+    from ab.api.base import BaseEndpoint
+
+    out: dict[str, type] = {}
+    try:
+        hints = parent_cls.__annotations__
+    except AttributeError:
+        return out
+    for name, ann in hints.items():
+        if name.startswith("_"):
+            continue
+        # Resolve string annotations against the class module's globals.
+        resolved = ann
+        if isinstance(ann, str):
+            mod = getattr(parent_cls, "__module__", None)
+            if mod:
+                import importlib
+
+                module = importlib.import_module(mod)
+                resolved = getattr(module, ann, None)
+        if isinstance(resolved, type) and issubclass(resolved, BaseEndpoint):
+            out[name] = resolved
+    return out
 
 
 def _compute_path_root(method_routes: dict[str, Route]) -> str | None:

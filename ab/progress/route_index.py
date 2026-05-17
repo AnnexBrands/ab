@@ -39,15 +39,28 @@ def normalize_path(path: str) -> str:
 
 
 def _collect_routes() -> list[Route]:
-    """Import all endpoint modules and collect Route instances."""
+    """Import all endpoint modules (including subpackage modules like
+    ``ab.api.endpoints.jobs.note``) and collect Route instances.
+    """
     routes: list[Route] = []
-    for _importer, mod_name, _ispkg in pkgutil.iter_modules(endpoints_pkg.__path__):
-        module = importlib.import_module(f"ab.api.endpoints.{mod_name}")
+    seen: set[int] = set()
+    for module in _iter_endpoint_modules(endpoints_pkg):
         for attr_name in dir(module):
             obj = getattr(module, attr_name)
-            if isinstance(obj, Route):
+            if isinstance(obj, Route) and id(obj) not in seen:
                 routes.append(obj)
+                seen.add(id(obj))
     return routes
+
+
+def _iter_endpoint_modules(pkg):
+    """Yield every module under *pkg* recursively."""
+    for _importer, mod_name, ispkg in pkgutil.iter_modules(pkg.__path__):
+        full = f"{pkg.__name__}.{mod_name}"
+        module = importlib.import_module(full)
+        yield module
+        if ispkg:
+            yield from _iter_endpoint_modules(module)
 
 
 def index_all_routes() -> dict[tuple[str, str], RouteInfo]:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import List, Optional
 
 from pydantic import Field
@@ -1107,6 +1108,22 @@ class ExtendedOnHoldInfo(ResponseModel):
     start_date: Optional[str] = Field(None, alias="startDate", description="Hold start date")
     created_by: Optional[str] = Field(None, alias="createdBy", description="Creator name")
 
+    def cli_format(self) -> str:
+        """One-line pretty row used by the CLI and examples (vs. JSON)."""
+        hid = "—" if self.id is None else str(self.id)
+        flag = "✓" if (self.resolved_date or (self.status or "").lower() == "resolved") else "!"
+        reason = (self.reason or "—")[:18]
+        follow_up = (self.follow_up_user or "—")[:18]
+        comment = (self.comment or self.description or "").replace("\n", " ")[:50]
+        return (
+            f"id={hid:<5} "
+            f"{flag} "
+            f"reason={reason:<18} "
+            f"followup={follow_up:<18} "
+            f"due={(self.follow_up_date or '—'):<19} "
+            f"comment={comment!r}"
+        )
+
 
 class OnHoldDetails(ResponseModel):
     """Full on-hold detail — GET /job/{jobDisplayId}/onhold/{id}."""
@@ -1121,12 +1138,43 @@ class OnHoldDetails(ResponseModel):
 
 
 class SaveOnHoldRequest(RequestModel):
-    """Body for POST/PUT /job/{jobDisplayId}/onhold."""
+    """Body for ``POST /job/{jobDisplayId}/onhold`` **and**
+    ``PUT /job/{jobDisplayId}/onhold/{onHoldId}`` **and**
+    ``PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve``.
 
-    reason: Optional[str] = Field(None, description="Hold reason")
-    description: Optional[str] = Field(None, description="Hold description")
-    follow_up_contact_id: Optional[str] = Field(None, alias="followUpContactId", description="Follow-up contact ID")
-    follow_up_date: Optional[str] = Field(None, alias="followUpDate", description="Follow-up date")
+    Matches swagger ``SaveOnHoldRequest`` -- a single schema covers
+    create / update / resolve. The legacy
+    :class:`ResolveOnHoldRequest` is an alias of this class.
+
+    Required: ``reason_id`` (UUID) + ``responsible_party_type_id`` (UUID).
+
+    Sourcing UUIDs:
+
+    * ``reason_id``  -> ``api.lookup.get_by_key("OnHoldReason")``
+    * ``responsible_party_type_id`` -> ``api.lookup.get_by_key("ResponsibleParty")``
+    * ``next_step_id`` (optional) -> ``api.lookup.get_by_key("OnHoldNextStep")``
+    * ``resolved_code_id`` (optional) -> ``api.lookup.get_by_key("OnHoldResolvedCode")``
+    * ``assigned_to_id`` -> a ``contactId`` from
+      :meth:`~ab.api.endpoints.jobs.on_hold.JobOnHoldEndpoint.list_followup_users`.
+    """
+
+    reason_id: str = Field(..., alias="reasonId", description="Hold reason UUID (required)")
+    responsible_party_type_id: str = Field(
+        ..., alias="responsiblePartyTypeId", description="Responsible-party-type UUID (required)",
+    )
+    comment: Optional[str] = Field(
+        None, description="Free-text comment (<=1024 chars)", max_length=1024,
+    )
+    next_step_id: Optional[str] = Field(None, alias="nextStepId", description="Next-step lookup UUID")
+    due_date: Optional[datetime] = Field(None, alias="dueDate", description="Follow-up due date")
+    assigned_to_id: Optional[int] = Field(
+        None, alias="assignedToId", description="Contact ID assigned to follow up (int)",
+    )
+    resolved_date: Optional[datetime] = Field(None, alias="resolvedDate", description="Resolution timestamp")
+    resolved_code_id: Optional[str] = Field(
+        None, alias="resolvedCodeId", description="Resolution code lookup UUID",
+    )
+    start_date: Optional[datetime] = Field(None, alias="startDate", description="Hold start timestamp")
 
 
 class SaveOnHoldResponse(ResponseModel):
@@ -1135,12 +1183,18 @@ class SaveOnHoldResponse(ResponseModel):
     on_hold_id: Optional[str] = Field(None, alias="onHoldId", description="On-hold record ID")
     status: Optional[str] = Field(None, description="Operation status")
 
+    def cli_format(self) -> str:
+        return f"onHoldId={self.on_hold_id!r} status={self.status!r}"
+
 
 class ResolveJobOnHoldResponse(ResponseModel):
     """On-hold resolution response."""
 
     resolved: Optional[bool] = Field(None, description="Whether resolved successfully")
     status: Optional[str] = Field(None, description="Resolution status")
+
+    def cli_format(self) -> str:
+        return f"resolved={self.resolved} status={self.status!r}"
 
 
 class SaveOnHoldDatesModel(RequestModel):
@@ -1158,6 +1212,16 @@ class OnHoldUser(ResponseModel):
     email: Optional[str] = Field(None, description="User email")
     full_name: Optional[str] = Field(None, alias="fullName", description="Full display name")
     job_relation: Optional[str] = Field(None, alias="jobRelation", description="Relation to the job (e.g. Pickup Agent, Owner)")
+
+    def cli_format(self) -> str:
+        """One-line pretty row used by the CLI and examples (vs. JSON)."""
+        cid = "—" if self.contact_id is None else str(self.contact_id)
+        return (
+            f"contactId={cid:<8} "
+            f"fullName={(self.full_name or '—')!r:<28} "
+            f"email={(self.email or '—')!r:<30} "
+            f"relation={self.job_relation!r}"
+        )
 
 
 class OnHoldNoteDetails(ResponseModel):
@@ -1301,10 +1365,10 @@ class OnHoldCommentRequest(RequestModel):
     comment: Optional[str] = Field(None, description="Comment text")
 
 
-class ResolveOnHoldRequest(RequestModel):
-    """Body for PUT /job/{jobDisplayId}/onhold/{onHoldId}/resolve."""
-
-    resolution_notes: Optional[str] = Field(None, alias="resolutionNotes", description="Resolution notes")
+# Resolve uses the same swagger schema as create / update. Legacy alias
+# kept for backwards-compatible imports; the canonical class is
+# :class:`SaveOnHoldRequest` declared above.
+ResolveOnHoldRequest = SaveOnHoldRequest
 
 
 class SendEmailRequest(RequestModel):
