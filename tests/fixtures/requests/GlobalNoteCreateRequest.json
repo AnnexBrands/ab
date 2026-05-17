@@ -1,7 +1,12 @@
 {
-  "comment": null,
-  "category": null,
-  "jobId": null,
-  "contactId": null,
-  "companyId": null
+  "comments": "Customer requested expedited pickup before 1700 PST.",
+  "category": "5cf9b0f5-a5fa-43f1-b13c-1d44e8b2ac3b",
+  "isImportant": true,
+  "jobId": "35e2ed80-d477-ee11-ac1c-0a15ce13c9bf",
+  "companyId": "93179b52-3da9-e311-b6f8-000c298b59ee",
+  "crmContactId": 30760,
+  "sendNotification": true,
+  "assignedUsers": [{"id": 1271, "fullName": "Alice Operator"}],
+  "isGlobal": false,
+  "isShared": true
 }

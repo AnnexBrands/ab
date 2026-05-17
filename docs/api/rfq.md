@@ -1,5 +1,13 @@
 # RFQ
 
+```{note}
+``api.rfq`` covers the 7 ``/rfq/{rfqId}/*`` lifecycle methods (get,
+accept, decline, cancel, accept_winner, add_comment, get_for_job).
+
+The 2 job-scoped ``/job/{jobDisplayId}/rfq/*`` routes now live at
+{class}`ab.api.endpoints.jobs.rfq.JobRfqEndpoint` (``api.jobs.rfq``).
+```
+
 ```{eval-rst}
 .. autoclass:: ab.api.endpoints.rfq.RFQEndpoint
    :members:

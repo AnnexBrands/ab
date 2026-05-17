@@ -82,16 +82,16 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /rfq/{rfqId}/comment | POST | api.rfq.add_comment | AcceptModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/rfq | GET | api.jobs.list_rfqs | — | List[QuoteRequestDisplayInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} | GET | api.jobs.get_rfq_status | — | int | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/onhold | GET | api.jobs.list_on_hold | — | List[ExtendedOnHoldInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/onhold | POST | api.jobs.create_on_hold | SaveOnHoldRequest | SaveOnHoldResponse | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /job/{jobDisplayId}/onhold | DELETE | api.jobs.delete_on_hold | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — destructive |
-| /job/{jobDisplayId}/onhold/{id} | GET | api.jobs.get_on_hold | — | OnHoldDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /job/{jobDisplayId}/onhold/{onHoldId} | PUT | api.jobs.update_on_hold | SaveOnHoldRequest | SaveOnHoldResponse | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /job/{jobDisplayId}/onhold/followupuser/{contactId} | GET | api.jobs.get_on_hold_followup_user | — | OnHoldUser | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/onhold/followupusers | GET | api.jobs.list_on_hold_followup_users | — | List[OnHoldUser] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/onhold/{onHoldId}/comment | POST | api.jobs.add_on_hold_comment | OnHoldCommentRequest | OnHoldNoteDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /job/{jobDisplayId}/onhold/{onHoldId}/dates | PUT | api.jobs.update_on_hold_dates | SaveOnHoldDatesModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/onhold/{onHoldId}/resolve | PUT | api.jobs.resolve_on_hold | ResolveOnHoldRequest | ResolveJobOnHoldResponse | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /job/{jobDisplayId}/onhold | GET | api.jobs.on_hold.list | — | List[ExtendedOnHoldInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008; subgroup moved to api.jobs.on_hold |
+| /job/{jobDisplayId}/onhold | POST | api.jobs.on_hold.create | SaveOnHoldRequest | SaveOnHoldResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger (reasonId+responsiblePartyTypeId required); example covers create/assign/email/resolve chain |
+| /job/{jobDisplayId}/onhold | DELETE | api.jobs.on_hold.delete | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — destructive |
+| /job/{jobDisplayId}/onhold/{id} | GET | api.jobs.on_hold.get | — | OnHoldDetails | PASS | PASS | PASS | PASS | PASS | PASS | complete | hand-seeded fixture matching real shape |
+| /job/{jobDisplayId}/onhold/{onHoldId} | PUT | api.jobs.on_hold.update | SaveOnHoldRequest | SaveOnHoldResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | shares SaveOnHoldRequest with create |
+| /job/{jobDisplayId}/onhold/followupuser/{contactId} | GET | api.jobs.on_hold.get_followup_user | — | OnHoldUser | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/onhold/followupusers | GET | api.jobs.on_hold.list_followup_users | — | List[OnHoldUser] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/onhold/{onHoldId}/comment | POST | api.jobs.on_hold.add_comment | OnHoldCommentRequest | OnHoldNoteDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | comment endpoint not yet exercised by example |
+| /job/{jobDisplayId}/onhold/{onHoldId}/dates | PUT | api.jobs.on_hold.update_dates | SaveOnHoldDatesModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/onhold/{onHoldId}/resolve | PUT | api.jobs.on_hold.resolve | SaveOnHoldRequest | ResolveJobOnHoldResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | swagger reuses SaveOnHoldRequest for resolve; ResolveOnHoldRequest is now an alias |
 | /reports/insurance | POST | api.reports.insurance | InsuranceReportRequest | List[InsuranceReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /reports/sales | POST | api.reports.sales | SalesForecastReportRequest | List[SalesForecastReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /reports/sales/summary | POST | api.reports.sales_summary | SalesForecastSummaryRequest | SalesForecastSummary | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
@@ -172,10 +172,10 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/freightproviders | POST | api.jobs.save_freight_providers | ShipmentPlanProvider | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote | POST | api.jobs.get_freight_provider_rate_quote | RateQuoteRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/freightitems | POST | api.jobs.add_freight_items | FreightItemsRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /note | GET | api.notes.list | — | List[GlobalNote] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /note | POST | api.notes.create | GlobalNoteCreateRequest | GlobalNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /note/{id} | PUT | api.notes.update | GlobalNoteUpdateRequest | GlobalNote | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /note/suggestUsers | GET | api.notes.suggest_users | — | List[SuggestedUser] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /note | GET | api.notes.list | — | List[GlobalNote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger Notes; cli_format added; fixture seeded |
+| /note | POST | api.notes.create | NoteRequest | GlobalNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | shared NoteModel schema with PUT; comments+category required |
+| /note/{id} | PUT | api.notes.update | NoteRequest | GlobalNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | shared schema with POST; partial updates not supported by API |
+| /note/suggestUsers | GET | api.notes.suggest_users | — | List[SuggestedUser] | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger SuggestedContactEntity (id:int, fullName) |
 | /partner | GET | api.partners.list | — | List[Partner] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /partner/{id} | GET | api.partners.get | — | Partner | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /partner/search | POST | api.partners.search | PartnerSearchRequest | List[Partner] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |

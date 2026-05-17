@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import io
+import json
 import sys
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 from ab.cli.discovery import MethodInfo, ParamInfo, discover_endpoints_from_class
 from ab.cli.parser import (
@@ -136,3 +140,97 @@ class TestDiscovery:
         get_method = next((m for m in jobs.methods if m.name == "get"), None)
         assert get_method is not None
         assert get_method.return_annotation == "Job"
+
+
+# ---------------------------------------------------------------------------
+# --json flag round-trip
+# ---------------------------------------------------------------------------
+
+
+def _run_cli(argv: list[str], result: object, capsys) -> str:
+    """Drive ``ab.cli.__main__.main`` with a mocked endpoint return value."""
+    from ab.cli.__main__ import main
+
+    api = MagicMock()
+    api.dashboard.get.return_value = result
+
+    with patch("ab.cli.__main__._create_api", return_value=api):
+        with patch.object(sys, "argv", ["ab", *argv]):
+            main()
+    return capsys.readouterr().out
+
+
+class TestJsonFlag:
+    """The ``--json`` flag forces JSON output; default uses ``cli_format``."""
+
+    def test_default_uses_cli_format(self, capsys):
+        from ab.api.models.dashboard import DashboardSummary
+
+        summary = DashboardSummary(inboundCount=3, outboundCount=7, inHouseCount=2)
+        out = _run_cli(["dashboard", "get"], summary, capsys)
+        assert "inbound=3" in out
+        # No JSON formatting in the default path.
+        assert "{" not in out
+
+    def test_json_flag_emits_json(self, capsys):
+        from ab.api.models.dashboard import DashboardSummary
+
+        summary = DashboardSummary(inboundCount=3, outboundCount=7)
+        out = _run_cli(["dashboard", "get", "--json"], summary, capsys)
+        data = json.loads(out)
+        assert data["inboundCount"] == 3
+        assert data["outboundCount"] == 7
+
+    def test_json_flag_position_independent(self, capsys):
+        from ab.api.models.dashboard import DashboardSummary
+
+        summary = DashboardSummary(inboundCount=1)
+        # Place --json before the module name.
+        out = _run_cli(["--json", "dashboard", "get"], summary, capsys)
+        assert json.loads(out)["inboundCount"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Help token recognition (?, -h, help, --help)
+# ---------------------------------------------------------------------------
+
+
+class TestHelpTokens:
+    """All four help tokens drive the same help screen and skip the API call."""
+
+    def _run_and_capture(self, argv, capsys):
+        from ab.cli.__main__ import main
+
+        with patch("ab.cli.__main__._create_api") as mock_create:
+            with patch.object(sys, "argv", ["ab", *argv]):
+                with pytest.raises(SystemExit) as exc:
+                    main()
+        # Help paths must exit 0 and must never construct the API client.
+        assert exc.value.code == 0
+        mock_create.assert_not_called()
+        captured = capsys.readouterr()
+        # Method-level help is written to stderr; module/top-level listing to stderr too.
+        return captured.out + captured.err
+
+    @pytest.mark.parametrize("token", ["?", "-h", "help", "--help"])
+    def test_method_help_for_dashboard_get(self, token, capsys):
+        output = self._run_and_capture(["dashboard", "get", token], capsys)
+        # Help shows the Route line + the CLI invocation pattern + arg names.
+        assert "GET /dashboard" in output
+        assert "ab dashboard get" in output
+        assert "view-id" in output or "view_id" in output
+        assert "company-id" in output or "company_id" in output
+
+    @pytest.mark.parametrize("token", ["?", "-h", "help", "--help"])
+    def test_module_help_lists_methods(self, token, capsys):
+        output = self._run_and_capture(["dashboard", token], capsys)
+        assert "dashboard" in output
+        # The known dashboard methods should appear in the listing.
+        for m in ("get", "get_grid_views", "inbound", "outbound"):
+            assert m in output
+
+    @pytest.mark.parametrize("token", ["?", "-h", "help", "--help"])
+    def test_top_level_help_lists_endpoints(self, token, capsys):
+        output = self._run_and_capture([token], capsys)
+        assert "dashboard" in output
+        assert "Endpoint" in output

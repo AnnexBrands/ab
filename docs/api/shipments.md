@@ -1,5 +1,16 @@
 # Shipments
 
+```{note}
+``api.shipments`` retains three non-job-scoped methods as canonical:
+``get_shipment`` (``GET /shipment``), ``get_global_accessorials``
+(``GET /shipment/accessorials``), and ``get_shipment_document``
+(``GET /shipment/document/{docId}``).
+
+The 11 job-scoped methods (``get_rate_quotes``, ``book``, accessorials,
+etc.) are **deprecation shims** that forward to
+{class}`ab.api.endpoints.jobs.shipment.JobShipmentEndpoint` (``api.jobs.shipment``).
+```
+
 ```{eval-rst}
 .. autoclass:: ab.api.endpoints.shipments.ShipmentsEndpoint
    :members:

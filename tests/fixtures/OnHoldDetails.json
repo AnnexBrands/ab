@@ -1,0 +1,24 @@
+{
+  "id": "5001",
+  "reason": "Customs",
+  "description": "Awaiting customs paperwork from origin agent.",
+  "comments": [
+    {
+      "id": "c1",
+      "comment": "Reached out to broker; ETA 24h.",
+      "author": "Brett Monson",
+      "date": "2026-05-13T10:15:00"
+    }
+  ],
+  "dates": {
+    "startDate": "2026-05-13T09:00:00",
+    "dueDate": "2026-05-20T17:00:00"
+  },
+  "followUpUser": {
+    "contactId": 206,
+    "fullName": "Brett Monson",
+    "email": "bmonson@annexbrands.com",
+    "jobRelation": "Owner"
+  },
+  "status": "Open"
+}

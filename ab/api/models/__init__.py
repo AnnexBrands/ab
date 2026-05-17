@@ -248,6 +248,7 @@ from ab.api.models.notes import (
     GlobalNote,
     GlobalNoteCreateRequest,
     GlobalNoteUpdateRequest,
+    NoteRequest,
     NotesListParams,
     NotesSuggestUsersParams,
     SuggestedUser,
@@ -451,7 +452,7 @@ __all__ = [
     "CommodityMap", "CommodityMapCreateRequest", "CommodityMapUpdateRequest",
     "CommodityMapSearchRequest",
     # Notes
-    "NotesListParams", "NotesSuggestUsersParams",
+    "NotesListParams", "NotesSuggestUsersParams", "NoteRequest",
     "GlobalNote", "GlobalNoteCreateRequest", "GlobalNoteUpdateRequest", "SuggestedUser",
     # Partners
     "PartnerListParams",

@@ -1,14 +1,22 @@
 """Fixture validation tests for On-Hold models."""
 
+import pytest
+
 from ab.api.models.jobs import (
     ExtendedOnHoldInfo,
     OnHoldDetails,
     OnHoldNoteDetails,
     OnHoldUser,
     ResolveJobOnHoldResponse,
+    ResolveOnHoldRequest,
+    SaveOnHoldRequest,
     SaveOnHoldResponse,
 )
-from tests.conftest import assert_no_extra_fields, require_fixture
+from tests.conftest import (
+    assert_no_extra_fields,
+    load_request_fixture,
+    require_fixture,
+)
 
 
 class TestOnHoldModels:
@@ -51,3 +59,30 @@ class TestOnHoldModels:
         model = OnHoldNoteDetails.model_validate(data)
         assert isinstance(model, OnHoldNoteDetails)
         assert_no_extra_fields(model)
+
+
+class TestSaveOnHoldRequestModel:
+    def test_request_fixture_validates(self):
+        raw = load_request_fixture("SaveOnHoldRequest")
+        model = SaveOnHoldRequest.model_validate(raw)
+        # Required swagger fields enforced.
+        assert model.reason_id and model.responsible_party_type_id
+        # `assignedToId` is an int per swagger (was str in the SDK before).
+        assert isinstance(model.assigned_to_id, int)
+
+    def test_resolve_fixture_validates(self):
+        raw = load_request_fixture("ResolveOnHoldRequest")
+        # Swagger uses the same schema for resolve.
+        model = SaveOnHoldRequest.model_validate(raw)
+        assert model.reason_id and model.responsible_party_type_id
+
+    def test_resolve_alias_is_save_on_hold_request(self):
+        assert ResolveOnHoldRequest is SaveOnHoldRequest
+
+    def test_required_fields_enforced(self):
+        with pytest.raises(Exception):
+            SaveOnHoldRequest.model_validate({})
+        with pytest.raises(Exception):
+            SaveOnHoldRequest.model_validate({"reasonId": "r"})  # missing responsibleParty
+        with pytest.raises(Exception):
+            SaveOnHoldRequest.model_validate({"responsiblePartyTypeId": "p"})  # missing reasonId

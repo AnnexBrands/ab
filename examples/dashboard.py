@@ -38,6 +38,7 @@ import json
 from pathlib import Path
 
 from ab import ABConnectAPI
+from ab.cli.formatter import format_result
 
 from examples.constants import TEST_COMPANY_ID, TEST_VIEW_ID
 
@@ -65,17 +66,22 @@ def _save(name: str, payload) -> None:
 def main() -> None:
     api = ABConnectAPI(env="staging")
 
+    # Output formatting goes through ``ab.cli.formatter.format_result`` so the
+    # ``abs dashboard …`` CLI and this example produce identical output. The
+    # per-row / per-summary layout lives on ``GridViewInfo.cli_format`` and
+    # ``DashboardSummary.cli_format``; pass ``as_json=True`` for the legacy
+    # JSON dump.
+
     # --- Step 1: discover available view IDs ---------------------------
     print("\n# api.dashboard.get_grid_views()")
     views = api.dashboard.get_grid_views()
-    for v in views:
-        print(f"  id={v.id:<5} name={v.name!r:<30} dataKey={v.data_key!r:<20} active={v.is_active}")
+    print(format_result(views))
     _save("GridViewInfo.json", views)
 
     # --- Step 2: dashboard summary, all paths --------------------------
     print(f"\n# api.dashboard.get(view_id={TEST_VIEW_ID}, company_id={TEST_COMPANY_ID!r})")
     summary = api.dashboard.get(view_id=TEST_VIEW_ID, company_id=TEST_COMPANY_ID)
-    print(f"  inbound={summary.inbound_count} outbound={summary.outbound_count} in_house={summary.in_house_count}")
+    print(format_result(summary))
     _save("DashboardSummary.json", summary)
 
     # --- Step 3: documented "no params" call ---------------------------
@@ -84,7 +90,7 @@ def main() -> None:
     # raise.
     print("\n# api.dashboard.get()  (no params -- defaults to active user's primary company)")
     default_summary = api.dashboard.get()
-    print(f"  inbound={default_summary.inbound_count} outbound={default_summary.outbound_count}")
+    print(format_result(default_summary))
 
 
 if __name__ == "__main__":

@@ -21,13 +21,30 @@ FIXTURES_MD = Path(__file__).parent.parent / "FIXTURES.md"
 
 _SECTION_RE = re.compile(r"^## (ACPortal|Catalog|ABC) Endpoints", re.IGNORECASE)
 
-# Request fixtures used by helper layers (not directly by a Route's request_model).
-# The polymorphic timeline POST endpoint uses three per-type request models selected
-# by task_code; validation happens at helper construction, not Route level (D3).
+# Request fixtures kept on disk even though no Route directly references them
+# by these names. Two reasons appear here:
+#
+# 1. Helper-layer request fixtures — the polymorphic timeline POST endpoint
+#    uses three per-type request models selected by task_code; validation
+#    happens at helper construction, not Route level (D3).
+# 2. Schema aliases — when a single Pydantic class backs multiple legacy
+#    names (e.g. ``GlobalNoteCreateRequest`` and ``GlobalNoteUpdateRequest``
+#    are aliases of :class:`NoteRequest` since swagger uses one ``NoteModel``
+#    for both POST and PUT), the legacy fixture files document the
+#    create-vs-update distinction even though the canonical Route name is
+#    the unified class.
 _HELPER_REQUEST_FIXTURES: set[str] = {
+    # (1) polymorphic timeline tasks
     "InTheFieldTaskRequest",
     "SimpleTaskRequest",
     "CarrierTaskRequest",
+    # (2) NoteRequest aliases — POST /note and PUT /note/{id} share schema
+    "GlobalNoteCreateRequest",
+    "GlobalNoteUpdateRequest",
+    # SaveOnHoldRequest alias — PUT /onhold/{id}/resolve shares the schema
+    # with create/update; the legacy ResolveOnHoldRequest fixture is kept
+    # on disk to document the create-vs-resolve payload distinction.
+    "ResolveOnHoldRequest",
 }
 
 

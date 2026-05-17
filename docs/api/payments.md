@@ -1,5 +1,12 @@
 # Payments
 
+```{warning}
+``api.payments.*`` is a deprecation shim. The canonical home for these
+methods is {class}`ab.api.endpoints.jobs.payment.JobPaymentEndpoint`,
+reached as ``api.jobs.payment``. Every call here emits a
+``DeprecationWarning`` and forwards to the subgroup.
+```
+
 ```{eval-rst}
 .. autoclass:: ab.api.endpoints.payments.PaymentsEndpoint
    :members:
