@@ -10,6 +10,7 @@ while updating only the fields the helper touches.
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from ab.api.models.jobs import (
@@ -20,6 +21,11 @@ from ab.api.models.jobs import (
     TimelineSaveResponse,
     TimeLogRequest,
 )
+from ab.api.models.notes import NoteRequest
+
+JOB_HISTORY_CATEGORY_KEY = "JobNoteCategory"
+JOB_HISTORY_CATEGORY_NAME = "Job History"
+JOB_HISTORY_CATEGORY_ID = "10593366-BEA1-427A-A56E-E5AA0C977184"
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +63,74 @@ def _deep_merge(base: dict, overlay: dict) -> dict:
     return result
 
 
+def _parse_datetime(value: str | None) -> datetime | None:
+    """Best-effort ISO datetime parser for note text formatting."""
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _format_datetime(value: str | None) -> str | None:
+    parsed = _parse_datetime(value)
+    if parsed is None:
+        return value
+    return parsed.strftime("%Y-%m-%d %H:%M")
+
+
+def _format_date_range(start: str | None, end: str | None) -> str:
+    """Format the best available task date range for an audit note."""
+    if start and end:
+        parsed_start = _parse_datetime(start)
+        parsed_end = _parse_datetime(end)
+        if parsed_start and parsed_end and parsed_start.date() == parsed_end.date():
+            return f"{parsed_start:%Y-%m-%d} {parsed_start:%H:%M}-{parsed_end:%H:%M}"
+        return f"{_format_datetime(start)} - {_format_datetime(end)}"
+    if start:
+        return _format_datetime(start) or start
+    if end:
+        return _format_datetime(end) or end
+    return "unknown date"
+
+
+def _task_date_range(data: dict, method_name: str) -> str:
+    """Extract a human-readable date or date range from timeline task data."""
+    time_log = data.get("timeLog") or {}
+    on_site_time_log = data.get("onSiteTimeLog") or {}
+
+    if method_name == "schedule":
+        return _format_date_range(data.get("plannedStartDate"), data.get("plannedEndDate"))
+    if method_name == "received":
+        if on_site_time_log:
+            return _format_date_range(on_site_time_log.get("start"), on_site_time_log.get("end"))
+        return _format_date_range(None, data.get("completedDate"))
+    if method_name in {"pack_start", "pack_finish", "storage_begin", "storage_end"}:
+        return _format_date_range(time_log.get("start"), time_log.get("end"))
+    if method_name == "carrier_schedule":
+        return _format_date_range(data.get("scheduledDate"), None)
+    if method_name == "carrier_pickup":
+        return _format_date_range(data.get("pickupCompletedDate"), None)
+    if method_name == "carrier_delivery":
+        return _format_date_range(None, data.get("deliveryCompletedDate"))
+
+    candidates = [
+        (data.get("plannedStartDate"), data.get("plannedEndDate")),
+        (on_site_time_log.get("start"), on_site_time_log.get("end")),
+        (time_log.get("start"), time_log.get("end")),
+        (data.get("scheduledDate"), None),
+        (data.get("pickupCompletedDate"), None),
+        (None, data.get("deliveryCompletedDate")),
+        (None, data.get("completedDate")),
+        (data.get("targetStartDate"), data.get("actualEndDate")),
+    ]
+    for start, end in candidates:
+        if start or end:
+            return _format_date_range(start, end)
+    return "unknown date"
+
+
 class TimelineHelpers:
     """High-level timeline operations with upsert and optimistic concurrency.
 
@@ -69,6 +143,7 @@ class TimelineHelpers:
 
     def __init__(self, jobs: JobsEndpoint) -> None:
         self._jobs = jobs
+        self._job_history_category_id: str | None = None
 
     # ---- Core methods -------------------------------------------------------
 
@@ -98,6 +173,7 @@ class TimelineHelpers:
         taskcode: str,
         task: BaseTimelineTaskRequest,
         create_email: bool = False,
+        method_name: str = "set_task",
     ) -> TimelineSaveResponse:
         """Create or update a task via POST /timeline.
 
@@ -106,14 +182,19 @@ class TimelineHelpers:
             taskcode: Task code (PU, PK, ST, CP).
             task: Validated request model instance.
             create_email: Send status notification email.
+            method_name: Name to record in the audit note.
 
         Serializes the model to a camelCase dict and sends it as-is.
         Callers that need to preserve existing task data should use
         ``_upsert`` instead.
         """
         data = task.model_dump(by_alias=True, exclude_none=True, exclude_unset=True, mode="json")
-        return self._jobs.create_timeline_task(
-            job_id, data=data, create_email=create_email,
+        return self._save_task_with_note(
+            job_id,
+            data=data,
+            create_email=create_email,
+            method_name=method_name,
+            task_code=taskcode,
         )
 
     def _upsert(
@@ -122,6 +203,7 @@ class TimelineHelpers:
         model: BaseTimelineTaskRequest,
         existing: dict | None,
         create_email: bool = False,
+        method_name: str = "set_task",
     ) -> TimelineSaveResponse:
         """Serialize *model* and deep-merge onto *existing* task, then POST.
 
@@ -136,9 +218,112 @@ class TimelineHelpers:
         )
         if existing is not None:
             data = _deep_merge(existing, data)
-        return self._jobs.create_timeline_task(
-            job_id, data=data, create_email=create_email,
+        return self._save_task_with_note(
+            job_id,
+            data=data,
+            create_email=create_email,
+            method_name=method_name,
+            task_code=data.get("taskCode"),
         )
+
+    def _save_task_with_note(
+        self,
+        job_id: int,
+        *,
+        data: dict,
+        create_email: bool,
+        method_name: str,
+        task_code: str | None,
+    ) -> TimelineSaveResponse:
+        """POST timeline task data, then add the matching job note."""
+        response = self._jobs.create_timeline_task(
+            job_id,
+            data=data,
+            create_email=create_email,
+        )
+        self._create_job_history_note(
+            job_display_id=job_id,
+            task_code=task_code,
+            data=data,
+            response=response,
+            comment=f"{self._username()} set {method_name} for {_task_date_range(data, method_name)}",
+        )
+        return response
+
+    def _create_job_history_note(
+        self,
+        *,
+        job_display_id: int,
+        task_code: str | None,
+        data: dict,
+        response: TimelineSaveResponse,
+        comment: str,
+    ) -> None:
+        """Create a top-level job note in the Job History category."""
+        job_uuid = self._job_uuid(job_display_id, task_code, data, response)
+        if not job_uuid:
+            logger.warning("Could not resolve job UUID for job %s; skipping job history note", job_display_id)
+            return
+
+        self._jobs._client.request(
+            "POST",
+            "/note",
+            json=NoteRequest.check(
+                NoteRequest(
+                    comments=comment,
+                    category=self._job_history_category(),
+                    job_id=job_uuid,
+                    is_important=False,
+                    send_notification=False,
+                )
+            ),
+        )
+
+    def _job_history_category(self) -> str:
+        """Resolve the Job History note category from lookups, with a known fallback."""
+        if self._job_history_category_id:
+            return self._job_history_category_id
+
+        try:
+            categories = self._jobs._client.request("GET", f"/lookup/{JOB_HISTORY_CATEGORY_KEY}")
+        except Exception as exc:  # pragma: no cover - defensive live API fallback
+            logger.warning("Could not resolve %s lookup: %s", JOB_HISTORY_CATEGORY_KEY, exc)
+            self._job_history_category_id = JOB_HISTORY_CATEGORY_ID
+            return self._job_history_category_id
+
+        for category in categories or []:
+            if str(category.get("name", "")).casefold() == JOB_HISTORY_CATEGORY_NAME.casefold():
+                self._job_history_category_id = category.get("id") or category.get("value") or JOB_HISTORY_CATEGORY_ID
+                return self._job_history_category_id
+
+        self._job_history_category_id = JOB_HISTORY_CATEGORY_ID
+        return self._job_history_category_id
+
+    def _job_uuid(
+        self,
+        job_display_id: int,
+        task_code: str | None,
+        data: dict,
+        response: TimelineSaveResponse,
+    ) -> str | None:
+        """Resolve the job UUID needed by the top-level notes endpoint."""
+        task = getattr(response, "task", None)
+        if getattr(task, "job_id", None):
+            return task.job_id
+        if data.get("jobId"):
+            return data["jobId"]
+        if not task_code:
+            return None
+
+        _, current_task = self.get_task(job_display_id, task_code)
+        if current_task:
+            return current_task.get("jobId")
+        return None
+
+    def _username(self) -> str:
+        """Return the configured API username for helper audit notes."""
+        settings = getattr(getattr(self._jobs, "_client", None), "_settings", None)
+        return getattr(settings, "username", None) or "Unknown user"
 
     # ---- Status helpers (PU) ------------------------------------------------
 
@@ -163,7 +348,7 @@ class TimelineHelpers:
             planned_start_date=start,
             planned_end_date=end,
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="schedule")
 
     _2 = schedule
 
@@ -198,7 +383,7 @@ class TimelineHelpers:
             completed_date=end,
             on_site_time_log=on_site_time_log,
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="received")
 
     _3 = received
 
@@ -220,7 +405,7 @@ class TimelineHelpers:
             task_code=PK,
             time_log=TimeLogRequest(start=start),
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="pack_start")
 
     _4 = pack_start
 
@@ -240,7 +425,7 @@ class TimelineHelpers:
             task_code=PK,
             time_log=TimeLogRequest(end=end),
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="pack_finish")
 
     _5 = pack_finish
 
@@ -256,7 +441,7 @@ class TimelineHelpers:
             task_code=ST,
             time_log=TimeLogRequest(start=start),
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="storage_begin")
 
     _6 = storage_begin
 
@@ -270,7 +455,7 @@ class TimelineHelpers:
             task_code=ST,
             time_log=TimeLogRequest(end=end),
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="storage_end")
 
     # ---- Status helpers (CP) ------------------------------------------------
 
@@ -290,7 +475,7 @@ class TimelineHelpers:
             task_code=CP,
             scheduled_date=start,
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="carrier_schedule")
 
     _7 = carrier_schedule
 
@@ -310,7 +495,7 @@ class TimelineHelpers:
             task_code=CP,
             pickup_completed_date=start,
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="carrier_pickup")
 
     _8 = carrier_pickup
 
@@ -324,7 +509,7 @@ class TimelineHelpers:
             task_code=CP,
             delivery_completed_date=end,
         )
-        return self._upsert(job_id, model, task, create_email=create_email)
+        return self._upsert(job_id, model, task, create_email=create_email, method_name="carrier_delivery")
 
     _10 = carrier_delivery
 

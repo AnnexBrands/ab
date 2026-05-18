@@ -3,8 +3,9 @@
 Run examples from the repo root::
 
     python -m examples --list                  # list all modules
-    python -m examples contacts                # run all contacts entries
-    python -m examples contacts.get_details    # run one entry (dot syntax)
+    python -m examples notes                   # run one plain example
+    python -m examples jobs.notes              # run one package example
+    python -m examples contacts.get_details    # run one runner entry (dot syntax)
     python -m examples cont.get_d              # prefix match
     ex addr.val                                # console script + alias
 """
@@ -13,35 +14,124 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+from dataclasses import dataclass
 from pathlib import Path
+from types import ModuleType
+from typing import Any, Callable
 
 from ab.cli.aliases import ALIASES
 
 
-def _discover_runners() -> dict[str, object]:
-    """Import each example module and return ``{name: runner}``."""
-    registry: dict[str, object] = {}
+@dataclass
+class ExampleTarget:
+    """Runnable example module.
+
+    A target is either a legacy ``ExampleRunner`` module or a plain script
+    exposing ``main()``. New examples should use ``main()``.
+    """
+
+    name: str
+    module: ModuleType
+    runner: Any | None = None
+    main: Callable[[], None] | None = None
+
+    @property
+    def entries(self) -> list[Any]:
+        if self.runner is None:
+            return []
+        return list(self.runner.entries)
+
+    def run(self, args: list[str] | None = None) -> None:
+        if self.runner is not None:
+            self.runner.run(args)
+            return
+        if args:
+            print(f"Example '{self.name}' does not define entries; run it without an entry name.")
+            return
+        if self.main is None:
+            print(f"Example '{self.name}' is not runnable.")
+            return
+        self.main()
+
+    def list_entries(self) -> None:
+        if self.runner is not None:
+            self.runner._list_entries()
+            return
+        print(f"\n  {self.name} — plain script")
+        if self.main is not None:
+            print(f"  Run: ex {self.name}\n")
+        else:
+            print("  No main() found.\n")
+
+
+def _is_runnable_source(path: Path) -> bool:
+    """Return whether *path* is safe to import for example discovery.
+
+    Some old snippet files instantiate ``ABConnectAPI`` and call live routes at
+    import time. Restricting discovery imports to modules that visibly expose a
+    runner or ``main()`` avoids triggering those side effects.
+    """
+    source = path.read_text(encoding="utf-8")
+    return "runner =" in source or "def main(" in source
+
+
+def _import_module_from_path(qual: str, path: Path) -> ModuleType | None:
+    """Import a module by file path, avoiding namespace-package collisions."""
+    spec = importlib.util.spec_from_file_location(qual, path)
+    if spec is None or spec.loader is None:
+        return None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[qual] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _register_module(registry: dict[str, ExampleTarget], name: str, path: Path) -> None:
+    """Import and register *path* when it exposes a runner or ``main()``."""
+    if not _is_runnable_source(path):
+        return
+    qual = f"examples.{name}"
+    mod = _import_module_from_path(qual, path)
+    if mod is None:
+        return
+    runner = getattr(mod, "runner", None)
+    main = getattr(mod, "main", None)
+    if runner is None and main is None:
+        return
+    registry[name] = ExampleTarget(
+        name=name,
+        module=mod,
+        runner=runner,
+        main=main if callable(main) else None,
+    )
+
+
+def _discover_runners() -> dict[str, ExampleTarget]:
+    """Import runnable examples and return ``{name: ExampleTarget}``."""
+    registry: dict[str, ExampleTarget] = {}
     examples_dir = Path(__file__).resolve().parent
+
     for path in sorted(examples_dir.glob("*.py")):
         if path.name.startswith("_"):
             continue
-        module_name = path.stem
-        # Import from file path directly to avoid namespace-package collisions
-        # when other editable installs (e.g. ABConnectTools) also have examples/.
-        qual = f"examples.{module_name}"
-        spec = importlib.util.spec_from_file_location(qual, path)
-        if spec is None or spec.loader is None:
+        if path.stem in {"__init__", "__main__"}:
             continue
-        mod = importlib.util.module_from_spec(spec)
-        sys.modules[qual] = mod
-        spec.loader.exec_module(mod)
-        runner = getattr(mod, "runner", None)
-        if runner is not None:
-            registry[module_name] = runner
+        _register_module(registry, path.stem, path)
+
+    for package_dir in sorted(p for p in examples_dir.iterdir() if p.is_dir()):
+        if package_dir.name.startswith("_"):
+            continue
+        if not (package_dir / "__init__.py").exists():
+            continue
+        for path in sorted(package_dir.glob("*.py")):
+            if path.name.startswith("_") or path.stem in {"__init__", "__main__"}:
+                continue
+            _register_module(registry, f"{package_dir.name}.{path.stem}", path)
+
     return registry
 
 
-def _resolve_module(name: str, registry: dict[str, object]) -> tuple[str, object] | None:
+def _resolve_module(name: str, registry: dict[str, ExampleTarget]) -> tuple[str, ExampleTarget] | None:
     """Resolve *name* to a ``(module_name, runner)`` via exact/alias/prefix match."""
     # Exact module name
     if name in registry:
@@ -76,9 +166,13 @@ def _resolve_module(name: str, registry: dict[str, object]) -> tuple[str, object
     return None
 
 
-def _resolve_entry(name: str, runner: object) -> object | None:
+def _resolve_entry(name: str, target: ExampleTarget) -> object | None:
     """Resolve *name* to an entry within *runner* via exact or prefix match."""
-    entries = runner.entries  # type: ignore[attr-defined]
+    entries = target.entries
+
+    if not entries:
+        print(f"Example '{target.name}' does not define entries; run it as 'ex {target.name}'.")
+        return None
 
     # Exact match
     for entry in entries:
@@ -99,7 +193,7 @@ def _resolve_entry(name: str, runner: object) -> object | None:
     return None
 
 
-def _list_all(registry: dict[str, object]) -> None:
+def _list_all(registry: dict[str, ExampleTarget]) -> None:
     """Print all modules with entry counts and aliases."""
     reverse_aliases: dict[str, list[str]] = {}
     for alias, mod in ALIASES.items():
@@ -109,8 +203,8 @@ def _list_all(registry: dict[str, object]) -> None:
     print(f"\n  {'Module':<20} {'Entries':>7}   Aliases")
     print(f"  {'─' * 20} {'─' * 7}   {'─' * 30}")
     for name in sorted(registry):
-        runner = registry[name]
-        count = len(runner.entries)  # type: ignore[attr-defined]
+        target = registry[name]
+        count = len(target.entries)
         total_entries += count
         aliases = ", ".join(sorted(reverse_aliases.get(name, []))) or "—"
         print(f"  {name:<20} {count:>7}   {aliases}")
@@ -129,6 +223,18 @@ def main(argv: list[str] | None = None) -> None:
 
     raw = args[0]
 
+    # Prefer exact runnable module names before interpreting dots as
+    # legacy runner entry syntax. This lets package examples run as
+    # ``ex jobs.notes``.
+    if raw in registry:
+        target = registry[raw]
+        rest = args[1:]
+        if rest == ["--list"]:
+            target.list_entries()
+            return
+        target.run(rest)
+        return
+
     # Dot syntax: module.entry
     if "." in raw:
         mod_part, entry_part = raw.split(".", 1)
@@ -139,7 +245,7 @@ def main(argv: list[str] | None = None) -> None:
         entry = _resolve_entry(entry_part, runner)
         if entry is None:
             sys.exit(1)
-        runner.run([entry.name])  # type: ignore[attr-defined]
+        runner.run([entry.name])
         return
 
     # Space syntax or bare module
@@ -151,18 +257,18 @@ def main(argv: list[str] | None = None) -> None:
     rest = args[1:]
     if not rest:
         # bare module → run all entries
-        runner.run([])  # type: ignore[attr-defined]
+        runner.run([])
         return
 
     if rest == ["--list"]:
-        runner._list_entries()  # type: ignore[attr-defined]
+        runner.list_entries()
         return
 
     # Space-separated entry name(s)
     entry = _resolve_entry(rest[0], runner)
     if entry is None:
         sys.exit(1)
-    runner.run([entry.name])  # type: ignore[attr-defined]
+    runner.run([entry.name])
 
 
 if __name__ == "__main__":
