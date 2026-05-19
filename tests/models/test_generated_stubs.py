@@ -7,7 +7,7 @@ Each test validates fixture → model → no extra fields.
 from ab.api.models.shipments import (
     ShipmentExportData,
 )
-from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixture
+from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestGeneratedStubs:
@@ -16,3 +16,11 @@ class TestGeneratedStubs:
         model = ShipmentExportData.model_validate(data)
         assert isinstance(model, ShipmentExportData)
         assert_no_extra_fields(model)
+
+    def test_shipment_export_data_accepts_numeric_customs_value(self):
+        data = require_fixture("ShipmentExportData", "GET", "/job/{jobDisplayId}/shipment/exportdata")
+        data["customsValue"] = 220.0
+
+        model = ShipmentExportData.model_validate(data)
+
+        assert model.customs_value == 220.0

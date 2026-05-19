@@ -1,6 +1,100 @@
 {
-  "jobInfo": null,
-  "contactInfo": null,
-  "serviceInfo": null,
-  "items": null
+  "AccessKey": "00000000-0000-0000-0000-000000000000",
+  "JobInfo": {
+    "OwnerCode": "Live",
+    "CustomerComments": "417034",
+    "JobType": "Regular",
+    "ShipOutDate": null,
+    "OtherRefNo": "8586977",
+    "IsExpedited": null,
+    "UseOnlyOwnerTariffs": false,
+    "SettingsKey": "63506b7e-37c7-a81a-429b-3de62cef3bb8",
+    "DoNotTip": null
+  },
+  "ReferrerInfo": {
+    "ReferrerPage": null,
+    "EntryUrl": null,
+    "SubmissionPage": "",
+    "HowHeard": null
+  },
+  "Customer": {
+    "Company": null,
+    "FullName": null,
+    "ContactDisplayId": "6",
+    "Phone": null,
+    "Email": null,
+    "Address1": null,
+    "Address2": null,
+    "PropertyType": null,
+    "City": null,
+    "State": null,
+    "ZipCode": null,
+    "CountryCode": null
+  },
+  "Pickup": {
+    "Company": null,
+    "FullName": "Pickup Contact",
+    "ContactDisplayId": "1285",
+    "Phone": "555-0100",
+    "Email": "pickup@example.com",
+    "Address1": "100 Example Ave",
+    "Address2": "",
+    "PropertyType": null,
+    "City": "Los Angeles",
+    "State": "CA",
+    "ZipCode": "90040",
+    "CountryCode": "US"
+  },
+  "Delivery": {
+    "Company": null,
+    "FullName": "Delivery Contact",
+    "ContactDisplayId": "",
+    "Phone": "555-0101",
+    "Email": "delivery@example.com",
+    "Address1": "200 Example Rd",
+    "Address2": "",
+    "PropertyType": null,
+    "City": "Norristown",
+    "State": "PA",
+    "ZipCode": "19401",
+    "CountryCode": "US"
+  },
+  "PickupService": {
+    "Date": "",
+    "DoneBy": "",
+    "Accessorials": []
+  },
+  "DeliveryService": {
+    "Date": "",
+    "DoneBy": "",
+    "Accessorials": []
+  },
+  "CarrierServices": null,
+  "PackService": {
+    "ExtraContainers": null
+  },
+  "CarrierService": {
+    "LimitCarriersTo": null,
+    "Accessorials": []
+  },
+  "Items": [
+    {
+      "L": "1",
+      "W": "5.8",
+      "H": "8",
+      "Wgt": "1",
+      "Value": "384",
+      "Cpack": "2",
+      "Description": "0397 Salvador Dali Signed Book",
+      "ItemID": null,
+      "NotedConditions": null,
+      "ItemNotes": null,
+      "CustomerItemId": "231986645",
+      "ForceCrate": false,
+      "Qty": "1",
+      "Quantity": null,
+      "DoNotTip": false,
+      "CommodityId": "25910"
+    }
+  ]
 }

@@ -32,7 +32,12 @@ class TestOnHoldModels:
         data = require_fixture("OnHoldDetails", "GET", "/job/{id}/onhold/{id}")
         model = OnHoldDetails.model_validate(data)
         assert isinstance(model, OnHoldDetails)
+        assert model.id == 5001
         assert_no_extra_fields(model)
+
+    def test_on_hold_details_accepts_integer_id_from_api(self):
+        model = OnHoldDetails.model_validate({"id": 3742})
+        assert model.id == 3742
 
     def test_save_on_hold_response(self):
         data = require_fixture("SaveOnHoldResponse", "POST", "/job/{id}/onhold")

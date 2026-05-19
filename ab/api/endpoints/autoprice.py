@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ab.api.models.autoprice import QuoteRequestModel, QuickQuoteResponse, QuoteRequestResponse
+    from ab.api.models.autoprice import (
+        QuickQuoteResponse,
+        QuoteRequestModel,
+        QuoteRequestResponse,
+    )
 
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
@@ -27,9 +31,9 @@ class AutoPriceEndpoint(BaseEndpoint):
         """POST /autoprice/quickquote.
 
         Args:
-            data: Quote request with job_info, contact_info, service_info,
-                and items. Accepts a :class:`QuoteRequestModel` instance
-                or a dict.
+            data: Quote request with access key, job info, contacts,
+                service settings, and items. Accepts a
+                :class:`QuoteRequestModel` instance or a dict.
 
         Request model: :class:`QuoteRequestModel`
         """
@@ -39,9 +43,9 @@ class AutoPriceEndpoint(BaseEndpoint):
         """POST /autoprice/v2/quoterequest.
 
         Args:
-            data: Quote request with job_info, contact_info, service_info,
-                and items. Accepts a :class:`QuoteRequestModel` instance
-                or a dict.
+            data: Quote request with access key, job info, contacts,
+                service settings, and items. Accepts a
+                :class:`QuoteRequestModel` instance or a dict.
 
         Request model: :class:`QuoteRequestModel`
         """

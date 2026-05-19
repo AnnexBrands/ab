@@ -22,7 +22,9 @@ class RateQuotesParams(RequestModel):
     """Query parameters for GET rate quotes."""
 
     ship_out_date: Optional[str] = Field(None, alias="ShipOutDate", description="Requested ship-out date (ISO 8601)")
-    rates_sources: Optional[str] = Field(None, alias="RatesSources", description="Comma-separated rate source identifiers")
+    rates_sources: Optional[str] = Field(
+        None, alias="RatesSources", description="Comma-separated rate source identifiers",
+    )
     settings_key: Optional[str] = Field(None, alias="SettingsKey", description="Settings configuration key")
 
 
@@ -85,7 +87,7 @@ class ShipmentExportData(ResponseModel):
     sold_to: Optional[dict] = Field(None, alias="soldTo", description="Sold-to contact and address")
     commodities: Optional[list] = Field(None, description="Commodity line items")
     packing_info: Optional[list] = Field(None, alias="packingInfo", description="Packing information entries")
-    customs_value: Optional[dict] = Field(None, alias="customsValue", description="Customs declared value")
+    customs_value: Optional[float] = Field(None, alias="customsValue", description="Customs declared value")
     invoice_number: Optional[str] = Field(None, alias="invoiceNumber", description="Commercial invoice number")
     purchase_order_number: Optional[str] = Field(
         None, alias="purchaseOrderNumber", description="Purchase order number",

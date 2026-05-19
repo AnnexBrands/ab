@@ -139,6 +139,7 @@ class TimelineHelpers:
         api = ABConnectAPI()
         api.jobs.tasks.schedule(job_id, start="2026-03-01")
         api.jobs.tasks.received(job_id, end="2026-03-02")
+        api.jobs.tasks.received(job_id, "2026-03-02T09:00:00", "2026-03-02T10:00:00")
     """
 
     def __init__(self, jobs: JobsEndpoint) -> None:
@@ -355,18 +356,43 @@ class TimelineHelpers:
     def received(
         self,
         job_id: int,
-        end: str | None = None,
+        *args: str | bool,
         start: str | None = None,
+        end: str | None = None,
         create_email: bool = False,
     ) -> TimelineSaveResponse:
         """Status 3 — Mark pickup completed on PU task.
 
         Args:
+            Positional date arguments are accepted as ``received(job_id, start, end)``.
+            A single positional date is treated as ``end`` for compatibility.
             end: Completed date. Uses current time if not provided.
             start: On-site start time. If provided with end, sets onSiteTimeLog.
 
         Logs a warning if job is already at or past status 3.
         """
+        if args:
+            if len(args) == 1:
+                if start is not None:
+                    raise TypeError("received() positional date cannot be combined with start keyword")
+                if end is None:
+                    end = args[0]
+                else:
+                    start = args[0]
+            elif len(args) == 2:
+                if start is not None or end is not None:
+                    raise TypeError("received() positional dates cannot be combined with start/end keywords")
+                start, end = args
+            elif len(args) == 3:
+                if start is not None or end is not None:
+                    raise TypeError("received() positional dates cannot be combined with start/end keywords")
+                if not isinstance(args[2], bool):
+                    raise TypeError("received() create_email positional argument must be a bool")
+                start, end = args[:2]
+                create_email = args[2]
+            else:
+                raise TypeError("received() accepts at most 3 positional arguments after job_id")
+
         status_info, task = self.get_task(job_id, PU)
         curr = _status_code(status_info)
         if curr >= 3:

@@ -98,6 +98,43 @@ def test_schedule_creates_jobhistory_note_with_related_task_code():
     }
 
 
+def test_received_positional_start_end_maps_on_site_time_log_in_order():
+    jobs = _jobs()
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[],
+        jobSubManagementStatus={"name": "2 - Scheduled"},
+    )
+    helper = TimelineHelpers(jobs)
+
+    helper.received(
+        4000000,
+        "2026-06-01T10:15:00Z",
+        "2026-06-01T12:30:00Z",
+    )
+
+    data = jobs.create_timeline_task.call_args.kwargs["data"]
+    assert data["completedDate"] == "2026-06-01T12:30:00Z"
+    assert data["onSiteTimeLog"] == {
+        "start": "2026-06-01T10:15:00Z",
+        "end": "2026-06-01T12:30:00Z",
+    }
+
+
+def test_received_single_positional_date_sets_completed_date_for_compatibility():
+    jobs = _jobs()
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[],
+        jobSubManagementStatus={"name": "2 - Scheduled"},
+    )
+    helper = TimelineHelpers(jobs)
+
+    helper.received(4000000, "2026-06-01T12:30:00Z")
+
+    data = jobs.create_timeline_task.call_args.kwargs["data"]
+    assert data["completedDate"] == "2026-06-01T12:30:00Z"
+    assert "onSiteTimeLog" not in data
+
+
 @pytest.mark.parametrize(
     ("call_helper", "expected_comment"),
     [

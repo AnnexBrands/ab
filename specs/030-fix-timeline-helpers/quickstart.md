@@ -59,7 +59,7 @@ api = ABConnectAPI()
 
 # Typing api.jobs.tasks. shows all methods with full signatures:
 # - schedule(job_id: int, start: str, end: str | None = None) -> Any | None
-# - received(job_id: int, end: str | None = None, start: str | None = None) -> Any | None
+# - received(job_id: int, start: str | None = None, end: str | None = None) -> Any | None
 # - pack_start(job_id: int, start: str) -> Any | None
 # - pack_finish(job_id: int, end: str) -> Any | None
 # - storage_begin(job_id: int, start: str) -> Any

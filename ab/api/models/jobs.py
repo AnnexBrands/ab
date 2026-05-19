@@ -1128,8 +1128,31 @@ class ExtendedOnHoldInfo(ResponseModel):
 class OnHoldDetails(ResponseModel):
     """Full on-hold detail — GET /job/{jobDisplayId}/onhold/{id}."""
 
-    id: Optional[str] = Field(None, description="On-hold record ID")
+    id: Optional[int] = Field(None, description="On-hold record ID")
+    responsible_party_type_id: Optional[str] = Field(
+        None, alias="responsiblePartyTypeId", description="Responsible party type UUID"
+    )
+    reason_id: Optional[str] = Field(None, alias="reasonId", description="Hold reason UUID")
+    start_date: Optional[str] = Field(None, alias="startDate", description="Hold start date")
+    next_step_id: Optional[str] = Field(None, alias="nextStepId", description="Next-step lookup UUID")
+    due_date: Optional[str] = Field(None, alias="dueDate", description="Due date")
+    assigned_to_id: Optional[int] = Field(None, alias="assignedToId", description="Assigned follow-up contact ID")
+    resolved_date: Optional[str] = Field(None, alias="resolvedDate", description="Resolution date")
+    resolved_code_id: Optional[str] = Field(None, alias="resolvedCodeId", description="Resolution code UUID")
+    is_active: Optional[bool] = Field(None, alias="isActive", description="Whether the hold is active")
+    created_by_contact_id: Optional[int] = Field(
+        None, alias="createdByContactId", description="Contact ID of creator"
+    )
+    created_by_contact_name: Optional[str] = Field(
+        None, alias="createdByContactName", description="Creator name"
+    )
+    notes: Optional[List[dict]] = Field(None, description="Associated notes")
+    responsible_party: Optional[str] = Field(None, alias="responsibleParty", description="Responsible party label")
     reason: Optional[str] = Field(None, description="Hold reason")
+    comment: Optional[str] = Field(None, description="Hold comment")
+
+    # Older captured payloads used these shapes; keep them typed so fixture
+    # validation stays noise-free while live schema-aligned payloads work.
     description: Optional[str] = Field(None, description="Hold description")
     comments: Optional[List[dict]] = Field(None, description="Associated comments")
     dates: Optional[dict] = Field(None, description="Date information")

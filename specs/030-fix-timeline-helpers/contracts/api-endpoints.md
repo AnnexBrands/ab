@@ -69,7 +69,7 @@ All helpers on `api.jobs.tasks`:
 | Method | Task Code | Model | Key Fields Set |
 |--------|-----------|-------|----------------|
 | `schedule(job, start, end=None)` | PU | InTheFieldTaskRequest | plannedStartDate, plannedEndDate |
-| `received(job, end=None, start=None)` | PU | InTheFieldTaskRequest | completedDate, onSiteTimeLog |
+| `received(job, start=None, end=None)` | PU | InTheFieldTaskRequest | completedDate, onSiteTimeLog |
 | `pack_start(job, start)` | PK | SimpleTaskRequest | timeLog.start |
 | `pack_finish(job, end)` | PK | SimpleTaskRequest | timeLog.end |
 | `storage_begin(job, start)` | ST | SimpleTaskRequest | timeLog.start |

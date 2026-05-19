@@ -316,6 +316,13 @@ resp = api.jobs.tasks.received(job_id, end="2024-06-01T12:00:00Z")
 # With on-site time tracking:
 resp = api.jobs.tasks.received(
     job_id,
+    "2024-06-01T11:00:00Z",
+    "2024-06-01T12:00:00Z",
+)
+
+# Equivalent keyword form:
+resp = api.jobs.tasks.received(
+    job_id,
     start="2024-06-01T11:00:00Z",
     end="2024-06-01T12:00:00Z",
 )
