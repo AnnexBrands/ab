@@ -1,38 +1,335 @@
 [
   {
-    "id": 1,
-    "name": "Inbound",
-    "dataKey": "inbound",
-    "isActive": true
-  },
-  {
-    "id": 2,
-    "name": "In House",
-    "dataKey": "inhouse",
-    "isActive": true
-  },
-  {
-    "id": 3,
-    "name": "Outbound",
-    "dataKey": "outbound",
-    "isActive": true
-  },
-  {
     "id": 4,
-    "name": "Local Deliveries",
-    "dataKey": "local-deliveries",
-    "isActive": true
+    "name": "Franchisee Recent Estimates",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
   },
   {
     "id": 5,
-    "name": "Recent Estimates",
-    "dataKey": "recentestimates",
-    "isActive": true
+    "name": "Franchisee Inbound",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
   },
   {
-    "id": 99,
-    "name": "Archived",
-    "dataKey": "archived",
-    "isActive": false
+    "id": 6,
+    "name": "Franchisee Inhouse",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 7,
+    "name": "Franchisee Outbound",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 9,
+    "name": "Franchisee Sales Follow up Pipeline",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 13,
+    "name": "Franchisee Freight",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 16,
+    "name": "Corp Donan",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 18,
+    "name": "1stdibs Booked",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 19,
+    "name": "1stdibs On Hold",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 20,
+    "name": "Corp1stdibsBilling",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 22,
+    "name": "1stdibs Billing",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 23,
+    "name": "Requests For Quote",
+    "dataKey": "quoteRequestId",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 26,
+    "name": "Third Party Jobs",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 28,
+    "name": "1stdibs SLA Times",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 29,
+    "name": "Corporate Accounting Payment Details",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 30,
+    "name": "NLS Leads",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 33,
+    "name": "Marketing Drip",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 34,
+    "name": "IntacctData",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 35,
+    "name": "Customer List",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 36,
+    "name": "1stDibs Zones",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 37,
+    "name": "Franchisee CC Fee",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 39,
+    "name": "Delivery Planner",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 41,
+    "name": "Pickup List (Booked)",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 42,
+    "name": "PickupApp",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 43,
+    "name": "Warehouse",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 44,
+    "name": "LiveManifest",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 45,
+    "name": "Pickup List (Completed)",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 46,
+    "name": "Live Outbound",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 47,
+    "name": "Agent Tracking",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 48,
+    "name": "AgentRoyalties",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 49,
+    "name": "Live SLA",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 50,
+    "name": "UnpaidJobs",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 51,
+    "name": "Payments",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 52,
+    "name": "Pickup Report",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 53,
+    "name": "Rebates",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 54,
+    "name": "Campaign Results",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
+  },
+  {
+    "id": 55,
+    "name": "Tax",
+    "dataKey": "jobDisplayID",
+    "isActive": false,
+    "storedProcedure": null,
+    "columnsSpecification": null,
+    "spColumns": null
   }
 ]

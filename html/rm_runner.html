@@ -27,6 +27,7 @@ tr:hover { background: #fcfcfc; }
 .badge-done { background: #28a745; color: #fff; }
 .badge-stub { background: #6c757d; color: #fff; }
 .badge-todo { background: #ffc107; color: #333; }
+.badge-partial { background: #17a2b8; color: #fff; }
 .badge-deprecated { background: #c757b8; color: #fff; }
 code { background: #eef0f2; padding: 1px 5px; border-radius: 2px;
        font-size: 0.86em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -87,6 +88,23 @@ a real reconciliation between the five artefacts.
       <span class='badge badge-stub'>stub</span> to
       <span class='badge badge-done'>done</span>.</li>
 </ol>
+
+<h2>Current snapshot</h2>
+<p>As of 2026-05-17, CLI discovery reports 23 top-level endpoint groups
+and 239 top-level public methods. Including discoverable jobs subgroups,
+the CLI registry contains 36 dispatch entries and 323 public methods.</p>
+
+<ul>
+  <li><span class='badge badge-done'>done</span> Full runner-removal
+      conversions: <code>dashboard</code>, <code>notes</code>.</li>
+  <li><span class='badge badge-partial'>partial</span> Endpoint work ahead
+      of full example conversion: <code>jobs.on_hold</code> conversion chain;
+      <code>contacts.get_did</code> resolver helper.</li>
+  <li><span class='badge badge-deprecated'>deprecated</span> Groups retained
+      as forwarding shims: <code>forms</code>, <code>payments</code>.</li>
+  <li><span class='badge badge-todo'>todo</span> Missing example coverage:
+      <code>commodity_maps</code>.</li>
+</ul>
 
 <h2>Reference conversion: <code>dashboard</code></h2>
 
@@ -173,10 +191,12 @@ default_summary = api.dashboard.get()</pre>
 
 <h2>Migration status by endpoint group</h2>
 
-<p>23 discovered groups, 208 methods total. Only <code>dashboard</code> has
-been converted under the new methodology. All other rows are stubs &mdash;
-they still depend on <code>examples/_runner.py</code> and have not yet been
-audited for swagger / fixture / test alignment.</p>
+<p>23 discovered top-level groups, 239 public methods total. Rows marked
+<span class='badge badge-done'>done</span> are fully converted away from
+<code>ExampleRunner</code>. Rows marked
+<span class='badge badge-partial'>partial</span> have meaningful SDK/test
+progress but still need the full plain-script example conversion and
+fixture reconciliation pass.</p>
 
 <table>
   <tr>
@@ -195,29 +215,29 @@ audited for swagger / fixture / test alignment.</p>
   </tr>
   <tr><td>address</td><td>2</td><td><code>examples/_address.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>autoprice</td><td>2</td><td><code>examples/_autoprice.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
-  <tr><td>catalog</td><td>5</td><td><code>examples/_catalog.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
+  <tr><td>catalog</td><td>6</td><td><code>examples/_catalog.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>commodities</td><td>5</td><td><code>examples/_commodities.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>commodity_maps</td><td>5</td><td>(none)</td><td><span class='badge badge-todo'>todo</span></td><td>Endpoint group exists; no example file present.</td></tr>
-  <tr><td>companies</td><td>24</td><td><code>examples/_companies.py</code> + <code>_companies_extended.py</code> + <code>_companies_elabel_compare.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Largest single conversion; expect multiple forward refs (brand tree, geo settings, packaging).</td></tr>
-  <tr><td>contacts</td><td>12</td><td><code>examples/_contacts.py</code> + <code>_contacts_extended.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
-  <tr><td>documents</td><td>2</td><td><code>examples/_documents.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
-  <tr><td>forms</td><td>0</td><td><code>examples/_forms.py</code> (deprecated)</td><td><span class='badge badge-deprecated'>deprecated</span></td><td>All form methods moved to <code>api.jobs.form</code>. <code>FormsEndpoint</code> retained as a deprecation shim that forwards every call. Example file still exists but its target is now <code>api.jobs.form</code>.</td></tr>
-  <tr><td>jobs</td><td>58</td><td><code>examples/jobs/on_hold.py</code> (+ legacy <code>examples/_jobs.py</code>)</td><td><span class='badge badge-stub'>stub</span></td><td>Refactored to subpackage <code>ab/api/endpoints/jobs/</code> with <strong>13 subgroups</strong>: <code>note</code> (4), <code>on_hold</code> (10), <code>form</code> (20), <code>timeline</code> (9), <code>email</code> (4), <code>sms</code> (4), <code>freight_providers</code> (3), <code>parcel_items</code> (4), <code>tracking</code> (2), <code>status</code> (1), <code>payment</code> (10), <code>shipment</code> (11), <code>rfq</code> (2). Deprecation shims on <code>JobsEndpoint</code>, <code>FormsEndpoint</code>, <code>PaymentsEndpoint</code>, <code>ShipmentsEndpoint</code>. <strong>on_hold subgroup converted</strong>: model realigned to swagger (reasonId/responsiblePartyTypeId required; assignedToId is int); ResolveOnHoldRequest collapsed into SaveOnHoldRequest alias; <code>examples/jobs/on_hold.py</code> walks the create / assign-to-user / email / resolve chain. Remaining subgroups still need example conversions.</td></tr>
+  <tr><td>companies</td><td>26</td><td><code>examples/_companies.py</code> + <code>_companies_extended.py</code> + <code>_companies_elabel_compare.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Largest single conversion; expect multiple forward refs (brand tree, geo settings, packaging).</td></tr>
+  <tr><td>contacts</td><td>13</td><td><code>examples/_contacts.py</code> + <code>_contacts_extended.py</code></td><td><span class='badge badge-partial'>partial</span></td><td>Example files still use ExampleRunner. New SDK helper <code>api.contacts.get_did(contact_did)</code> resolves the display ID through <code>CodeResolver</code>, then returns <code>get(resolved_id)</code>. Covered by <code>tests/unit/test_contacts.py</code> endpoint and CLI dispatch tests. Full plain-script conversion still pending.</td></tr>
+  <tr><td>documents</td><td>4</td><td><code>examples/_documents.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
+  <tr><td>forms</td><td>20</td><td><code>examples/_forms.py</code> (deprecated)</td><td><span class='badge badge-deprecated'>deprecated</span></td><td>All form methods moved to <code>api.jobs.form</code>. <code>FormsEndpoint</code> retained as a deprecation shim that forwards every call. Example file still exists but its target is now <code>api.jobs.form</code>.</td></tr>
+  <tr><td>jobs</td><td>58</td><td><code>examples/jobs/on_hold.py</code> (+ legacy <code>examples/_jobs.py</code>)</td><td><span class='badge badge-partial'>partial</span></td><td>Refactored to subpackage <code>ab/api/endpoints/jobs/</code> with <strong>13 subgroups</strong>: <code>note</code> (4), <code>on_hold</code> (10), <code>form</code> (20), <code>timeline</code> (9), <code>email</code> (4), <code>sms</code> (4), <code>freight_providers</code> (3), <code>parcel_items</code> (4), <code>tracking</code> (2), <code>status</code> (1), <code>payment</code> (10), <code>shipment</code> (11), <code>rfq</code> (2). Deprecation shims on <code>JobsEndpoint</code>, <code>FormsEndpoint</code>, <code>PaymentsEndpoint</code>, <code>ShipmentsEndpoint</code>. <strong>on_hold subgroup converted</strong>: model realigned to swagger (reasonId/responsiblePartyTypeId required; assignedToId is int); ResolveOnHoldRequest collapsed into SaveOnHoldRequest alias; <code>examples/jobs/on_hold.py</code> walks the create / assign-to-user / email / resolve chain. Remaining subgroups still need example conversions.</td></tr>
   <tr><td>lookup</td><td>16</td><td><code>examples/_lookup.py</code> + <code>_lookup_extended.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
-  <tr><td>lots</td><td>5</td><td><code>examples/_lots.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner. Note 036-lotsdb migration prep.</td></tr>
+  <tr><td>lots</td><td>6</td><td><code>examples/_lots.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner. Note 036-lotsdb migration prep.</td></tr>
   <tr><td><strong>notes</strong></td><td>4</td><td><code>examples/notes.py</code></td><td><span class='badge badge-done'>done</span></td><td>Realigned to swagger Notes + NoteModel + SuggestedContactEntity. Single NoteRequest replaces split Create/Update (legacy names retained as aliases). Forward refs: LookupValue.value -> NoteRequest.category, SuggestedUser.id -> NoteRequest.assigned_users[].id. cli_format on GlobalNote + SuggestedUser. Old <code>_notes.py</code> (job-scoped) + <code>_notes_global.py</code> still present for reference.</td></tr>
   <tr><td>partners</td><td>3</td><td><code>examples/_partners.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>payments</td><td>10</td><td><code>examples/_payments.py</code></td><td><span class='badge badge-deprecated'>deprecated</span></td><td>All 10 methods moved to <code>api.jobs.payment</code>. <code>PaymentsEndpoint</code> retained as deprecation shim.</td></tr>
   <tr><td>reports</td><td>8</td><td><code>examples/_reports.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>rfq</td><td>7</td><td><code>examples/_rfq.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>7 lifecycle methods (<code>/rfq/{id}/*</code>) remain canonical here. The 2 job-scoped <code>/job/{id}/rfq/*</code> methods now live at <code>api.jobs.rfq</code>.</td></tr>
-  <tr><td>sellers</td><td>4</td><td><code>examples/_sellers.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
-  <tr><td>shipments</td><td>3 + 11 shims</td><td><code>examples/_shipments.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>3 non-job-scoped methods canonical here (<code>get_shipment</code>, <code>get_global_accessorials</code>, <code>get_shipment_document</code>). 11 job-scoped methods moved to <code>api.jobs.shipment</code> with deprecation shims retained.</td></tr>
+  <tr><td>sellers</td><td>5</td><td><code>examples/_sellers.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
+  <tr><td>shipments</td><td>16</td><td><code>examples/_shipments.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>3 non-job-scoped methods canonical here (<code>get_shipment</code>, <code>get_global_accessorials</code>, <code>get_shipment_document</code>). 11 job-scoped methods moved to <code>api.jobs.shipment</code> with deprecation shims retained.</td></tr>
   <tr><td>users</td><td>4</td><td><code>examples/_users.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr><td>views</td><td>8</td><td><code>examples/_views.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Note: <code>GridViewDetails</code> in <code>ab/api/models/views.py</code> diverges from swagger; revisit during conversion.</td></tr>
   <tr><td>web2lead</td><td>2</td><td><code>examples/_web2lead.py</code></td><td><span class='badge badge-stub'>stub</span></td><td>Renamed with leading underscore. Uses ExampleRunner.</td></tr>
   <tr class='totals-row'>
-    <td>Total</td><td>208</td><td>&mdash;</td>
-    <td>2 done / 20 stub / 1 todo</td><td>&mdash;</td>
+    <td>Total</td><td>239</td><td>&mdash;</td>
+    <td>2 done / 2 partial / 16 stub / 1 todo / 2 deprecated</td><td>Top-level group count. CLI registry including subgroups: 36 entries / 323 methods.</td>
   </tr>
 </table>
 
@@ -240,6 +260,7 @@ audited for swagger / fixture / test alignment.</p>
   <li>Reference unit tests: <code>tests/unit/test_dashboard.py</code></li>
   <li>Reference integration tests: <code>tests/integration/test_dashboard.py</code></li>
   <li>Reference fixture: <code>tests/fixtures/GridViewInfo.json</code></li>
+  <li>Latest contacts helper tests: <code>tests/unit/test_contacts.py</code></li>
   <li>Public docs (forthcoming): <a href='https://ab-sdk.readthedocs.io/'>https://ab-sdk.readthedocs.io/</a> &mdash; configured by <code>.readthedocs.yaml</code></li>
   <li>Deprecated runner: <code>examples/_runner.py</code> &mdash; emits a <code>DeprecationWarning</code> on import.</li>
   <li>Old generated report: <a href='progress.html'>progress.html</a> &mdash; retained for historical context only; do not regenerate.</li>
