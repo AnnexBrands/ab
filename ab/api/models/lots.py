@@ -11,7 +11,9 @@ Casing note: the Catalog API uses mixed PascalCase / camelCase for
 ``LotDataDto`` field aliases (``Qty``, ``L``, ``W``, ``H``, ``Wgt``,
 ``Cpack``, ``ItemID``, ``Notes`` are PascalCase; ``value``,
 ``description``, ``forceCrate``, ``doNotTip``, ``commodityId``,
-``notedConditions`` are camelCase). Aliases below match swagger
+``notedConditions`` are camelCase). Python field names keep the database
+shape (``l``/``w``/``h``/``wgt``) because downstream tools diff and
+persist ``model_dump(by_alias=False)``. Aliases below match swagger
 exactly. ABConnectTools used uniform PascalCase on writes (``CPack``);
 when in doubt swagger wins per the constitution's Sources of Truth
 hierarchy.
@@ -49,25 +51,25 @@ class LotDataDto(ResponseModel):
         serialization_alias="Qty",
         description="Quantity",
     )
-    length: Optional[float] = Field(
+    l: Optional[float] = Field(  # noqa: E741 - Catalog DB/API domain field name.
         None,
         validation_alias=AliasChoices("L", "l"),
         serialization_alias="L",
         description="Length",
     )
-    width: Optional[float] = Field(
+    w: Optional[float] = Field(
         None,
         validation_alias=AliasChoices("W", "w"),
         serialization_alias="W",
         description="Width",
     )
-    height: Optional[float] = Field(
+    h: Optional[float] = Field(
         None,
         validation_alias=AliasChoices("H", "h"),
         serialization_alias="H",
         description="Height",
     )
-    weight: Optional[float] = Field(
+    wgt: Optional[float] = Field(
         None,
         validation_alias=AliasChoices("Wgt", "wgt"),
         serialization_alias="Wgt",

@@ -32,7 +32,9 @@ class CatalogDto(ResponseModel):
     and :class:`CatalogExpandedDto`."""
 
     id: int = Field(..., description="Catalog ID")
-    customer_catalog_id: Optional[str] = Field(None, alias="customerCatalogId", description="Customer-facing catalog ID")
+    customer_catalog_id: Optional[str] = Field(
+        None, alias="customerCatalogId", description="Customer-facing catalog ID",
+    )
     agent: Optional[str] = Field(None, description="Assigned agent code")
     title: Optional[str] = Field(None, description="Catalog title")
     start_date: datetime = Field(..., alias="startDate", description="Catalog start date-time")
@@ -64,7 +66,9 @@ class AddCatalogRequest(RequestModel):
     ``nullable: true``). All other fields are optional.
     """
 
-    customer_catalog_id: Optional[str] = Field(None, alias="customerCatalogId", description="Customer-facing catalog ID")
+    customer_catalog_id: Optional[str] = Field(
+        None, alias="customerCatalogId", description="Customer-facing catalog ID",
+    )
     agent: Optional[str] = Field(None, description="Assigned agent code")
     title: Optional[str] = Field(None, description="Catalog title")
     start_date: datetime = Field(..., alias="startDate", description="Catalog start date-time")
