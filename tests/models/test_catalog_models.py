@@ -44,6 +44,10 @@ class TestCatalogModels:
         assert model.w == 5
         assert model.h == 3
         assert model.wgt == 2
+        assert not hasattr(model, "length")
+        assert not hasattr(model, "width")
+        assert not hasattr(model, "height")
+        assert not hasattr(model, "weight")
         assert model.model_dump(by_alias=False, exclude_none=True) == {
             "l": 10,
             "w": 5,
@@ -55,6 +59,20 @@ class TestCatalogModels:
             "W": 5,
             "H": 3,
             "Wgt": 2,
+        }
+
+    def test_lot_data_dto_hydrates_wire_dimension_names_to_db_field_names(self):
+        model = LotDataDto.model_validate({"L": 10, "W": 5, "H": 3, "Wgt": 2})
+
+        assert model.l == 10
+        assert model.w == 5
+        assert model.h == 3
+        assert model.wgt == 2
+        assert model.model_dump(by_alias=False, exclude_none=True) == {
+            "l": 10,
+            "w": 5,
+            "h": 3,
+            "wgt": 2,
         }
 
     def test_lot_data_dto_ignores_long_dimension_names(self):
