@@ -50,6 +50,7 @@ class TestPathParamToConstant:
         [
             ("jobDisplayId", "TEST_JOB_DISPLAY_ID"),
             ("contactId", "TEST_CONTACT_ID"),
+            ("contact_did", "TEST_CONTACT_DID"),
             ("companyId", "TEST_COMPANY_ID"),
             ("id", "TEST_ID"),
             ("sellerId", "TEST_SELLER_ID"),

@@ -72,9 +72,9 @@ class ContactsEndpoint(BaseEndpoint):
         """GET /contacts/{id}"""
         return self._request(_GET.bind(id=contact_id))
 
-    def get_did(self, contact_did: str) -> ContactSimple:
+    def get_did(self, contact_did: str | int) -> ContactSimple:
         """Resolve a contact display ID through CodeResolver, then GET /contacts/{id}."""
-        return self.get(self._resolver.resolve(contact_did))
+        return self.get(self._resolver.resolve(str(contact_did)))
 
     def get_details(self, contact_id: str) -> ContactDetailedInfo:
         """GET /contacts/{contactId}/editdetails"""

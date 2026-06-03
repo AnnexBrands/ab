@@ -1,7 +1,7 @@
-"""Example: Contact operations (7 methods)."""
+"""Example: Contact operations (8 methods)."""
 
 from examples._runner import ExampleRunner
-from tests.constants import TEST_CONTACT_ID
+from tests.constants import TEST_CONTACT_DID, TEST_CONTACT_ID
 
 runner = ExampleRunner("Contacts", env="staging")
 
@@ -42,6 +42,13 @@ runner.add(
 runner.add(
     "get",
     lambda api: api.contacts.get(str(TEST_CONTACT_ID)),
+    response_model="ContactSimple",
+    fixture_file="ContactSimple.json",
+)
+
+runner.add(
+    "get_did",
+    lambda api: api.contacts.get_did(TEST_CONTACT_DID),
     response_model="ContactSimple",
     fixture_file="ContactSimple.json",
 )

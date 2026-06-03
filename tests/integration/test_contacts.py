@@ -4,7 +4,7 @@ import pytest
 
 from ab.api.models.contacts import ContactDetailedInfo, ContactPrimaryDetails, ContactSimple
 from tests.conftest import assert_no_extra_fields
-from tests.constants import TEST_CONTACT_ID
+from tests.constants import TEST_CONTACT_DID, TEST_CONTACT_ID
 
 pytestmark = pytest.mark.live
 
@@ -12,6 +12,11 @@ pytestmark = pytest.mark.live
 class TestContactsIntegration:
     def test_get_contact(self, api):
         result = api.contacts.get(str(TEST_CONTACT_ID))
+        assert isinstance(result, ContactSimple)
+        assert_no_extra_fields(result)
+
+    def test_get_did(self, api):
+        result = api.contacts.get_did(TEST_CONTACT_DID)
         assert isinstance(result, ContactSimple)
         assert_no_extra_fields(result)
 

@@ -73,7 +73,7 @@ file-backed service-account mode. Django request sessions and explicit
 | Group | Methods | API Surface |
 |-------|---------|-------------|
 | `api.companies` | get_by_id, get_details, get_fulldetails, search, list, create, update_fulldetails, available_by_current_user | ACPortal |
-| `api.contacts` | get, get_details, get_primary_details, get_current_user, search, create, update_details | ACPortal |
+| `api.contacts` | get, get_did, get_details, get_primary_details, get_current_user, search, create, update_details | ACPortal |
 | `api.jobs` | get, search, search_by_details, get_price, get_calendar_items, get_update_page_config, create, save, update | ACPortal + ABC |
 | `api.documents` | list, get, upload, update | ACPortal |
 | `api.address` | validate, get_property_type | ACPortal |

@@ -66,12 +66,14 @@ def resolve_routes_for_class(cls: type) -> dict[str, Route]:
 
 
 def path_param_to_constant(param: str) -> str:
-    """Convert a camelCase path parameter to a TEST_SCREAMING_SNAKE constant name.
+    """Convert a route or CLI parameter to a TEST_SCREAMING_SNAKE constant name.
 
     >>> path_param_to_constant("jobDisplayId")
     'TEST_JOB_DISPLAY_ID'
     >>> path_param_to_constant("contactId")
     'TEST_CONTACT_ID'
+    >>> path_param_to_constant("contact_did")
+    'TEST_CONTACT_DID'
     """
     snake = re.sub(r"([A-Z])", r"_\1", param).upper()
     if snake.startswith("_"):
