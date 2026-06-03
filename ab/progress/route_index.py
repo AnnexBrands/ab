@@ -288,6 +288,27 @@ def index_all_routes_multi() -> dict[tuple[str, str], list[RouteInfo]]:
 
 _SURFACE_DISPLAY = {"acportal": "ACPortal", "catalog": "Catalog", "abc": "ABC"}
 
+_MODEL_WRAPPERS = ("PaginatedList[", "List[", "list[")
+
+
+def _strip_model_wrapper(model: str) -> str:
+    """Return the innermost model name, peeling ``List[]``/``PaginatedList[]``.
+
+    Both report feeds MUST normalize identically so a ``List[JobNote]`` route
+    matches a ``JobNote.json`` fixture and lines up across the groups/fixtures
+    datasets in ``classify_action_items``.
+    """
+    name = model.strip()
+    changed = True
+    while changed:
+        changed = False
+        for prefix in _MODEL_WRAPPERS:
+            if name.startswith(prefix) and name.endswith("]"):
+                name = name[len(prefix):-1].strip()
+                changed = True
+                break
+    return name
+
 
 def _all_route_infos() -> list[RouteInfo]:
     """Flatten ``index_all_routes_multi`` into a stable, sorted list."""
@@ -372,7 +393,7 @@ def build_groups_from_routes() -> list:
                 route_key="",
                 method=ri.method,
                 path=ri.path,
-                response_model=ri.response_model or "",
+                response_model=_strip_model_wrapper(ri.response_model or ""),
                 ab_status="done",
                 ref_status="none",
             )
@@ -395,9 +416,7 @@ def derive_fixtures_from_routes(fixture_files: set[str]) -> list:
 
     fixtures: list[Fixture] = []
     for ri in _all_route_infos():
-        model = ri.response_model or ""
-        if model.startswith(("List[", "list[")) and model.endswith("]"):
-            model = model[5:-1]
+        model = _strip_model_wrapper(ri.response_model or "")
         captured = bool(model) and model in fixture_files
         fixtures.append(
             Fixture(

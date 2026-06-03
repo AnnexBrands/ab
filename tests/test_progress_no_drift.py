@@ -95,6 +95,25 @@ def test_derived_fixtures_reflect_disk_state():
     assert captured, "no captured fixtures derived — disk scan is blind"
 
 
+def test_wrapped_models_strip_to_inner_fixture_name():
+    """``List[X]``/``PaginatedList[X]`` must resolve to the inner fixture file.
+
+    Regression guard: an earlier feed left ``PaginatedList[...]`` unstripped, so
+    wrapped response models never matched their on-disk fixture and were
+    mislabelled ``needs-request-data``.
+    """
+    fixture_files = scan_fixture_files(FIXTURES_DIR)
+    fixtures = derive_fixtures_from_routes(fixture_files)
+    # No wrapper brackets may leak into the name used for fixture matching.
+    assert not any("[" in f.model_name for f in fixtures)
+    # A wrapped response model whose inner fixture exists must be captured.
+    if "CatalogExpandedDto" in fixture_files:
+        statuses = {
+            f.status for f in fixtures if f.model_name == "CatalogExpandedDto"
+        }
+        assert "captured" in statuses
+
+
 def test_docstring_signal_is_populated():
     """The report must carry a per-method docstring signal for the help() goal."""
     ecp = build_endpoint_class_progress()
