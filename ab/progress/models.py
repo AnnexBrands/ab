@@ -101,6 +101,7 @@ class MethodProgress:
     has_cli: bool
     has_route: bool
     path_sub_root: str
+    has_docstring: bool = True
     gate_status: EndpointGateStatus | None = None
 
 

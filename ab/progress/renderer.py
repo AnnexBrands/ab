@@ -468,13 +468,15 @@ def render_endpoint_class_progress(
             parts.append("<h4>Helpers</h4>")
             parts.append(
                 "<table>"
-                "<tr><th>Method</th><th>Python Path</th><th>Ex</th><th>CLI</th></tr>"
+                "<tr><th>Method</th><th>Python Path</th>"
+                "<th>Doc</th><th>Ex</th><th>CLI</th></tr>"
             )
             for mp in ecp.helpers:
                 parts.append(
                     f"<tr>"
                     f"<td>{escape(mp.method_name)}</td>"
                     f"<td><code>{escape(mp.dotted_path)}</code></td>"
+                    f"<td>{_yn_badge(mp.has_docstring)}</td>"
                     f"<td>{_yn_badge(mp.has_example)}</td>"
                     f"<td>{_yn_badge(mp.has_cli)}</td>"
                     f"</tr>"
@@ -491,7 +493,7 @@ def render_endpoint_class_progress(
                 "<table>"
                 "<tr><th>HTTP</th><th>Path</th><th>Method</th>"
                 "<th>Python Path</th><th>Return</th>"
-                "<th>Ex</th><th>CLI</th></tr>"
+                "<th>Doc</th><th>Ex</th><th>CLI</th></tr>"
             )
             for mp in methods:
                 parts.append(
@@ -501,6 +503,7 @@ def render_endpoint_class_progress(
                     f"<td>{escape(mp.method_name)}</td>"
                     f"<td><code>{escape(mp.dotted_path)}</code></td>"
                     f"<td>{escape(mp.return_type)}</td>"
+                    f"<td>{_yn_badge(mp.has_docstring)}</td>"
                     f"<td>{_yn_badge(mp.has_example)}</td>"
                     f"<td>{_yn_badge(mp.has_cli)}</td>"
                     f"</tr>"

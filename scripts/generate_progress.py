@@ -18,8 +18,8 @@ from pathlib import Path
 # Resolve repo root (parent of scripts/)
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Required input files
-API_SURFACE = REPO_ROOT / "specs" / "api-surface.md"
+# Introspected inputs (no hand-maintained markdown). FIXTURES_MD is only an
+# output of ``--fixtures``, never a source for the HTML report.
 FIXTURES_MD = REPO_ROOT / "FIXTURES.md"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 CONSTANTS_PY = REPO_ROOT / "tests" / "constants.py"
@@ -65,12 +65,17 @@ def _generate_fixtures() -> int:
 
 
 def _generate_html_report() -> int:
-    """Generate progress.html report."""
-    # Validate required files exist
+    """Generate progress.html report.
+
+    The report is derived entirely from live introspection — the route set,
+    the on-disk fixtures, and the test constants — so it cannot drift from the
+    code the way a hand-maintained markdown inventory does. ``specs/
+    api-surface.md`` and ``FIXTURES.md`` are no longer report *inputs*;
+    ``FIXTURES.md`` is regenerated as an *output* via ``--fixtures``.
+    """
+    # Validate required inputs exist (introspected sources only)
     missing = []
     for path, label in [
-        (API_SURFACE, "specs/api-surface.md"),
-        (FIXTURES_MD, "FIXTURES.md"),
         (FIXTURES_DIR, "tests/fixtures/"),
         (CONSTANTS_PY, "tests/constants.py"),
     ]:
@@ -85,26 +90,28 @@ def _generate_html_report() -> int:
     # Import here to keep validation fast
     import logging
 
-    from ab.progress.fixtures_generator import parse_existing_fixtures
     from ab.progress.gates import evaluate_all_gates
     from ab.progress.models import classify_action_items
-    from ab.progress.parsers import parse_api_surface, parse_fixtures
     from ab.progress.renderer import render_report
-    from ab.progress.route_index import build_endpoint_class_progress
+    from ab.progress.route_index import (
+        build_endpoint_class_progress,
+        build_groups_from_routes,
+        derive_fixtures_from_routes,
+        routes_as_endpoint_dicts,
+    )
     from ab.progress.scanner import parse_constants, scan_fixture_files
 
-    # Parse all data sources
-    groups = parse_api_surface(API_SURFACE)
-    fixtures = parse_fixtures(FIXTURES_MD)
+    # All data sources are introspected from live code — no markdown inputs.
+    groups = build_groups_from_routes()
     fixture_files = scan_fixture_files(FIXTURES_DIR)
     constants = parse_constants(CONSTANTS_PY)
+    fixtures = derive_fixtures_from_routes(fixture_files)
 
-    # Evaluate quality gates for all endpoints in FIXTURES.md
-    fixtures_data = parse_existing_fixtures(FIXTURES_MD)
+    # Evaluate quality gates for the live route set.
     prev_level = logging.root.level
     logging.root.setLevel(logging.ERROR)
     try:
-        gate_results = evaluate_all_gates(fixtures_data)
+        gate_results = evaluate_all_gates(routes_as_endpoint_dicts())
     finally:
         logging.root.setLevel(prev_level)
 

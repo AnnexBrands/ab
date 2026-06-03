@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import ast
 import re
 from pathlib import Path
 
 from ab.progress.models import Constant
 
-_CONSTANT_RE = re.compile(r"^(TEST_\w+)\s*=\s*(.+)", re.MULTILINE)
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def scan_fixture_files(directory: Path) -> set[str]:
@@ -22,7 +23,12 @@ def scan_fixture_files(directory: Path) -> set[str]:
 
 
 def parse_constants(path: Path) -> list[Constant]:
-    """Parse tests/constants.py for TEST_* assignments.
+    """Discover the ``TEST_*`` constants exposed by a constants module.
+
+    Uses :mod:`ast` (no import/exec, no side effects) so it works whether the
+    module assigns the constants directly *or* re-exports them via
+    ``from examples.constants import (...)``. Re-exported names are resolved
+    back to their source module to recover the literal value where possible.
 
     Returns:
         List of Constant objects with name, value, and inferred type.
@@ -30,20 +36,75 @@ def parse_constants(path: Path) -> list[Constant]:
     if not path.is_file():
         return []
 
-    text = path.read_text()
-    constants: list[Constant] = []
+    try:
+        tree = ast.parse(path.read_text())
+    except (OSError, SyntaxError):
+        return []
 
-    for match in _CONSTANT_RE.finditer(text):
-        name = match.group(1)
-        raw_value = match.group(2).strip().rstrip("#").strip()
-        # Remove inline comments
-        if "  #" in raw_value:
-            raw_value = raw_value[: raw_value.index("  #")].strip()
+    values = _module_assignments(tree)
 
-        value_type = _infer_type(raw_value)
-        constants.append(Constant(name=name, value=raw_value, value_type=value_type))
+    # Names re-exported via ``from <module> import (TEST_*, ...)`` — resolve
+    # their literal values from the source module when it is local.
+    for name, module in _imported_test_names(tree).items():
+        if name in values:
+            continue
+        source = _resolve_module_file(module)
+        src_values = (
+            _module_assignments(_safe_parse(source)) if source else {}
+        )
+        values[name] = src_values.get(name, "")
 
-    return constants
+    return [
+        Constant(name=name, value=value, value_type=_infer_type(value))
+        for name, value in sorted(values.items())
+    ]
+
+
+def _module_assignments(tree: ast.AST | None) -> dict[str, str]:
+    """Return ``{TEST_NAME: literal_value_str}`` for direct assignments."""
+    out: dict[str, str] = {}
+    if tree is None:
+        return out
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            targets, value = node.targets, node.value
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            targets, value = [node.target], node.value
+        else:
+            continue
+        for target in targets:
+            if isinstance(target, ast.Name) and target.id.startswith("TEST_"):
+                try:
+                    out[target.id] = ast.unparse(value).strip()
+                except Exception:  # pragma: no cover - defensive
+                    out[target.id] = ""
+    return out
+
+
+def _imported_test_names(tree: ast.AST) -> dict[str, str]:
+    """Return ``{TEST_NAME: source_module}`` for re-exported constants."""
+    out: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                if alias.name.startswith("TEST_"):
+                    out.setdefault(alias.name, node.module)
+    return out
+
+
+def _resolve_module_file(module: str) -> Path | None:
+    """Resolve a dotted module name to a file under the repo root."""
+    candidate = REPO_ROOT / Path(*module.split(".")).with_suffix(".py")
+    return candidate if candidate.is_file() else None
+
+
+def _safe_parse(path: Path | None) -> ast.AST | None:
+    if path is None or not path.is_file():
+        return None
+    try:
+        return ast.parse(path.read_text())
+    except (OSError, SyntaxError):
+        return None
 
 
 def _infer_type(raw_value: str) -> str:
