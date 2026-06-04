@@ -114,6 +114,22 @@ def test_wrapped_models_strip_to_inner_fixture_name():
         assert "captured" in statuses
 
 
+def test_committed_report_is_current():
+    """The committed html/progress.html must match a fresh render.
+
+    This is the freshness gate (also run in CI via
+    ``generate_progress.py --check``): a route/model/doc change that forgets to
+    regenerate the report turns the build red. Compared modulo the generation
+    timestamp via the same code path the CLI uses.
+    """
+    from ab.progress.report import OUTPUT, is_report_current
+
+    assert is_report_current(OUTPUT), (
+        "html/progress.html is stale — regenerate with "
+        "`python scripts/generate_progress.py`"
+    )
+
+
 def test_docstring_signal_is_populated():
     """The report must carry a per-method docstring signal for the help() goal."""
     ecp = build_endpoint_class_progress()

@@ -18,21 +18,47 @@ from pathlib import Path
 # Resolve repo root (parent of scripts/)
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+# Prefer the in-repo ``ab`` over any pip-installed copy, so the report (and the
+# --check freshness gate in CI, which runs after a non-editable ``pip install
+# .``) is built from this checkout's routes, fixtures, and html/ directory.
+sys.path.insert(0, str(REPO_ROOT))
+
 # Introspected inputs (no hand-maintained markdown). FIXTURES_MD is only an
 # output of ``--fixtures``, never a source for the HTML report.
 FIXTURES_MD = REPO_ROOT / "FIXTURES.md"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 CONSTANTS_PY = REPO_ROOT / "tests" / "constants.py"
-OUTPUT = REPO_ROOT / "html" / "progress.html"
 
 
 def main() -> int:
-    generate_fixtures = "--fixtures" in sys.argv
-
-    if generate_fixtures:
+    if "--fixtures" in sys.argv:
         return _generate_fixtures()
 
+    if "--check" in sys.argv:
+        return _check_html_report()
+
     return _generate_html_report()
+
+
+def _check_html_report() -> int:
+    """Freshness gate: fail if the committed report is stale vs live code.
+
+    Compares the committed ``html/progress.html`` against a fresh render
+    (ignoring the generation timestamp). Used by CI and the test suite so a
+    route/model change that forgets to regenerate the report turns red.
+    """
+    from ab.progress.report import OUTPUT, is_report_current
+
+    if is_report_current(OUTPUT):
+        print(f"Progress report is current: {OUTPUT.relative_to(REPO_ROOT)}")
+        return 0
+
+    print(
+        f"Progress report is STALE: {OUTPUT.relative_to(REPO_ROOT)}\n"
+        "Regenerate it with: python scripts/generate_progress.py",
+        file=sys.stderr,
+    )
+    return 1
 
 
 def _generate_fixtures() -> int:
@@ -87,79 +113,27 @@ def _generate_html_report() -> int:
         print("Run from the repository root.", file=sys.stderr)
         return 1
 
-    # Import here to keep validation fast
-    import logging
+    from ab.progress.report import OUTPUT, report_summary, write_report
 
-    from ab.progress.gates import evaluate_all_gates
-    from ab.progress.models import classify_action_items
-    from ab.progress.renderer import render_report
-    from ab.progress.route_index import (
-        build_endpoint_class_progress,
-        build_groups_from_routes,
-        derive_fixtures_from_routes,
-        routes_as_endpoint_dicts,
-    )
-    from ab.progress.scanner import parse_constants, scan_fixture_files
-
-    # All data sources are introspected from live code — no markdown inputs.
-    groups = build_groups_from_routes()
-    fixture_files = scan_fixture_files(FIXTURES_DIR)
-    constants = parse_constants(CONSTANTS_PY)
-    fixtures = derive_fixtures_from_routes(fixture_files)
-
-    # Evaluate quality gates for the live route set.
-    prev_level = logging.root.level
-    logging.root.setLevel(logging.ERROR)
-    try:
-        gate_results = evaluate_all_gates(routes_as_endpoint_dicts())
-    finally:
-        logging.root.setLevel(prev_level)
-
-    # Build endpoint class progress (US3)
-    endpoint_class_progress = build_endpoint_class_progress()
-
-    # Classify action items
-    action_items = classify_action_items(groups, fixtures, fixture_files, constants)
-
-    # Render and write
-    html = render_report(
-        groups, fixtures, constants, fixture_files, action_items,
-        gate_results=gate_results,
-        endpoint_class_progress=endpoint_class_progress,
-    )
-    OUTPUT.write_text(html)
-
-    # Print summary
-    total = sum(g.total for g in groups)
-    done = sum(g.done for g in groups)
-    pending = sum(g.pending for g in groups)
-    ns = sum(g.not_started for g in groups)
-    tier1 = sum(1 for i in action_items if i.tier == 1)
-    tier2 = sum(1 for i in action_items if i.tier == 2)
-
-    # Gate summary
-    gate_total = len(gate_results)
-    gate_complete = sum(1 for s in gate_results if s.overall_status == "complete")
-    g1_pass = sum(1 for s in gate_results if s.g1_model_fidelity and s.g1_model_fidelity.passed)
-    g2_pass = sum(1 for s in gate_results if s.g2_fixture_status and s.g2_fixture_status.passed)
-    g3_pass = sum(1 for s in gate_results if s.g3_test_quality and s.g3_test_quality.passed)
-    g4_pass = sum(1 for s in gate_results if s.g4_doc_accuracy and s.g4_doc_accuracy.passed)
-    g5_pass = sum(1 for s in gate_results if s.g5_param_routing and s.g5_param_routing.passed)
-    g6_pass = sum(1 for s in gate_results if s.g6_request_quality and s.g6_request_quality.passed)
+    write_report(OUTPUT)
+    s = report_summary()
 
     print(f"Progress report written to {OUTPUT.relative_to(REPO_ROOT)}")
-    print(f"  Endpoints: {total} total, {done} done, {pending} pending, {ns} not started")
-    print(f"  Action items: {len(action_items)} ({tier1} tier 1, {tier2} tier 2)")
-    print(f"  Fixtures on disk: {len(fixture_files)}")
-    print(f"  Constants defined: {len(constants)}")
-    if gate_total:
-        print(f"  Quality gates: {gate_complete}/{gate_total} endpoints pass all gates")
-        print(f"    G1 Model Fidelity:  {g1_pass}/{gate_total}")
-        print(f"    G2 Fixture Status:  {g2_pass}/{gate_total}")
-        print(f"    G3 Test Quality:    {g3_pass}/{gate_total}")
-        print(f"    G4 Doc Accuracy:    {g4_pass}/{gate_total}")
-        print(f"    G5 Param Routing:   {g5_pass}/{gate_total}")
-        print(f"    G6 Request Quality: {g6_pass}/{gate_total}")
+    print(
+        f"  Endpoints: {s['total']} total, {s['done']} done, "
+        f"{s['pending']} pending, {s['not_started']} not started"
+    )
+    print(f"  Action items: {s['action_items']} ({s['tier1']} tier 1, {s['tier2']} tier 2)")
+    print(f"  Fixtures on disk: {s['fixture_files']}")
+    print(f"  Constants defined: {s['constants']}")
+    if s["gate_total"]:
+        print(f"  Quality gates: {s['gate_complete']}/{s['gate_total']} endpoints pass all gates")
+        print(f"    G1 Model Fidelity:  {s['g1']}/{s['gate_total']}")
+        print(f"    G2 Fixture Status:  {s['g2']}/{s['gate_total']}")
+        print(f"    G3 Test Quality:    {s['g3']}/{s['gate_total']}")
+        print(f"    G4 Doc Accuracy:    {s['g4']}/{s['gate_total']}")
+        print(f"    G5 Param Routing:   {s['g5']}/{s['gate_total']}")
+        print(f"    G6 Request Quality: {s['g6']}/{s['gate_total']}")
 
     return 0
 

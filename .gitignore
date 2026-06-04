@@ -41,6 +41,3 @@ docs/_build/
 
 # Token cache
 .cache/
-
-# Generated reports
-progress.html

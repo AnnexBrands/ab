@@ -32,6 +32,9 @@ jobs:
       # - name: Run Tests
       #   run: pytest
 
+      - name: Check progress report is current (no-drift gate)
+        run: python scripts/generate_progress.py --check
+
   publish:
     needs: build-and-test
     runs-on: ubuntu-latest
