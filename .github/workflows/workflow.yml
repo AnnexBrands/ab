@@ -27,10 +27,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install build pytest
-          pip install .
+          # Editable install so `import ab` resolves to the checkout. The gate
+          # evaluator and several tests locate tests/fixtures/ relative to
+          # ab.__file__; a non-editable install would point them at
+          # site-packages (where tests/ is not shipped) and fail spuriously.
+          pip install -e .
 
-      # - name: Run Tests
-      #   run: pytest
+      - name: Run tests (deterministic — excludes live API tests)
+        run: pytest -m "not live"
 
       - name: Check progress report is current (no-drift gate)
         run: python scripts/generate_progress.py --check
