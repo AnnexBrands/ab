@@ -48,6 +48,17 @@ countries = api.lookup.get_countries()
 roles = api.users.get_roles()
 ```
 
+### Discovering the surface
+
+Endpoint groups are typed attributes, so editors autocomplete them as you
+type `api.` (and so do IPython/Jupyter at runtime). To list them
+programmatically — the Python equivalent of running `ab` with no arguments:
+
+```python
+api.groups()        # ['address', 'autoprice', 'catalog', 'commodities', ...]
+repr(api)           # "<ABConnectAPI env='staging' groups=23>"
+```
+
 ## Configuration
 
 Set environment variables with `ABCONNECT_` prefix:

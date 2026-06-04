@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ab.auth.base import Token, TokenStorage
 from ab.auth.file import FileTokenStorage
@@ -11,6 +11,33 @@ from ab.auth.session import SessionTokenStorage
 from ab.cache import CodeResolver
 from ab.config import load_settings
 from ab.http import HttpClient
+
+if TYPE_CHECKING:
+    from ab.api.endpoints import (
+        AddressEndpoint,
+        AutoPriceEndpoint,
+        CatalogEndpoint,
+        CommoditiesEndpoint,
+        CommodityMapsEndpoint,
+        CompaniesEndpoint,
+        ContactsEndpoint,
+        DashboardEndpoint,
+        DocumentsEndpoint,
+        FormsEndpoint,
+        JobsEndpoint,
+        LookupEndpoint,
+        LotsEndpoint,
+        NotesEndpoint,
+        PartnersEndpoint,
+        PaymentsEndpoint,
+        ReportsEndpoint,
+        RFQEndpoint,
+        SellersEndpoint,
+        ShipmentsEndpoint,
+        UsersEndpoint,
+        ViewsEndpoint,
+        Web2LeadEndpoint,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +57,40 @@ class ABConnectAPI:
         request: Django ``HttpRequest`` — if provided, tokens are stored
             in the Django session via :class:`SessionTokenStorage`.
     """
+
+    # Endpoint groups — declared at class level so static type checkers and
+    # IDEs (Pylance/VS Code) surface them on ``api.<TAB>``, matching what
+    # ``ab <enter>`` lists in the CLI. The instances are assigned in
+    # :meth:`_init_endpoints`; under ``from __future__ import annotations``
+    # these are type-only declarations (no runtime attribute is created).
+    # Keep in sync with _init_endpoints — enforced by
+    # tests/unit/test_client_discoverability.py.
+    companies: CompaniesEndpoint
+    contacts: ContactsEndpoint
+    jobs: JobsEndpoint
+    documents: DocumentsEndpoint
+    address: AddressEndpoint
+    lookup: LookupEndpoint
+    users: UsersEndpoint
+    forms: FormsEndpoint
+    shipments: ShipmentsEndpoint
+    payments: PaymentsEndpoint
+    rfq: RFQEndpoint
+    reports: ReportsEndpoint
+    dashboard: DashboardEndpoint
+    views: ViewsEndpoint
+    commodities: CommoditiesEndpoint
+    commodity_maps: CommodityMapsEndpoint
+    notes: NotesEndpoint
+    partners: PartnersEndpoint
+    catalog: CatalogEndpoint
+    lots: LotsEndpoint
+    sellers: SellersEndpoint
+    autoprice: AutoPriceEndpoint
+    web2lead: Web2LeadEndpoint
+    # Backwards-compatibility aliases (same instances as above)
+    docs: DocumentsEndpoint
+    cmaps: CommodityMapsEndpoint
 
     def __init__(
         self,
@@ -100,6 +161,34 @@ class ABConnectAPI:
         selected at construction time.
         """
         return self._acportal._password_grant_with(username=username, password=password)
+
+    def groups(self) -> list[str]:
+        """Return the endpoint group names available as ``api.<name>``.
+
+        Mirrors what ``ab <enter>`` lists in the CLI. Back-compat aliases that
+        point at the same endpoint object (e.g. ``docs`` → ``documents``) are
+        omitted so the list reflects the canonical surface.
+
+        >>> api = ABConnectAPI(env="staging")
+        >>> "jobs" in api.groups()
+        True
+        """
+        from ab.api.base import BaseEndpoint
+
+        seen: set[int] = set()
+        names: list[str] = []
+        for name, value in vars(self).items():
+            if name.startswith("_") or not isinstance(value, BaseEndpoint):
+                continue
+            if id(value) in seen:
+                continue  # skip aliases pointing at an already-listed group
+            seen.add(id(value))
+            names.append(name)
+        return sorted(names)
+
+    def __repr__(self) -> str:
+        env = getattr(self._settings, "environment", None)
+        return f"<ABConnectAPI env={env!r} groups={len(self.groups())}>"
 
     def _init_endpoints(self) -> None:
         """Instantiate all endpoint groups as attributes."""
