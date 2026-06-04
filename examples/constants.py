@@ -7,7 +7,8 @@ TEST_COMPANY_UUID = "93179b52-3da9-e311-b6f8-000c298b59ee"
 TEST_CONTACT_ID = 30760
 TEST_USER_CONTACT_ID = 1271
 
-# Display IDs (staging - used across job-related examples and tests)
+# Display IDs (staging - used across examples and tests)
+TEST_CONTACT_DID = 22
 TEST_JOB_DISPLAY_ID = 2000000
 TEST_JOB_DISPLAY_ID2 = 4000000
 

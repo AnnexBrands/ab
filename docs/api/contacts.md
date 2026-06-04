@@ -22,6 +22,19 @@ contact = api.contacts.get("30760")
 print(contact.first_name, contact.last_name)
 ```
 
+### get_did
+
+Resolve a contact display ID through the cache resolver, then call `GET /contacts/{id}`.
+
+**Returns:** {class}`~ab.api.models.contacts.ContactSimple`
+
+```python
+from examples.constants import TEST_CONTACT_DID
+
+contact = api.contacts.get_did(TEST_CONTACT_DID)
+print(contact.id, contact.contact_display_id)
+```
+
 ### get_details
 
 `GET /contacts/{contactId}/editdetails` — Full editable contact details.

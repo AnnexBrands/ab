@@ -1,5 +1,8 @@
 """Compatibility exports for shared example/test staging identifiers."""
 
+# Re-exported names are consumed by tests and examples through this module.
+# ruff: noqa: F401
+
 from examples.constants import (
     CATALOG_CUSTOMER_CATALOG_ID,
     CATALOG_CUSTOMER_SELLER_ID,
@@ -7,6 +10,7 @@ from examples.constants import (
     TEST_COMPANY_CODE,
     TEST_COMPANY_ID,
     TEST_COMPANY_UUID,
+    TEST_CONTACT_DID,
     TEST_CONTACT_ID,
     TEST_HISTORY_AMOUNT,
     TEST_ITEM_ID,

@@ -143,6 +143,7 @@ def build_endpoint_class_progress(
                 has_cli=has_cli,
                 has_route=has_route,
                 path_sub_root=sub_root,
+                has_docstring=bool(m.docstring),
             )
 
             if not has_route:
@@ -192,12 +193,20 @@ def _extract_sub_root(path: str, path_root: str | None) -> str:
 
 
 def _scan_example_entries() -> dict[str, set[str]]:
-    """Scan example files to discover which methods have entries.
+    """Statically discover which endpoint methods each example exercises.
 
-    Returns ``{endpoint_attr: {method_name, ...}}``.
+    Parses every ``examples/*.py`` with :mod:`ast` — *without importing it* —
+    and records every ``api.<group>[.<subgroup>].<method>(...)`` call chain it
+    finds. Returns ``{endpoint_attr: {method_name, ...}}`` keyed to match the
+    endpoint registry (e.g. ``"contacts"``, ``"jobs.note"``).
+
+    Static parsing (vs. the previous import-based scan) is deliberate: it sees
+    underscore-prefixed runner files *and* plain ``main()`` scripts, and it
+    never executes example code, so report generation triggers no live API
+    calls. Demonstrations whose client variable is not named ``api`` are not
+    counted.
     """
-    import importlib
-    import pkgutil
+    import ast
     from pathlib import Path
 
     examples_dir = Path(__file__).resolve().parent.parent.parent / "examples"
@@ -205,24 +214,45 @@ def _scan_example_entries() -> dict[str, set[str]]:
         return {}
 
     result: dict[str, set[str]] = {}
-    for _importer, mod_name, _ispkg in pkgutil.iter_modules([str(examples_dir)]):
-        if mod_name.startswith("_"):
+    for py in sorted(examples_dir.glob("*.py")):
+        if py.name in {"__init__.py", "__main__.py", "_runner.py"}:
             continue
         try:
-            module = importlib.import_module(f"examples.{mod_name}")
-        except Exception:
+            tree = ast.parse(py.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError):
             continue
-        runner = getattr(module, "runner", None)
-        if runner is None:
-            continue
-        endpoint_attr = getattr(runner, "endpoint_attr", None) or mod_name
-        methods: set[str] = set()
-        for entry in getattr(runner, "entries", []):
-            methods.add(entry.name)
-        if methods:
-            result[endpoint_attr] = methods
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call) or not isinstance(
+                node.func, ast.Attribute
+            ):
+                continue
+            chain = _attr_chain(node.func)
+            # Require api.<group>.<method> (>= 3 segments) rooted at ``api``.
+            if len(chain) < 3 or chain[0] != "api":
+                continue
+            group = ".".join(chain[1:-1])
+            result.setdefault(group, set()).add(chain[-1])
 
     return result
+
+
+def _attr_chain(node) -> list[str]:
+    """Flatten an attribute chain to ``[root_name, attr, attr, ...]``.
+
+    Returns an empty list when the chain is not rooted at a simple Name.
+    """
+    import ast
+
+    parts: list[str] = []
+    cur = node
+    while isinstance(cur, ast.Attribute):
+        parts.append(cur.attr)
+        cur = cur.value
+    if isinstance(cur, ast.Name):
+        parts.append(cur.id)
+        parts.reverse()
+        return parts
+    return []
 
 
 def index_all_routes_multi() -> dict[tuple[str, str], list[RouteInfo]]:
@@ -246,3 +276,155 @@ def index_all_routes_multi() -> dict[tuple[str, str], list[RouteInfo]]:
         )
         index.setdefault(key, []).append(info)
     return index
+
+
+# ----------------------------------------------------------------------
+# No-drift report feeds
+#
+# These derive the progress report's inputs directly from live Route
+# objects (and the endpoint registry), so the report can be regenerated
+# from code alone — never from hand-maintained markdown that rots.
+# ----------------------------------------------------------------------
+
+_SURFACE_DISPLAY = {"acportal": "ACPortal", "catalog": "Catalog", "abc": "ABC"}
+
+_MODEL_WRAPPERS = ("PaginatedList[", "List[", "list[")
+
+
+def _strip_model_wrapper(model: str) -> str:
+    """Return the innermost model name, peeling ``List[]``/``PaginatedList[]``.
+
+    Both report feeds MUST normalize identically so a ``List[JobNote]`` route
+    matches a ``JobNote.json`` fixture and lines up across the groups/fixtures
+    datasets in ``classify_action_items``.
+    """
+    name = model.strip()
+    changed = True
+    while changed:
+        changed = False
+        for prefix in _MODEL_WRAPPERS:
+            if name.startswith(prefix) and name.endswith("]"):
+                name = name[len(prefix):-1].strip()
+                changed = True
+                break
+    return name
+
+
+def _all_route_infos() -> list[RouteInfo]:
+    """Flatten ``index_all_routes_multi`` into a stable, sorted list."""
+    infos: list[RouteInfo] = []
+    for ri_list in index_all_routes_multi().values():
+        infos.extend(ri_list)
+    infos.sort(
+        key=lambda ri: (
+            ri.api_surface,
+            ri.path,
+            ri.method,
+            ri.response_model or "",
+        )
+    )
+    return infos
+
+
+def _route_group_map() -> dict[tuple[str, str], str]:
+    """Map each (normalized_path, method) to its ``api.<group>`` registry name.
+
+    Lets the report label routes with the same dev-facing group the SDK and
+    CLI expose (including subgroups like ``jobs.note``), instead of guessing
+    from the URL.
+    """
+    from ab.cli.discovery import discover_endpoints_from_class
+
+    out: dict[tuple[str, str], str] = {}
+    for name, info in discover_endpoints_from_class().items():
+        for method in info.methods:
+            if method.route is not None:
+                key = (normalize_path(method.route.path), method.route.method)
+                out.setdefault(key, name)
+    return out
+
+
+def routes_as_endpoint_dicts() -> list[dict[str, str | None]]:
+    """Build the ``evaluate_all_gates`` input list directly from live Routes.
+
+    Mirrors the dict shape produced by
+    :func:`ab.progress.fixtures_generator.parse_existing_fixtures` so the gate
+    engine evaluates the *real* route set rather than FIXTURES.md rows.
+    """
+    return [
+        {
+            "endpoint_path": ri.path,
+            "method": ri.method,
+            "request_model": ri.request_model or "",
+            "response_model": ri.response_model or "",
+            "params_model": ri.params_model,
+            "notes": "",
+        }
+        for ri in _all_route_infos()
+    ]
+
+
+def build_groups_from_routes() -> list:
+    """Build the report's ``EndpointGroup`` headline list from live Routes.
+
+    Every route is counted as ``done`` (it exists in code); the per-surface
+    coverage summary therefore reflects the real implemented surface.
+    """
+    from ab.progress.models import Endpoint, EndpointGroup, _group_from_path
+
+    group_map = _route_group_map()
+    groups: dict[tuple[str, str], EndpointGroup] = {}
+
+    for index, ri in enumerate(_all_route_infos(), start=1):
+        surface = _SURFACE_DISPLAY.get(ri.api_surface, ri.api_surface)
+        name = group_map.get(
+            (normalize_path(ri.path), ri.method)
+        ) or _group_from_path(ri.path)
+        key = (surface, name)
+        group = groups.get(key)
+        if group is None:
+            group = EndpointGroup(name=name, api_surface=surface)
+            groups[key] = group
+        group.endpoints.append(
+            Endpoint(
+                group_name=name,
+                api_surface=surface,
+                index=index,
+                route_key="",
+                method=ri.method,
+                path=ri.path,
+                response_model=_strip_model_wrapper(ri.response_model or ""),
+                ab_status="done",
+                ref_status="none",
+            )
+        )
+
+    result = list(groups.values())
+    for group in result:
+        group.recount()
+    return result
+
+
+def derive_fixtures_from_routes(fixture_files: set[str]) -> list:
+    """Build ``Fixture`` records from live Routes + on-disk fixture files.
+
+    A route's response fixture is ``captured`` when a ``{Model}.json`` file
+    exists in ``tests/fixtures/``; otherwise it is ``needs-request-data`` —
+    surfacing response models that still lack a captured fixture.
+    """
+    from ab.progress.models import Fixture
+
+    fixtures: list[Fixture] = []
+    for ri in _all_route_infos():
+        model = _strip_model_wrapper(ri.response_model or "")
+        captured = bool(model) and model in fixture_files
+        fixtures.append(
+            Fixture(
+                endpoint_path=ri.path,
+                method=ri.method,
+                model_name=model,
+                status="captured" if captured else "needs-request-data",
+                request_model=ri.request_model,
+            )
+        )
+    return fixtures
