@@ -36,11 +36,20 @@ class JobTrackingEndpoint(BaseEndpoint):
     """Job-scoped tracking operations (ACPortal API)."""
 
     def get(self, job_display_id: int) -> TrackingInfo:
-        """``GET /job/{jobDisplayId}/tracking``"""
+        """``GET /job/{jobDisplayId}/tracking``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/tracking.get.html
+        Response model: TrackingInfo
+        """
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
     def v3(self, job_display_id: int, history_amount: int = 10) -> TrackingInfoV3:
-        """``GET /v3/job/{jobDisplayId}/tracking/{historyAmount}``"""
+        """``GET /v3/job/{jobDisplayId}/tracking/{historyAmount}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/tracking.v3.html
+        Query params: TrackingV3Params
+        Response model: TrackingInfoV3
+        """
         return self._request(
             _GET_V3.bind(jobDisplayId=job_display_id, historyAmount=history_amount),
         )

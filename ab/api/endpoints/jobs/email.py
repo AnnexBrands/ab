@@ -35,7 +35,11 @@ class JobEmailEndpoint(BaseEndpoint):
     """Job-scoped email operations (ACPortal API)."""
 
     def send(self, job_display_id: int, *, data: SendEmailRequest | dict) -> None:
-        """``POST /job/{jobDisplayId}/email``"""
+        """``POST /job/{jobDisplayId}/email``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/email.send.html
+        Request model: SendEmailRequest
+        """
         return self._request(_SEND.bind(jobDisplayId=job_display_id), json=data)
 
     def send_document(
@@ -44,15 +48,25 @@ class JobEmailEndpoint(BaseEndpoint):
         *,
         data: SendDocumentEmailModel | dict,
     ) -> None:
-        """``POST /job/{jobDisplayId}/email/senddocument``"""
+        """``POST /job/{jobDisplayId}/email/senddocument``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/email.send_document.html
+        Request model: SendDocumentEmailModel
+        """
         return self._request(_SEND_DOCUMENT.bind(jobDisplayId=job_display_id), json=data)
 
     def create_transactional(self, job_display_id: int) -> None:
-        """``POST /job/{jobDisplayId}/email/createtransactionalemail``"""
+        """``POST /job/{jobDisplayId}/email/createtransactionalemail``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/email.create_transactional.html
+        """
         return self._request(_CREATE_TRANSACTIONAL.bind(jobDisplayId=job_display_id))
 
     def send_template(self, job_display_id: int, template_guid: str) -> None:
-        """``POST /job/{jobDisplayId}/email/{emailTemplateGuid}/send``"""
+        """``POST /job/{jobDisplayId}/email/{emailTemplateGuid}/send``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/email.send_template.html
+        """
         return self._request(
             _SEND_TEMPLATE.bind(jobDisplayId=job_display_id, emailTemplateGuid=template_guid),
         )

@@ -85,52 +85,63 @@ class ShipmentsEndpoint(BaseEndpoint):
     # ---- Job-scoped (deprecated shims) --------------------------------
 
     def get_rate_quotes(self, job_display_id: int) -> list[RateQuote]:
+        """Deprecated. Use ``api.jobs.shipment.get_rate_quotes(...)``."""
         _deprecated("get_rate_quotes", "get_rate_quotes")
         return self._shipment.get_rate_quotes(job_display_id)
 
     def request_rate_quotes(
         self, job_display_id: int, *, data: ShipmentRateQuoteRequest | dict,
     ) -> list[RateQuote]:
+        """Deprecated. Use ``api.jobs.shipment.request_rate_quotes(...)``."""
         _deprecated("request_rate_quotes", "request_rate_quotes")
         return self._shipment.request_rate_quotes(job_display_id, data=data)
 
     def book(self, job_display_id: int, *, data: ShipmentBookRequest | dict) -> ServiceBaseResponse:
+        """Deprecated. Use ``api.jobs.shipment.book(...)``."""
         _deprecated("book", "book")
         return self._shipment.book(job_display_id, data=data)
 
     def delete_shipment(self, job_display_id: int) -> ServiceBaseResponse:
+        """Deprecated. Use ``api.jobs.shipment.delete(...)``."""
         _deprecated("delete_shipment", "delete")
         return self._shipment.delete(job_display_id)
 
     def get_accessorials(self, job_display_id: int) -> list[Accessorial]:
+        """Deprecated. Use ``api.jobs.shipment.get_accessorials(...)``."""
         _deprecated("get_accessorials", "get_accessorials")
         return self._shipment.get_accessorials(job_display_id)
 
     def add_accessorial(
         self, job_display_id: int, *, data: AccessorialAddRequest | dict,
     ) -> ServiceBaseResponse:
+        """Deprecated. Use ``api.jobs.shipment.add_accessorial(...)``."""
         _deprecated("add_accessorial", "add_accessorial")
         return self._shipment.add_accessorial(job_display_id, data=data)
 
     def remove_accessorial(self, job_display_id: int, add_on_id: str) -> ServiceBaseResponse:
+        """Deprecated. Use ``api.jobs.shipment.remove_accessorial(...)``."""
         _deprecated("remove_accessorial", "remove_accessorial")
         return self._shipment.remove_accessorial(job_display_id, add_on_id)
 
     def get_origin_destination(self, job_display_id: int) -> ShipmentOriginDestination:
+        """Deprecated. Use ``api.jobs.shipment.get_origin_destination(...)``."""
         _deprecated("get_origin_destination", "get_origin_destination")
         return self._shipment.get_origin_destination(job_display_id)
 
     def get_export_data(self, job_display_id: int) -> ShipmentExportData:
+        """Deprecated. Use ``api.jobs.shipment.get_export_data(...)``."""
         _deprecated("get_export_data", "get_export_data")
         return self._shipment.get_export_data(job_display_id)
 
     def post_export_data(
         self, job_display_id: int, *, data: ShipmentExportRequest | dict,
     ) -> ServiceBaseResponse:
+        """Deprecated. Use ``api.jobs.shipment.post_export_data(...)``."""
         _deprecated("post_export_data", "post_export_data")
         return self._shipment.post_export_data(job_display_id, data=data)
 
     def get_rates_state(self, job_display_id: int) -> RatesState:
+        """Deprecated. Use ``api.jobs.shipment.get_rates_state(...)``."""
         _deprecated("get_rates_state", "get_rates_state")
         return self._shipment.get_rates_state(job_display_id)
 

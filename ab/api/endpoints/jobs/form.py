@@ -80,6 +80,9 @@ class JobFormEndpoint(BaseEndpoint):
 
         Returns ``List[FormsShipmentPlan]`` rather than PDF bytes -- use the
         ``job_shipment_id`` of a plan to drive the BOL routes below.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/form.shipments.html
+        Response model: List[FormsShipmentPlan]
         """
         return self._request(_SHIPMENTS.bind(jobDisplayId=job_display_id))
 

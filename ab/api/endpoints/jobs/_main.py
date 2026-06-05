@@ -228,6 +228,9 @@ class JobsEndpoint(BaseEndpoint):
                 instance or a dict.
 
         Request model: :class:`JobCreateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/create.html
+        Request model: JobCreateRequest
         """
         return self._request(_CREATE, json=data)
 
@@ -240,6 +243,9 @@ class JobsEndpoint(BaseEndpoint):
                 instance or a dict.
 
         Request model: :class:`JobSaveRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/save.html
+        Request model: JobSaveRequest
         """
         return self._request(_SAVE, json=data)
 
@@ -253,11 +259,19 @@ class JobsEndpoint(BaseEndpoint):
 
         Returns:
             :class:`~ab.api.models.jobs.Job`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get.html
+        Response model: Job
         """
         return self._request(_GET.bind(jobDisplayId=job_display_id))
 
     def search(self, *, job_display_id: int | None = None) -> JobSearchResult:
-        """GET /job/search (ACPortal) — query params."""
+        """GET /job/search (ACPortal) — query params.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/search.html
+        Query params: JobSearchParams
+        Response model: JobSearchResult
+        """
         return self._request(_SEARCH, params=dict(job_display_id=job_display_id))
 
     def search_by_details(self, *, data: JobSearchRequest | dict) -> list[JobSearchResult]:
@@ -269,19 +283,35 @@ class JobsEndpoint(BaseEndpoint):
                 or a dict.
 
         Request model: :class:`JobSearchRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/search_by_details.html
+        Request model: JobSearchRequest
+        Response model: List[JobSearchResult]
         """
         return self._request(_SEARCH_BY_DETAILS, json=data)
 
     def get_price(self, job_display_id: int) -> JobPrice:
-        """GET /job/{jobDisplayId}/price (ACPortal)"""
+        """GET /job/{jobDisplayId}/price (ACPortal)
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get_price.html
+        Response model: JobPrice
+        """
         return self._request(_GET_PRICE.bind(jobDisplayId=job_display_id))
 
     def get_calendar_items(self, job_display_id: int) -> list[CalendarItem]:
-        """GET /job/{jobDisplayId}/calendaritems (ACPortal)"""
+        """GET /job/{jobDisplayId}/calendaritems (ACPortal)
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get_calendar_items.html
+        Response model: List[CalendarItem]
+        """
         return self._request(_GET_CALENDAR.bind(jobDisplayId=job_display_id))
 
     def get_update_page_config(self, job_display_id: int) -> JobUpdatePageConfig:
-        """GET /job/{jobDisplayId}/updatePageConfig (ACPortal)"""
+        """GET /job/{jobDisplayId}/updatePageConfig (ACPortal)
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get_update_page_config.html
+        Response model: JobUpdatePageConfig
+        """
         return self._request(_GET_CONFIG.bind(jobDisplayId=job_display_id))
 
     def update(self, *, data: JobUpdateRequest | dict) -> None:
@@ -292,6 +322,9 @@ class JobsEndpoint(BaseEndpoint):
                 Accepts a :class:`JobUpdateRequest` instance or a dict.
 
         Request model: :class:`JobUpdateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/update.html
+        Request model: JobUpdateRequest
         """
         return self._request(_ABC_UPDATE, client=self._abc_client, json=data)
 
@@ -302,6 +335,9 @@ class JobsEndpoint(BaseEndpoint):
             job_display_id: Job to transfer.
             franchisee_id: Target franchisee — accepts a company code
                 (e.g. ``"9999AZ"``) or UUID.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/transfer.html
+        Request model: TransferModel
         """
         resolved = self._resolver.resolve(franchisee_id)
         return self._request(
@@ -466,7 +502,11 @@ class JobsEndpoint(BaseEndpoint):
     # ---- /packagingcontainers (tag=Job, kept here) -----------------------
 
     def get_packaging_containers(self, job_display_id: int) -> list[PackagingContainer]:
-        """GET /job/{jobDisplayId}/packagingcontainers (ACPortal)"""
+        """GET /job/{jobDisplayId}/packagingcontainers (ACPortal)
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get_packaging_containers.html
+        Response model: List[PackagingContainer]
+        """
         return self._request(_GET_PACKAGING_CONTAINERS.bind(jobDisplayId=job_display_id))
 
     def update_item(
@@ -485,6 +525,10 @@ class JobsEndpoint(BaseEndpoint):
                 Accepts an :class:`ItemUpdateRequest` instance or a dict.
 
         Request model: :class:`ItemUpdateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/update_item.html
+        Request model: ItemUpdateRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(
             _PUT_ITEM.bind(jobDisplayId=job_display_id, itemId=item_id),
@@ -505,6 +549,10 @@ class JobsEndpoint(BaseEndpoint):
                 instance or a dict.
 
         Request model: :class:`ItemNotesRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/add_item_notes.html
+        Request model: ItemNotesRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(_POST_ITEM_NOTES.bind(jobDisplayId=job_display_id), json=data)
 
@@ -703,6 +751,9 @@ class JobsEndpoint(BaseEndpoint):
                 instance or a dict.
 
         Request model: :class:`FreightItemsRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/add_freight_items.html
+        Request model: FreightItemsRequest
         """
         return self._request(_ADD_FREIGHT_ITEMS.bind(jobDisplayId=job_display_id), json=data)
 
@@ -726,6 +777,10 @@ class JobsEndpoint(BaseEndpoint):
             :class:`~ab.api.models.shared.ServiceBaseResponse`
 
         Request model: :class:`ChangeJobAgentRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/change_agent.html
+        Request model: ChangeJobAgentRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(
             _POST_CHANGE_AGENT.bind(jobDisplayId=job_display_id),

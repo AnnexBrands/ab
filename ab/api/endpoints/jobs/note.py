@@ -67,12 +67,20 @@ class JobNoteEndpoint(BaseEndpoint):
             job_display_id: Job display ID.
             category: Note category filter.
             task_code: Task code filter.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/note.list.html
+        Query params: JobNoteListParams
+        Response model: List[JobNote]
         """
         params = dict(category=category, task_code=task_code)
         return self._request(_LIST.bind(jobDisplayId=job_display_id), params=params)
 
     def get(self, job_display_id: int, note_id: str) -> JobNote:
-        """Fetch a single note (``GET /job/{jobDisplayId}/note/{id}``)."""
+        """Fetch a single note (``GET /job/{jobDisplayId}/note/{id}``).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/note.get.html
+        Response model: JobNote
+        """
         return self._request(_GET.bind(jobDisplayId=job_display_id, id=note_id))
 
     def create(
@@ -88,6 +96,10 @@ class JobNoteEndpoint(BaseEndpoint):
             data: :class:`JobNoteCreateRequest` instance or a dict.
 
         Request model: :class:`JobNoteCreateRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/note.create.html
+        Request model: JobNoteCreateRequest
+        Response model: JobNote
         """
         return self._request(_CREATE.bind(jobDisplayId=job_display_id), json=data)
 
@@ -106,6 +118,10 @@ class JobNoteEndpoint(BaseEndpoint):
             data: :class:`JobNoteUpdateRequest` instance or a dict.
 
         Request model: :class:`JobNoteUpdateRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/note.update.html
+        Request model: JobNoteUpdateRequest
+        Response model: JobNote
         """
         return self._request(
             _UPDATE.bind(jobDisplayId=job_display_id, id=note_id),

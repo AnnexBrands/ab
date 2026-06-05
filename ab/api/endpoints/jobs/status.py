@@ -25,5 +25,9 @@ class JobStatusEndpoint(BaseEndpoint):
     """Job-scoped status operations (ACPortal API)."""
 
     def set_quote(self, job_display_id: int) -> ServiceBaseResponse:
-        """``POST /job/{jobDisplayId}/status/quote``"""
+        """``POST /job/{jobDisplayId}/status/quote``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/status.set_quote.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(_SET_QUOTE.bind(jobDisplayId=job_display_id))

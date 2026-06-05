@@ -56,7 +56,12 @@ class JobFreightProvidersEndpoint(BaseEndpoint):
         shipment_types: list[str] | None = None,
         only_active: bool | None = None,
     ) -> list[PricedFreightProvider]:
-        """``GET /job/{jobDisplayId}/freightproviders``"""
+        """``GET /job/{jobDisplayId}/freightproviders``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/freight_providers.list.html
+        Query params: FreightProvidersParams
+        Response model: List[PricedFreightProvider]
+        """
         return self._request(
             _LIST.bind(jobDisplayId=job_display_id),
             params=dict(
@@ -70,6 +75,9 @@ class JobFreightProvidersEndpoint(BaseEndpoint):
         """``POST /job/{jobDisplayId}/freightproviders``
 
         Request model: :class:`ShipmentPlanProvider`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/freight_providers.save.html
+        Request model: ShipmentPlanProvider
         """
         return self._request(_SAVE.bind(jobDisplayId=job_display_id), json=data)
 
@@ -83,6 +91,9 @@ class JobFreightProvidersEndpoint(BaseEndpoint):
         """``POST /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote``
 
         Request model: :class:`RateQuoteRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/freight_providers.rate_quote.html
+        Request model: RateQuoteRequest
         """
         return self._request(
             _RATE_QUOTE.bind(jobDisplayId=job_display_id, optionIndex=option_index),
