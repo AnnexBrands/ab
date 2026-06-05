@@ -25,12 +25,12 @@ from ab.api.endpoints.jobs import (
     JobParcelItemsEndpoint,
     JobPaymentEndpoint,
     JobRfqEndpoint,
+    JobsEndpoint,
     JobShipmentEndpoint,
     JobSmsEndpoint,
     JobStatusEndpoint,
     JobTimelineEndpoint,
     JobTrackingEndpoint,
-    JobsEndpoint,
 )
 from ab.api.endpoints.payments import PaymentsEndpoint
 from ab.api.endpoints.shipments import ShipmentsEndpoint

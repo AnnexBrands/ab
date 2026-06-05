@@ -9,8 +9,13 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 from ab.api.models.common import CompanyAddress
-from ab.api.models.mixins import FullAuditModel, IdentifiedModel, PaginatedRequestMixin, SearchableRequestMixin, TimestampedModel
-
+from ab.api.models.mixins import (
+    FullAuditModel,
+    IdentifiedModel,
+    PaginatedRequestMixin,
+    SearchableRequestMixin,
+    TimestampedModel,
+)
 
 # ---- Job GET response sub-models (018) ------------------------------------
 
@@ -474,7 +479,9 @@ class TimelineCreateParams(RequestModel):
 class TrackingV3Params(RequestModel):
     """Query parameters for GET /v3/job/{jobDisplayId}/tracking."""
 
-    history_amount: Optional[int] = Field(None, alias="historyAmount", description="Number of tracking history entries to return")
+    history_amount: Optional[int] = Field(
+        None, alias="historyAmount", description="Number of tracking history entries to return"
+    )
 
 
 class JobNoteListParams(RequestModel):
@@ -606,7 +613,9 @@ class JobSearchTask(ResponseModel):
 class JobSearchTransportDetails(ResponseModel):
     """Pickup or delivery details in job search result."""
 
-    important_notes_count: Optional[int] = Field(None, alias="importantNotesCount", description="Count of important notes")
+    important_notes_count: Optional[int] = Field(
+        None, alias="importantNotesCount", description="Count of important notes"
+    )
     contact: Optional[JobSearchContact] = Field(None, description="Contact details")
     address: Optional[JobSearchAddress] = Field(None, description="Address details")
     contact_email: Optional[str] = Field(None, alias="contactEmail", description="Contact email")
@@ -625,8 +634,12 @@ class JobSearchResult(ResponseModel):
     job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
     job_display_id: Optional[int] = Field(None, alias="jobDisplayId", description="Job display ID")
     items_count: Optional[int] = Field(None, alias="itemsCount", description="Number of items in job")
-    pickup_details: Optional[JobSearchTransportDetails] = Field(None, alias="pickupDetails", description="Pickup details")
-    delivery_details: Optional[JobSearchTransportDetails] = Field(None, alias="deliveryDetails", description="Delivery details")
+    pickup_details: Optional[JobSearchTransportDetails] = Field(
+        None, alias="pickupDetails", description="Pickup details"
+    )
+    delivery_details: Optional[JobSearchTransportDetails] = Field(
+        None, alias="deliveryDetails", description="Delivery details"
+    )
     access_level: Optional[int] = Field(None, alias="accessLevel", description="Access level bitmask")
 
 
@@ -750,9 +763,15 @@ class TimelineTask(ResponseModel, TimestampedModel):
 
     # CP-specific fields (CarrierTaskModel)
     scheduled_date: Optional[str] = Field(None, alias="scheduledDate", description="Carrier scheduled date")
-    pickup_completed_date: Optional[str] = Field(None, alias="pickupCompletedDate", description="Carrier pickup completed")
-    delivery_completed_date: Optional[str] = Field(None, alias="deliveryCompletedDate", description="Carrier delivery completed")
-    expected_delivery_date: Optional[str] = Field(None, alias="expectedDeliveryDate", description="Expected delivery date")
+    pickup_completed_date: Optional[str] = Field(
+        None, alias="pickupCompletedDate", description="Carrier pickup completed"
+    )
+    delivery_completed_date: Optional[str] = Field(
+        None, alias="deliveryCompletedDate", description="Carrier delivery completed"
+    )
+    expected_delivery_date: Optional[str] = Field(
+        None, alias="expectedDeliveryDate", description="Expected delivery date"
+    )
 
 
 class TimelineAgent(ResponseModel):
@@ -1099,9 +1118,13 @@ class ExtendedOnHoldInfo(ResponseModel):
     status: Optional[str] = Field(None, description="Hold status")
     created_date: Optional[str] = Field(None, alias="createdDate", description="Created date")
     created_by_contact_id: Optional[int] = Field(None, alias="createdByContactId", description="Contact ID of creator")
-    created_by_job_relation: Optional[str] = Field(None, alias="createdByJobRelation", description="Creator's job relation")
+    created_by_job_relation: Optional[str] = Field(
+        None, alias="createdByJobRelation", description="Creator's job relation"
+    )
     resolved_date: Optional[str] = Field(None, alias="resolvedDate", description="Resolution date")
-    responsible_party_type_id: Optional[str] = Field(None, alias="responsiblePartyTypeId", description="Responsible party type UUID")
+    responsible_party_type_id: Optional[str] = Field(
+        None, alias="responsiblePartyTypeId", description="Responsible party type UUID"
+    )
     reason_id: Optional[str] = Field(None, alias="reasonId", description="Hold reason UUID")
     responsible_party: Optional[str] = Field(None, alias="responsibleParty", description="Responsible party label")
     comment: Optional[str] = Field(None, description="Hold comment")
@@ -1234,7 +1257,9 @@ class OnHoldUser(ResponseModel):
     name: Optional[str] = Field(None, description="User name")
     email: Optional[str] = Field(None, description="User email")
     full_name: Optional[str] = Field(None, alias="fullName", description="Full display name")
-    job_relation: Optional[str] = Field(None, alias="jobRelation", description="Relation to the job (e.g. Pickup Agent, Owner)")
+    job_relation: Optional[str] = Field(
+        None, alias="jobRelation", description="Relation to the job (e.g. Pickup Agent, Owner)"
+    )
 
     def cli_format(self) -> str:
         """One-line pretty row used by the CLI and examples (vs. JSON)."""
@@ -1475,5 +1500,7 @@ class ChangeJobAgentRequest(RequestModel):
 
     service_type: Optional[int] = Field(None, alias="serviceType", description="Agent service type (0-4)")
     agent_id: Optional[str] = Field(None, alias="agentId", description="Agent company UUID")
-    recalculate_price: Optional[bool] = Field(None, alias="recalculatePrice", description="Recalculate job price after change")
+    recalculate_price: Optional[bool] = Field(
+        None, alias="recalculatePrice", description="Recalculate job price after change"
+    )
     apply_rebate: Optional[bool] = Field(None, alias="applyRebate", description="Apply rebate after change")

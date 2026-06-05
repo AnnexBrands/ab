@@ -223,7 +223,9 @@ class SearchContactEntityResult(ResponseModel):
     company_display_id: Optional[str] = Field(None, alias="companyDisplayId", description="Company display ID")
     is_prefered: Optional[bool] = Field(None, alias="isPrefered", description="Whether this contact is preferred")
     industry_type: Optional[str] = Field(None, alias="industryType", description="Industry type classification")
-    total_records: Optional[int] = Field(None, alias="totalRecords", description="Total matching records (denormalized)")
+    total_records: Optional[int] = Field(
+        None, alias="totalRecords", description="Total matching records (denormalized)"
+    )
 
 
 class ContactSearchParams(RequestModel):
@@ -233,13 +235,17 @@ class ContactSearchParams(RequestModel):
     optional; omit entirely for unfiltered results.
     """
 
-    contact_display_id: Optional[int] = Field(None, alias="contactDisplayId", description="Filter by contact display ID")
+    contact_display_id: Optional[int] = Field(
+        None, alias="contactDisplayId", description="Filter by contact display ID"
+    )
     full_name: Optional[str] = Field(None, alias="fullName", description="Filter by contact name")
     company_name: Optional[str] = Field(None, alias="companyName", description="Filter by company name")
     company_code: Optional[str] = Field(None, alias="companyCode", description="Filter by company code")
     email: Optional[str] = Field(None, description="Filter by email address")
     phone: Optional[str] = Field(None, description="Filter by phone number")
-    company_display_id: Optional[int] = Field(None, alias="companyDisplayId", description="Filter by company display ID")
+    company_display_id: Optional[int] = Field(
+        None, alias="companyDisplayId", description="Filter by company display ID"
+    )
 
 
 class PageOrderedRequest(RequestModel):
@@ -251,7 +257,9 @@ class PageOrderedRequest(RequestModel):
     page_number: int = Field(..., alias="pageNumber", description="Page number (1-based, required)")
     page_size: int = Field(..., alias="pageSize", description="Items per page (required, 1-32767)")
     sorting_by: Optional[str] = Field(None, alias="sortingBy", description="Sort field name")
-    sorting_direction: Optional[int] = Field(None, alias="sortingDirection", description="Sort direction (0=ascending, 1=descending)")
+    sorting_direction: Optional[int] = Field(
+        None, alias="sortingDirection", description="Sort direction (0=ascending, 1=descending)"
+    )
 
 
 class ContactEditParams(RequestModel):

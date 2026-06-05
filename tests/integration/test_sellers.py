@@ -5,7 +5,6 @@ import pytest
 from ab.api.models.sellers import SellerExpandedDto
 from ab.api.models.shared import PaginatedList
 from tests.conftest import assert_no_extra_fields
-from tests.constants import TEST_SELLER_ID
 
 pytestmark = pytest.mark.live
 

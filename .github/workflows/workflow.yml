@@ -26,12 +26,17 @@ jobs:
       - name: Upgrade Pip & Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build pytest
+          # ruff pinned to match the `lint` dependency-group in pyproject.toml
+          # so CI lint results are identical to local.
+          python -m pip install build pytest ruff==0.15.5
           # Editable install so `import ab` resolves to the checkout. The gate
           # evaluator and several tests locate tests/fixtures/ relative to
           # ab.__file__; a non-editable install would point them at
           # site-packages (where tests/ is not shipped) and fail spuriously.
           pip install -e .
+
+      - name: Lint (ruff)
+        run: ruff check .
 
       - name: Run tests (deterministic — excludes live API tests)
         run: pytest -m "not live"

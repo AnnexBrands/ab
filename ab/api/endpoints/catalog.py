@@ -5,7 +5,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ab.api.models.catalog import AddCatalogRequest, BulkInsertRequest, CatalogExpandedDto, CatalogWithSellersDto, UpdateCatalogRequest
+    from ab.api.models.catalog import (
+        AddCatalogRequest,
+        BulkInsertRequest,
+        CatalogExpandedDto,
+        CatalogWithSellersDto,
+        UpdateCatalogRequest,
+    )
     from ab.api.models.shared import PaginatedList
 
 from ab.api.base import BaseEndpoint

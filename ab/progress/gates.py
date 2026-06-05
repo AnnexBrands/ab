@@ -472,9 +472,9 @@ def _g6a_typed_signature(
     method_sig = method_match.group(2)
 
     if _KWARGS_RE.search(method_sig):
-        return GateResult("G6a", False, f"Method uses **kwargs: Any")
+        return GateResult("G6a", False, "Method uses **kwargs: Any")
     if _DATA_DICT_ANY_RE.search(method_sig):
-        return GateResult("G6a", False, f"Method uses data: dict | Any")
+        return GateResult("G6a", False, "Method uses data: dict | Any")
 
     return GateResult("G6a", True)
 

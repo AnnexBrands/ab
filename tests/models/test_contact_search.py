@@ -8,16 +8,13 @@ and field-level assertions on SearchContactEntityResult.
 from __future__ import annotations
 
 import copy
-import json
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
 from ab.api.models.contacts import (
-    ContactSearchParams,
     ContactSearchRequest,
-    PageOrderedRequest,
     SearchContactEntityResult,
 )
 from tests.conftest import assert_no_extra_fields, load_request_fixture, require_fixture
@@ -125,7 +122,7 @@ _EXTRA_FIELD_LEVELS = [
 ]
 
 
-@pytest.mark.parametrize("level,path", _EXTRA_FIELD_LEVELS, ids=[l for l, _ in _EXTRA_FIELD_LEVELS])
+@pytest.mark.parametrize("level,path", _EXTRA_FIELD_LEVELS, ids=[lvl for lvl, _ in _EXTRA_FIELD_LEVELS])
 def test_request_extra_field_rejected(level: str, path: list[str]) -> None:
     """Adding an unknown key at any level raises ValidationError (extra='forbid')."""
     data = _load_search_fixture()

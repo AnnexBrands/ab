@@ -41,7 +41,10 @@ test = [
     "pytest>=7.0",
 ]
 lint = [
-    "ruff>=0.4",
+    # Pinned exactly so local lint results match CI deterministically — ruff's
+    # rule set and formatting evolve between releases, so a floating `>=` would
+    # let `ruff check` disagree across machines.
+    "ruff==0.15.5",
 ]
 docs = [
     "sphinx>=7.0",

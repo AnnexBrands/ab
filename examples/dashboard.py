@@ -39,7 +39,6 @@ from pathlib import Path
 
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
-
 from examples.constants import TEST_COMPANY_ID, TEST_VIEW_ID
 
 FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
