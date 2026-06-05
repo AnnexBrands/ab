@@ -23,7 +23,12 @@ class _MemoryStorage(TokenStorage):
         self.token = None
 
 
-def test_token_storage_construction_does_not_require_username_password():
+def test_token_storage_construction_does_not_require_username_password(tmp_path, monkeypatch):
+    # Isolate from any developer ``./.env`` at the repo root: load_settings()
+    # auto-reads ``./.env`` from the CWD when env/env_file are unset, which
+    # would otherwise leak ABCONNECT_USERNAME and break the empty-credential
+    # assertion. Running from an empty tmp dir guarantees no ambient .env.
+    monkeypatch.chdir(tmp_path)
     env = {
         "ABCONNECT_CLIENT_ID": "cid",
         "ABCONNECT_CLIENT_SECRET": "secret",

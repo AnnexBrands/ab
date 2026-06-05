@@ -9,13 +9,13 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 ## Summary
 
 - **Total endpoints**: 232
-- **Complete (all gates pass)**: 127
-- **G1 Model Fidelity**: 154/232 pass
-- **G2 Fixture Status**: 175/232 pass
-- **G3 Test Quality**: 204/232 pass
-- **G4 Doc Accuracy**: 221/232 pass
-- **G5 Param Routing**: 217/232 pass
-- **G6 Request Quality**: 224/232 pass
+- **Complete (all gates pass)**: 171
+- **G1 Model Fidelity**: 184/232 pass
+- **G2 Fixture Status**: 185/232 pass
+- **G3 Test Quality**: 225/232 pass
+- **G4 Doc Accuracy**: 232/232 pass
+- **G5 Param Routing**: 226/232 pass
+- **G6 Request Quality**: 228/232 pass
 
 ## Status Legend
 
@@ -53,24 +53,24 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/calendaritems | GET | api.jobs.get_calendar_items | — | List[CalendarItem] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/{jobDisplayId}/updatePageConfig | GET | api.jobs.get_update_page_config | — | JobUpdatePageConfig | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
 | /job/search | GET | api.jobs.search | — | JobSearchResult | PASS | PASS | PASS | PASS | PASS | PASS | complete | HTTP 404 on staging |
-| /job/{jobDisplayId}/timeline | GET | api.jobs.get_timeline_response | — | TimelineResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs job ID with active timeline |
+| /job/{jobDisplayId}/timeline | GET | api.jobs.timeline.response | — | TimelineResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs job ID with active timeline |
 | /job/{jobDisplayId}/timeline/{taskCode}/agent | GET | — | — | TimelineAgent | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs job ID + task code |
-| /job/{jobDisplayId}/tracking | GET | api.jobs.get_tracking | — | TrackingInfo | PASS | PASS | PASS | PASS | PASS | PASS | complete | Works but no fixture_file set in example |
-| /v3/job/{jobDisplayId}/tracking/{historyAmount} | GET | api.jobs.get_tracking_v3 | — | TrackingInfoV3 | PASS | PASS | PASS | PASS | PASS | PASS | complete | Works but no fixture_file set in example |
-| /job/{jobDisplayId}/payment | GET | api.payments.get | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | FAIL | PASS | incomplete | Works but no fixture_file set in example |
-| /job/{jobDisplayId}/payment/sources | GET | api.payments.get_sources | — | List[PaymentSource] | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | Works but no fixture_file set in example |
-| /job/{jobDisplayId}/payment/ACHPaymentSession | POST | api.payments.create_ach_session | ACHSessionRequest | ACHSessionResponse | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | Needs ACH session params |
-| /job/{jobDisplayId}/note | GET | api.jobs.get_notes | — | List[JobNote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Model bug — id field typed as str but API returns int |
-| /job/{jobDisplayId}/parcelitems | GET | api.jobs.get_parcel_items | — | List[ParcelItem] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with parcel items |
-| /job/{jobDisplayId}/parcel-items-with-materials | GET | api.jobs.get_parcel_items_with_materials | — | List[ParcelItemWithMaterials] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with packed items |
+| /job/{jobDisplayId}/tracking | GET | api.jobs.tracking.get | — | TrackingInfo | PASS | PASS | PASS | PASS | PASS | PASS | complete | Works but no fixture_file set in example |
+| /v3/job/{jobDisplayId}/tracking/{historyAmount} | GET | api.jobs.tracking.v3 | — | TrackingInfoV3 | PASS | PASS | PASS | PASS | PASS | PASS | complete | Works but no fixture_file set in example |
+| /job/{jobDisplayId}/payment | GET | api.jobs.payment.get | — | PaymentInfo | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
+| /job/{jobDisplayId}/payment/sources | GET | api.jobs.payment.get_sources | — | List[PaymentSource] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Works but no fixture_file set in example |
+| /job/{jobDisplayId}/payment/ACHPaymentSession | POST | api.jobs.payment.create_ach_session | ACHSessionRequest | ACHSessionResponse | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs ACH session params |
+| /job/{jobDisplayId}/note | GET | api.jobs.note.list | — | List[JobNote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | Model bug — id field typed as str but API returns int |
+| /job/{jobDisplayId}/parcelitems | GET | api.jobs.parcel_items.list | — | List[ParcelItem] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with parcel items |
+| /job/{jobDisplayId}/parcel-items-with-materials | GET | api.jobs.parcel_items.list_with_materials | — | List[ParcelItemWithMaterials] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Returns empty list — needs job with packed items |
 | /job/{jobDisplayId}/packagingcontainers | GET | api.jobs.get_packaging_containers | — | List[PackagingContainer] | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | Model has warning fields — works but model incomplete |
-| /job/{jobDisplayId}/shipment/ratequotes | GET | api.shipments.get_rate_quotes | — | List[RateQuote] | PASS | PASS | PASS | FAIL | FAIL | PASS | incomplete | 2026-02-14, staging |
-| /job/{jobDisplayId}/shipment/accessorials | GET | api.shipments.get_accessorials | — | List[Accessorial] | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
-| /job/{jobDisplayId}/shipment/origindestination | GET | api.shipments.get_origin_destination | — | ShipmentOriginDestination | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
-| /job/{jobDisplayId}/shipment/ratesstate | GET | api.shipments.get_rates_state | — | RatesState | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
+| /job/{jobDisplayId}/shipment/ratequotes | GET | api.jobs.shipment.get_rate_quotes | — | List[RateQuote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
+| /job/{jobDisplayId}/shipment/accessorials | GET | api.jobs.shipment.get_accessorials | — | List[Accessorial] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
+| /job/{jobDisplayId}/shipment/origindestination | GET | api.jobs.shipment.get_origin_destination | — | ShipmentOriginDestination | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
+| /job/{jobDisplayId}/shipment/ratesstate | GET | api.jobs.shipment.get_rates_state | — | RatesState | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
 | /shipment | GET | api.shipments.get_shipment | — | ShipmentInfo | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
 | /shipment/accessorials | GET | api.shipments.get_global_accessorials | — | List[GlobalAccessorial] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
-| /job/{jobDisplayId}/form/shipments | GET | api.forms.get_shipments | — | List[FormsShipmentPlan] | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 2026-02-14, staging |
+| /job/{jobDisplayId}/form/shipments | GET | api.jobs.form.shipments | — | List[FormsShipmentPlan] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-14, staging |
 | /autoprice/quickquote | POST | api.autoprice.quick_quote | QuoteRequestModel | QuickQuoteResponse | PASS | PASS | PASS | PASS | PASS | FAIL | incomplete | Request model validation error — field names don't match (originZip vs OriginZip) |
 | /AutoPrice/QuoteRequest | POST | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs items array with weight, class fields and valid origin/destination |
 | /rfq/{rfqId} | GET | api.rfq.get | — | QuoteRequestDisplayInfo | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — run examples/rfq.py |
@@ -80,8 +80,8 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /rfq/{rfqId}/cancel | POST | api.rfq.cancel | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — mutating |
 | /rfq/{rfqId}/acceptwinner | POST | api.rfq.accept_winner | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — mutating |
 | /rfq/{rfqId}/comment | POST | api.rfq.add_comment | AcceptModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/rfq | GET | api.jobs.list_rfqs | — | List[QuoteRequestDisplayInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} | GET | api.jobs.get_rfq_status | — | int | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/rfq | GET | api.jobs.rfq.list | — | List[QuoteRequestDisplayInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId} | GET | api.jobs.rfq.status | — | int | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/onhold | GET | api.jobs.on_hold.list | — | List[ExtendedOnHoldInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008; subgroup moved to api.jobs.on_hold |
 | /job/{jobDisplayId}/onhold | POST | api.jobs.on_hold.create | SaveOnHoldRequest | SaveOnHoldResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger (reasonId+responsiblePartyTypeId required); example covers create/assign/email/resolve chain |
 | /job/{jobDisplayId}/onhold | DELETE | api.jobs.on_hold.delete | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — destructive |
@@ -100,14 +100,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /reports/topRevenueSalesReps | POST | api.reports.top_revenue_sales_reps | Web2LeadRevenueFilter | List[RevenueCustomer] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /reports/referredBy | POST | api.reports.referred_by | ReferredByReportRequest | List[ReferredByReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /reports/web2Lead | POST | api.reports.web2lead | Web2LeadV2RequestModel | List[Web2LeadReport] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/email | POST | api.jobs.send_email | SendEmailRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — fire-and-forget |
-| /job/{jobDisplayId}/email/senddocument | POST | api.jobs.send_document_email | SendDocumentEmailModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/email/createtransactionalemail | POST | api.jobs.create_transactional_email | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/email/{emailTemplateGuid}/send | POST | api.jobs.send_template_email | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/sms | GET | api.jobs.list_sms | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/sms | POST | api.jobs.send_sms | SendSMSModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/sms/read | POST | api.jobs.mark_sms_read | MarkSmsAsReadModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/sms/templatebased/{templateId} | GET | api.jobs.get_sms_template | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/email | POST | api.jobs.email.send | SendEmailRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — fire-and-forget |
+| /job/{jobDisplayId}/email/senddocument | POST | api.jobs.email.send_document | SendDocumentEmailModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/email/createtransactionalemail | POST | api.jobs.email.create_transactional | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/email/{emailTemplateGuid}/send | POST | api.jobs.email.send_template | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/sms | GET | api.jobs.sms.list | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/sms | POST | api.jobs.sms.send | SendSMSModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/sms/read | POST | api.jobs.sms.mark_read | MarkSmsAsReadModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/sms/templatebased/{templateId} | GET | api.jobs.sms.get_template | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /lookup/{masterConstantKey} | GET | api.lookup.get_by_key | — | List[LookupValue] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /lookup/{masterConstantKey}/{valueId} | GET | api.lookup.get_by_key_and_id | — | LookupValue | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /lookup/accessKeys | GET | api.lookup.get_access_keys | — | List[AccessKey] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
@@ -127,10 +127,10 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /commodity/suggestions | POST | api.commodities.suggestions | CommoditySuggestionRequest | List[Commodity] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/{id} | GET | api.commodity_maps.get | — | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/{id} | PUT | api.commodity_maps.update | CommodityMapUpdateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /commodity-map/{id} | DELETE | api.commodity_maps.delete | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /commodity-map/{id} | DELETE | api.commodity_maps.delete | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /commodity-map | POST | api.commodity_maps.create | CommodityMapCreateRequest | CommodityMap | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /commodity-map/search | POST | api.commodity_maps.search | CommodityMapSearchRequest | List[CommodityMap] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /dashboard | GET | api.dashboard.get | — | DashboardSummary | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
+| /dashboard | GET | api.dashboard.get | — | DashboardSummary | FAIL | PASS | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard/gridviews | GET | api.dashboard.get_grid_views | — | List[GridViewInfo] | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger GridViewDetails (id/name/dataKey/isActive); fixture seeded with 6 representative rows |
 | /dashboard/gridviewstate/{id} | GET | api.dashboard.get_grid_view_state | — | GridViewState | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /dashboard/gridviewstate/{id} | POST | api.dashboard.save_grid_view_state | GridViewState | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
@@ -142,7 +142,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /views/all | GET | api.views.list | — | List[GridViewDetails] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId} | GET | api.views.get | — | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views | POST | api.views.create | GridViewCreateRequest | GridViewDetails | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
-| /views/{viewId} | DELETE | api.views.delete | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 008 |
+| /views/{viewId} | DELETE | api.views.delete | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /views/{viewId}/accessinfo | GET | api.views.get_access_info | — | GridViewAccess | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /views/{viewId}/access | PUT | api.views.update_access | GridViewAccess | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /views/datasetsps | GET | api.views.get_dataset_sps | — | List[StoredProcedureColumn] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
@@ -168,9 +168,9 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /contacts/{contactId}/history/graphdata | GET | api.contacts.get_history_graph_data | — | ContactGraphData | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /contacts/{mergeToId}/merge/preview | POST | api.contacts.merge_preview | ContactMergeRequest | ContactMergePreview | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /contacts/{mergeToId}/merge | PUT | api.contacts.merge | ContactMergeRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 — destructive |
-| /job/{jobDisplayId}/freightproviders | GET | api.jobs.list_freight_providers | — | List[PricedFreightProvider] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/freightproviders | POST | api.jobs.save_freight_providers | ShipmentPlanProvider | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
-| /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote | POST | api.jobs.get_freight_provider_rate_quote | RateQuoteRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/freightproviders | GET | api.jobs.freight_providers.list | — | List[PricedFreightProvider] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/freightproviders | POST | api.jobs.freight_providers.save | ShipmentPlanProvider | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
+| /job/{jobDisplayId}/freightproviders/{optionIndex}/ratequote | POST | api.jobs.freight_providers.rate_quote | RateQuoteRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /job/{jobDisplayId}/freightitems | POST | api.jobs.add_freight_items | FreightItemsRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 008 |
 | /note | GET | api.notes.list | — | List[GlobalNote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | model realigned to swagger Notes; cli_format added; fixture seeded |
 | /note | POST | api.notes.create | NoteRequest | GlobalNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | shared NoteModel schema with PUT; comments+category required |
@@ -180,10 +180,10 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /partner/{id} | GET | api.partners.get | — | Partner | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /partner/search | POST | api.partners.search | PartnerSearchRequest | List[Partner] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 008 |
 | /Seller/{id} | GET | api.sellers.get | — | SellerExpandedDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
-| /Seller | GET | api.sellers.list | SellerListParams | PaginatedList[SellerExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
-| /Catalog | GET | api.catalog.list | CatalogListParams | PaginatedList[CatalogExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
+| /Seller | GET | — | — | PaginatedList[SellerExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
+| /Catalog | GET | — | — | PaginatedList[CatalogExpandedDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
 | /Catalog/{id} | GET | api.catalog.get | — | CatalogExpandedDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs valid catalog ID |
-| /Lot | GET | api.lots.list | LotListParams | PaginatedList[LotDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
+| /Lot | GET | — | — | PaginatedList[LotDto] | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | 035 — typed filter params wired; needs fixture capture from staging |
 | /Lot/{id} | GET | api.lots.get | — | LotDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | Needs valid lot ID |
 | /Lot/overrides | POST | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | Needs lot override params |
 | /Web2Lead | GET | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 2026-02-13, staging |
@@ -192,19 +192,19 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/update | POST | api.jobs.update | JobUpdateRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /job/save | PUT | api.jobs.save | JobSaveRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /job/transfer/{jobDisplayId} | POST | api.jobs.transfer | TransferModel | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
-| /job/{jobDisplayId}/status/quote | POST | api.jobs.set_quote_status | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/ratequotes | POST | api.shipments.request_rate_quotes | ShipmentRateQuoteRequest | List[RateQuote] | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/book | POST | api.shipments.book | ShipmentBookRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment | DELETE | api.shipments.delete_shipment | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/accessorial | POST | api.shipments.add_accessorial | AccessorialAddRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/accessorial/{addOnId} | DELETE | api.shipments.remove_accessorial | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/shipment/exportdata | POST | api.shipments.post_export_data | ShipmentExportRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/bysource | POST | api.payments.pay_by_source | PayBySourceRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/ACHCreditTransfer | POST | api.payments.ach_credit_transfer | ACHCreditTransferRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/attachCustomerBank | POST | api.payments.attach_customer_bank | AttachBankRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/verifyJobACHSource | POST | api.payments.verify_ach_source | VerifyACHRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/banksource | POST | api.payments.set_bank_source | BankSourceRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
-| /job/{jobDisplayId}/payment/cancelJobACHVerification | POST | api.payments.cancel_ach_verification | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | 020 |
+| /job/{jobDisplayId}/status/quote | POST | api.jobs.status.set_quote | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment/ratequotes | POST | api.jobs.shipment.request_rate_quotes | ShipmentRateQuoteRequest | List[RateQuote] | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment/book | POST | api.jobs.shipment.book | ShipmentBookRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment | DELETE | api.jobs.shipment.delete | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment/accessorial | POST | api.jobs.shipment.add_accessorial | AccessorialAddRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment/accessorial/{addOnId} | DELETE | api.jobs.shipment.remove_accessorial | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/shipment/exportdata | POST | api.jobs.shipment.post_export_data | ShipmentExportRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/bysource | POST | api.jobs.payment.pay_by_source | PayBySourceRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/ACHCreditTransfer | POST | api.jobs.payment.ach_credit_transfer | ACHCreditTransferRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/attachCustomerBank | POST | api.jobs.payment.attach_customer_bank | AttachBankRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/verifyJobACHSource | POST | api.jobs.payment.verify_ach_source | VerifyACHRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/banksource | POST | api.jobs.payment.set_bank_source | BankSourceRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /job/{jobDisplayId}/payment/cancelJobACHVerification | POST | api.jobs.payment.cancel_ach_verification | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /contacts/editdetails | POST | api.contacts.create | ContactEditRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /contacts/{contactId}/editdetails | PUT | api.contacts.update_details | ContactEditRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /documents | POST | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
@@ -213,52 +213,52 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /users/user | PUT | api.users.update | UserUpdateRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /autoprice/v2/quoterequest | POST | api.autoprice.quote_request | QuoteRequestModel | QuoteRequestResponse | FAIL | FAIL | PASS | PASS | PASS | FAIL | incomplete | auto-discovered |
 | /Catalog/{id} | DELETE | api.catalog.delete | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
-| /Catalog/{id} | PUT | api.catalog.update | UpdateCatalogRequest | CatalogWithSellersDto | FAIL | FAIL | PASS | PASS | PASS | FAIL | incomplete | 020 |
+| /Catalog/{id} | PUT | api.catalog.update | UpdateCatalogRequest | CatalogWithSellersDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 020 |
 | /Bulk/insert | POST | api.catalog.bulk_insert | BulkInsertRequest | — | PASS | PASS | PASS | PASS | PASS | FAIL | incomplete | 020 |
-| /Seller | POST | api.sellers.create | AddSellerRequest | SellerDto | PASS | PASS | PASS | PASS | PASS | FAIL | incomplete | 020 |
-| /Seller/{id} | PUT | api.sellers.update | UpdateSellerRequest | SellerDto | PASS | PASS | PASS | PASS | PASS | FAIL | incomplete | 020 |
+| /Seller | POST | api.sellers.create | AddSellerRequest | SellerDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /Seller/{id} | PUT | api.sellers.update | UpdateSellerRequest | SellerDto | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /Seller/{id} | DELETE | api.sellers.delete | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /Lot | POST | api.lots.create | AddLotRequest | LotDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 020 |
 | /Lot/{id} | PUT | api.lots.update | UpdateLotRequest | LotDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 020 |
 | /Lot/{id} | DELETE | api.lots.delete | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /Lot/get-overrides | POST | api.lots.get_overrides | — | List[LotOverrideDto] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 020 |
-| /Catalog | POST | api.catalog.create | AddCatalogRequest | CatalogWithSellersDto | FAIL | FAIL | PASS | PASS | PASS | FAIL | incomplete | auto-discovered |
+| /Catalog | POST | api.catalog.create | AddCatalogRequest | CatalogWithSellersDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /contacts/{id} | GET | api.contacts.get | — | ContactSimple | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /documents/get/{docPath} | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /documents/list | GET | api.documents.list | — | List[Document] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/address-label | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/form/bill-of-lading | GET | — | — | bytes | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/form/bill-of-lading | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/credit-card-authorization | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/customer-quote | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/form/invoice | GET | — | — | bytes | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/form/invoice | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/invoice/editable | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/item-labels | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/form/operations | GET | — | — | bytes | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/form/packaging-labels | GET | — | — | bytes | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/form/operations | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/form/packaging-labels | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/packaging-specification | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/packing-slip | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/quick-sale | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/form/usar | GET | — | — | bytes | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/form/usar | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/usar/editable | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/parcelitems/{parcelItemId} | DELETE | api.jobs.delete_parcel_item | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskId} | DELETE | api.jobs.delete_timeline_task | — | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/note/{id} | GET | api.jobs.get_note | — | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} | GET | api.jobs.get_timeline_task | — | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/timeline/incrementjobstatus | POST | api.jobs.increment_status | IncrementStatusRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline/{timelineTaskId} | PATCH | api.jobs.update_timeline_task | TimelineTaskUpdateRequest | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/item/notes | POST | api.jobs.add_item_notes | ItemNotesRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/note | POST | api.jobs.create_note | JobNoteCreateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/parcelitems | POST | api.jobs.create_parcel_item | ParcelItemCreateRequest | ParcelItem | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/timeline | POST | api.jobs.create_timeline_task | — | TimelineSaveResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/item/{itemId} | PUT | api.jobs.update_item | ItemUpdateRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/note/{id} | PUT | api.jobs.update_note | JobNoteUpdateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/parcelitems/{parcelItemId} | DELETE | api.jobs.parcel_items.delete | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskId} | DELETE | api.jobs.timeline.delete_task | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/note/{id} | GET | api.jobs.note.get | — | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskIdentifier} | GET | api.jobs.timeline.get_task | — | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/timeline/incrementjobstatus | POST | api.jobs.timeline.increment_status | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/timeline/{timelineTaskId} | PATCH | api.jobs.timeline.update_task | TimelineTaskUpdateRequest | TimelineTask | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/item/notes | POST | api.jobs.add_item_notes | ItemNotesRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/note | POST | api.jobs.note.create | JobNoteCreateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/parcelitems | POST | api.jobs.parcel_items.create | ParcelItemCreateRequest | ParcelItem | PASS | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline | POST | api.jobs.timeline.create_task | — | TimelineSaveResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/item/{itemId} | PUT | api.jobs.update_item | ItemUpdateRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/note/{id} | PUT | api.jobs.note.update | JobNoteUpdateRequest | JobNote | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/searchByDetails | POST | api.jobs.search_by_details | JobSearchRequest | List[JobSearchResult] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /job/{jobDisplayId}/timeline/undoincrementjobstatus | POST | api.jobs.undo_increment_status | IncrementStatusRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/payment/create | GET | api.payments.get_create | — | PaymentInfo | FAIL | FAIL | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/shipment/exportdata | GET | api.shipments.get_export_data | — | ShipmentExportData | PASS | PASS | PASS | FAIL | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/timeline/undoincrementjobstatus | POST | api.jobs.timeline.undo_increment_status | IncrementStatusRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/payment/create | GET | api.jobs.payment.get_create | — | PaymentInfo | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/shipment/exportdata | GET | api.jobs.shipment.get_export_data | — | ShipmentExportData | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /shipment/document/{docId} | GET | api.shipments.get_shipment_document | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /Web2Lead/get | GET | api.web2lead.get | — | Web2LeadResponse | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
-| /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | FAIL | PASS | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 
 ## Model Warning Summary
 
@@ -266,4 +266,4 @@ Models with `__pydantic_extra__` fields when validated against their fixtures:
 
 | Model | Issue |
 |-------|-------|
-| ServiceBaseResponse | 13 undeclared field(s): carrierAPI, confirmRequired, currencyCode, documents, errors, fedExExpressFreightDetailRequired, internationalInfoRequired, notifications, shipOutDateRequired, shipmentAcceptIdentifier, shipmentId, totalNetChargeAmount, weight |
+| DashboardSummary | 31 undeclared field(s): actual, agent, basis, carrier, created, custRef, customer, dims, expedite, fullAge, held, item_Count, jobDisplayID, jobPrice, labels, labor, location, netAge, next, next_Status, note, opsForm, packer, pause, pickup, priority, rep, requestor, shipBy, status, step |

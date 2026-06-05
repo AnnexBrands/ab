@@ -256,9 +256,8 @@ def evaluate_g4(model_name: str, endpoint_module: str | None = None) -> GateResu
     has_any_return = False
 
     if endpoint_module:
-        ep_file = ENDPOINTS_DIR / f"{endpoint_module}.py"
-        if ep_file.exists():
-            content = ep_file.read_text()
+        content = _module_source(endpoint_module)
+        if content:
             # Check for -> ModelName or -> list[ModelName] or -> List[ModelName]
             return_pattern = re.compile(
                 rf"->\s*(?:list\[|List\[)?{re.escape(model_name)}(?:\])?"
@@ -269,9 +268,9 @@ def evaluate_g4(model_name: str, endpoint_module: str | None = None) -> GateResu
             elif any_pattern.search(content):
                 has_any_return = True
     else:
-        # Scan all endpoint files
-        for ep_file in ENDPOINTS_DIR.glob("*.py"):
-            if ep_file.name == "__init__.py":
+        # Scan all endpoint files (flat modules and package subfiles)
+        for ep_file in ENDPOINTS_DIR.rglob("*.py"):
+            if ep_file.name == "__init__.py" or "__pycache__" in ep_file.parts:
                 continue
             content = ep_file.read_text()
             return_pattern = re.compile(
@@ -399,13 +398,12 @@ def evaluate_g5(endpoint_path: str, method: str) -> GateResult:
     if not endpoint_module:
         return GateResult("G5", False, "Cannot infer endpoint module")
 
-    ep_file = ENDPOINTS_DIR / f"{endpoint_module}.py"
-    if not ep_file.exists():
+    content = _module_source(endpoint_module)
+    if not content:
         return GateResult(
-            "G5", False, f"Endpoint file {endpoint_module}.py not found",
+            "G5", False, f"Endpoint source for {endpoint_module} not found",
         )
 
-    content = ep_file.read_text()
     if _route_has_params_model(content, endpoint_path):
         return GateResult(
             "G5", True,
@@ -440,11 +438,9 @@ def _g6a_typed_signature(
     if not endpoint_module:
         return GateResult("G6a", False, "Cannot infer endpoint module")
 
-    ep_file = ENDPOINTS_DIR / f"{endpoint_module}.py"
-    if not ep_file.exists():
-        return GateResult("G6a", False, f"Endpoint file {endpoint_module}.py not found")
-
-    content = ep_file.read_text()
+    content = _module_source(endpoint_module)
+    if not content:
+        return GateResult("G6a", False, f"Endpoint source for {endpoint_module} not found")
 
     # Find methods associated with routes that reference this path
     # We scan for method definitions that contain **kwargs or data: dict | Any
@@ -621,6 +617,28 @@ def _infer_endpoint_module(endpoint_path: str) -> str | None:
 
     first_segment = path.split("/")[0]
     return prefix_map.get(first_segment)
+
+
+def _module_source(endpoint_module: str) -> str:
+    """Return the source of an endpoint module as a single string.
+
+    Endpoint groups live either as a flat ``{module}.py`` file or as a package
+    directory ``{module}/`` (e.g. ``jobs/`` after the subgroup reorganisation
+    in #37). The file-content gates (G4/G5/G6) must see the real source
+    regardless of layout, so a package's ``*.py`` files are concatenated.
+    Returns ``""`` when neither a file nor a package exists.
+    """
+    flat = ENDPOINTS_DIR / f"{endpoint_module}.py"
+    if flat.exists():
+        return flat.read_text()
+    pkg = ENDPOINTS_DIR / endpoint_module
+    if pkg.is_dir():
+        return "\n".join(
+            py.read_text()
+            for py in sorted(pkg.rglob("*.py"))
+            if "__pycache__" not in py.parts
+        )
+    return ""
 
 
 # ---------------------------------------------------------------------------
