@@ -35,6 +35,7 @@ abs = "ab.cli:main_staging"
 
 [project.urls]
 "Repository" = "https://github.com/AnnexBrands/ab"
+"Documentation" = "https://ab-sdk.readthedocs.io/"
 
 [dependency-groups]
 test = [

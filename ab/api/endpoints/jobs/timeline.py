@@ -86,6 +86,9 @@ class JobTimelineEndpoint(BaseEndpoint):
 
         Returns :class:`~ab.api.models.jobs.TimelineResponse` with tasks,
         status metadata, SLA info, and on-hold entries.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.response.html
+        Response model: TimelineResponse
         """
         return self._request(_TIMELINE.bind(jobDisplayId=job_display_id))
 
@@ -108,6 +111,10 @@ class JobTimelineEndpoint(BaseEndpoint):
             data: Task request model instance or dict with ``taskCode`` and
                 task-code-specific fields.
             create_email: Send status notification email (query param).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.create_task.html
+        Query params: TimelineCreateParams
+        Response model: TimelineSaveResponse
         """
         params = dict(create_email=create_email)
         return self._request(
@@ -117,7 +124,11 @@ class JobTimelineEndpoint(BaseEndpoint):
         )
 
     def get_task(self, job_display_id: int, task_id: str) -> TimelineTask:
-        """``GET /job/{jobDisplayId}/timeline/{timelineTaskIdentifier}``"""
+        """``GET /job/{jobDisplayId}/timeline/{timelineTaskIdentifier}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.get_task.html
+        Response model: TimelineTask
+        """
         return self._request(
             _GET_TASK.bind(jobDisplayId=job_display_id, timelineTaskIdentifier=task_id),
         )
@@ -132,6 +143,10 @@ class JobTimelineEndpoint(BaseEndpoint):
         """``PATCH /job/{jobDisplayId}/timeline/{timelineTaskId}``
 
         Request model: :class:`TimelineTaskUpdateRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.update_task.html
+        Request model: TimelineTaskUpdateRequest
+        Response model: TimelineTask
         """
         return self._request(
             _PATCH_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id),
@@ -139,7 +154,11 @@ class JobTimelineEndpoint(BaseEndpoint):
         )
 
     def delete_task(self, job_display_id: int, task_id: str) -> ServiceBaseResponse:
-        """``DELETE /job/{jobDisplayId}/timeline/{timelineTaskId}``"""
+        """``DELETE /job/{jobDisplayId}/timeline/{timelineTaskId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.delete_task.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(
             _DELETE_TASK.bind(jobDisplayId=job_display_id, timelineTaskId=task_id),
         )
@@ -165,7 +184,12 @@ class JobTimelineEndpoint(BaseEndpoint):
         *,
         data: IncrementStatusRequest | dict,
     ) -> ServiceBaseResponse:
-        """``POST /job/{jobDisplayId}/timeline/incrementjobstatus``"""
+        """``POST /job/{jobDisplayId}/timeline/incrementjobstatus``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.increment_status.html
+        Request model: IncrementStatusRequest
+        Response model: ServiceBaseResponse
+        """
         return self._request(_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=data)
 
     def undo_increment_status(
@@ -174,5 +198,10 @@ class JobTimelineEndpoint(BaseEndpoint):
         *,
         data: IncrementStatusRequest | dict,
     ) -> ServiceBaseResponse:
-        """``POST /job/{jobDisplayId}/timeline/undoincrementjobstatus``"""
+        """``POST /job/{jobDisplayId}/timeline/undoincrementjobstatus``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/timeline.undo_increment_status.html
+        Request model: IncrementStatusRequest
+        Response model: ServiceBaseResponse
+        """
         return self._request(_UNDO_INCREMENT_STATUS.bind(jobDisplayId=job_display_id), json=data)

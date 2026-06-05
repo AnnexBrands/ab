@@ -88,11 +88,19 @@ class JobOnHoldEndpoint(BaseEndpoint):
     """Job-scoped on-hold operations (ACPortal API)."""
 
     def list(self, job_display_id: int) -> list[ExtendedOnHoldInfo]:
-        """List on-hold records for *job_display_id*."""
+        """List on-hold records for *job_display_id*.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.list.html
+        Response model: List[ExtendedOnHoldInfo]
+        """
         return self._request(_LIST.bind(jobDisplayId=job_display_id))
 
     def get(self, job_display_id: int, on_hold_id: str) -> OnHoldDetails:
-        """Fetch one on-hold record."""
+        """Fetch one on-hold record.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.get.html
+        Response model: OnHoldDetails
+        """
         return self._request(_GET.bind(jobDisplayId=job_display_id, id=on_hold_id))
 
     def create(
@@ -104,11 +112,18 @@ class JobOnHoldEndpoint(BaseEndpoint):
         """Place a job on hold.
 
         Request model: :class:`SaveOnHoldRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.create.html
+        Request model: SaveOnHoldRequest
+        Response model: SaveOnHoldResponse
         """
         return self._request(_CREATE.bind(jobDisplayId=job_display_id), json=data)
 
     def delete(self, job_display_id: int) -> None:
-        """Remove the active on-hold record for *job_display_id*."""
+        """Remove the active on-hold record for *job_display_id*.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.delete.html
+        """
         return self._request(_DELETE.bind(jobDisplayId=job_display_id))
 
     def update(
@@ -118,20 +133,33 @@ class JobOnHoldEndpoint(BaseEndpoint):
         *,
         data: SaveOnHoldRequest | dict,
     ) -> SaveOnHoldResponse:
-        """Update an existing on-hold record."""
+        """Update an existing on-hold record.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.update.html
+        Request model: SaveOnHoldRequest
+        Response model: SaveOnHoldResponse
+        """
         return self._request(
             _UPDATE.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
             json=data,
         )
 
     def get_followup_user(self, job_display_id: int, contact_id: str) -> OnHoldUser:
-        """Resolve one follow-up user by contact ID."""
+        """Resolve one follow-up user by contact ID.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.get_followup_user.html
+        Response model: OnHoldUser
+        """
         return self._request(
             _GET_FOLLOWUP_USER.bind(jobDisplayId=job_display_id, contactId=contact_id),
         )
 
     def list_followup_users(self, job_display_id: int) -> list[OnHoldUser]:
-        """List all follow-up users available for the job."""
+        """List all follow-up users available for the job.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.list_followup_users.html
+        Response model: List[OnHoldUser]
+        """
         return self._request(_LIST_FOLLOWUP_USERS.bind(jobDisplayId=job_display_id))
 
     def add_comment(
@@ -144,6 +172,10 @@ class JobOnHoldEndpoint(BaseEndpoint):
         """Append a comment to an on-hold record.
 
         Request model: :class:`OnHoldCommentRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.add_comment.html
+        Request model: OnHoldCommentRequest
+        Response model: OnHoldNoteDetails
         """
         return self._request(
             _ADD_COMMENT.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
@@ -160,6 +192,9 @@ class JobOnHoldEndpoint(BaseEndpoint):
         """Update follow-up / due dates on an on-hold record.
 
         Request model: :class:`SaveOnHoldDatesModel`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.update_dates.html
+        Request model: SaveOnHoldDatesModel
         """
         return self._request(
             _UPDATE_DATES.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),
@@ -178,6 +213,10 @@ class JobOnHoldEndpoint(BaseEndpoint):
         Request model: :class:`SaveOnHoldRequest` (resolve shares the
         same swagger schema as create/update; populate ``resolved_code_id``
         and/or ``resolved_date`` to record the outcome).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/on_hold.resolve.html
+        Request model: SaveOnHoldRequest
+        Response model: ResolveJobOnHoldResponse
         """
         return self._request(
             _RESOLVE.bind(jobDisplayId=job_display_id, onHoldId=on_hold_id),

@@ -39,11 +39,19 @@ class JobRfqEndpoint(BaseEndpoint):
     """Job-scoped RFQ operations (ACPortal API)."""
 
     def list(self, job_display_id: int) -> list[QuoteRequestDisplayInfo]:
-        """``GET /job/{jobDisplayId}/rfq``"""
+        """``GET /job/{jobDisplayId}/rfq``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/rfq.list.html
+        Query params: JobRfqListParams
+        Response model: List[QuoteRequestDisplayInfo]
+        """
         return self._request(_LIST.bind(jobDisplayId=job_display_id))
 
     def status(self, job_display_id: int, rfq_service_type: str, company_id: str) -> int:
-        """``GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}``"""
+        """``GET /job/{jobDisplayId}/rfq/statusof/{rfqServiceType}/forcompany/{companyId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/rfq.status.html
+        """
         return self._request(
             _STATUS.bind(
                 jobDisplayId=job_display_id,

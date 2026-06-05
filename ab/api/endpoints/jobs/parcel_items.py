@@ -54,7 +54,11 @@ class JobParcelItemsEndpoint(BaseEndpoint):
     """Job-scoped parcel-item operations (ACPortal API)."""
 
     def list(self, job_display_id: int) -> list[ParcelItem]:
-        """``GET /job/{jobDisplayId}/parcelitems``"""
+        """``GET /job/{jobDisplayId}/parcelitems``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/parcel_items.list.html
+        Response model: List[ParcelItem]
+        """
         return self._request(_LIST.bind(jobDisplayId=job_display_id))
 
     def create(
@@ -66,15 +70,27 @@ class JobParcelItemsEndpoint(BaseEndpoint):
         """``POST /job/{jobDisplayId}/parcelitems``
 
         Request model: :class:`ParcelItemCreateRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/parcel_items.create.html
+        Request model: ParcelItemCreateRequest
+        Response model: ParcelItem
         """
         return self._request(_CREATE.bind(jobDisplayId=job_display_id), json=data)
 
     def delete(self, job_display_id: int, parcel_item_id: str) -> ServiceBaseResponse:
-        """``DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId}``"""
+        """``DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/parcel_items.delete.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(
             _DELETE.bind(jobDisplayId=job_display_id, parcelItemId=parcel_item_id),
         )
 
     def list_with_materials(self, job_display_id: int) -> list[ParcelItemWithMaterials]:
-        """``GET /job/{jobDisplayId}/parcel-items-with-materials``"""
+        """``GET /job/{jobDisplayId}/parcel-items-with-materials``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/parcel_items.list_with_materials.html
+        Response model: List[ParcelItemWithMaterials]
+        """
         return self._request(_LIST_WITH_MATERIALS.bind(jobDisplayId=job_display_id))

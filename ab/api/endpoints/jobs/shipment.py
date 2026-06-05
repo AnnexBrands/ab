@@ -82,13 +82,22 @@ class JobShipmentEndpoint(BaseEndpoint):
     """Job-scoped shipment operations (ACPortal API)."""
 
     def get_rate_quotes(self, job_display_id: int) -> list[RateQuote]:
-        """``GET /job/{jobDisplayId}/shipment/ratequotes``"""
+        """``GET /job/{jobDisplayId}/shipment/ratequotes``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.get_rate_quotes.html
+        Query params: RateQuotesParams
+        Response model: List[RateQuote]
+        """
         return self._request(_GET_RATE_QUOTES.bind(jobDisplayId=job_display_id))
 
     def request_rate_quotes(self, job_display_id: int, *, data: ShipmentRateQuoteRequest | dict) -> list[RateQuote]:
         """``POST /job/{jobDisplayId}/shipment/ratequotes``
 
         Request model: :class:`ShipmentRateQuoteRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.request_rate_quotes.html
+        Request model: ShipmentRateQuoteRequest
+        Response model: List[RateQuote]
         """
         return self._request(_POST_RATE_QUOTES.bind(jobDisplayId=job_display_id), json=data)
 
@@ -96,45 +105,81 @@ class JobShipmentEndpoint(BaseEndpoint):
         """``POST /job/{jobDisplayId}/shipment/book``
 
         Request model: :class:`ShipmentBookRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.book.html
+        Request model: ShipmentBookRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(_BOOK.bind(jobDisplayId=job_display_id), json=data)
 
     def delete(self, job_display_id: int) -> ServiceBaseResponse:
-        """``DELETE /job/{jobDisplayId}/shipment``"""
+        """``DELETE /job/{jobDisplayId}/shipment``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.delete.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(_DELETE.bind(jobDisplayId=job_display_id))
 
     def get_accessorials(self, job_display_id: int) -> list[Accessorial]:
-        """``GET /job/{jobDisplayId}/shipment/accessorials``"""
+        """``GET /job/{jobDisplayId}/shipment/accessorials``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.get_accessorials.html
+        Response model: List[Accessorial]
+        """
         return self._request(_GET_ACCESSORIALS.bind(jobDisplayId=job_display_id))
 
     def add_accessorial(self, job_display_id: int, *, data: AccessorialAddRequest | dict) -> ServiceBaseResponse:
         """``POST /job/{jobDisplayId}/shipment/accessorial``
 
         Request model: :class:`AccessorialAddRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.add_accessorial.html
+        Request model: AccessorialAddRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(_ADD_ACCESSORIAL.bind(jobDisplayId=job_display_id), json=data)
 
     def remove_accessorial(self, job_display_id: int, add_on_id: str) -> ServiceBaseResponse:
-        """``DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId}``"""
+        """``DELETE /job/{jobDisplayId}/shipment/accessorial/{addOnId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.remove_accessorial.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(
             _REMOVE_ACCESSORIAL.bind(jobDisplayId=job_display_id, addOnId=add_on_id),
         )
 
     def get_origin_destination(self, job_display_id: int) -> ShipmentOriginDestination:
-        """``GET /job/{jobDisplayId}/shipment/origindestination``"""
+        """``GET /job/{jobDisplayId}/shipment/origindestination``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.get_origin_destination.html
+        Response model: ShipmentOriginDestination
+        """
         return self._request(_GET_ORIGIN_DEST.bind(jobDisplayId=job_display_id))
 
     def get_export_data(self, job_display_id: int) -> ShipmentExportData:
-        """``GET /job/{jobDisplayId}/shipment/exportdata``"""
+        """``GET /job/{jobDisplayId}/shipment/exportdata``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.get_export_data.html
+        Response model: ShipmentExportData
+        """
         return self._request(_GET_EXPORT_DATA.bind(jobDisplayId=job_display_id))
 
     def post_export_data(self, job_display_id: int, *, data: ShipmentExportRequest | dict) -> ServiceBaseResponse:
         """``POST /job/{jobDisplayId}/shipment/exportdata``
 
         Request model: :class:`ShipmentExportRequest`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.post_export_data.html
+        Request model: ShipmentExportRequest
+        Response model: ServiceBaseResponse
         """
         return self._request(_POST_EXPORT_DATA.bind(jobDisplayId=job_display_id), json=data)
 
     def get_rates_state(self, job_display_id: int) -> RatesState:
-        """``GET /job/{jobDisplayId}/shipment/ratesstate``"""
+        """``GET /job/{jobDisplayId}/shipment/ratesstate``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/shipment.get_rates_state.html
+        Response model: RatesState
+        """
         return self._request(_GET_RATES_STATE.bind(jobDisplayId=job_display_id))

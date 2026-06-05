@@ -31,19 +31,33 @@ class JobSmsEndpoint(BaseEndpoint):
     """Job-scoped SMS operations (ACPortal API)."""
 
     def list(self, job_display_id: int) -> None:
-        """``GET /job/{jobDisplayId}/sms``"""
+        """``GET /job/{jobDisplayId}/sms``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/sms.list.html
+        """
         return self._request(_LIST.bind(jobDisplayId=job_display_id))
 
     def send(self, job_display_id: int, *, data: SendSMSModel | dict) -> None:
-        """``POST /job/{jobDisplayId}/sms``"""
+        """``POST /job/{jobDisplayId}/sms``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/sms.send.html
+        Request model: SendSMSModel
+        """
         return self._request(_SEND.bind(jobDisplayId=job_display_id), json=data)
 
     def mark_read(self, job_display_id: int, *, data: MarkSmsAsReadModel | dict) -> None:
-        """``POST /job/{jobDisplayId}/sms/read``"""
+        """``POST /job/{jobDisplayId}/sms/read``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/sms.mark_read.html
+        Request model: MarkSmsAsReadModel
+        """
         return self._request(_MARK_READ.bind(jobDisplayId=job_display_id), json=data)
 
     def get_template(self, job_display_id: int, template_id: str) -> None:
-        """``GET /job/{jobDisplayId}/sms/templatebased/{templateId}``"""
+        """``GET /job/{jobDisplayId}/sms/templatebased/{templateId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/sms.get_template.html
+        """
         return self._request(
             _GET_TEMPLATE.bind(jobDisplayId=job_display_id, templateId=template_id),
         )

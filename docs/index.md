@@ -86,6 +86,7 @@ models/web2lead
 models/commodities
 models/payments
 models/shipments
+models/rfq
 models/views
 ```
 
