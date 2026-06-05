@@ -387,6 +387,7 @@ __all__ = [
     "TimelineCreateParams", "TrackingV3Params", "JobNoteListParams", "JobRfqListParams",
     "Job", "JobSearchResult", "JobPrice", "CalendarItem", "JobUpdatePageConfig",
     "JobCreateRequest", "JobSaveRequest", "JobSearchRequest", "JobUpdateRequest",
+    "ChangeJobAgentRequest", "TransferModel", "SortByModel",
     "TimelineTask", "TimelineAgent", "TimelineResponse", "TimelineSaveResponse",
     "BaseTimelineTaskRequest", "InTheFieldTaskRequest", "SimpleTaskRequest", "CarrierTaskRequest",
     "TimeLogRequest", "TimeLogPauseRequest", "WorkTimeLogRequest", "InitialNoteRequest", "TaskTruckInfoRequest",

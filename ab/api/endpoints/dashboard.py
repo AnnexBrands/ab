@@ -11,7 +11,9 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _GET = Route("GET", "/dashboard", params_model="DashboardParams", response_model="DashboardSummary")
-_GET_GRID_VIEWS = Route("GET", "/dashboard/gridviews", params_model="DashboardCompanyParams", response_model="List[GridViewInfo]")
+_GET_GRID_VIEWS = Route(
+    "GET", "/dashboard/gridviews", params_model="DashboardCompanyParams", response_model="List[GridViewInfo]"
+)
 _GET_GRID_VIEW_STATE = Route("GET", "/dashboard/gridviewstate/{id}", response_model="GridViewState")
 _SAVE_GRID_VIEW_STATE = Route("POST", "/dashboard/gridviewstate/{id}", request_model="GridViewState")
 _INBOUND = Route("POST", "/dashboard/inbound", request_model="DashboardCompanyRequest")

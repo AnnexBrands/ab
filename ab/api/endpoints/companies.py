@@ -18,9 +18,7 @@ if TYPE_CHECKING:
         CompanySearchRequest,
         CompanySimple,
         GeoSettings,
-        GeoSettingsParams,
         GeoSettingsSaveRequest,
-        InheritFromParams,
         PackagingLabor,
         PackagingLaborSaveRequest,
         PackagingSettings,
@@ -71,9 +69,13 @@ _SAVE_CARRIER_ACCOUNTS = Route(
 
 # Packaging (008)
 _GET_PACKAGING_SETTINGS = Route("GET", "/companies/{companyId}/packagingsettings", response_model="PackagingSettings")
-_SAVE_PACKAGING_SETTINGS = Route("POST", "/companies/{companyId}/packagingsettings", request_model="PackagingSettingsSaveRequest")
+_SAVE_PACKAGING_SETTINGS = Route(
+    "POST", "/companies/{companyId}/packagingsettings", request_model="PackagingSettingsSaveRequest"
+)
 _GET_PACKAGING_LABOR = Route("GET", "/companies/{companyId}/packaginglabor", response_model="PackagingLabor")
-_SAVE_PACKAGING_LABOR = Route("POST", "/companies/{companyId}/packaginglabor", request_model="PackagingLaborSaveRequest")
+_SAVE_PACKAGING_LABOR = Route(
+    "POST", "/companies/{companyId}/packaginglabor", request_model="PackagingLaborSaveRequest"
+)
 _GET_INHERITED_PACKAGING_TARIFFS = Route(
     "GET", "/companies/{companyId}/inheritedPackagingTariffs",
     response_model="List[PackagingTariff]", params_model="InheritFromParams",

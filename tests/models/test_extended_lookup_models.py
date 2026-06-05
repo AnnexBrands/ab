@@ -7,8 +7,8 @@ from ab.api.models.lookup import (
     DensityClassEntry,
     DocumentTypeBySource,
     LookupValue,
-    PPCCampaign,
     ParcelPackageType,
+    PPCCampaign,
 )
 from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixture
 

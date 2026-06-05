@@ -62,7 +62,6 @@ from pathlib import Path
 from ab import ABConnectAPI
 from ab.api.models.jobs import SaveOnHoldRequest, SendEmailRequest
 from ab.cli.formatter import format_result
-
 from examples.constants import TEST_JOB_DISPLAY_ID, TEST_USER_ID
 
 FIXTURES_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures"
@@ -180,7 +179,10 @@ def main() -> None:
         comment="Resolved by examples/jobs/on_hold.py walkthrough.",
         resolvedDate=resolved_at,
     )
-    print(f"\n# api.jobs.on_hold.resolve({TEST_JOB_DISPLAY_ID}, {on_hold_id!r}, data=SaveOnHoldRequest(..., resolvedDate=...))")
+    print(
+        f"\n# api.jobs.on_hold.resolve({TEST_JOB_DISPLAY_ID}, {on_hold_id!r}, "
+        "data=SaveOnHoldRequest(..., resolvedDate=...))"
+    )
     resolution = api.jobs.on_hold.resolve(TEST_JOB_DISPLAY_ID, on_hold_id, data=resolve_body)
     print(format_result(resolution))
 

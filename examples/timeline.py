@@ -18,7 +18,6 @@ from typing import Any
 from ab import ABConnectAPI
 from examples.constants import TEST_JOB_DISPLAY_ID, TEST_TIMELINE_TASK_CODE, TEST_TIMELINE_TASK_ID
 
-
 REQUESTS_DIR = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "requests"
 
 

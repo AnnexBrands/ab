@@ -21,7 +21,6 @@ from pydantic import Field
 
 from ab.api.models.base import RequestModel, ResponseModel
 
-
 # ---------------------------------------------------------------------------
 # Query-parameter models
 # ---------------------------------------------------------------------------

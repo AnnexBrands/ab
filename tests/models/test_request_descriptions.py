@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import pytest
 
-from ab.api.models.base import RequestModel
 import ab.api.models as models_pkg
+from ab.api.models.base import RequestModel
 
 
 def _all_request_models() -> list[type]:

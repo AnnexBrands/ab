@@ -28,7 +28,9 @@ class QuoteRequestDisplayInfo(ResponseModel):
     request_id: Optional[int] = Field(None, alias="requestId", description="Request record ID")
     job_id: Optional[str] = Field(None, alias="jobId", description="Job UUID")
     company_id: Optional[str] = Field(None, alias="companyId", description="Provider company UUID")
-    provider_company_id: Optional[str] = Field(None, alias="providerCompanyId", description="Provider company UUID (legacy)")
+    provider_company_id: Optional[str] = Field(
+        None, alias="providerCompanyId", description="Provider company UUID (legacy)"
+    )
     provider_company_name: Optional[str] = Field(None, alias="providerCompanyName", description="Provider company name")
     company_name: Optional[str] = Field(None, alias="companyName", description="Company display name")
     company_code: Optional[str] = Field(None, alias="companyCode", description="Company code")
@@ -51,7 +53,9 @@ class QuoteRequestDisplayInfo(ResponseModel):
     expedited: Optional[bool] = Field(None, alias="expedited", description="Expedited service flag")
     notify_bidder: Optional[bool] = Field(None, alias="notifyBidder", description="Notify bidder flag")
     api_send_status: Optional[int] = Field(None, alias="apiSendStatus", description="API send status code")
-    commercial_capabilities: Optional[int] = Field(None, alias="commercialCapabilities", description="Commercial capabilities bitmask")
+    commercial_capabilities: Optional[int] = Field(
+        None, alias="commercialCapabilities", description="Commercial capabilities bitmask"
+    )
     address: Optional[dict] = Field(None, description="Address details")
     miles: Optional[float] = Field(None, description="Distance in miles")
     comments: Optional[List[dict]] = Field(None, description="RFQ comment entries")
@@ -61,7 +65,9 @@ class QuoteRequestDisplayInfo(ResponseModel):
     sent_by: Optional[str] = Field(None, alias="sentBy", description="Who sent the RFQ")
     job_service_start: Optional[str] = Field(None, alias="jobServiceStart", description="Job service start date")
     job_service_end: Optional[str] = Field(None, alias="jobServiceEnd", description="Job service end date")
-    agent_amount_job_state: Optional[str] = Field(None, alias="agentAmountJobState", description="Agent amount job state")
+    agent_amount_job_state: Optional[str] = Field(
+        None, alias="agentAmountJobState", description="Agent amount job state"
+    )
 
 
 class QuoteRequestStatus(ResponseModel):

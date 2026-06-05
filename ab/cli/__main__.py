@@ -19,7 +19,7 @@ from typing import Any
 from ab.cli.aliases import ALIASES
 from ab.cli.discovery import EndpointInfo, MethodInfo, discover_endpoints_from_class
 from ab.cli.formatter import format_result
-from ab.cli.parser import HELP_TOKENS, is_help_token, parse_cli_args
+from ab.cli.parser import is_help_token, parse_cli_args
 
 # ------------------------------------------------------------------
 # Resolution helpers (mirrors examples/__main__.py semantics)

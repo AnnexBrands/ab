@@ -67,7 +67,6 @@ from pathlib import Path
 from ab import ABConnectAPI
 from ab.api.models.notes import NoteRequest, SuggestedUser
 from ab.cli.formatter import format_result
-
 from examples.constants import TEST_COMPANY_ID
 
 FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"

@@ -12,7 +12,6 @@ Usage:
 from __future__ import annotations
 
 import importlib
-import re
 import subprocess
 import sys
 from pathlib import Path
@@ -144,7 +143,7 @@ def main() -> None:
         for item in unmatched:
             print(f"  [NO-EXAMPLE]  {item['method']:>6} {item['path']} → {item['resp_model']}")
 
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"  With examples: {len(matched)}")
         print(f"  No example:    {len(unmatched)}")
         print(f"  Total:         {len(failures)}")
@@ -196,7 +195,7 @@ def main() -> None:
     for item in unmatched:
         print(f"  [NO-EXAMPLE] {item['method']:>6} {item['path']} → No example in examples/")
 
-    print(f"\nSummary:")
+    print("\nSummary:")
     print(f"  Captured:    {captured}")
     print(f"  Failed:      {failed}")
     print(f"  No example:  {len(unmatched)}")

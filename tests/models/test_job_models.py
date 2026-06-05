@@ -2,6 +2,7 @@
 
 import pytest
 
+from ab.api.models.common import CompanyAddress
 from ab.api.models.jobs import (
     ActiveOnHoldInfo,
     CalendarItem,
@@ -19,7 +20,6 @@ from ab.api.models.jobs import (
     JobSummarySnapshot,
     JobUpdatePageConfig,
 )
-from ab.api.models.common import CompanyAddress
 from tests.conftest import assert_no_extra_fields, require_fixture
 
 

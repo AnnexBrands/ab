@@ -1,4 +1,4 @@
-"""Example: Company operations 
+"""Example: Company operations
     update_fulldetails will alwasys HTTP500 for now
     this example prepares for the backend to be fixed
 """
@@ -26,7 +26,10 @@ def demo():
         ("details.parentId",                             lambda c: c.details and c.details.parent_id),
         ("details.companyTypeId",                        lambda c: c.details and c.details.company_type_id),
         ("preferences.pricingToUse",                     lambda c: c.preferences and c.preferences.pricing_to_use),
-        ("preferences.carrierAccountsSourceCompanyId",   lambda c: c.preferences and c.preferences.carrier_accounts_source_company_id),
+        (
+            "preferences.carrierAccountsSourceCompanyId",
+            lambda c: c.preferences and c.preferences.carrier_accounts_source_company_id,
+        ),
         ("preferences.copyMaterials",                    lambda c: c.preferences and c.preferences.copy_materials),
         ("capabilities",                                 lambda c: c.capabilities),
     ]
@@ -45,7 +48,8 @@ def demo():
     w2 = max(len(hdr_curr),  *(len(r[2]) for r in rows))
 
     sep = f"+-{'-'*w0}-+-{'-'*w1}-+-{'-'*w2}-+"
-    fmt = lambda a, b, c: f"| {a:<{w0}} | {b:<{w1}} | {c:<{w2}} |"
+    def fmt(a, b, c):
+        return f"| {a:<{w0}} | {b:<{w1}} | {c:<{w2}} |"
 
     # ── print ───────────────────────────────────────────────────────────
     print(sep)

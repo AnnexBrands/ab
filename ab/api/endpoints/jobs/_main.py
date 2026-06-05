@@ -38,7 +38,10 @@ def _deprecated(old: str, new: str) -> None:
     )
 
 if TYPE_CHECKING:
+    from ab.api.helpers.agent import AgentHelpers
+    from ab.api.helpers.timeline import TimelineHelpers
     from ab.api.models.jobs import (
+        BaseTimelineTaskRequest,
         CalendarItem,
         ChangeJobAgentRequest,
         ExtendedOnHoldInfo,
@@ -77,18 +80,14 @@ if TYPE_CHECKING:
         SendEmailRequest,
         SendSMSModel,
         ShipmentPlanProvider,
-        SortByModel,
         TimelineAgent,
         TimelineResponse,
         TimelineSaveResponse,
         TimelineTask,
-        BaseTimelineTaskRequest,
         TimelineTaskUpdateRequest,
         TrackingInfo,
         TrackingInfoV3,
     )
-    from ab.api.helpers.agent import AgentHelpers
-    from ab.api.helpers.timeline import TimelineHelpers
     from ab.api.models.rfq import QuoteRequestDisplayInfo
     from ab.api.models.shared import ServiceBaseResponse
 
