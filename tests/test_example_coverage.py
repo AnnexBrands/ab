@@ -19,7 +19,7 @@ import pytest
 from ab.progress.example_index import legacy_only_endpoints, uncovered_endpoints
 
 # Hardening flags — flip to True as the feature's phases complete.
-STRICT_COVERAGE = False  # T013: every routed endpoint has a canonical example
+STRICT_COVERAGE = True  # T013: every routed endpoint has a canonical example (209/209)
 STRICT_NO_LEGACY = True  # T031: no endpoint backed ONLY by a deprecated runner (all 114 migrated)
 
 

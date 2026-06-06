@@ -6,15 +6,14 @@ per 0.x pragmatics). The package is imported as `ab`.
 
 ## [Unreleased] - 0.1.5
 
-An example-coverage release (feature 037). Every previously deprecated
-`ExampleRunner` (`examples/_X.py`) example is replaced by a canonical
-plain-script `examples/X.py`, so no routed endpoint is backed only by the
-deprecated runner anymore. This is additive and docs/examples-only — the
+An example-coverage release (feature 037). **Every routed endpoint now has a
+canonical plain-script example** (`209 / 209`): the deprecated `ExampleRunner`
+(`examples/_X.py`) examples are all replaced, and every endpoint that previously
+had no example at all now has one. This is additive and docs/examples-only — the
 client-construction, auth, config, exceptions, endpoint, and model surface
 relied on by downstream consumers is unchanged from `0.1.4`.
 
-> Not yet published — publish once the remaining author-new examples
-> (the `jobs.*` subgroups) are mostly done.
+> Not yet published — publish once the examples are live-verified against staging.
 
 ### Changed
 
@@ -22,11 +21,20 @@ relied on by downstream consumers is unchanged from `0.1.4`.
   deprecated `examples/_X.py` runner files are superseded by plain-`main()`
   scripts (`catalog`, `commodities`, `commodity_maps`, `companies`(+`_extended`),
   `contacts`(+`_extended`), `documents`, `jobs/core`, `lookup`, `lots`, `notes`,
-  `reports`, `rfq`, `shipments`, `views`). Each call binds to the real endpoint
-  signature, guards state-changing calls behind `mutations_enabled()`, and saves
-  the matching response fixture. Canonical example coverage rises from 34 to 148
-  of 209 routed endpoints; `legacy_only_endpoints()` is now empty and the
-  `STRICT_NO_LEGACY` coverage gate is hardened to `True`.
+  `reports`, `rfq`, `shipments`, `views`).
+
+### Added
+
+- **Examples for all 61 previously-uncovered endpoints** — dashboard read
+  methods, `jobs.transfer`, `jobs.status`, and the job subgroups `email`, `sms`,
+  `note`, `on_hold`, `parcel_items`, `payment`, `shipment`, `rfq`, `tracking`,
+  `timeline`, `form`, and `freight_providers`.
+- Every example call binds to the real endpoint signature (enforced offline by
+  `tests/test_example_call_signatures.py`), guards state-changing calls behind
+  `mutations_enabled()`, and saves the matching response fixture. Canonical
+  example coverage rises from 34 to **209 of 209** routed endpoints;
+  `uncovered_endpoints()` and `legacy_only_endpoints()` are both empty and the
+  `STRICT_COVERAGE` + `STRICT_NO_LEGACY` coverage gates are hardened to `True`.
 
 ## [0.1.4] - 2026-06-05
 

@@ -15,7 +15,7 @@ from __future__ import annotations
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
 from examples._capture import load_request, mutations_enabled, save
-from examples.constants import TEST_ITEM_ID, TEST_JOB_DISPLAY_ID
+from examples.constants import TEST_COMPANY_CODE, TEST_ITEM_ID, TEST_JOB_DISPLAY_ID
 
 
 def main() -> None:
@@ -119,6 +119,16 @@ def main() -> None:
             TEST_JOB_DISPLAY_ID,
             data=load_request("FreightItemsRequest.json"),
         )
+        print(format_result(result))
+    else:
+        print("  skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
+
+    # POST /job/transfer/{jobDisplayId} — transfers the job to a franchisee
+    # (mutating). ``franchisee_id`` is positional and accepts a company code
+    # (resolved to a UUID by the SDK) or a UUID directly; see TransferModel.
+    print(f"\n# api.jobs.transfer({TEST_JOB_DISPLAY_ID!r}, {TEST_COMPANY_CODE!r})")
+    if mutations_enabled():
+        result = api.jobs.transfer(TEST_JOB_DISPLAY_ID, TEST_COMPANY_CODE)
         print(format_result(result))
     else:
         print("  skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")

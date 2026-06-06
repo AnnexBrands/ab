@@ -61,8 +61,8 @@ from datetime import datetime, timedelta, timezone
 from ab import ABConnectAPI
 from ab.api.models.jobs import SaveOnHoldRequest, SendEmailRequest
 from ab.cli.formatter import format_result
-from examples._capture import capture_dir, mutations_enabled
-from examples.constants import TEST_JOB_DISPLAY_ID, TEST_USER_ID
+from examples._capture import capture_dir, load_request, mutations_enabled
+from examples.constants import TEST_JOB_DISPLAY_ID, TEST_ON_HOLD_ID, TEST_USER_ID
 
 # Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
 FIXTURES_DIR = capture_dir()
@@ -123,6 +123,21 @@ def main() -> None:
             "  WARNING: follow-up user has no email on file. The hold is created "
             "but the notification email step will be skipped.",
         )
+
+    # --- Step 2c: list all follow-up users available for the job -------
+    print(f"\n# api.jobs.on_hold.list_followup_users({TEST_JOB_DISPLAY_ID})")
+    followup_users = api.jobs.on_hold.list_followup_users(TEST_JOB_DISPLAY_ID)
+    print(format_result(followup_users))
+    _save("OnHoldUser.json", followup_users)
+
+    # --- Step 2d: fetch one on-hold record (detail) -------------------
+    # Discover the hold id from the list above (ExtendedOnHoldInfo.id);
+    # fall back to TEST_ON_HOLD_ID when the job currently has no holds.
+    detail_hold_id = str(existing[0].id) if existing and existing[0].id is not None else str(TEST_ON_HOLD_ID)
+    print(f"\n# api.jobs.on_hold.get({TEST_JOB_DISPLAY_ID}, {detail_hold_id!r})")
+    detail = api.jobs.on_hold.get(TEST_JOB_DISPLAY_ID, detail_hold_id)
+    print(format_result(detail))
+    _save("OnHoldDetails.json", detail)
 
     # --- Steps 2b–5 mutate staging (create/email/resolve a hold) --------
     # Guarded so a default run and the verify harness exercise only the GET
@@ -193,6 +208,48 @@ def main() -> None:
     )
     resolution = api.jobs.on_hold.resolve(TEST_JOB_DISPLAY_ID, on_hold_id, data=resolve_body)
     print(format_result(resolution))
+
+    # --- Step 6: comment / update / update dates / delete --------------
+    # These exercise the remaining JobOnHold mutations against an existing
+    # hold. Prefer a discovered hold id (ExtendedOnHoldInfo.id); otherwise
+    # fall back to TEST_ON_HOLD_ID. Operator: supply a real, open hold id
+    # for a clean live run.
+    target_hold_id = str(existing[0].id) if existing and existing[0].id is not None else str(TEST_ON_HOLD_ID)
+
+    print(f"\n# api.jobs.on_hold.add_comment({TEST_JOB_DISPLAY_ID}, {target_hold_id!r}, data=...)")
+    note = api.jobs.on_hold.add_comment(
+        TEST_JOB_DISPLAY_ID,
+        target_hold_id,
+        data=load_request("OnHoldCommentRequest.json"),
+    )
+    print(format_result(note))
+    _save("OnHoldNoteDetails.json", note)
+
+    # update shares SaveOnHoldRequest with create/resolve — carry the
+    # required reasonId / responsiblePartyTypeId UUIDs forward.
+    update_body = SaveOnHoldRequest(
+        reasonId=reason_id,
+        responsiblePartyTypeId=responsible_party_type_id,
+        comment="Updated by examples/jobs/on_hold.py walkthrough.",
+    )
+    print(f"\n# api.jobs.on_hold.update({TEST_JOB_DISPLAY_ID}, {target_hold_id!r}, data=SaveOnHoldRequest(...))")
+    updated = api.jobs.on_hold.update(TEST_JOB_DISPLAY_ID, target_hold_id, data=update_body)
+    print(format_result(updated))
+    _save("SaveOnHoldResponse.json", updated)
+
+    print(f"\n# api.jobs.on_hold.update_dates({TEST_JOB_DISPLAY_ID}, {target_hold_id!r}, data=...)")
+    api.jobs.on_hold.update_dates(
+        TEST_JOB_DISPLAY_ID,
+        target_hold_id,
+        data=load_request("SaveOnHoldDatesModel.json"),
+    )
+    print("  (dates updated — no response body)")
+
+    # delete removes the active on-hold record for the job (takes only the
+    # job display id — no hold-id path param).
+    print(f"\n# api.jobs.on_hold.delete({TEST_JOB_DISPLAY_ID})")
+    api.jobs.on_hold.delete(TEST_JOB_DISPLAY_ID)
+    print("  (deleted — no response body)")
 
 
 if __name__ == "__main__":
