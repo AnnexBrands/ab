@@ -4,6 +4,30 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [Unreleased] - 0.1.5
+
+An example-coverage release (feature 037). Every previously deprecated
+`ExampleRunner` (`examples/_X.py`) example is replaced by a canonical
+plain-script `examples/X.py`, so no routed endpoint is backed only by the
+deprecated runner anymore. This is additive and docs/examples-only — the
+client-construction, auth, config, exceptions, endpoint, and model surface
+relied on by downstream consumers is unchanged from `0.1.4`.
+
+> Not yet published — publish once the remaining author-new examples
+> (the `jobs.*` subgroups) are mostly done.
+
+### Changed
+
+- **All 114 legacy-only endpoints migrated to canonical examples** — the
+  deprecated `examples/_X.py` runner files are superseded by plain-`main()`
+  scripts (`catalog`, `commodities`, `commodity_maps`, `companies`(+`_extended`),
+  `contacts`(+`_extended`), `documents`, `jobs/core`, `lookup`, `lots`, `notes`,
+  `reports`, `rfq`, `shipments`, `views`). Each call binds to the real endpoint
+  signature, guards state-changing calls behind `mutations_enabled()`, and saves
+  the matching response fixture. Canonical example coverage rises from 34 to 148
+  of 209 routed endpoints; `legacy_only_endpoints()` is now empty and the
+  `STRICT_NO_LEGACY` coverage gate is hardened to `True`.
+
 ## [0.1.4] - 2026-06-05
 
 A documents + discoverability release. The `help()` → Read the Docs rollout now

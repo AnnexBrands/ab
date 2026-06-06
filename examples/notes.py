@@ -66,8 +66,8 @@ import json
 from ab import ABConnectAPI
 from ab.api.models.notes import NoteRequest, SuggestedUser
 from ab.cli.formatter import format_result
-from examples._capture import capture_dir
-from examples.constants import TEST_COMPANY_ID
+from examples._capture import capture_dir, mutations_enabled
+from examples.constants import TEST_COMPANY_ID, TEST_NOTE_ID
 
 # Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
 FIXTURES_DIR = capture_dir()
@@ -146,26 +146,33 @@ def main() -> None:
     print("\n# NoteRequest payload (validated, not sent):")
     print(json.dumps(body.model_dump(by_alias=True, exclude_none=True), indent=2))
 
-    # --- Step 5 (opt-in): create the note -------------------------------
-    # Uncomment to actually POST. Capture the response as a fixture.
-    #
-    # print("\n# api.notes.create(data=body)")
-    # created = api.notes.create(data=body)
-    # print(format_result(created))
-    # _save("GlobalNote.json", [created])  # overwrite with a single-row fixture
+    # --- Step 5: create the note (mutates staging) ----------------------
+    # POST /note. Guarded: set AB_RUN_MUTATIONS=1 to actually run. Capture
+    # the response as a single-row GlobalNote fixture.
+    if mutations_enabled():
+        print("\n# api.notes.create(data=body)")
+        created = api.notes.create(data=body)
+        print(format_result(created))
+        _save("GlobalNote.json", [created])  # overwrite with a single-row fixture
+    else:
+        print("\n# api.notes.create skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 
-    # --- Step 6 (opt-in): update a note ---------------------------------
+    # --- Step 6: update the note (mutates staging) ----------------------
     # PUT /note/{id} uses the same NoteRequest schema -- comments + category
-    # remain required. Uncomment and set TEST_NOTE_ID to exercise it.
-    #
-    # from examples.constants import TEST_NOTE_ID
-    # update_body = NoteRequest(
-    #     comments="Updated: pickup time confirmed at 1700 PST.",
-    #     category=category_uuid,
-    #     is_completed=True,
-    # )
-    # updated = api.notes.update(str(TEST_NOTE_ID), data=update_body)
-    # print(format_result(updated))
+    # remain required (partial updates unsupported). The note id is a path
+    # param passed positionally as a str.
+    if mutations_enabled():
+        update_body = NoteRequest(
+            comments="Updated: pickup time confirmed at 1700 PST.",
+            category=category_uuid,
+            is_completed=True,
+        )
+        print(f"\n# api.notes.update({str(TEST_NOTE_ID)!r}, data=update_body)")
+        updated = api.notes.update(str(TEST_NOTE_ID), data=update_body)
+        print(format_result(updated))
+        _save("GlobalNote.json", [updated])
+    else:
+        print("\n# api.notes.update skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 
 
 if __name__ == "__main__":

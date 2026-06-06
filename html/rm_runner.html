@@ -90,20 +90,37 @@ a real reconciliation between the five artefacts.
 </ol>
 
 <h2>Current snapshot</h2>
-<p>As of 2026-05-17, CLI discovery reports 23 top-level endpoint groups
-and 239 top-level public methods. Including discoverable jobs subgroups,
-the CLI registry contains 36 dispatch entries and 323 public methods.</p>
+<p>As of 2026-06-06, the <strong>runner-removal migration is structurally
+complete</strong>: <code>ab.progress.example_index.legacy_only_endpoints()</code>
+returns <code>[]</code> &mdash; no routed endpoint is backed <em>only</em> by an
+<code>ExampleRunner</code> (underscore-prefixed) example anymore. The coverage gate
+<code>tests/test_example_coverage.py</code> hardened this with
+<code>STRICT_NO_LEGACY = True</code>.</p>
 
 <ul>
-  <li><span class='badge badge-done'>done</span> Full runner-removal
-      conversions: <code>dashboard</code>, <code>notes</code>.</li>
-  <li><span class='badge badge-partial'>partial</span> Endpoint work ahead
-      of full example conversion: <code>jobs.on_hold</code> conversion chain;
-      <code>contacts.get_did</code> resolver helper.</li>
-  <li><span class='badge badge-deprecated'>deprecated</span> Groups retained
-      as forwarding shims: <code>forms</code>, <code>payments</code>.</li>
-  <li><span class='badge badge-todo'>todo</span> Missing example coverage:
-      <code>commodity_maps</code>.</li>
+  <li><span class='badge badge-done'>done</span> All 114 legacy-only endpoints
+      migrated from <code>examples/_X.py</code> &rarr; canonical plain-script
+      <code>examples/X.py</code> (one fan-out: catalog, commodities,
+      commodity_maps, companies(+extended), contacts(+extended), documents,
+      jobs/core, lookup, lots, notes, reports, rfq, shipments, views).</li>
+  <li><span class='badge badge-done'>done</span> Canonical example coverage:
+      <strong>148 / 209</strong> routed endpoints (was 34). Offline gates green:
+      ruff, <code>test_example_call_signatures</code> (every call binds to the
+      real signature), no-drift <code>html/progress.html</code>.</li>
+  <li><span class='badge badge-todo'>todo</span> Remaining <strong>61</strong>
+      endpoints have <em>no</em> example yet (author-new, not a runner-removal
+      task) &mdash; chiefly <code>jobs.*</code> subgroups (payment, shipment,
+      email, sms, parcel_items, freight_providers, note, rfq, status, timeline,
+      tracking, form) and dashboard read methods. Flipping
+      <code>STRICT_COVERAGE = True</code> is gated on these.</li>
+  <li><span class='badge badge-todo'>todo</span> Live verification: several
+      migrated examples carry placeholder path ids (commodities/commodity_maps,
+      rfq, <code>views.get_dataset_sp</code>, <code>shipments.get_shipment_document</code>)
+      &mdash; the operator substitutes real ids in <code>serve_progress</code> and
+      captures fixtures on first successful run.</li>
+  <li><span class='badge badge-deprecated'>deprecated</span> Legacy
+      <code>examples/_X.py</code> files are retained (no-deletion policy); they are
+      excluded from the canonical set and no longer back any endpoint.</li>
 </ul>
 
 <h2>Reference conversion: <code>dashboard</code></h2>
