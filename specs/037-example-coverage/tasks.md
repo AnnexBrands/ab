@@ -143,8 +143,8 @@ toggle sign-offs (persist on reload), log a capture (retained), see harmony per 
 - [X] T039 [US5] Create `ab/progress/db.py`: SQLite layer (`signoff`, `capture` tables; get/set/export/import sign-offs; add/list captures) — stdlib `sqlite3`, DB at `progress.db` (gitignored), export to `tests/example_signoffs.json`.
 - [X] T040 [US5] Create `ab/progress/app.py`: stdlib `http.server` JSON API (`/api/data`, `/api/signoff`, `/api/capture`, `/api/captures`, `/api/export`) + embedded single-page UI (left nav tags/paths, harmony badges, sign-off checkboxes, capture form).
 - [X] T041 [US5] Create `scripts/serve_progress.py` launcher; headless-verify the server (GET/POST routes persist sign-offs + captures).
-- [ ] T042 [US5] Add a non-live test for `ab/progress/db.py` (signoff upsert/export-import roundtrip; capture add/list) against a temp DB.
-- [ ] T043 [US5] Add a non-live test for `ab/progress/harmony.py` (every routed endpoint present; tags resolved; harmony score in 0..4) — drift-safe (skips coverage assertions when coverage.json absent).
+- [X] T042 [US5] Add a non-live test for `ab/progress/db.py` (signoff upsert/export-import roundtrip; capture add/list) against a temp DB.
+- [X] T043 [US5] Add a non-live test for `ab/progress/harmony.py` (every routed endpoint present; tags resolved; harmony score in 0..4) — drift-safe (skips coverage assertions when coverage.json absent).
 - [ ] T044 [US5] Wire committed `tests/example_signoffs.json` into the static report / a harmony gate so sign-off state is visible in CI.
 
 ---
