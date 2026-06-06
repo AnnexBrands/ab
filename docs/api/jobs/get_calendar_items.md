@@ -40,4 +40,4 @@ Returns a list of `List[CalendarItem]`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)

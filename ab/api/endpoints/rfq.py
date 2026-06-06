@@ -25,11 +25,20 @@ class RFQEndpoint(BaseEndpoint):
     """RFQ lifecycle operations (ACPortal API)."""
 
     def get(self, rfq_id: str) -> QuoteRequestDisplayInfo:
-        """GET /rfq/{rfqId}"""
+        """GET /rfq/{rfqId}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/get.html
+        Response model: QuoteRequestDisplayInfo
+        """
         return self._request(_GET.bind(rfqId=rfq_id))
 
     def get_for_job(self, job_id: str) -> list[QuoteRequestDisplayInfo]:
-        """GET /rfq/forjob/{jobId}"""
+        """GET /rfq/forjob/{jobId}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/get_for_job.html
+        Query params: RfqForJobParams
+        Response model: List[QuoteRequestDisplayInfo]
+        """
         return self._request(_GET_FOR_JOB.bind(jobId=job_id))
 
     def accept(self, rfq_id: str, *, data: AcceptModel | dict) -> None:
@@ -41,19 +50,32 @@ class RFQEndpoint(BaseEndpoint):
                 Accepts an :class:`AcceptModel` instance or a dict.
 
         Request model: :class:`AcceptModel`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/accept.html
+        Request model: AcceptModel
         """
         return self._request(_ACCEPT.bind(rfqId=rfq_id), json=data)
 
     def decline(self, rfq_id: str) -> None:
-        """POST /rfq/{rfqId}/decline"""
+        """POST /rfq/{rfqId}/decline
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/decline.html
+        """
         return self._request(_DECLINE.bind(rfqId=rfq_id))
 
     def cancel(self, rfq_id: str) -> None:
-        """POST /rfq/{rfqId}/cancel"""
+        """POST /rfq/{rfqId}/cancel
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/cancel.html
+        """
         return self._request(_CANCEL.bind(rfqId=rfq_id))
 
     def accept_winner(self, rfq_id: str) -> None:
-        """POST /rfq/{rfqId}/acceptwinner"""
+        """POST /rfq/{rfqId}/acceptwinner
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/accept_winner.html
+        Query params: RfqAcceptWinnerParams
+        """
         return self._request(_ACCEPT_WINNER.bind(rfqId=rfq_id))
 
     def add_comment(self, rfq_id: str, *, data: AcceptModel | dict) -> None:
@@ -65,5 +87,8 @@ class RFQEndpoint(BaseEndpoint):
                 Accepts an :class:`AcceptModel` instance or a dict.
 
         Request model: :class:`AcceptModel`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/rfq/add_comment.html
+        Request model: AcceptModel
         """
         return self._request(_ADD_COMMENT.bind(rfqId=rfq_id), json=data)

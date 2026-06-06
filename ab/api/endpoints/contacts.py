@@ -69,7 +69,11 @@ class ContactsEndpoint(BaseEndpoint):
         self._resolver = resolver
 
     def get(self, contact_id: str) -> ContactSimple:
-        """GET /contacts/{id}"""
+        """GET /contacts/{id}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get.html
+        Response model: ContactSimple
+        """
         return self._request(_GET.bind(id=contact_id))
 
     def get_did(self, contact_did: str | int) -> ContactSimple:
@@ -77,7 +81,11 @@ class ContactsEndpoint(BaseEndpoint):
         return self.get(self._resolver.resolve(str(contact_did)))
 
     def get_details(self, contact_id: str) -> ContactDetailedInfo:
-        """GET /contacts/{contactId}/editdetails"""
+        """GET /contacts/{contactId}/editdetails
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get_details.html
+        Response model: ContactDetailedInfo
+        """
         return self._request(_GET_DETAILS.bind(contactId=contact_id))
 
     def update_details(
@@ -97,6 +105,10 @@ class ContactsEndpoint(BaseEndpoint):
 
         Request model: :class:`ContactEditRequest`
         Params model: :class:`ContactEditParams`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/update_details.html
+        Request model: ContactEditRequest
+        Query params: ContactEditParams
         """
         params = dict(franchisee_id=franchisee_id)
         return self._request(
@@ -118,6 +130,10 @@ class ContactsEndpoint(BaseEndpoint):
 
         Request model: :class:`ContactEditRequest`
         Params model: :class:`ContactEditParams`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/create.html
+        Request model: ContactEditRequest
+        Query params: ContactEditParams
         """
         params = dict(franchisee_id=franchisee_id)
         return self._request(_CREATE, json=data, params=params)
@@ -130,15 +146,27 @@ class ContactsEndpoint(BaseEndpoint):
                 Accepts a :class:`ContactSearchRequest` instance or a dict.
 
         Request model: :class:`ContactSearchRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/search.html
+        Request model: ContactSearchRequest
+        Response model: List[SearchContactEntityResult]
         """
         return self._request(_SEARCH, json=data)
 
     def get_primary_details(self, contact_id: str) -> ContactPrimaryDetails:
-        """GET /contacts/{contactId}/primarydetails"""
+        """GET /contacts/{contactId}/primarydetails
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get_primary_details.html
+        Response model: ContactPrimaryDetails
+        """
         return self._request(_PRIMARY_DETAILS.bind(contactId=contact_id))
 
     def get_current_user(self) -> ContactSimple:
-        """GET /contacts/user"""
+        """GET /contacts/user
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get_current_user.html
+        Response model: ContactSimple
+        """
         return self._request(_CURRENT_USER)
 
     # ---- Extended (008) ---------------------------------------------------
@@ -152,15 +180,29 @@ class ContactsEndpoint(BaseEndpoint):
                 Accepts a :class:`ContactHistoryCreateRequest` instance or a dict.
 
         Request model: :class:`ContactHistoryCreateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/post_history.html
+        Request model: ContactHistoryCreateRequest
+        Response model: ContactHistory
         """
         return self._request(_POST_HISTORY.bind(contactId=contact_id), json=data)
 
     def get_history_aggregated(self, contact_id: str) -> ContactHistoryAggregated:
-        """GET /contacts/{contactId}/history/aggregated"""
+        """GET /contacts/{contactId}/history/aggregated
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get_history_aggregated.html
+        Query params: ContactHistoryParams
+        Response model: ContactHistoryAggregated
+        """
         return self._request(_GET_HISTORY_AGGREGATED.bind(contactId=contact_id))
 
     def get_history_graph_data(self, contact_id: str) -> ContactGraphData:
-        """GET /contacts/{contactId}/history/graphdata"""
+        """GET /contacts/{contactId}/history/graphdata
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/get_history_graph_data.html
+        Query params: ContactHistoryParams
+        Response model: ContactGraphData
+        """
         return self._request(_GET_HISTORY_GRAPH_DATA.bind(contactId=contact_id))
 
     def merge_preview(self, merge_to_id: str, *, data: ContactMergeRequest | dict) -> ContactMergePreview:
@@ -172,6 +214,10 @@ class ContactsEndpoint(BaseEndpoint):
                 Accepts a :class:`ContactMergeRequest` instance or a dict.
 
         Request model: :class:`ContactMergeRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/merge_preview.html
+        Request model: ContactMergeRequest
+        Response model: ContactMergePreview
         """
         return self._request(_MERGE_PREVIEW.bind(mergeToId=merge_to_id), json=data)
 
@@ -184,5 +230,8 @@ class ContactsEndpoint(BaseEndpoint):
                 Accepts a :class:`ContactMergeRequest` instance or a dict.
 
         Request model: :class:`ContactMergeRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/contacts/merge.html
+        Request model: ContactMergeRequest
         """
         return self._request(_MERGE.bind(mergeToId=merge_to_id), json=data)

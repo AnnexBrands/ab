@@ -42,6 +42,10 @@ class DashboardEndpoint(BaseEndpoint):
         Args:
             view_id: Grid view id (forward reference: :class:`GridViewInfo.id`).
             company_id: Company UUID; defaults to the caller's primary company.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/get.html
+        Query params: DashboardParams
+        Response model: DashboardSummary
         """
         return self._request(_GET, params=dict(view_id=view_id, company_id=company_id))
 
@@ -50,11 +54,19 @@ class DashboardEndpoint(BaseEndpoint):
 
         Each row carries the ``id`` you pass to :meth:`get` as ``view_id``,
         plus ``name``, ``dataKey``, and ``isActive``.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/get_grid_views.html
+        Query params: DashboardCompanyParams
+        Response model: List[GridViewInfo]
         """
         return self._request(_GET_GRID_VIEWS)
 
     def get_grid_view_state(self, view_id: str) -> GridViewState:
-        """Fetch the saved column / filter / sort state for a grid view."""
+        """Fetch the saved column / filter / sort state for a grid view.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/get_grid_view_state.html
+        Response model: GridViewState
+        """
         return self._request(_GET_GRID_VIEW_STATE.bind(id=view_id))
 
     def save_grid_view_state(self, view_id: str, *, data: GridViewState | dict) -> None:
@@ -66,6 +78,9 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`GridViewState` instance or a dict.
 
         Request model: :class:`GridViewState`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/save_grid_view_state.html
+        Request model: GridViewState
         """
         return self._request(_SAVE_GRID_VIEW_STATE.bind(id=view_id), json=data)
 
@@ -77,6 +92,9 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
         Request model: :class:`DashboardCompanyRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/inbound.html
+        Request model: DashboardCompanyRequest
         """
         return self._request(_INBOUND, json=data)
 
@@ -88,6 +106,9 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
         Request model: :class:`DashboardCompanyRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/in_house.html
+        Request model: DashboardCompanyRequest
         """
         return self._request(_IN_HOUSE, json=data)
 
@@ -99,6 +120,9 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
         Request model: :class:`DashboardCompanyRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/outbound.html
+        Request model: DashboardCompanyRequest
         """
         return self._request(_OUTBOUND, json=data)
 
@@ -110,6 +134,9 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
         Request model: :class:`DashboardCompanyRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/local_deliveries.html
+        Request model: DashboardCompanyRequest
         """
         return self._request(_LOCAL_DELIVERIES, json=data)
 
@@ -121,5 +148,8 @@ class DashboardEndpoint(BaseEndpoint):
                 Accepts a :class:`DashboardCompanyRequest` instance or a dict.
 
         Request model: :class:`DashboardCompanyRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/dashboard/recent_estimates.html
+        Request model: DashboardCompanyRequest
         """
         return self._request(_RECENT_ESTIMATES, json=data)

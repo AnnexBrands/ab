@@ -62,6 +62,12 @@ api/commodities
 api/payments
 api/shipments
 api/views
+api/commodity_maps
+api/dashboard
+api/notes
+api/partners
+api/reports
+api/rfq
 ```
 
 ## Model Reference

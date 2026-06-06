@@ -30,7 +30,11 @@ class CommodityMapsEndpoint(BaseEndpoint):
     """Commodity map operations (ACPortal API)."""
 
     def get(self, map_id: str) -> CommodityMap:
-        """GET /commodity-map/{id}"""
+        """GET /commodity-map/{id}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodity_maps/get.html
+        Response model: CommodityMap
+        """
         return self._request(_GET.bind(id=map_id))
 
     def update(self, map_id: str, *, data: CommodityMapUpdateRequest | dict) -> CommodityMap:
@@ -42,11 +46,19 @@ class CommodityMapsEndpoint(BaseEndpoint):
                 Accepts a :class:`CommodityMapUpdateRequest` instance or a dict.
 
         Request model: :class:`CommodityMapUpdateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodity_maps/update.html
+        Request model: CommodityMapUpdateRequest
+        Response model: CommodityMap
         """
         return self._request(_UPDATE.bind(id=map_id), json=data)
 
     def delete(self, map_id: str) -> ServiceBaseResponse:
-        """DELETE /commodity-map/{id}"""
+        """DELETE /commodity-map/{id}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodity_maps/delete.html
+        Response model: ServiceBaseResponse
+        """
         return self._request(_DELETE.bind(id=map_id))
 
     def create(self, *, data: CommodityMapCreateRequest | dict) -> CommodityMap:
@@ -57,6 +69,10 @@ class CommodityMapsEndpoint(BaseEndpoint):
                 Accepts a :class:`CommodityMapCreateRequest` instance or a dict.
 
         Request model: :class:`CommodityMapCreateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodity_maps/create.html
+        Request model: CommodityMapCreateRequest
+        Response model: CommodityMap
         """
         return self._request(_CREATE, json=data)
 
@@ -68,5 +84,9 @@ class CommodityMapsEndpoint(BaseEndpoint):
                 Accepts a :class:`CommodityMapSearchRequest` instance or a dict.
 
         Request model: :class:`CommodityMapSearchRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodity_maps/search.html
+        Request model: CommodityMapSearchRequest
+        Response model: List[CommodityMap]
         """
         return self._request(_SEARCH, json=data)

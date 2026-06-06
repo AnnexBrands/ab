@@ -68,6 +68,10 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts an :class:`InsuranceReportRequest` instance or a dict.
 
         Request model: :class:`InsuranceReportRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/insurance.html
+        Request model: InsuranceReportRequest
+        Response model: List[InsuranceReport]
         """
         return self._request(_INSURANCE, json=data)
 
@@ -80,6 +84,10 @@ class ReportsEndpoint(BaseEndpoint):
                 instance or a dict.
 
         Request model: :class:`SalesForecastReportRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/sales.html
+        Request model: SalesForecastReportRequest
+        Response model: List[SalesForecastReport]
         """
         return self._request(_SALES, json=data)
 
@@ -92,6 +100,10 @@ class ReportsEndpoint(BaseEndpoint):
                 or a dict.
 
         Request model: :class:`SalesForecastSummaryRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/sales_summary.html
+        Request model: SalesForecastSummaryRequest
+        Response model: SalesForecastSummary
         """
         return self._request(_SALES_SUMMARY, json=data)
 
@@ -103,6 +115,10 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/sales_drilldown.html
+        Request model: Web2LeadRevenueFilter
+        Response model: List[RevenueCustomer]
         """
         return self._request(_SALES_DRILLDOWN, json=data)
 
@@ -114,6 +130,10 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/top_revenue_customers.html
+        Request model: Web2LeadRevenueFilter
+        Response model: List[RevenueCustomer]
         """
         return self._request(_TOP_REVENUE_CUSTOMERS, json=data)
 
@@ -125,6 +145,10 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts a :class:`Web2LeadRevenueFilter` instance or a dict.
 
         Request model: :class:`Web2LeadRevenueFilter`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/top_revenue_sales_reps.html
+        Request model: Web2LeadRevenueFilter
+        Response model: List[RevenueCustomer]
         """
         return self._request(_TOP_REVENUE_SALES_REPS, json=data)
 
@@ -136,6 +160,10 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts a :class:`ReferredByReportRequest` instance or a dict.
 
         Request model: :class:`ReferredByReportRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/referred_by.html
+        Request model: ReferredByReportRequest
+        Response model: List[ReferredByReport]
         """
         return self._request(_REFERRED_BY, json=data)
 
@@ -147,5 +175,9 @@ class ReportsEndpoint(BaseEndpoint):
                 Accepts a :class:`Web2LeadV2RequestModel` instance or a dict.
 
         Request model: :class:`Web2LeadV2RequestModel`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/reports/web2lead.html
+        Request model: Web2LeadV2RequestModel
+        Response model: List[Web2LeadReport]
         """
         return self._request(_WEB2LEAD, json=data)

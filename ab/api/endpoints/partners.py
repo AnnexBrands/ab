@@ -19,11 +19,20 @@ class PartnersEndpoint(BaseEndpoint):
     """Partner operations (ACPortal API)."""
 
     def list(self) -> list[Partner]:
-        """GET /partner"""
+        """GET /partner
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/partners/list.html
+        Query params: PartnerListParams
+        Response model: List[Partner]
+        """
         return self._request(_LIST)
 
     def get(self, partner_id: str) -> Partner:
-        """GET /partner/{id}"""
+        """GET /partner/{id}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/partners/get.html
+        Response model: Partner
+        """
         return self._request(_GET.bind(id=partner_id))
 
     def search(self, *, data: PartnerSearchRequest | dict) -> list[Partner]:
@@ -34,5 +43,9 @@ class PartnersEndpoint(BaseEndpoint):
                 Accepts a :class:`PartnerSearchRequest` instance or a dict.
 
         Request model: :class:`PartnerSearchRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/partners/search.html
+        Request model: PartnerSearchRequest
+        Response model: List[Partner]
         """
         return self._request(_SEARCH, json=data)

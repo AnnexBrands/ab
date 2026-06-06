@@ -31,4 +31,4 @@ Returns a list of `List[Accessorial]`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)
