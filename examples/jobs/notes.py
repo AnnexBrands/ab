@@ -13,7 +13,6 @@ attached to a pickup/packing task. The category comes from
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ab import ABConnectAPI
 from ab.api.helpers.timeline import (
@@ -23,8 +22,10 @@ from ab.api.helpers.timeline import (
 )
 from ab.api.models.notes import NoteRequest
 from ab.cli.formatter import format_result
+from examples._capture import capture_dir
 
-FIXTURES_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures"
+# Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
+FIXTURES_DIR = capture_dir()
 JOB_ID = "35e2ed80-d477-ee11-ac1c-0a15ce13c9bf"
 
 

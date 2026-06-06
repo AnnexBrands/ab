@@ -62,14 +62,15 @@ See also: https://ab-sdk.readthedocs.io/en/latest/api/notes.html
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ab import ABConnectAPI
 from ab.api.models.notes import NoteRequest, SuggestedUser
 from ab.cli.formatter import format_result
+from examples._capture import capture_dir
 from examples.constants import TEST_COMPANY_ID
 
-FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
+# Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
+FIXTURES_DIR = capture_dir()
 
 
 def _save(name: str, payload) -> None:

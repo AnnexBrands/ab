@@ -28,6 +28,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - N/A -- SDK, no local storage (031-timeline-upsert-docs)
 - Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps). Audit tooling uses stdlib only (`ast`, `json`, `pathlib`). (036-lotsdb-migration-prep)
 - Filesystem — fixture JSON under `tests/fixtures/` and `tests/fixtures/requests/`; audit/inventory/guide as Markdown under the repo. (036-lotsdb-migration-prep)
+- Python 3.11+ (matches existing SDK) + pydantic>=2.0, requests (existing — no new runtime deps); (037-example-coverage)
+- Filesystem — response fixtures `tests/fixtures/*.json`, request fixtures (037-example-coverage)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -46,9 +48,22 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 
 Python 3.11+: Follow standard conventions
 
+## Example coverage & progress app (feature 037)
+
+Every routed endpoint should have one canonical plain-script example (real call + real
+printed pydantic response; reference `examples/dashboard.py`; shared `examples/_capture.py`
+`save()`/`load_request()`). NOT the deprecated `examples/_runner.py` (underscore-prefixed
+files are legacy and excluded from the canonical set).
+
+- `ab/progress/example_index.py` — precise endpoint→canonical-example map; `uncovered_endpoints()`/`legacy_only_endpoints()` back the coverage gate `tests/test_example_coverage.py` (STRICT_* flags flip on completion).
+- `scripts/run_examples.py` — live harness: runs read-only (GET) examples, diffs `model_dump(by_alias=True, mode="json")` vs the fixture (`ab/progress/example_verify.py`), writes `tests/example_run_results.json`; `--capture` refreshes fixtures; mutations never auto-run. Mutating example calls are guarded by `examples._capture.mutations_enabled()` (`AB_RUN_MUTATIONS=1`).
+- `scripts/ingest_captures.py` — validate pasted `captures.json` against the model → fixtures + generated example.
+- `scripts/serve_progress.py` → interactive app (`ab/progress/app.py`, stdlib http.server + `progress.db`): left-nav `path › tag › endpoint`, per-endpoint request/response **workbench** (live snippet + ▶ Run edited code + JSON/Pydantic), Four-Way Harmony popovers, sign-off; binds `0.0.0.0`.
+- Static no-drift report stays: `scripts/generate_progress.py` → `html/progress.html` (Run column + paste-capture). Always regenerate it after changing examples/fixtures or the no-drift test fails.
+- Interactive enrichment: operator gets a call working (workbench or "make `_X.py` pass with this input") → agent promotes `_X.py` → canonical `examples/X.py` + fixture + test; reads `tests/example_edits.json` for saved improvements.
+
 ## Recent Changes
+- 037-example-coverage: Added Python 3.11+ (matches existing SDK) + pydantic>=2.0, requests (existing — no new runtime deps);
 - 036-lotsdb-migration-prep: Added Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps).
 - 035-catalog-endpoint-params: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 033-fix-catalog-model-typing: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 034-g1-model-fidelity-sweep: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

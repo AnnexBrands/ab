@@ -88,16 +88,29 @@ def index_all_routes() -> dict[tuple[str, str], RouteInfo]:
 
 def build_endpoint_class_progress(
     example_methods: dict[str, set[str]] | None = None,
+    *,
+    run_results: dict | None = None,
 ) -> list:
     """Build per-endpoint-class progress data for the HTML report.
 
-    Returns a list of ``EndpointClassProgress`` instances.
+    ``has_example`` is sourced from the precise :mod:`ab.progress.example_index`
+    (canonical = non-underscore plain script resolving to a real Route), and each
+    routed method gets a :class:`~ab.progress.models.RunStatus` derived from
+    method + fixture, overlaid by *run_results* (the committed run-results artifact)
+    when an entry exists. Returns a list of ``EndpointClassProgress`` instances.
     """
     from ab.cli.discovery import discover_endpoints_from_class
-    from ab.progress.models import EndpointClassProgress, MethodProgress
+    from ab.progress.example_index import build_example_index
+    from ab.progress.models import EndpointClassProgress, MethodProgress, RunStatus, derive_run_status
+    from ab.progress.report import FIXTURES_DIR
+    from ab.progress.scanner import scan_fixture_files
 
-    if example_methods is None:
-        example_methods = _scan_example_entries()
+    # Precise endpoint -> canonical example map; falls back to the legacy scanner
+    # only if explicitly passed (kept for backward compat / tests).
+    index = build_example_index()
+    covered_keys = {k for k, v in index.items() if v.is_canonical}
+    fixture_files = scan_fixture_files(FIXTURES_DIR)
+    run_results = run_results or {}
 
     registry = discover_endpoints_from_class()
     results: list[EndpointClassProgress] = []
@@ -109,19 +122,43 @@ def build_endpoint_class_progress(
         total_with_route = 0
         total_with_example = 0
         total_with_cli = 0
-        ep_examples = example_methods.get(name, set())
 
         for m in info.methods:
             has_route = m.route is not None
-            has_example = m.name in ep_examples
+            dotted = f"api.{name}.{m.name}"
+            has_example = dotted in covered_keys or (
+                example_methods is not None and m.name in example_methods.get(name, set())
+            )
             has_cli = True  # all discovered methods are CLI-callable
+
+            run_status = RunStatus.MISSING_EXAMPLE
+            run_checked: str | None = None
+            run_detail: str | None = None
 
             if has_route:
                 total_with_route += 1
                 http_method = m.route.method
                 http_path = m.route.path
-                return_type = m.return_annotation or m.route.response_model or "Any"
+                response_model = m.route.response_model
+                return_type = m.return_annotation or response_model or "Any"
                 sub_root = _extract_sub_root(http_path, info.path_root)
+
+                fixture_exists = _strip_model_wrapper(response_model or "") in fixture_files
+                run_status = derive_run_status(
+                    http_method=http_method,
+                    has_canonical_example=has_example,
+                    response_model=response_model,
+                    fixture_exists=fixture_exists,
+                )
+                # Overlay the committed run-results artifact (live/paste verified).
+                entry = run_results.get(dotted)
+                if entry:
+                    try:
+                        run_status = RunStatus(entry.get("status", run_status.value))
+                    except ValueError:
+                        pass
+                    run_checked = entry.get("checked")
+                    run_detail = entry.get("detail")
             else:
                 http_method = ""
                 http_path = ""
@@ -134,7 +171,7 @@ def build_endpoint_class_progress(
                 total_with_cli += 1
 
             mp = MethodProgress(
-                dotted_path=f"api.{name}.{m.name}",
+                dotted_path=dotted,
                 method_name=m.name,
                 http_method=http_method,
                 http_path=http_path,
@@ -144,6 +181,11 @@ def build_endpoint_class_progress(
                 has_route=has_route,
                 path_sub_root=sub_root,
                 has_docstring=bool(m.docstring),
+                run_status=run_status,
+                run_checked=run_checked,
+                run_detail=run_detail,
+                response_model=_strip_model_wrapper(m.route.response_model or "") if has_route else "",
+                request_model=m.route.request_model if has_route else None,
             )
 
             if not has_route:

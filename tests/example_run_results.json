@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "results": {
+    "api.address.validate": {
+      "status": "passing",
+      "checked": "2026-06-06",
+      "source": "live",
+      "fixture": "AddressIsValidResult.json",
+      "detail": null
+    }
+  }
+}

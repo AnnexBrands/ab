@@ -40,6 +40,26 @@ tr:hover { background: #f9f9f9; }
 .badge-ns { background: #6c757d; color: #fff; }
 .badge-request { background: #17a2b8; color: #fff; }
 .badge-constant { background: #fd7e14; color: #fff; }
+/* run-and-verify status badges (feature 037) */
+.badge-pass { background: #28a745; color: #fff; }
+.badge-fail { background: #dc3545; color: #fff; }
+.badge-notrun { background: #6c757d; color: #fff; }
+.badge-awaitdata { background: #ffc107; color: #333; }
+.badge-awaitpaste { background: #fd7e14; color: #fff; }
+.badge-binary { background: #6610f2; color: #fff; }
+.badge-missing { background: #dc3545; color: #fff; }
+/* paste-capture section (feature 037) */
+.capture-bar { position: sticky; top: 0; z-index: 5; background: #fff;
+               padding: 10px 0; border-bottom: 2px solid #007bff; margin-bottom: 12px; }
+.capture-bar button { font-size: 0.9rem; padding: 8px 16px; border-radius: 6px;
+                      border: 1px solid #007bff; background: #007bff; color: #fff;
+                      cursor: pointer; }
+.capture-bar button:hover { background: #0069d9; }
+.capture-count { font-weight: 700; margin-left: 12px; }
+.capture-item summary { display: flex; gap: 8px; align-items: center; }
+.capture-item textarea { width: 100%; min-height: 110px; font-family: monospace;
+                         font-size: 0.8rem; box-sizing: border-box; margin: 4px 0; }
+.capture-meta { color: #666; font-size: 0.8rem; font-family: monospace; }
 .gate-pass { background: #d4edda; color: #155724; font-weight: 600;
              text-align: center; }
 .gate-fail { background: #f8d7da; color: #721c24; font-weight: 600;
@@ -124,6 +144,7 @@ def render_report(
 
     if endpoint_class_progress:
         parts.append(render_endpoint_class_progress(endpoint_class_progress))
+        parts.append(render_paste_capture(endpoint_class_progress))
 
     if gate_results:
         parts.append(render_gate_summary(gate_results))
@@ -131,6 +152,7 @@ def render_report(
 
     parts.extend([
         render_action_required(action_items),
+        f"<script>{CAPTURE_JS}</script>",
         "</body>",
         "</html>",
     ])
@@ -482,6 +504,7 @@ def render_endpoint_class_progress(
                     f"</tr>"
                 )
             parts.append("</table>")
+            # (helpers have no Route, so no Run column — coverage is route-only)
 
         # Sub-groups
         for sub_root, methods in sorted(ecp.sub_groups.items()):
@@ -493,7 +516,7 @@ def render_endpoint_class_progress(
                 "<table>"
                 "<tr><th>HTTP</th><th>Path</th><th>Method</th>"
                 "<th>Python Path</th><th>Return</th>"
-                "<th>Doc</th><th>Ex</th><th>CLI</th></tr>"
+                "<th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>"
             )
             for mp in methods:
                 parts.append(
@@ -505,6 +528,7 @@ def render_endpoint_class_progress(
                     f"<td>{escape(mp.return_type)}</td>"
                     f"<td>{_yn_badge(mp.has_docstring)}</td>"
                     f"<td>{_yn_badge(mp.has_example)}</td>"
+                    f"<td>{_run_badge(mp)}</td>"
                     f"<td>{_yn_badge(mp.has_cli)}</td>"
                     f"</tr>"
                 )
@@ -518,3 +542,136 @@ def _yn_badge(value: bool) -> str:
     if value:
         return "<span class='badge badge-done'>yes</span>"
     return "<span class='badge badge-ns'>no</span>"
+
+
+# Run-and-verify status -> (label, css class). Single source for the column badge.
+_RUN_BADGE = {
+    "passing": ("pass", "badge-pass"),
+    "failing": ("fail", "badge-fail"),
+    "not_verified": ("not run", "badge-notrun"),
+    "awaiting_data": ("needs data", "badge-awaitdata"),
+    "awaiting_paste": ("paste", "badge-awaitpaste"),
+    "binary": ("binary", "badge-binary"),
+    "missing_example": ("no example", "badge-missing"),
+}
+
+
+def _run_badge(mp) -> str:
+    """Render the run-and-verify status badge for a method row."""
+    label, cls = _RUN_BADGE.get(mp.run_status.value, ("?", "badge-ns"))
+    title = escape(mp.run_detail) if mp.run_detail else ""
+    checked = f" {escape(mp.run_checked)}" if mp.run_checked else ""
+    return f"<span class='badge {cls}' title='{title}'>{label}{checked}</span>"
+
+
+# Statuses that need a human to paste a real response (feature 037).
+_AWAITING_STATUSES = {"awaiting_paste", "awaiting_data", "missing_example"}
+
+# Client-side JS: collect non-empty textareas into one captures.json download.
+# No fetch/XHR — a static Blob download, so the report stays CI-safe and offline.
+CAPTURE_JS = """
+function abUpdateCaptureCount() {
+  var filled = 0;
+  document.querySelectorAll('.capture-item').forEach(function (el) {
+    var r = el.querySelector('textarea[data-role="response"]');
+    var q = el.querySelector('textarea[data-role="request"]');
+    if ((r && r.value.trim()) || (q && q.value.trim())) filled++;
+  });
+  var c = document.getElementById('capture-filled');
+  if (c) c.textContent = filled;
+}
+function abDownloadCaptures() {
+  var captures = {};
+  document.querySelectorAll('.capture-item').forEach(function (el) {
+    var r = el.querySelector('textarea[data-role="response"]');
+    var q = el.querySelector('textarea[data-role="request"]');
+    var rv = r ? r.value.trim() : '';
+    var qv = q ? q.value.trim() : '';
+    if (!rv && !qv) return;
+    var key = el.dataset.endpoint;
+    var entry = {
+      endpoint: key,
+      http_method: el.dataset.method,
+      path: el.dataset.path,
+      response_model: el.dataset.responseModel,
+      request_model: el.dataset.requestModel || null,
+      response: null
+    };
+    if (rv) { try { entry.response = JSON.parse(rv); } catch (e) { entry.response = rv; } }
+    if (qv) { try { entry.request = JSON.parse(qv); } catch (e) { entry.request = qv; } }
+    captures[key] = entry;
+  });
+  var payload = JSON.stringify({ schema: 1, captures: captures }, null, 2);
+  var blob = new Blob([payload], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'captures.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+document.addEventListener('input', function (e) {
+  if (e.target && e.target.matches('.capture-item textarea')) abUpdateCaptureCount();
+});
+""".strip()
+
+
+def render_paste_capture(progress: list[EndpointClassProgress]) -> str:
+    """Render the paste-capture section for endpoints that can't auto-run (FR-010/011).
+
+    Lists every endpoint whose run status is awaiting-paste / awaiting-data /
+    missing-example with editable response (and request, when the route takes a
+    body) textareas, plus a single "Download captures.json" button.
+    """
+    awaiting = []
+    for ecp in progress:
+        for methods in ecp.sub_groups.values():
+            for mp in methods:
+                if mp.run_status.value in _AWAITING_STATUSES:
+                    awaiting.append(mp)
+    awaiting.sort(key=lambda m: m.dotted_path)
+
+    parts = ["<h2>Paste Capture — endpoints awaiting a real response</h2>"]
+    if not awaiting:
+        parts.append("<p>Nothing awaiting paste — every endpoint is auto-verified or captured. 🎉</p>")
+        return "\n".join(parts)
+
+    parts.append(
+        "<div class='capture-bar'>"
+        "<button type='button' onclick='abDownloadCaptures()'>Download captures.json</button>"
+        f"<span class='capture-count'>"
+        f"<span id='capture-filled'>0</span> filled / {len(awaiting)} awaiting paste</span>"
+        "</div>"
+    )
+    parts.append(
+        "<p>Paste the real JSON response (and request body where shown) from a live "
+        "call, then download <code>captures.json</code> and hand it back for ingest "
+        "(<code>python scripts/ingest_captures.py captures.json</code>).</p>"
+    )
+
+    for mp in awaiting:
+        label, cls = _RUN_BADGE.get(mp.run_status.value, ("?", "badge-ns"))
+        req_model = mp.request_model or ""
+        parts.append(
+            f"<details class='capture-item' "
+            f"data-endpoint='{escape(mp.dotted_path)}' "
+            f"data-method='{escape(mp.http_method)}' "
+            f"data-path='{escape(mp.http_path)}' "
+            f"data-response-model='{escape(mp.response_model)}' "
+            f"data-request-model='{escape(req_model)}'>"
+            f"<summary><span class='badge {cls}'>{label}</span> "
+            f"<code>{escape(mp.dotted_path)}</code> "
+            f"<span class='capture-meta'>{escape(mp.http_method)} {escape(mp.http_path)} "
+            f"&rarr; {escape(mp.response_model or '—')}</span></summary>"
+            "<div class='detail-body'>"
+            "<label>response JSON:</label>"
+            "<textarea data-role='response' placeholder='paste real JSON response'></textarea>"
+        )
+        if req_model:
+            parts.append(
+                f"<label>request body JSON ({escape(req_model)}):</label>"
+                "<textarea data-role='request' placeholder='paste real JSON request body'></textarea>"
+            )
+        parts.append("</div></details>")
+
+    return "\n".join(parts)

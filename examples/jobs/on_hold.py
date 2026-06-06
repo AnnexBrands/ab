@@ -57,14 +57,15 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 from ab import ABConnectAPI
 from ab.api.models.jobs import SaveOnHoldRequest, SendEmailRequest
 from ab.cli.formatter import format_result
+from examples._capture import capture_dir, mutations_enabled
 from examples.constants import TEST_JOB_DISPLAY_ID, TEST_USER_ID
 
-FIXTURES_DIR = Path(__file__).resolve().parents[2] / "tests" / "fixtures"
+# Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
+FIXTURES_DIR = capture_dir()
 
 
 def _save(name: str, payload) -> None:
@@ -122,6 +123,13 @@ def main() -> None:
             "  WARNING: follow-up user has no email on file. The hold is created "
             "but the notification email step will be skipped.",
         )
+
+    # --- Steps 2b–5 mutate staging (create/email/resolve a hold) --------
+    # Guarded so a default run and the verify harness exercise only the GET
+    # calls above. Set AB_RUN_MUTATIONS=1 to run the full lifecycle.
+    if not mutations_enabled():
+        print("\n# (mutating on-hold lifecycle skipped — set AB_RUN_MUTATIONS=1 to run)")
+        return
 
     # --- Step 2b: discover the required lookup UUIDs -------------------
     # Swagger requires reasonId + responsiblePartyTypeId. The keys below
