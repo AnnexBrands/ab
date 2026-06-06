@@ -126,7 +126,14 @@ from ab.api.models.dashboard import (
     GridViewInfo,
     GridViewState,
 )
-from ab.api.models.documents import Document, DocumentListParams, DocumentUpdateRequest
+from ab.api.models.documents import (
+    Document,
+    DocumentListParams,
+    DocumentUpdateRequest,
+    DocumentUploadRequest,
+    DocumentUploadResponse,
+    UploadedFile,
+)
 from ab.api.models.enums import CarrierAPI, DocumentType
 from ab.api.models.forms import (
     BillOfLadingParams,
@@ -411,6 +418,7 @@ __all__ = [
     "ShipmentRateQuoteRequest", "ShipmentExportRequest",
     # Documents
     "Document", "DocumentListParams", "DocumentUpdateRequest",
+    "DocumentUploadRequest", "DocumentUploadResponse", "UploadedFile",
     # Address
     "AddressValidateParams", "AddressPropertyTypeParams", "AddressIsValidResult", "PropertyType",
     # Lookup
