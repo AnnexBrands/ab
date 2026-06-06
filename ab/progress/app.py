@@ -131,13 +131,41 @@ class _Handler(BaseHTTPRequestHandler):
             db.export_edits()  # keep the committed improvement store fresh for enrichment
             return self._json({"ok": True, "edit": row})
         if route.path == "/api/run":
-            from ab.progress.workbench import run_example_for
+            from ab.progress.workbench import run_code, run_example_for
 
             key = body.get("endpoint")
             if not key:
                 return self._json({"error": "endpoint required"}, 400)
-            result = run_example_for(key, confirm_mutation=bool(body.get("confirm")))
+            code = body.get("code")
+            confirm = bool(body.get("confirm"))
+            if code and code.strip():
+                result = run_code(key, code, confirm_mutation=confirm)
+            else:
+                result = run_example_for(key, confirm_mutation=confirm)
             return self._json(result)
+        if route.path == "/api/save-request":
+            from ab.progress.captures import _model_class
+            from ab.progress.example_gen import strip_list_wrapper
+            from ab.progress.report import FIXTURES_DIR as _FX
+
+            key = body.get("endpoint")
+            req_model = strip_list_wrapper(body.get("request_model") or "")
+            payload = body.get("request")
+            if not key or not req_model:
+                return self._json({"error": "endpoint and request_model required"}, 400)
+            cls = _model_class(req_model)
+            if cls is None or payload is None:
+                return self._json({"ok": False, "error": f"unknown model {req_model} or empty body"}, 400)
+            try:
+                canon = cls.model_validate(payload).model_dump(by_alias=True, mode="json")
+            except Exception as exc:
+                return self._json({"ok": False, "error": f"{type(exc).__name__}: {str(exc).splitlines()[0]}"}, 400)
+            reqdir = _FX / "requests"
+            reqdir.mkdir(parents=True, exist_ok=True)
+            (reqdir / f"{req_model}.json").write_text(
+                json.dumps(canon, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            )
+            return self._json({"ok": True, "fixture": f"requests/{req_model}.json"})
         if route.path == "/api/save-fixture":
             from ab.progress.captures import validate_capture
 
@@ -266,7 +294,7 @@ border-radius:6px;cursor:pointer;font-size:12px}
 label.ck{display:flex;align-items:center;gap:9px;padding:7px 0;cursor:pointer}
 label.ck input{width:17px;height:17px;accent-color:var(--ok)}
 textarea{width:100%;background:#10131a;color:var(--fg);border:1px solid var(--line);border-radius:7px;
-padding:8px;font:12px/1.4 monospace;min-height:90px;resize:vertical}
+padding:8px;font:12px/1.4 monospace;min-height:180px;resize:vertical}
 input.txt{background:#10131a;color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
 button.go{background:var(--acc);color:#fff;border:none;border-radius:7px;padding:8px 16px;cursor:pointer;font-weight:600}
 button.go:hover{filter:brightness(1.1)}
@@ -287,9 +315,16 @@ small.note{color:var(--mut)}
 .wb{display:flex;gap:18px;margin-top:14px}
 .wb-col{flex:1;min-width:0}
 .wb-col h3{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
-textarea.code{min-height:150px;background:#0b0d12}
+textarea.code{min-height:260px;background:#0b0d12}
 .codes{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
 .code-pill{background:#1f2430;border:1px solid var(--line);border-radius:5px;padding:2px 8px;font:600 12px monospace}
+.signoff-row{display:flex;gap:24px;flex-wrap:wrap}
+.signoff-row .ck{padding:6px 0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-left:8px}
+.seg button{background:#1f2430;color:var(--mut);border:none;padding:3px 10px;cursor:pointer;font-size:11px}
+.seg button.on{background:var(--acc);color:#fff}
+pre.pyd{margin:4px 0;background:#0b0d12;border:1px solid var(--line);border-radius:7px;padding:8px;
+        min-height:180px;max-height:420px;overflow:auto;font:12px/1.4 monospace;white-space:pre-wrap}
 </style></head>
 <body>
 <div id="nav">
@@ -309,6 +344,7 @@ awaiting_data:['#ffc107','needs data'],awaiting_paste:['#fd7e14','paste'],binary
 missing_example:['#dc3545','no example']};
 function api(p,opt){return fetch(p,opt).then(r=>r.json());}
 async function load(){DATA=await api('/api/data');renderSummary();renderTree();if(SEL)renderDetail(find(SEL));}
+function softReload(){api('/api/data').then(d=>{DATA=d;renderTree();});}  // refresh nav only, keep workbench edits
 function find(k){return DATA.endpoints.find(e=>e.endpoint_key===k);}
 function renderSummary(){/* summary cards live atop detail when nothing selected */}
 function epColor(e){return RUN[e.run_status]?RUN[e.run_status][0]:'#6c757d';}
@@ -387,10 +423,10 @@ function renderDetail(e){
       ${hpill('Sphinx',e.has_sphinx,'sphinx')}
       <div class="h"><div class="t">Harmony</div><div class="v">${e.harmony_score}/4</div></div>
     </div>
-    <div class="section"><h3>Interactive sign-off</h3>
-      <label class="ck"><input type="checkbox" data-f="example_ok" ${e.example_ok?'checked':''}> Example is acceptable</label>
-      <label class="ck"><input type="checkbox" data-f="tests_ok" ${e.tests_ok?'checked':''}> Tests are acceptable</label>
-      <label class="ck"><input type="checkbox" data-f="sphinx_ok" ${e.sphinx_ok?'checked':''}> Sphinx is acceptable</label>
+    <div class="section signoff-row">
+      <label class="ck"><input type="checkbox" data-f="example_ok" ${e.example_ok?'checked':''}> Example acceptable</label>
+      <label class="ck"><input type="checkbox" data-f="tests_ok" ${e.tests_ok?'checked':''}> Tests acceptable</label>
+      <label class="ck"><input type="checkbox" data-f="sphinx_ok" ${e.sphinx_ok?'checked':''}> Sphinx acceptable</label>
     </div>
     <div id="wb" class="muted" style="margin-top:14px">loading workbench…</div>
   </div>`;
@@ -398,6 +434,7 @@ function renderDetail(e){
   $('#main').querySelectorAll('.h[data-pop]').forEach(h=>h.onclick=ev=>showPop(ev,h.dataset.pop));
   api('/api/endpoint?key='+encodeURIComponent(e.endpoint_key)).then(d=>{DETAIL=d;renderWorkbench(e,d);});
 }
+let RESPVIEW='json';
 function renderWorkbench(e,d){
   const wb=$('#wb');if(!wb||!d||d.error)return;
   const reqBody=(d.edit&&d.edit.request_json)||(d.request_fixture!=null?JSON.stringify(d.request_fixture,null,2):'');
@@ -406,24 +443,28 @@ function renderWorkbench(e,d){
   wb.className='wb';
   wb.innerHTML=`
    <div class="wb-col">
-     <h3>Request</h3>
-     <textarea id="wb-code" class="code">${escapeHtml((d.edit&&d.edit.code)||d.snippet||'')}</textarea>
+     <h3>Request — python</h3>
+     <textarea id="wb-code" class="code" spellcheck="false">${escapeHtml((d.edit&&d.edit.code)||d.snippet||'')}</textarea>
      <div class="muted" style="font-size:12px;margin-top:8px">request body JSON${d.request_model?' ('+escapeHtml(d.request_model)+')':''}:</div>
-     <textarea id="wb-req">${escapeHtml(reqBody)}</textarea>
+     <textarea id="wb-req" spellcheck="false">${escapeHtml(reqBody)}</textarea>
      <div class="row" style="margin-top:10px">
-       <button class="go" id="wb-run">▶ Run example</button>
+       <button class="go" id="wb-run">▶ Run</button>
        ${e.http_method!=='GET'?'<label class="ck" style="padding:0;font-size:12px"><input type="checkbox" id="wb-confirm"> confirm: mutates staging</label>':''}
-       <button class="go" id="wb-save" style="background:#444">Save improvement</button>
        <span id="wb-msg" class="muted"></span>
+     </div>
+     <div class="row" style="margin-top:8px">
+       <button class="go" id="wb-save" style="background:#444">Save improvement →edits</button>
+       ${d.request_model?'<button class="go" id="wb-savereq" style="background:#444">Save request fixture</button>':''}
      </div>
    </div>
    <div class="wb-col">
-     <h3>Response</h3>
+     <h3>Response <span class="seg"><button id="rv-json" class="${RESPVIEW==='json'?'on':''}">JSON</button><button id="rv-pyd" class="${RESPVIEW==='pyd'?'on':''}">Pydantic</button></span></h3>
      <div class="muted" style="font-size:12px">available response codes:</div>
      <div class="codes">${codes.length?codes.map(c=>`<span class="code-pill" title="${escapeHtml(d.response_codes[c])}">${c}</span>`).join(''):'<span class="muted">none documented</span>'}</div>
      <div class="muted" style="font-size:12px;margin-top:8px">latest saved fixture (${escapeHtml(d.response_model||'—')}.json):</div>
-     <textarea id="wb-resp">${escapeHtml(respJson)}</textarea>
-     <div class="row" style="margin-top:8px"><button class="go" id="wb-savefx" style="background:#444">Save as fixture</button>
+     <textarea id="wb-resp" spellcheck="false">${escapeHtml(respJson)}</textarea>
+     <pre id="wb-pyd" class="pyd" style="display:none">${escapeHtml(d.response_pydantic||'(cast unavailable)')}</pre>
+     <div class="row" style="margin-top:8px"><button class="go" id="wb-savefx" style="background:#444">Save response →fixture</button>
        <span id="wb-fxmsg" class="muted"></span></div>
      <div id="wb-runout"></div>
      <div id="caps"></div>
@@ -431,20 +472,41 @@ function renderWorkbench(e,d){
   $('#wb-run').onclick=()=>runExample(e);
   $('#wb-save').onclick=()=>saveEdit(e);
   $('#wb-savefx').onclick=()=>saveFixture(e,d);
+  if($('#wb-savereq'))$('#wb-savereq').onclick=()=>saveRequest(e,d);
+  $('#rv-json').onclick=()=>setRespView('json');
+  $('#rv-pyd').onclick=()=>setRespView('pyd');
+  setRespView(RESPVIEW);
   loadCaps(e.endpoint_key);
+}
+function setRespView(v){
+  RESPVIEW=v;
+  const ta=$('#wb-resp'),pyd=$('#wb-pyd'),bj=$('#rv-json'),bp=$('#rv-pyd');
+  if(!ta||!pyd)return;
+  ta.style.display=v==='json'?'block':'none';
+  pyd.style.display=v==='pyd'?'block':'none';
+  if(bj)bj.classList.toggle('on',v==='json');
+  if(bp)bp.classList.toggle('on',v==='pyd');
 }
 function runExample(e){
   const msg=$('#wb-msg');msg.textContent='running…';
   const confirm=$('#wb-confirm')?$('#wb-confirm').checked:false;
+  const code=$('#wb-code')?$('#wb-code').value:'';
   api('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({endpoint:e.endpoint_key,confirm})}).then(r=>{
-    if(r.needs_confirm){msg.textContent='check "confirm" to run a mutating call';return;}
+    body:JSON.stringify({endpoint:e.endpoint_key,code,confirm})}).then(r=>{
+    if(r.needs_confirm){msg.textContent='tick "confirm" to run a mutating call';return;}
     if(r.error&&!r.ok)msg.textContent='error: '+r.error;
     else msg.textContent=r.matched===true?'ran ✓ matches fixture':(r.matched===false?'ran — DIFF vs fixture':'ran (rc '+r.returncode+')');
     renderRunOut(r);
+    // update response views in place — do NOT re-render the workbench (preserve edits)
     if(r.response!=null&&$('#wb-resp'))$('#wb-resp').value=JSON.stringify(r.response,null,2);
-    load();loadCaps(e.endpoint_key);
+    if($('#wb-pyd'))$('#wb-pyd').textContent=r.response_pydantic||$('#wb-pyd').textContent;
+    softReload();loadCaps(e.endpoint_key);
   });
+}
+function saveRequest(e,d){
+  api('/api/save-request',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({endpoint:e.endpoint_key,request_model:d.request_model,request:parseMaybe($('#wb-req').value)})})
+    .then(r=>{$('#wb-msg').textContent=r.ok?('wrote tests/fixtures/'+r.fixture):('error: '+r.error);});
 }
 function renderRunOut(r){
   const box=$('#wb-runout');if(!box)return;
@@ -465,7 +527,7 @@ function saveFixture(e,d){
   api('/api/save-fixture',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({endpoint:e.endpoint_key,response_model:d.response_model,
       http_method:e.http_method,path:e.path,response:parseMaybe($('#wb-resp').value)})})
-    .then(r=>{$('#wb-fxmsg').textContent=r.ok?('wrote tests/fixtures/'+r.fixture):('error: '+r.error);load();});
+    .then(r=>{$('#wb-fxmsg').textContent=r.ok?('wrote tests/fixtures/'+r.fixture):('error: '+r.error);softReload();});
 }
 function showPop(ev,kind){
   ev.stopPropagation();closePop();
@@ -489,7 +551,7 @@ document.addEventListener('click',ev=>{const p=$('#pop');
   if(p&&!p.contains(ev.target)&&!ev.target.closest('.h[data-pop]'))closePop();});
 function signoff(key,field,value){
   api('/api/signoff',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({endpoint:key,field,value})}).then(()=>load());
+    body:JSON.stringify({endpoint:key,field,value})}).then(()=>softReload());
 }
 function parseMaybe(t){t=t.trim();if(!t)return null;try{return JSON.parse(t);}catch(e){return t;}}
 function loadCaps(key){api('/api/captures?endpoint='+encodeURIComponent(key)).then(r=>renderCaps(r.captures));}

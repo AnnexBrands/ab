@@ -100,7 +100,11 @@ def _extract_call_source(example_path: Path, group: str, method: str) -> str | N
 
 
 def _snippet(group: str, method: str, example_rel: str | None, route) -> str:
-    """Build the displayed Python request snippet (real call if available)."""
+    """Build a *runnable* Python request snippet (real call if available).
+
+    Includes ``from examples.constants import …`` for any ``TEST_*`` the call uses, so
+    the snippet can be pasted-and-run as-is (the missing-import bug from UAT).
+    """
     call = None
     if example_rel:
         call = _extract_call_source(REPO_ROOT / example_rel, group, method)
@@ -120,12 +124,30 @@ def _snippet(group: str, method: str, example_rel: str | None, route) -> str:
             call, _consts = call_expr_for(group, method, params)
         except Exception:
             call = f"api.{group}.{method}(...)"
-    return (
-        "from ab import ABConnectAPI\n\n"
-        'api = ABConnectAPI(env="staging")\n'
-        f"result = {call}\n"
-        "print(result)"
-    )
+
+    consts = sorted(set(re.findall(r"\bTEST_[A-Z0-9_]+\b", call)))
+    lines = ["from ab import ABConnectAPI"]
+    if consts:
+        lines.append("from examples.constants import " + ", ".join(consts))
+    lines += ["", 'api = ABConnectAPI(env="staging")', f"result = {call}", "print(result)"]
+    return "\n".join(lines)
+
+
+def pydantic_repr(model_name: str | None, data: object) -> str | None:
+    """Render *data* as the typed pydantic model (for the response 'Pydantic' view)."""
+    if not model_name or data is None:
+        return None
+    import ab.api.models as models_pkg
+
+    cls = getattr(models_pkg, model_name, None)
+    if cls is None:
+        return None
+    try:
+        if isinstance(data, list):
+            return "[\n  " + ",\n  ".join(repr(cls.model_validate(x)) for x in data) + "\n]"
+        return repr(cls.model_validate(data))
+    except Exception as exc:  # validation error → surface it (the model disagrees)
+        return f"# could not cast to {model_name}: {type(exc).__name__}: {str(exc).splitlines()[0]}"
 
 
 def _read_json(path: Path) -> object | None:
@@ -209,8 +231,74 @@ def endpoint_detail(endpoint_key: str) -> dict | None:
         "response_fixture": _read_json(FIXTURES_DIR / f"{response_model}.json")
         if response_model
         else None,
+        "response_pydantic": pydantic_repr(
+            response_model, _read_json(FIXTURES_DIR / f"{response_model}.json")
+        )
+        if response_model
+        else None,
         "edit": edit,
     }
+
+
+def run_code(endpoint_key: str, code: str, *, confirm_mutation: bool = False) -> dict:
+    """Execute operator-edited request code against staging and capture the response.
+
+    Runs *code* (the LHS workbench snippet — must assign its call to ``result``) in a
+    subprocess with the repo on PYTHONPATH and ``AB_EXAMPLE_CAPTURE_DIR`` set, then reads
+    the captured response. GET runs freely; mutations require ``confirm_mutation``.
+    """
+    from ab.progress import db
+    from ab.progress.example_verify import compare
+
+    detail = endpoint_detail(endpoint_key)
+    if detail is None:
+        return {"ok": False, "error": "not a routed endpoint"}
+    http_method = detail["http_method"].upper()
+    if http_method != "GET" and not confirm_mutation:
+        return {"ok": False, "needs_confirm": True,
+                "error": f"{http_method} mutates staging — tick confirm to run"}
+
+    model = detail["response_model"]
+    fixture_name = f"{model}.json" if model else None
+    epilogue = (
+        "\n\ntry:\n"
+        "    from examples._capture import save as _ab_save\n"
+        '    _ab_save("__run__.json", result)\n'
+        "except NameError:\n"
+        '    print("RUN_NO_RESULT: assign your call to `result` to capture the response")\n'
+    )
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(REPO_ROOT) + os.pathsep + env.get("PYTHONPATH", "")
+    with tempfile.TemporaryDirectory() as tmp:
+        env["AB_EXAMPLE_CAPTURE_DIR"] = tmp
+        if confirm_mutation:
+            env["AB_RUN_MUTATIONS"] = "1"
+        script = Path(tmp) / "_run_snippet.py"
+        script.write_text(code + epilogue, encoding="utf-8")
+        proc = subprocess.run(
+            [sys.executable, str(script)], cwd=str(REPO_ROOT), env=env,
+            capture_output=True, text=True, timeout=180,
+        )
+        produced = _read_json(Path(tmp) / "__run__.json") if fixture_name else None
+
+    out = (proc.stdout + proc.stderr).strip()
+    result = {
+        "ok": proc.returncode == 0,
+        "returncode": proc.returncode,
+        "stdout": out[-4000:],
+        "response": produced,
+        "fixture": fixture_name,
+    }
+    if produced is not None:
+        result["response_pydantic"] = pydantic_repr(model, produced)
+        committed = _read_json(FIXTURES_DIR / fixture_name) if fixture_name else None
+        if committed is not None:
+            matched, diff = compare(produced, committed)
+            result["matched"] = matched
+            result["diff"] = diff
+        db.init_db()
+        db.set_run_capture(endpoint_key, produced, fixture=fixture_name, matched=result.get("matched"))
+    return result
 
 
 def run_example_for(endpoint_key: str, *, confirm_mutation: bool = False) -> dict:
