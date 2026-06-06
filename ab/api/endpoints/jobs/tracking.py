@@ -47,7 +47,7 @@ class JobTrackingEndpoint(BaseEndpoint):
         """``GET /v3/job/{jobDisplayId}/tracking/{historyAmount}``
 
         Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/tracking.v3.html
-        Query params: TrackingV3Params
+        Path params: TrackingV3Params
         Response model: TrackingInfoV3
         """
         return self._request(

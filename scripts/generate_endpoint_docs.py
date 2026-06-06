@@ -272,9 +272,17 @@ def render_page(entry: Entry) -> str:
         model = _resolve_model(r.request_model)
         out += _model_field_table(model) if model is not None else ["_Model not introspectable._", ""]
 
-    # Query params model
+    # Parameters model — usually query-string params, but a route can model a
+    # path param this way too (e.g. jobs.tracking.v3's ``historyAmount``). Label
+    # the section "Path parameters" in that case so the page matches reality and
+    # the docstring footer, both driven by ``rtd.params_are_path_bound``.
     if rtd.is_model_type(r.params_model):
-        out.append(f"## Query parameters — `{r.params_model}`")
+        heading = (
+            "Path parameters"
+            if rtd.params_are_path_bound(r.path, r.params_model)
+            else "Query parameters"
+        )
+        out.append(f"## {heading} — `{r.params_model}`")
         out.append("")
         model = _resolve_model(r.params_model)
         out += _model_field_table(model) if model is not None else ["_Model not introspectable._", ""]
@@ -396,6 +404,7 @@ def _footer_block(entry: Entry, indent: str) -> str:
         request_model=entry.route.request_model,
         params_model=entry.route.params_model,
         response_model=entry.route.response_model,
+        path=entry.route.path,
     )
     # Guard the ruff line-length limit at generation time, using the *real*
     # docstring indentation — a too-long footer would otherwise only surface as

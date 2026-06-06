@@ -16,6 +16,8 @@ tables anyway, so the page link already leads the reader to them.
 
 from __future__ import annotations
 
+import re
+
 RTD_BASE = "https://ab-sdk.readthedocs.io/en/latest"
 
 # Type strings that name a primitive rather than a documented model. These
@@ -77,6 +79,38 @@ def is_model_type(name: str | None) -> bool:
     return _strip_list(name) not in _PRIMITIVES
 
 
+def params_are_path_bound(path: str | None, params_model: str | None) -> bool:
+    """True when *params_model* documents path segments, not query-string params.
+
+    A ``params_model`` normally models the query string, but a route can also
+    use it to model a *path* parameter — e.g. ``jobs.tracking.v3`` whose
+    ``historyAmount`` is keyed as a ``{historyAmount}`` placeholder in the route
+    path (and bound into the URL path at call time), even though the swagger
+    contradictorily declares it ``in: query`` (which keeps gate G5 happy, so the
+    ``params_model`` must stay). We detect that case structurally: every field's
+    wire-name (alias or attribute name) appears as a ``{placeholder}`` in *path*.
+
+    The single source of truth for "is this a path param?", shared by the footer
+    builder, the per-endpoint page generator, and the footer-verification test so
+    the page heading and the docstring footer never disagree. Model resolution is
+    lazy and defensive — any failure falls back to ``False`` (treat as query).
+    """
+    if not path or not is_model_type(params_model):
+        return False
+    try:
+        from ab.api import models
+
+        model = getattr(models, _strip_list(params_model), None)
+        fields = getattr(model, "model_fields", None) or {}
+        wires = {(field.alias or name) for name, field in fields.items()}
+    except Exception:
+        return False
+    if not wires:
+        return False
+    placeholders = set(re.findall(r"\{(\w+)\}", path))
+    return wires <= placeholders
+
+
 def docstring_footer_lines(
     group: str,
     method: str,
@@ -84,18 +118,22 @@ def docstring_footer_lines(
     request_model: str | None = None,
     params_model: str | None = None,
     response_model: str | None = None,
+    path: str | None = None,
 ) -> list[str]:
     """Build the ``Docs:`` footer block appended to a method's docstring.
 
     The first line is always the page URL. Model lines are added only for
     real (non-primitive) models, naming them so the reader knows which
-    section of the linked page to read.
+    section of the linked page to read. When *path* is given, a params_model
+    whose every field is a path placeholder is labelled ``Path params:`` rather
+    than ``Query params:`` (see :func:`params_are_path_bound`).
     """
     lines = [f"Docs: {endpoint_doc_url(group, method)}"]
     if is_model_type(request_model):
         lines.append(f"Request model: {request_model}")
     if is_model_type(params_model):
-        lines.append(f"Query params: {params_model}")
+        label = "Path params" if params_are_path_bound(path, params_model) else "Query params"
+        lines.append(f"{label}: {params_model}")
     if is_model_type(response_model):
         lines.append(f"Response model: {response_model}")
     return lines
@@ -112,7 +150,9 @@ def footer_marker() -> str:
 
 # Prefixes the generator emits for footer lines. A line is "footer-shaped" if,
 # once stripped, it is blank or begins with one of these.
-_FOOTER_LINE_PREFIXES = ("Docs: ", "Request model: ", "Query params: ", "Response model: ")
+_FOOTER_LINE_PREFIXES = (
+    "Docs: ", "Request model: ", "Query params: ", "Path params: ", "Response model: ",
+)
 
 
 def _is_footer_shaped(line: str) -> bool:
