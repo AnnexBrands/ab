@@ -55,6 +55,21 @@ def capture_dir() -> Path:
     return Path(override) if override else FIXTURES_DIR
 
 
+#: Env var an operator sets to opt INTO running state-mutating example calls.
+RUN_MUTATIONS_ENV = "AB_RUN_MUTATIONS"
+
+
+def mutations_enabled() -> bool:
+    """True only when the operator explicitly opts into mutating calls.
+
+    Examples wrap create/update/delete (and other state-writing) calls in
+    ``if mutations_enabled():`` so a default run — and the verify harness, which
+    never sets this — exercises only the safe read-only calls. Set
+    ``AB_RUN_MUTATIONS=1`` to run them deliberately.
+    """
+    return os.environ.get(RUN_MUTATIONS_ENV, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def to_jsonable(payload: Any) -> Any:
     """Convert *payload* to the JSON shape fixtures are stored in.
 

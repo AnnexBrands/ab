@@ -35,13 +35,15 @@ See also: https://ab-sdk.readthedocs.io/en/latest/api/dashboard.html
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
+from examples._capture import capture_dir
 from examples.constants import TEST_COMPANY_ID, TEST_VIEW_ID
 
-FIXTURES_DIR = Path(__file__).resolve().parent.parent / "tests" / "fixtures"
+# Honors AB_EXAMPLE_CAPTURE_DIR so the verify harness writes to a temp dir, never
+# overwriting committed fixtures (feature 037).
+FIXTURES_DIR = capture_dir()
 
 
 def _save(name: str, payload) -> None:

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
-from examples._capture import load_request, save
+from examples._capture import load_request, mutations_enabled, save
 
 
 def main() -> None:
@@ -25,14 +25,15 @@ def main() -> None:
     print(format_result(result))
     save("UserRole.json", result)
 
-    # --- Mutating (operator-run; harness never auto-runs these) -------------
-    print("\n# api.users.create(data=UserCreateRequest)")
-    result = api.users.create(data=load_request("UserCreateRequest.json"))
-    print(format_result(result))
+    # --- Mutating (set AB_RUN_MUTATIONS=1 to run; harness never auto-runs these) ---
+    if mutations_enabled():
+        print("\n# api.users.create(data=UserCreateRequest)")
+        result = api.users.create(data=load_request("UserCreateRequest.json"))
+        print(format_result(result))
 
-    print("\n# api.users.update(data=UserUpdateRequest)")
-    result = api.users.update(data=load_request("UserUpdateRequest.json"))
-    print(format_result(result))
+        print("\n# api.users.update(data=UserUpdateRequest)")
+        result = api.users.update(data=load_request("UserUpdateRequest.json"))
+        print(format_result(result))
 
 
 if __name__ == "__main__":

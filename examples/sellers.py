@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
-from examples._capture import load_request, save
+from examples._capture import load_request, mutations_enabled, save
 from examples.constants import TEST_SELLER_ID
 
 
@@ -26,20 +26,21 @@ def main() -> None:
     print(format_result(result))
     save("SellerExpandedDto_detail.json", result)
 
-    # --- Mutating (operator-run; harness never auto-runs these) -------------
-    print("\n# api.sellers.create(data=AddSellerRequest)")
-    result = api.sellers.create(data=load_request("AddSellerRequest.json"))
-    print(format_result(result))
-    save("SellerDto.json", result)
+    # --- Mutating (set AB_RUN_MUTATIONS=1 to run; harness never auto-runs these) ---
+    if mutations_enabled():
+        print("\n# api.sellers.create(data=AddSellerRequest)")
+        result = api.sellers.create(data=load_request("AddSellerRequest.json"))
+        print(format_result(result))
+        save("SellerDto.json", result)
 
-    print(f"\n# api.sellers.update({TEST_SELLER_ID!r}, data=UpdateSellerRequest)")
-    result = api.sellers.update(TEST_SELLER_ID, data=load_request("UpdateSellerRequest.json"))
-    print(format_result(result))
-    save("SellerDto.json", result)
+        print(f"\n# api.sellers.update({TEST_SELLER_ID!r}, data=UpdateSellerRequest)")
+        result = api.sellers.update(TEST_SELLER_ID, data=load_request("UpdateSellerRequest.json"))
+        print(format_result(result))
+        save("SellerDto.json", result)
 
-    print(f"\n# api.sellers.delete({TEST_SELLER_ID!r})")
-    result = api.sellers.delete(TEST_SELLER_ID)
-    print(format_result(result))
+        print(f"\n# api.sellers.delete({TEST_SELLER_ID!r})")
+        result = api.sellers.delete(TEST_SELLER_ID)
+        print(format_result(result))
 
 
 if __name__ == "__main__":
