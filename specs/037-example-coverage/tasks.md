@@ -129,6 +129,26 @@ remaining; each migrated endpoint reads as a plain script.
 
 ---
 
+## Phase 8: User Story 5 — Interactive harmony + capture + sign-off app (Priority: P2)
+
+**Goal**: A local interactive app (stdlib only) with left-nav drill-down by tag/path,
+per-endpoint Four-Way Harmony with real coverage, HTTP request/response logging to
+SQLite, and interactive example/tests/Sphinx sign-off.
+
+**Independent Test**: `python scripts/serve_progress.py` → drill by tag and path,
+toggle sign-offs (persist on reload), log a capture (retained), see harmony per endpoint.
+
+- [X] T037 Install `coverage` (declared in `pyproject.toml` test group); generate `coverage.json` via `coverage run --source=ab -m pytest -m "not live"; coverage json`.
+- [X] T038 [US5] Create `ab/progress/harmony.py`: per-endpoint Four-Way Harmony (impl/example/fixture+test/Sphinx) + swagger tag map + coverage.json join.
+- [X] T039 [US5] Create `ab/progress/db.py`: SQLite layer (`signoff`, `capture` tables; get/set/export/import sign-offs; add/list captures) — stdlib `sqlite3`, DB at `progress.db` (gitignored), export to `tests/example_signoffs.json`.
+- [X] T040 [US5] Create `ab/progress/app.py`: stdlib `http.server` JSON API (`/api/data`, `/api/signoff`, `/api/capture`, `/api/captures`, `/api/export`) + embedded single-page UI (left nav tags/paths, harmony badges, sign-off checkboxes, capture form).
+- [X] T041 [US5] Create `scripts/serve_progress.py` launcher; headless-verify the server (GET/POST routes persist sign-offs + captures).
+- [ ] T042 [US5] Add a non-live test for `ab/progress/db.py` (signoff upsert/export-import roundtrip; capture add/list) against a temp DB.
+- [ ] T043 [US5] Add a non-live test for `ab/progress/harmony.py` (every routed endpoint present; tags resolved; harmony score in 0..4) — drift-safe (skips coverage assertions when coverage.json absent).
+- [ ] T044 [US5] Wire committed `tests/example_signoffs.json` into the static report / a harmony gate so sign-off state is visible in CI.
+
+---
+
 ## Phase 7: Polish & Cross-Cutting Concerns
 
 - [ ] T033 [P] Update `README.md` and the discoverability section of `CLAUDE.md` with the example contract, `scripts/run_examples.py`, and `scripts/ingest_captures.py` workflow.

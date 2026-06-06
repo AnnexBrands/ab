@@ -138,6 +138,40 @@ example; confirm the migration tracker reflects remaining work.
 
 ---
 
+### User Story 5 - Interactive harmony + capture + sign-off app (Priority: P2)
+
+A maintainer opens an interactive app that lists every endpoint with a **left nav**
+to drill in by **tag** (swagger) or **path**. For each endpoint they see its
+**Four-Way Harmony** (implementation, example, fixture+test with real coverage, and
+Sphinx docs), can **log the real HTTP request/response** (persisted), and can
+**interactively sign off** that the example, the tests, and the Sphinx docs are
+acceptable. Sign-offs and captures persist across sessions.
+
+**Why this priority**: The static report answers "what exists"; this app is where a
+human *reviews and accepts* each endpoint and where real example I/O is captured and
+retained — turning coverage into audited, signed-off coverage. It is the working
+surface for the capture loop (US3) and the harmony check (Constitution III).
+
+**Independent Test**: Launch the app; drill into an endpoint by tag and by path;
+toggle the three sign-off checkboxes and confirm they persist after reload; log a
+request/response and confirm it is retained; confirm the harmony pillars reflect the
+real on-disk/coverage state.
+
+**Acceptance Scenarios**:
+
+1. **Given** the app, **When** a maintainer switches the nav between tag and path
+   views, **Then** every endpoint is reachable under both.
+2. **Given** an endpoint, **When** the maintainer views it, **Then** its four
+   harmony pillars (impl / example / fixture+test / Sphinx) and test coverage are
+   shown.
+3. **Given** an endpoint, **When** the maintainer checks "example acceptable",
+   "tests acceptable", or "Sphinx acceptable", **Then** the choice persists and is
+   visible on reload.
+4. **Given** an endpoint, **When** the maintainer logs a real HTTP request/response,
+   **Then** it is stored and listed for that endpoint.
+
+---
+
 ### Edge Cases
 
 - **Binary / no-content responses**: An endpoint that returns bytes (e.g. a
@@ -222,6 +256,20 @@ example; confirm the migration tracker reflects remaining work.
 - **FR-017**: Endpoints whose responses cannot be represented as a printable
   pydantic/JSON fixture (e.g. binary downloads, empty bodies) MUST be classified
   explicitly so they are neither counted as failing runs nor as uncovered gaps.
+- **FR-018**: An interactive app MUST present a left-nav that lets a maintainer drill
+  into endpoints by both **path** and **swagger tag**.
+- **FR-019**: For each endpoint the app MUST show its **Four-Way Harmony** —
+  implementation, example, fixture+test (with real test coverage), and Sphinx docs.
+- **FR-020**: The app MUST let a maintainer log the real HTTP request/response for an
+  endpoint and persist it (SQLite), retaining example inputs and outputs for review.
+- **FR-021**: The app MUST let a maintainer interactively sign off, per endpoint, that
+  the **example is acceptable**, the **tests are acceptable**, and the **Sphinx docs
+  are acceptable**, and these sign-offs MUST persist across sessions.
+- **FR-022**: Sign-off state MUST be exportable to a committed artifact so it survives
+  across machines and can feed the report/gates.
+- **FR-023**: The interactive app and its persistence MUST add no new runtime
+  dependency to the `ab` package (stdlib only); it is dev tooling, separate from the
+  static no-drift report.
 
 ### Key Entities *(include if feature involves data)*
 

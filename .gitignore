@@ -44,3 +44,8 @@ docs/_build/
 
 # Feature 037 — transient operator paste export (never committed)
 captures.json
+
+# Feature 037 — generated/runtime artifacts
+coverage.json
+progress.db
+.coverage

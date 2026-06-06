@@ -40,6 +40,7 @@ abs = "ab.cli:main_staging"
 [dependency-groups]
 test = [
     "pytest>=7.0",
+    "coverage>=7.0",
 ]
 lint = [
     # Pinned exactly so local lint results match CI deterministically — ruff's
@@ -80,3 +81,8 @@ line-length = 120
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+# app.py embeds a single-page HTML/JS UI as a string literal; line length is not
+# meaningful inside that template.
+"ab/progress/app.py" = ["E501"]
