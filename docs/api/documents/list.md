@@ -29,7 +29,7 @@ Returns a list of `List[Document]`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `path` | `Optional[str]` | no | Document storage path |
 | `thumbnailPath` | `Optional[str]` | no | Thumbnail path |
 | `description` | `Optional[str]` | no | Document description |

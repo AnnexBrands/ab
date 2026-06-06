@@ -26,7 +26,7 @@ Returns `CompanyDetails`.
 | `id` | `Optional[str]` | no | Company UUID |
 | `details` | `Optional[CompanyDetailsInfo]` | no | Nested company detail fields |
 | `preferences` | `Optional[CompanyPreferences]` | no | Company preferences and logos |
-| `capabilities` | `int | dict | None` | no | Service capabilities (bitmask or dict) |
+| `capabilities` | `int \| dict \| None` | no | Service capabilities (bitmask or dict) |
 | `settings` | `Optional[dict]` | no | Company settings |
 | `addresses` | `Optional[list[dict]]` | no | Associated addresses |
 | `contacts` | `Optional[list[dict]]` | no | Associated contacts |

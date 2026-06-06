@@ -42,7 +42,7 @@ Returns:
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `JobDisplayId` | `str` | yes | Job display ID the document belongs to (e.g. '2000000'). |
-| `DocumentType` | `DocumentType | int` | yes | Document type ID; see DocumentType (6 = Item Photo). |
+| `DocumentType` | `DocumentType \| int` | yes | Document type ID; see DocumentType (6 = Item Photo). |
 | `DocumentTypeDescription` | `Optional[str]` | no | Human-readable label for the document type. |
 | `Shared` | `int` | no | Sharing bitmask (0 = private); controls portal visibility. |
 | `Tags` | `Optional[list[str]]` | no | Free-form tags to attach to the document. |

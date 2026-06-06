@@ -160,8 +160,13 @@ def _model_field_table(model_cls) -> list[str]:
         return ["_No documented fields._", ""]
     rows = ["| Field | Type | Required | Description |", "|---|---|---|---|"]
     for fname, field in fields.items():
-        wire = field.alias or fname
-        typ = _annotation_str(field.annotation)
+        # Escape pipes in every cell. A Union type renders as ``A | B``; the
+        # pipe must be backslash-escaped even inside an inline code span or the
+        # Markdown table parser treats it as a column separator and mangles the
+        # row. The description column was already escaped; the type and field
+        # columns need it too (a field alias could in principle contain ``|``).
+        wire = (field.alias or fname).replace("|", "\\|")
+        typ = _annotation_str(field.annotation).replace("|", "\\|")
         req = "yes" if field.is_required() else "no"
         desc = (field.description or "").replace("\n", " ").replace("|", "\\|")
         rows.append(f"| `{wire}` | `{typ}` | {req} | {desc} |")

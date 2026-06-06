@@ -28,7 +28,7 @@ Returns `ContactDetailedInfo`.
 | `modifiedDate` | `Optional[datetime]` | no | Last modification timestamp |
 | `createdBy` | `Optional[str]` | no | Creator identifier |
 | `modifiedBy` | `Optional[str]` | no | Last modifier identifier |
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `firstName` | `Optional[str]` | no | First name |
 | `lastName` | `Optional[str]` | no | Last name |
 | `email` | `Optional[str]` | no | Email address |

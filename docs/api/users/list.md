@@ -39,7 +39,7 @@ Returns a list of `List[User]`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `username` | `Optional[str]` | no | Login username |
 | `email` | `Optional[str]` | no | Email address |
 | `roles` | `Optional[list[dict]]` | no | Assigned roles |

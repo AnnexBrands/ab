@@ -23,7 +23,7 @@ Returns `ContactSimple`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `firstName` | `Optional[str]` | no | First name |
 | `lastName` | `Optional[str]` | no | Last name |
 | `fullName` | `Optional[str]` | no | Full display name (from /contacts/user) |
