@@ -330,7 +330,6 @@ pre.pyd{margin:4px 0;background:#0b0d12;border:1px solid var(--line);border-radi
 <div id="nav">
   <header class="bar">
     <h1>Example Capture &amp; Harmony</h1>
-    <div class="muted" style="font-size:11px;margin-bottom:8px">path › tag › endpoint — click to expand</div>
     <input id="search" placeholder="filter endpoints…">
   </header>
   <div id="tree"></div>
