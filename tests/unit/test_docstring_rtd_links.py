@@ -100,6 +100,7 @@ def test_method_docstring_has_rtd_footer(group, name, func, route):
         request_model=route.request_model,
         params_model=route.params_model,
         response_model=route.response_model,
+        path=route.path,
     )
     for line in expected:
         assert line in doc, f"{group}.{name}: docstring missing footer line {line!r}"
@@ -138,6 +139,38 @@ def test_footer_lines_stay_within_lint_line_length():
             request_model=route.request_model,
             params_model=route.params_model,
             response_model=route.response_model,
+            path=route.path,
         ):
             # 8 = a method-body docstring's indentation.
             assert len(line) + 8 <= 120, f"{group}.{name}: footer line too long: {line!r}"
+
+
+def test_params_are_path_bound_detects_path_modelled_params():
+    """A params_model whose every field is a path placeholder is path-bound.
+
+    ``TrackingV3Params`` models ``historyAmount``, which jobs.tracking.v3 keys as
+    a ``{historyAmount}`` path placeholder (and binds into the URL path), even
+    though swagger declares it ``in: query``. The same model on a path *without*
+    that placeholder is a query param. Resolution is defensive on bad input.
+    """
+    assert rtd.params_are_path_bound(
+        "/v3/job/{jobDisplayId}/tracking/{historyAmount}", "TrackingV3Params"
+    )
+    assert not rtd.params_are_path_bound("/v3/job/{jobDisplayId}/tracking", "TrackingV3Params")
+    assert not rtd.params_are_path_bound(None, "TrackingV3Params")
+    assert not rtd.params_are_path_bound("/x/{y}", None)
+    assert not rtd.params_are_path_bound("/x/{int}", "int")  # primitive, never a model
+
+
+def test_footer_labels_path_vs_query_params_by_route_path():
+    """The footer says 'Path params:' only when the path carries the placeholder."""
+    path_bound = rtd.docstring_footer_lines(
+        "jobs", "v3", params_model="TrackingV3Params",
+        path="/v3/job/{jobDisplayId}/tracking/{historyAmount}",
+    )
+    assert "Path params: TrackingV3Params" in path_bound
+    assert "Query params: TrackingV3Params" not in path_bound
+
+    # No path signal -> falls back to the query-params label (back-compat default).
+    no_path = rtd.docstring_footer_lines("jobs", "v3", params_model="TrackingV3Params")
+    assert "Query params: TrackingV3Params" in no_path

@@ -17,7 +17,7 @@ ab jobs tracking v3 <job_display_id> <history_amount>
 
 ``GET /v3/job/{jobDisplayId}/tracking/{historyAmount}``
 
-## Query parameters — `TrackingV3Params`
+## Path parameters — `TrackingV3Params`
 
 | Field | Type | Required | Description |
 |---|---|---|---|
