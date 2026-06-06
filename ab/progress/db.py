@@ -21,8 +21,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DB_PATH = REPO_ROOT / "progress.db"
 SIGNOFFS_JSON = REPO_ROOT / "tests" / "example_signoffs.json"
+EDITS_JSON = REPO_ROOT / "tests" / "example_edits.json"
 
 _SIGNOFF_FIELDS = ("example_ok", "tests_ok", "sphinx_ok")
+_EDIT_FIELDS = ("code", "request_json", "response_json", "response_code", "note")
 
 
 def _now() -> str:
@@ -60,6 +62,15 @@ def init_db(db_path: Path | None = None) -> None:
                 created_at    TEXT
             );
             CREATE INDEX IF NOT EXISTS ix_capture_endpoint ON capture(endpoint_key);
+            CREATE TABLE IF NOT EXISTS example_edit (
+                endpoint_key  TEXT PRIMARY KEY,
+                code          TEXT,
+                request_json  TEXT,
+                response_json TEXT,
+                response_code TEXT,
+                note          TEXT,
+                updated_at    TEXT
+            );
             """
         )
         # Migrate older DBs that predate the `source` column.
@@ -220,6 +231,50 @@ def list_captures(endpoint_key: str, db_path: Path | None = None) -> list[dict]:
             }
         )
     return out
+
+
+def get_edit(endpoint_key: str, db_path: Path | None = None) -> dict | None:
+    """Return the saved example improvement for an endpoint, or None."""
+    with connect(db_path) as conn:
+        r = conn.execute("SELECT * FROM example_edit WHERE endpoint_key=?", (endpoint_key,)).fetchone()
+    return dict(r) if r else None
+
+
+def set_edit(endpoint_key: str, db_path: Path | None = None, **fields: object) -> dict:
+    """Upsert one or more improvement fields for an endpoint; returns the row.
+
+    Recognized fields: code, request_json, response_json, response_code, note.
+    """
+    unknown = set(fields) - set(_EDIT_FIELDS)
+    if unknown:
+        raise ValueError(f"unknown edit field(s): {sorted(unknown)}")
+    with connect(db_path) as conn:
+        conn.execute(
+            "INSERT INTO example_edit(endpoint_key, updated_at) VALUES(?,?) "
+            "ON CONFLICT(endpoint_key) DO NOTHING",
+            (endpoint_key, _now()),
+        )
+        for k, v in fields.items():
+            conn.execute(
+                f"UPDATE example_edit SET {k}=?, updated_at=? WHERE endpoint_key=?",
+                (v, _now(), endpoint_key),
+            )
+        r = conn.execute("SELECT * FROM example_edit WHERE endpoint_key=?", (endpoint_key,)).fetchone()
+    return dict(r)
+
+
+def get_edits(db_path: Path | None = None) -> dict[str, dict]:
+    with connect(db_path) as conn:
+        rows = conn.execute("SELECT * FROM example_edit").fetchall()
+    return {r["endpoint_key"]: dict(r) for r in rows}
+
+
+def export_edits(path: Path | None = None, db_path: Path | None = None) -> Path:
+    """Export example improvements to committed JSON for the agent to enrich examples/tests."""
+    path = path or EDITS_JSON
+    edits = {k: v for k, v in sorted(get_edits(db_path).items())}
+    path.write_text(json.dumps({"schema": 1, "edits": edits}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return path
 
 
 def capture_counts(db_path: Path | None = None) -> dict[str, int]:

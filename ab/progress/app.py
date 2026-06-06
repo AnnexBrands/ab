@@ -82,6 +82,15 @@ class _Handler(BaseHTTPRequestHandler):
             q = parse_qs(route.query)
             key = (q.get("endpoint") or [""])[0]
             self._json({"captures": db.list_captures(key) if key else []})
+        elif route.path == "/api/endpoint":
+            from ab.progress.workbench import endpoint_detail
+
+            q = parse_qs(route.query)
+            key = (q.get("key") or [""])[0]
+            detail = endpoint_detail(key) if key else None
+            if detail is None:
+                return self._json({"error": "unknown endpoint"}, 404)
+            self._json(detail)
         else:
             self._json({"error": "not found"}, 404)
 
@@ -110,6 +119,50 @@ class _Handler(BaseHTTPRequestHandler):
         if route.path == "/api/export":
             path = db.export_signoffs()
             return self._json({"ok": True, "path": str(path)})
+        if route.path == "/api/edit":
+            key = body.get("endpoint")
+            if not key:
+                return self._json({"error": "endpoint required"}, 400)
+            fields = {k: body[k] for k in ("code", "request_json", "response_json", "response_code", "note") if k in body}
+            try:
+                row = db.set_edit(key, **fields)
+            except ValueError as exc:
+                return self._json({"error": str(exc)}, 400)
+            db.export_edits()  # keep the committed improvement store fresh for enrichment
+            return self._json({"ok": True, "edit": row})
+        if route.path == "/api/run":
+            from ab.progress.workbench import run_example_for
+
+            key = body.get("endpoint")
+            if not key:
+                return self._json({"error": "endpoint required"}, 400)
+            result = run_example_for(key, confirm_mutation=bool(body.get("confirm")))
+            return self._json(result)
+        if route.path == "/api/save-fixture":
+            from ab.progress.captures import validate_capture
+
+            key = body.get("endpoint")
+            if not key:
+                return self._json({"error": "endpoint required"}, 400)
+            vc = validate_capture(
+                key,
+                {
+                    "endpoint": key,
+                    "http_method": body.get("http_method", ""),
+                    "path": body.get("path", ""),
+                    "response_model": body.get("response_model", ""),
+                    "response": body.get("response"),
+                },
+            )
+            if not vc.ok:
+                return self._json({"ok": False, "error": vc.error}, 400)
+            from ab.progress.report import FIXTURES_DIR as _FX
+
+            (_FX / vc.fixture_name).write_text(
+                json.dumps(vc.response_json, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+            return self._json({"ok": True, "fixture": vc.fixture_name})
         return self._json({"error": "not found"}, 404)
 
 
@@ -203,6 +256,21 @@ button.go:hover{filter:brightness(1.1)}
 .cap pre{margin:6px 0 0;max-height:200px;overflow:auto;background:#0b0d12;padding:8px;border-radius:5px}
 .muted{color:var(--mut)}.empty{color:var(--mut);padding:40px;text-align:center}
 small.note{color:var(--mut)}
+/* harmony popover + workbench (feature 037) */
+.harm .h[data-pop]{cursor:pointer}
+.harm .h[data-pop]:hover{background:#1b2230}
+.pop{position:fixed;z-index:50;width:430px;max-height:60vh;overflow:auto;background:var(--panel);
+     border:1px solid var(--acc);border-radius:9px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.pop-h{padding:8px 12px;border-bottom:1px solid var(--line);font-weight:600;display:flex;justify-content:space-between}
+.pop-x{cursor:pointer;color:var(--mut)}.pop-x:hover{color:var(--fg)}
+.pop-b{padding:10px 12px}.pop-b pre{margin:0;background:#0b0d12;padding:8px;border-radius:6px;overflow:auto}
+.pop-b a{color:var(--acc);word-break:break-all}
+.wb{display:flex;gap:18px;margin-top:14px}
+.wb-col{flex:1;min-width:0}
+.wb-col h3{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+textarea.code{min-height:150px;background:#0b0d12}
+.codes{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.code-pill{background:#1f2430;border:1px solid var(--line);border-radius:5px;padding:2px 8px;font:600 12px monospace}
 </style></head>
 <body>
 <div id="nav">
@@ -215,7 +283,7 @@ small.note{color:var(--mut)}
 </div>
 <div id="main"><div class="empty">Loading…</div></div>
 <script>
-let DATA=null, SEL=null, FILTER='', OPEN=new Set();
+let DATA=null, SEL=null, FILTER='', OPEN=new Set(), SELE=null, DETAIL=null;
 const $=s=>document.querySelector(s), ce=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const RUN={passing:['#28a745','pass'],failing:['#dc3545','fail'],not_verified:['#6c757d','not run'],
 awaiting_data:['#ffc107','needs data'],awaiting_paste:['#fd7e14','paste'],binary:['#6610f2','binary'],
@@ -279,73 +347,132 @@ function renderTree(){
     tree.appendChild(d);
   }
 }
-function hcard(label,ok,extra){return `<div class="h ${ok?'ok':'no'}"><div class="t">${label}</div>
-  <div class="v">${ok?'✓':'✗'}${extra?' '+extra:''}</div></div>`;}
+function hpill(label,ok,key,extra){
+  return `<div class="h ${ok?'ok':'no'}" data-pop="${key}"><div class="t">${label}</div>
+    <div class="v">${ok?'✓':'✗'}${extra?' '+extra:''} ▾</div></div>`;}
 function renderDetail(e){
   if(!e){$('#main').innerHTML='<div class="empty">Select an endpoint.</div>';return;}
-  const s=DATA.summary;
+  SELE=e; DETAIL=null;
   const [rc,rl]=RUN[e.run_status]||['#6c757d',e.run_status];
   const cov=e.coverage_pct!=null?Math.round(e.coverage_pct)+'%':'—';
   $('#main').innerHTML=`
-  <div class="summary">
-    <div class="card"><div class="n">${s.full_harmony}/${s.total}</div><div class="l">Full harmony</div></div>
-    <div class="card"><div class="n">${s.example}</div><div class="l">Examples</div></div>
-    <div class="card"><div class="n">${s.fixture}</div><div class="l">Fixtures</div></div>
-    <div class="card"><div class="n">${s.signed_off}</div><div class="l">Signed off</div></div>
-  </div>
   <div class="det">
-    <h2><span style="color:${rc}">${e.http_method}</span> ${e.path}</h2>
-    <div class="kv">${e.endpoint_key} · ${e.api_surface} · tags: ${(e.tags||[]).join(', ')||'—'}<br>
-      response: <b>${e.response_model||'—'}</b>${e.request_model?' · request: <b>'+e.request_model+'</b>':''}
+    <h2><span style="color:${rc}">${e.http_method}</span> ${escapeHtml(e.path)}</h2>
+    <div class="kv">${e.endpoint_key} · ${e.api_surface} · tags: ${(e.tags||[]).join(', ')||'—'}
       · <span class="pill" style="background:${rc};color:#fff">${rl}</span></div>
     <div class="harm">
-      ${hcard('Implementation',e.has_impl)}
-      ${hcard('Example',e.has_example)}
-      ${hcard('Fixture',e.has_fixture)}
-      ${hcard('Test (cov)',e.has_test,cov)}
-      ${hcard('Sphinx',e.has_sphinx)}
+      ${hpill('Implementation',e.has_impl,'impl')}
+      ${hpill('Example',e.has_example,'example')}
+      ${hpill('Fixture',e.has_fixture,'fixture')}
+      ${hpill('Test',e.has_test,'test',cov)}
+      ${hpill('Sphinx',e.has_sphinx,'sphinx')}
       <div class="h"><div class="t">Harmony</div><div class="v">${e.harmony_score}/4</div></div>
     </div>
-
     <div class="section"><h3>Interactive sign-off</h3>
       <label class="ck"><input type="checkbox" data-f="example_ok" ${e.example_ok?'checked':''}> Example is acceptable</label>
       <label class="ck"><input type="checkbox" data-f="tests_ok" ${e.tests_ok?'checked':''}> Tests are acceptable</label>
       <label class="ck"><input type="checkbox" data-f="sphinx_ok" ${e.sphinx_ok?'checked':''}> Sphinx is acceptable</label>
-      <small class="note">${e.signoff_note?('note: '+e.signoff_note+' · '):''}saved to progress.db</small>
     </div>
-
-    <div class="section"><h3>Log HTTP request / response → SQLite</h3>
-      <div class="row">
-        <input class="txt" id="cap-method" value="${e.http_method}" style="width:80px">
-        <input class="txt" id="cap-url" placeholder="url (optional)" style="flex:1">
-        <input class="txt" id="cap-status" placeholder="status" style="width:80px">
-      </div>
-      <div class="muted" style="font-size:12px">request body JSON${e.request_model?' ('+e.request_model+')':''}:</div>
-      <textarea id="cap-req" placeholder="paste request JSON (optional)"></textarea>
-      <div class="muted" style="font-size:12px;margin-top:8px">response JSON (${e.response_model||'?'}):</div>
-      <textarea id="cap-resp" placeholder="paste real response JSON"></textarea>
-      <div class="row" style="margin-top:10px"><button class="go" id="cap-save">Log capture</button>
-        <span id="cap-msg" class="muted"></span></div>
-      <div id="caps"></div>
-    </div>
+    <div id="wb" class="muted" style="margin-top:14px">loading workbench…</div>
   </div>`;
   $('#main').querySelectorAll('.ck input').forEach(cb=>cb.onchange=()=>signoff(e.endpoint_key,cb.dataset.f,cb.checked));
-  $('#cap-save').onclick=()=>logCapture(e);
+  $('#main').querySelectorAll('.h[data-pop]').forEach(h=>h.onclick=ev=>showPop(ev,h.dataset.pop));
+  api('/api/endpoint?key='+encodeURIComponent(e.endpoint_key)).then(d=>{DETAIL=d;renderWorkbench(e,d);});
+}
+function renderWorkbench(e,d){
+  const wb=$('#wb');if(!wb||!d||d.error)return;
+  const reqBody=(d.edit&&d.edit.request_json)||(d.request_fixture!=null?JSON.stringify(d.request_fixture,null,2):'');
+  const respJson=(d.edit&&d.edit.response_json)||(d.response_fixture!=null?JSON.stringify(d.response_fixture,null,2):'');
+  const codes=Object.keys(d.response_codes||{});
+  wb.className='wb';
+  wb.innerHTML=`
+   <div class="wb-col">
+     <h3>Request</h3>
+     <textarea id="wb-code" class="code">${escapeHtml((d.edit&&d.edit.code)||d.snippet||'')}</textarea>
+     <div class="muted" style="font-size:12px;margin-top:8px">request body JSON${d.request_model?' ('+escapeHtml(d.request_model)+')':''}:</div>
+     <textarea id="wb-req">${escapeHtml(reqBody)}</textarea>
+     <div class="row" style="margin-top:10px">
+       <button class="go" id="wb-run">▶ Run example</button>
+       ${e.http_method!=='GET'?'<label class="ck" style="padding:0;font-size:12px"><input type="checkbox" id="wb-confirm"> confirm: mutates staging</label>':''}
+       <button class="go" id="wb-save" style="background:#444">Save improvement</button>
+       <span id="wb-msg" class="muted"></span>
+     </div>
+   </div>
+   <div class="wb-col">
+     <h3>Response</h3>
+     <div class="muted" style="font-size:12px">available response codes:</div>
+     <div class="codes">${codes.length?codes.map(c=>`<span class="code-pill" title="${escapeHtml(d.response_codes[c])}">${c}</span>`).join(''):'<span class="muted">none documented</span>'}</div>
+     <div class="muted" style="font-size:12px;margin-top:8px">latest saved fixture (${escapeHtml(d.response_model||'—')}.json):</div>
+     <textarea id="wb-resp">${escapeHtml(respJson)}</textarea>
+     <div class="row" style="margin-top:8px"><button class="go" id="wb-savefx" style="background:#444">Save as fixture</button>
+       <span id="wb-fxmsg" class="muted"></span></div>
+     <div id="wb-runout"></div>
+     <div id="caps"></div>
+   </div>`;
+  $('#wb-run').onclick=()=>runExample(e);
+  $('#wb-save').onclick=()=>saveEdit(e);
+  $('#wb-savefx').onclick=()=>saveFixture(e,d);
   loadCaps(e.endpoint_key);
 }
+function runExample(e){
+  const msg=$('#wb-msg');msg.textContent='running…';
+  const confirm=$('#wb-confirm')?$('#wb-confirm').checked:false;
+  api('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({endpoint:e.endpoint_key,confirm})}).then(r=>{
+    if(r.needs_confirm){msg.textContent='check "confirm" to run a mutating call';return;}
+    if(r.error&&!r.ok)msg.textContent='error: '+r.error;
+    else msg.textContent=r.matched===true?'ran ✓ matches fixture':(r.matched===false?'ran — DIFF vs fixture':'ran (rc '+r.returncode+')');
+    renderRunOut(r);
+    if(r.response!=null&&$('#wb-resp'))$('#wb-resp').value=JSON.stringify(r.response,null,2);
+    load();loadCaps(e.endpoint_key);
+  });
+}
+function renderRunOut(r){
+  const box=$('#wb-runout');if(!box)return;
+  let h='<div class="section" style="margin-top:12px"><h3>Run output</h3>';
+  if(r.matched!=null)h+=r.matched?'<span class="pill" style="background:#28a745;color:#fff">matches fixture</span>'
+    :'<span class="pill" style="background:#dc3545;color:#fff">DIFF vs fixture</span>';
+  if(r.diff)h+='<pre>'+escapeHtml(r.diff)+'</pre>';
+  if(r.stdout)h+='<div class="muted" style="margin-top:6px">stdout:</div><pre>'+escapeHtml(r.stdout)+'</pre>';
+  box.innerHTML=h+'</div>';
+}
+function saveEdit(e){
+  api('/api/edit',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({endpoint:e.endpoint_key,code:$('#wb-code').value,
+      request_json:$('#wb-req').value,response_json:$('#wb-resp').value})})
+    .then(()=>{$('#wb-msg').textContent='saved → tests/example_edits.json (for enrichment)';});
+}
+function saveFixture(e,d){
+  api('/api/save-fixture',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({endpoint:e.endpoint_key,response_model:d.response_model,
+      http_method:e.http_method,path:e.path,response:parseMaybe($('#wb-resp').value)})})
+    .then(r=>{$('#wb-fxmsg').textContent=r.ok?('wrote tests/fixtures/'+r.fixture):('error: '+r.error);load();});
+}
+function showPop(ev,kind){
+  ev.stopPropagation();closePop();
+  const d=DETAIL;if(!d)return;
+  let title='',html='';
+  if(kind==='impl'){title='Implementation';html='<pre>'+escapeHtml(d.impl_source||'(source unavailable)')+'</pre>';}
+  else if(kind==='example'){title='Example';html='<div class="muted">'+escapeHtml(d.example_path||'no canonical example')+'</div><pre>'+escapeHtml(d.snippet||'')+'</pre>';}
+  else if(kind==='sphinx'){title='Sphinx docs';html='<a href="'+escapeHtml(d.doc_url)+'" target="_blank" rel="noopener">'+escapeHtml(d.doc_url)+'</a>'+(d.doc_path?'<div class="muted">local: '+escapeHtml(d.doc_path)+'</div>':'<div class="muted">per-endpoint page not generated yet</div>');}
+  else if(kind==='fixture'){title='Fixture';html=d.response_fixture!=null?'<pre>'+escapeHtml(JSON.stringify(d.response_fixture,null,2)).slice(0,4000)+'</pre>':'<div class="muted">no fixture captured</div>';}
+  else if(kind==='test'){title='Test coverage';html='<div>endpoint source coverage: '+(SELE&&SELE.coverage_pct!=null?Math.round(SELE.coverage_pct)+'%':'—')+'</div><div class="muted" style="margin-top:6px">refresh: coverage run --source=ab -m pytest -m "not live" &amp;&amp; coverage json</div>';}
+  const pop=ce('div','pop');pop.id='pop';
+  pop.innerHTML='<div class="pop-h">'+title+' <span class="pop-x">×</span></div><div class="pop-b">'+html+'</div>';
+  document.body.appendChild(pop);
+  const r=ev.currentTarget.getBoundingClientRect();
+  pop.style.top=Math.min(r.bottom+6,window.innerHeight-100)+'px';
+  pop.style.left=Math.max(8,Math.min(r.left,window.innerWidth-440))+'px';
+  pop.querySelector('.pop-x').onclick=closePop;
+}
+function closePop(){const p=$('#pop');if(p)p.remove();}
+document.addEventListener('click',ev=>{const p=$('#pop');
+  if(p&&!p.contains(ev.target)&&!ev.target.closest('.h[data-pop]'))closePop();});
 function signoff(key,field,value){
   api('/api/signoff',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({endpoint:key,field,value})}).then(()=>load());
 }
 function parseMaybe(t){t=t.trim();if(!t)return null;try{return JSON.parse(t);}catch(e){return t;}}
-function logCapture(e){
-  const payload={endpoint:e.endpoint_key,http_method:$('#cap-method').value,url:$('#cap-url').value,
-    status_code:parseInt($('#cap-status').value)||null,request:parseMaybe($('#cap-req').value),
-    response:parseMaybe($('#cap-resp').value)};
-  api('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(r=>{$('#cap-msg').textContent='logged #'+r.id;$('#cap-req').value='';$('#cap-resp').value='';
-      renderCaps(r.captures);load();});
-}
 function loadCaps(key){api('/api/captures?endpoint='+encodeURIComponent(key)).then(r=>renderCaps(r.captures));}
 function renderCaps(caps){
   const box=$('#caps');if(!box)return;
