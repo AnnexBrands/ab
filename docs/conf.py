@@ -3,7 +3,7 @@
 project = "AB SDK"
 copyright = "2026, AnnexBrands"
 author = "AnnexBrands"
-release = "0.1.3"
+release = "0.1.4"
 
 extensions = [
     "sphinx.ext.autodoc",

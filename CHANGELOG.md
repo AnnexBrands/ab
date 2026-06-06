@@ -4,6 +4,48 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [0.1.4] - 2026-06-05
+
+A documents + discoverability release. The `help()` → Read the Docs rollout now
+covers every route-backed group, and the Documents endpoint gains a
+swagger-faithful item-photo upload. The client-construction, auth, config,
+exceptions, and model-import surface relied on by downstream consumers is
+unchanged from `0.1.3`.
+
+### Added
+
+- **Item-photo upload for the Documents endpoint** — `documents.upload` is now a
+  typed, route-backed `POST /documents` multipart primitive
+  (`DocumentUploadRequest` / `DocumentUploadResponse`), with
+  `documents.upload_item_photo` and `documents.upload_item_photos` (batch;
+  always returns a list) convenience wrappers.
+- **`help()` → Read the Docs for every group** — the per-endpoint page + `Docs:`
+  footer mechanism (jobs-only in `0.1.3`) now covers all 21 route-backed groups,
+  each with generated per-endpoint pages and a `:glob:` toctree.
+
+### Changed
+
+- **`DocumentType` enum corrected to swagger-truth** — values now mirror the live
+  `GET /lookup/documentTypes` lookup (e.g. `BOL = 4`, `ITEM_PHOTO = 6`,
+  `OTHER = 7`); the previous values were incorrect. Code referencing the old
+  members (`UNKNOWN`, `INVOICE`, `PHOTO`, `CLAIM`, `POD`) or their old integer
+  values must update.
+
+### Fixed
+
+- Generated per-endpoint pages now escape pipes in the parameter *type* column,
+  so Union types (`DocumentType | int`, `str | None`) no longer break the
+  Markdown tables under MyST.
+- `jobs.tracking.v3` documents `historyAmount` as a **path** parameter (not a
+  query parameter) in both its page heading and its docstring footer.
+
+### CI
+
+- Hardened the PyPI publish job: a tag↔`pyproject` version guard, token-based
+  auth, and `skip-existing: true`.
+
+[0.1.4]: https://github.com/AnnexBrands/ab/compare/v0.1.3...v0.1.4
+
 ## [0.1.3] - 2026-06-05
 
 A quality & discoverability release. No breaking changes — the public API
