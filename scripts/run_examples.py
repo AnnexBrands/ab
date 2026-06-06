@@ -151,10 +151,12 @@ def main(argv: list[str] | None = None) -> int:
             tmp_dir = Path(tmp)
             ok, output = _run_module(module, capture_dir=tmp_dir)
             if not ok:
+                # A later call in the module may have raised (e.g. a placeholder id),
+                # but earlier calls can still have produced fixtures — verify those
+                # instead of discarding the whole module's results.
                 errored += 1
-                print(f"  [ERROR ] {module}: example raised")
+                print(f"  [ERROR ] {module}: example raised (checking any produced fixtures)")
                 print("    " + output.strip().replace("\n", "\n    ")[:500])
-                continue
             for key, fixture in plan[module]:
                 produced_path = tmp_dir / fixture
                 committed_path = FIXTURES_DIR / fixture

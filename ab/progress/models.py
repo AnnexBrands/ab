@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING
@@ -44,19 +45,25 @@ class RunStatus(str, Enum):
         return self is RunStatus.PASSING
 
 
-_BINARY_MODELS = {"", "bytes", "none", "any"}
+#: No-content / raw-bytes response models (excluded from JSON comparison, D10).
+#: NB ``""``/``none`` cover void mutation responses on purpose; ``any`` is NOT here —
+#: an ``Any`` response is untyped JSON and should still be verifiable.
+_BINARY_MODELS = {"", "bytes", "none"}
+#: Model names that *end* in a binary/file token (boundary match, not bare substring —
+#: so ``UserProfile``/``PdfReport``/``StreamSettings`` are not misclassified).
+_BINARY_SUFFIX_RE = re.compile(r"(?:File|Stream|Download|Pdf|Blob|Bytes)$")
 
 
 def is_binary_response(response_model: str | None) -> bool:
     """Heuristic: does this route return bytes / no JSON-able body? (feature 037, D10)
 
-    Conservative — only the clearly-binary/no-content cases, plus names that read as
-    file/stream downloads. Refined as real endpoints surface.
+    Conservative — the clearly no-content/bytes cases, plus names that *end* in a
+    file/stream/download token. Refined as real endpoints surface.
     """
-    name = (response_model or "").strip().lower()
-    if name in _BINARY_MODELS:
+    name = (response_model or "").strip()
+    if name.lower() in _BINARY_MODELS:
         return True
-    return any(tok in name for tok in ("file", "stream", "download", "pdf", "blob"))
+    return bool(_BINARY_SUFFIX_RE.search(name))
 
 
 def derive_run_status(

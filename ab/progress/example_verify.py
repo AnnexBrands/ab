@@ -15,9 +15,10 @@ from __future__ import annotations
 
 import difflib
 import json
+import re
 from typing import Any
 
-#: Keys dropped anywhere in the tree before comparison (lower-cased match).
+#: Keys dropped anywhere in the tree before comparison (lower-cased, underscore-free).
 VOLATILE_KEYS: set[str] = {
     "correlationid",
     "requestid",
@@ -26,17 +27,21 @@ VOLATILE_KEYS: set[str] = {
     "timestamp",
 }
 
-#: Name suffixes treated as volatile date/time fields (lower-cased).
-_VOLATILE_SUFFIXES = ("date", "datetime", "time", "timestamp", "ticks")
+# Date/time fields are matched on a real boundary — a camelCase suffix (capital D/T)
+# or a snake ``_suffix`` — NOT a bare substring. This avoids silently dropping
+# meaningful fields that merely end in those letters: ``allowJobInfoUpdate``,
+# ``dontValidate``, ``runtime``, ``lifetime``, ``candidate`` (the UAT-era bug where a
+# genuine mismatch was reported as a match).
+_VOLATILE_CAMEL_RE = re.compile(r"(?:Date|DateTime|Timestamp|Ticks|Time|Utc)$")
+_VOLATILE_SNAKE_RE = re.compile(r"(?:^|_)(?:date|datetime|timestamp|ticks|time|utc)$")
 
 _MAX_DIFF_LINES = 40
 
 
 def _is_volatile_key(key: str) -> bool:
-    k = key.replace("_", "").lower()
-    if k in VOLATILE_KEYS:
+    if key.replace("_", "").lower() in VOLATILE_KEYS:
         return True
-    return k.endswith(_VOLATILE_SUFFIXES)
+    return bool(_VOLATILE_CAMEL_RE.search(key) or _VOLATILE_SNAKE_RE.search(key))
 
 
 def normalize(obj: Any) -> Any:

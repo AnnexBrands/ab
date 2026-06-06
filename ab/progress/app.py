@@ -73,6 +73,12 @@ class _Handler(BaseHTTPRequestHandler):
 
     # -- routes -------------------------------------------------------------
     def do_GET(self) -> None:  # noqa: N802
+        try:
+            self._do_get()
+        except Exception as exc:  # never let a bad request crash the handler
+            self._json({"error": f"{type(exc).__name__}: {exc}"}, 500)
+
+    def _do_get(self) -> None:
         route = urlparse(self.path)
         if route.path in ("/", "/index.html"):
             self._send(200, UI_HTML.encode("utf-8"), "text/html; charset=utf-8")
@@ -95,6 +101,12 @@ class _Handler(BaseHTTPRequestHandler):
             self._json({"error": "not found"}, 404)
 
     def do_POST(self) -> None:  # noqa: N802
+        try:
+            self._do_post()
+        except Exception as exc:  # never let a bad request crash the handler
+            self._json({"error": f"{type(exc).__name__}: {exc}"}, 500)
+
+    def _do_post(self) -> None:
         route = urlparse(self.path)
         body = self._read_body()
         if route.path == "/api/signoff":

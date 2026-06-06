@@ -108,8 +108,14 @@ def main(argv: list[str] | None = None) -> int:
                 group, method = vc.endpoint[len("api.") :].rsplit(".", 1)
                 module_rel = module_path_for(group)
                 module_path = REPO_ROOT / module_rel
+                # examples/<top>/ as a package shadows examples/<top>.py — writing the
+                # file would be dead code that `import examples.<top>` never reaches.
+                pkg_dir = REPO_ROOT / "examples" / group.split(".")[0]
                 if module_path.exists():
                     print(f"           (example module {module_rel} exists; add the call manually)")
+                elif pkg_dir.is_dir():
+                    top = group.split(".")[0]
+                    print(f"           (examples/{top}/ is a package; add {vc.endpoint} to a module there manually)")
                 else:
                     call_expr, consts = call_expr_for(group, method, _method_param_names(vc.endpoint))
                     spec = CallSpec(

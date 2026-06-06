@@ -103,6 +103,12 @@ def save(name: str, payload: Any) -> Path | None:
         print(f"  (binary response, {len(payload)} bytes — fixture save skipped)")
         return None
 
+    # An empty live result (no data on the test account) must NOT overwrite a
+    # committed fixture that may hold real captured rows.
+    if isinstance(payload, list) and not payload:
+        print(f"  (empty list — not overwriting {capture_dir() / name})")
+        return None
+
     data = to_jsonable(payload)
     out = capture_dir() / name
     out.parent.mkdir(parents=True, exist_ok=True)

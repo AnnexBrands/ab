@@ -189,6 +189,8 @@ def endpoint_detail(endpoint_key: str) -> dict | None:
     from ab.progress.example_gen import strip_list_wrapper
     from ab.progress.example_index import build_example_index
 
+    if not endpoint_key.startswith("api.") or endpoint_key.count(".") < 2:
+        return None
     group, method = endpoint_key[len("api.") :].rsplit(".", 1)
     info = discover_endpoints_from_class().get(group)
     if not info:
