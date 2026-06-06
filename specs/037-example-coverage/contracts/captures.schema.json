@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ab-sdk/contracts/captures.schema.json",
+  "title": "captures.json — operator paste export",
+  "description": "Produced client-side by the html/progress.html 'Download captures.json' button; consumed by scripts/ingest_captures.py. No backend; this is a static download. Keys are endpoint dotted paths.",
+  "type": "object",
+  "required": ["schema", "captures"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "integer",
+      "const": 1,
+      "description": "Contract version."
+    },
+    "captures": {
+      "type": "object",
+      "description": "Map of endpoint dotted path -> pasted capture.",
+      "additionalProperties": { "$ref": "#/definitions/capture" }
+    }
+  },
+  "definitions": {
+    "capture": {
+      "type": "object",
+      "required": ["endpoint", "http_method", "path", "response_model", "response"],
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^api\\.[A-Za-z0-9_]+(\\.[A-Za-z0-9_]+)*$",
+          "description": "Dotted accessor, e.g. 'api.jobs.payment.add'. Mirrors the map key."
+        },
+        "http_method": {
+          "type": "string",
+          "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        },
+        "path": {
+          "type": "string",
+          "description": "Route path template, e.g. '/job/{jobId}/payment'."
+        },
+        "response_model": {
+          "type": "string",
+          "description": "Response model name (without List[] wrapper), used to name the fixture file <Model>.json and to validate the paste."
+        },
+        "request_model": {
+          "type": ["string", "null"],
+          "description": "Request model name if the endpoint takes a body; null/absent for GET."
+        },
+        "response": {
+          "description": "Operator-pasted real response. Object or array when parseable JSON; string when the JS could not parse it (ingest then reports malformed per FR-013).",
+          "type": ["object", "array", "string", "null"]
+        },
+        "request": {
+          "description": "Operator-pasted real request body (optional). Same parse rules as response.",
+          "type": ["object", "array", "string", "null"]
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "schema": 1,
+      "captures": {
+        "api.jobs.payment.add": {
+          "endpoint": "api.jobs.payment.add",
+          "http_method": "POST",
+          "path": "/job/{jobId}/payment",
+          "response_model": "JobPayment",
+          "request_model": "JobPaymentRequest",
+          "response": { "id": "…", "amount": 100.0, "status": "Posted" },
+          "request": { "amount": 100.0, "method": "Card" }
+        }
+      }
+    }
+  ]
+}

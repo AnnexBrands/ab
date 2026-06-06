@@ -28,6 +28,8 @@ Auto-generated from all feature plans. Last updated: 2026-02-13
 - N/A -- SDK, no local storage (031-timeline-upsert-docs)
 - Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps). Audit tooling uses stdlib only (`ast`, `json`, `pathlib`). (036-lotsdb-migration-prep)
 - Filesystem — fixture JSON under `tests/fixtures/` and `tests/fixtures/requests/`; audit/inventory/guide as Markdown under the repo. (036-lotsdb-migration-prep)
+- Python 3.11+ (matches existing SDK) + pydantic>=2.0, requests (existing — no new runtime deps); (037-example-coverage)
+- Filesystem — response fixtures `tests/fixtures/*.json`, request fixtures (037-example-coverage)
 
 - Python 3.11+ + pydantic>=2.0, pydantic-settings, requests, python-dotenv (001-abconnect-sdk)
 
@@ -47,8 +49,7 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.11+: Follow standard conventions
 
 ## Recent Changes
+- 037-example-coverage: Added Python 3.11+ (matches existing SDK) + pydantic>=2.0, requests (existing — no new runtime deps);
 - 036-lotsdb-migration-prep: Added Python 3.11+ (matches existing SDK). + pydantic>=2.0, requests (existing `ab` deps — no new runtime deps).
 - 035-catalog-endpoint-params: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 033-fix-catalog-model-typing: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
-- 034-g1-model-fidelity-sweep: Added Python 3.11+ + pydantic>=2.0, requests (existing SDK deps — no new dependencies)
 

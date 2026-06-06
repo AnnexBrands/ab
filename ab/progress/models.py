@@ -3,10 +3,83 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ab.progress.gates import EndpointGateStatus
+
+
+class RunStatus(str, Enum):
+    """Per-endpoint run-and-verify status for the progress report.
+
+    Single source of truth shared by the report column, the coverage gate, and the
+    committed ``tests/example_run_results.json`` artifact. See
+    ``specs/037-example-coverage/data-model.md``.
+    """
+
+    #: Example ran (or paste ingested) and output matches the fixture.
+    PASSING = "passing"
+    #: Read-only example ran but output != fixture (after volatile normalization).
+    FAILING = "failing"
+    #: GET with an example and a fixture, but no live-run result yet (not run).
+    NOT_VERIFIED = "not_verified"
+    #: GET with an example but no fixture / no usable TEST_* constant — can't verify.
+    AWAITING_DATA = "awaiting_data"
+    #: Mutating endpoint (POST/PUT/PATCH/DELETE) — never auto-run; needs a paste.
+    AWAITING_PASTE = "awaiting_paste"
+    #: Response is bytes / no-content — covered-as-binary, excluded from comparison.
+    BINARY = "binary"
+    #: No canonical example exists for the endpoint.
+    MISSING_EXAMPLE = "missing_example"
+
+    @property
+    def is_covered(self) -> bool:
+        """True when the endpoint has *some* canonical example (gate passes)."""
+        return self is not RunStatus.MISSING_EXAMPLE
+
+    @property
+    def is_green(self) -> bool:
+        """True when the endpoint is verified passing."""
+        return self is RunStatus.PASSING
+
+
+_BINARY_MODELS = {"", "bytes", "none", "any"}
+
+
+def is_binary_response(response_model: str | None) -> bool:
+    """Heuristic: does this route return bytes / no JSON-able body? (feature 037, D10)
+
+    Conservative — only the clearly-binary/no-content cases, plus names that read as
+    file/stream downloads. Refined as real endpoints surface.
+    """
+    name = (response_model or "").strip().lower()
+    if name in _BINARY_MODELS:
+        return True
+    return any(tok in name for tok in ("file", "stream", "download", "pdf", "blob"))
+
+
+def derive_run_status(
+    *,
+    http_method: str,
+    has_canonical_example: bool,
+    response_model: str | None,
+    fixture_exists: bool,
+) -> "RunStatus":
+    """Derive the *expected* run status from code + fixtures (no live result).
+
+    The report overlays the committed run-results artifact on top of this; this is
+    what shows when an endpoint has not been verified yet.
+    """
+    if not has_canonical_example:
+        return RunStatus.MISSING_EXAMPLE
+    if is_binary_response(response_model):
+        return RunStatus.BINARY
+    if (http_method or "").upper() != "GET":
+        return RunStatus.AWAITING_PASTE
+    if not fixture_exists:
+        return RunStatus.AWAITING_DATA
+    return RunStatus.NOT_VERIFIED
 
 
 @dataclass
@@ -103,6 +176,13 @@ class MethodProgress:
     path_sub_root: str
     has_docstring: bool = True
     gate_status: EndpointGateStatus | None = None
+    # Run-and-verify (feature 037). run_status defaults to MISSING_EXAMPLE and is
+    # overwritten by the report builder from the run-results artifact + derivation.
+    run_status: RunStatus = RunStatus.MISSING_EXAMPLE
+    run_checked: str | None = None  # ISO date from the results artifact, if any
+    run_detail: str | None = None  # short diff / why summary for failing/awaiting
+    response_model: str = ""  # route response model (wrapper-stripped) for paste/ingest
+    request_model: str | None = None  # route request model, for mutation pastes
 
 
 @dataclass

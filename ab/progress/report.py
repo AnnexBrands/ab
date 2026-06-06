@@ -20,6 +20,26 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 OUTPUT = REPO_ROOT / "html" / "progress.html"
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 CONSTANTS_PY = REPO_ROOT / "tests" / "constants.py"
+RUN_RESULTS_JSON = REPO_ROOT / "tests" / "example_run_results.json"
+
+
+def load_run_results() -> dict[str, dict]:
+    """Load the committed run-results artifact (feature 037), or {} if absent.
+
+    Returns ``{endpoint_key: {status, checked, source, fixture, detail}}`` — the
+    last live/paste-verified status per endpoint, overlaid onto derived statuses by
+    the report builder. Keeps report generation deterministic (no live calls).
+    """
+    import json
+
+    if not RUN_RESULTS_JSON.is_file():
+        return {}
+    try:
+        data = json.loads(RUN_RESULTS_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    results = data.get("results", {})
+    return results if isinstance(results, dict) else {}
 
 # The only volatile part of the rendered report is its generation timestamp;
 # strip it so freshness comparisons are stable across runs.
@@ -61,7 +81,7 @@ def _gather() -> _Gathered:
     finally:
         logging.root.setLevel(prev_level)
 
-    endpoint_class_progress = build_endpoint_class_progress()
+    endpoint_class_progress = build_endpoint_class_progress(run_results=load_run_results())
     action_items = classify_action_items(groups, fixtures, fixture_files, constants)
 
     return _Gathered(

@@ -41,3 +41,6 @@ docs/_build/
 
 # Token cache
 .cache/
+
+# Feature 037 — transient operator paste export (never committed)
+captures.json
