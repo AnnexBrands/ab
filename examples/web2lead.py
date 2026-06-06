@@ -15,9 +15,10 @@ from examples._capture import load_request, mutations_enabled, save
 def main() -> None:
     api = ABConnectAPI(env="staging")
 
-    # GET /web2lead — current web-lead configuration/response.
-    print("\n# api.web2lead.get()")
-    result = api.web2lead.get()
+    # GET /web2lead — requires a params model (Web2LeadGetParams). The dict is
+    # validated against the model, which accepts the API's alias keys.
+    print("\n# api.web2lead.get(params=Web2LeadGetParams)")
+    result = api.web2lead.get(params=load_request("Web2LeadGetParams.json"))
     print(format_result(result))
     save("Web2LeadResponse.json", result)
 

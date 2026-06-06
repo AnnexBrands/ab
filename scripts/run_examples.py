@@ -173,7 +173,10 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"  [FAIL  ] {key}  ({fixture})")
 
     if not args.capture:
-        _write_results(results, today)
+        if results:
+            _write_results(results, today)
+        else:
+            print(f"\n(no verifiable results — not writing {RESULTS_JSON.name})")
         print(f"\nsummary: {passing} passing, {failing} failing, {errored} module errors")
         return 1 if (failing or errored) else 0
     return 0
