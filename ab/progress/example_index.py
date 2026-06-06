@@ -64,8 +64,11 @@ def routed_endpoint_keys() -> set[str]:
 # ----------------------------------------------------------------------
 
 
-def _attr_chain(node: ast.Attribute) -> list[str]:
-    """Flatten an attribute chain to ``[root, attr, attr, ...]`` (empty if not Name-rooted)."""
+def attr_chain(node: ast.Attribute) -> list[str]:
+    """Flatten an attribute chain to ``[root, attr, attr, ...]`` (empty if not Name-rooted).
+
+    Shared AST helper (also used by ``ab.progress.workbench``).
+    """
     parts: list[str] = []
     cur: ast.expr = node
     while isinstance(cur, ast.Attribute):
@@ -89,7 +92,7 @@ def _scan_calls(path: Path) -> set[tuple[str, str]]:
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
             continue
-        chain = _attr_chain(node.func)
+        chain = attr_chain(node.func)
         # api.<group>.<method> needs >= 3 segments rooted at "api".
         if len(chain) < 3 or chain[0] != "api":
             continue

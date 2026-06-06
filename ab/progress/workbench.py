@@ -23,14 +23,13 @@ import tempfile
 import textwrap
 from pathlib import Path
 
+from ab.progress.example_index import attr_chain
+from ab.progress.route_index import normalize_path
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 REQUESTS_DIR = FIXTURES_DIR / "requests"
 SCHEMAS_DIR = REPO_ROOT / "ab" / "api" / "schemas"
-
-
-def _normalize(path: str) -> str:
-    return re.sub(r"\{[^}]+\}", "{_}", path)
 
 
 def _swagger_responses_map() -> dict[tuple[str, str], dict[str, str]]:
@@ -53,7 +52,7 @@ def _swagger_responses_map() -> dict[tuple[str, str], dict[str, str]]:
                     str(code): (resp.get("description") or "") if isinstance(resp, dict) else ""
                     for code, resp in op["responses"].items()
                 }
-                out[(_normalize(stripped), http_method.upper())] = codes
+                out[(normalize_path(stripped), http_method.upper())] = codes
     return out
 
 
@@ -65,20 +64,7 @@ def response_codes(path: str, method: str) -> dict[str, str]:
     global _RESP_MAP
     if _RESP_MAP is None:
         _RESP_MAP = _swagger_responses_map()
-    return _RESP_MAP.get((_normalize(path), method.upper()), {})
-
-
-def _attr_chain(node: ast.Attribute) -> list[str]:
-    parts: list[str] = []
-    cur: ast.expr = node
-    while isinstance(cur, ast.Attribute):
-        parts.append(cur.attr)
-        cur = cur.value
-    if isinstance(cur, ast.Name):
-        parts.append(cur.id)
-        parts.reverse()
-        return parts
-    return []
+    return _RESP_MAP.get((normalize_path(path), method.upper()), {})
 
 
 def _extract_call_source(example_path: Path, group: str, method: str) -> str | None:
@@ -91,7 +77,7 @@ def _extract_call_source(example_path: Path, group: str, method: str) -> str | N
     target = f"api.{group}.{method}"
     for node in ast.walk(tree):
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
-            chain = _attr_chain(node.func)
+            chain = attr_chain(node.func)
             if chain and ".".join(chain) == target:
                 seg = ast.get_source_segment(source, node)
                 if seg:
@@ -242,6 +228,40 @@ def endpoint_detail(endpoint_key: str) -> dict | None:
     }
 
 
+def _finish_run(
+    endpoint_key: str,
+    returncode: int,
+    output: str,
+    produced: object,
+    model: str,
+    fixture_name: str | None,
+    extra: dict | None = None,
+) -> dict:
+    """Shared tail for the two runners: build result, compare vs fixture, log to db."""
+    from ab.progress import db
+    from ab.progress.example_verify import compare
+
+    result = {
+        "ok": returncode == 0,
+        "returncode": returncode,
+        "stdout": output[-4000:],
+        "response": produced,
+        "fixture": fixture_name,
+    }
+    if extra:
+        result.update(extra)
+    if produced is not None:
+        result["response_pydantic"] = pydantic_repr(model, produced)
+        committed = _read_json(FIXTURES_DIR / fixture_name) if fixture_name else None
+        if committed is not None:
+            matched, diff = compare(produced, committed)
+            result["matched"] = matched
+            result["diff"] = diff
+        db.init_db()
+        db.set_run_capture(endpoint_key, produced, fixture=fixture_name, matched=result.get("matched"))
+    return result
+
+
 def run_code(endpoint_key: str, code: str, *, confirm_mutation: bool = False) -> dict:
     """Execute operator-edited request code against staging and capture the response.
 
@@ -249,9 +269,6 @@ def run_code(endpoint_key: str, code: str, *, confirm_mutation: bool = False) ->
     subprocess with the repo on PYTHONPATH and ``AB_EXAMPLE_CAPTURE_DIR`` set, then reads
     the captured response. GET runs freely; mutations require ``confirm_mutation``.
     """
-    from ab.progress import db
-    from ab.progress.example_verify import compare
-
     detail = endpoint_detail(endpoint_key)
     if detail is None:
         return {"ok": False, "error": "not a routed endpoint"}
@@ -284,23 +301,7 @@ def run_code(endpoint_key: str, code: str, *, confirm_mutation: bool = False) ->
         produced = _read_json(Path(tmp) / "__run__.json") if fixture_name else None
 
     out = (proc.stdout + proc.stderr).strip()
-    result = {
-        "ok": proc.returncode == 0,
-        "returncode": proc.returncode,
-        "stdout": out[-4000:],
-        "response": produced,
-        "fixture": fixture_name,
-    }
-    if produced is not None:
-        result["response_pydantic"] = pydantic_repr(model, produced)
-        committed = _read_json(FIXTURES_DIR / fixture_name) if fixture_name else None
-        if committed is not None:
-            matched, diff = compare(produced, committed)
-            result["matched"] = matched
-            result["diff"] = diff
-        db.init_db()
-        db.set_run_capture(endpoint_key, produced, fixture=fixture_name, matched=result.get("matched"))
-    return result
+    return _finish_run(endpoint_key, proc.returncode, out, produced, model, fixture_name)
 
 
 def run_example_for(endpoint_key: str, *, confirm_mutation: bool = False) -> dict:
@@ -311,9 +312,7 @@ def run_example_for(endpoint_key: str, *, confirm_mutation: bool = False) -> dic
     ``<Model>.json``. GET runs freely; mutating endpoints require
     ``confirm_mutation`` (which sets AB_RUN_MUTATIONS for the subprocess).
     """
-    from ab.progress import db
     from ab.progress.example_index import build_example_index
-    from ab.progress.example_verify import compare
 
     detail = endpoint_detail(endpoint_key)
     if detail is None:
@@ -346,21 +345,5 @@ def run_example_for(endpoint_key: str, *, confirm_mutation: bool = False) -> dic
             produced = _read_json(Path(tmp) / fixture_name)
 
     out = (proc.stdout + proc.stderr).strip()
-    result = {
-        "ok": proc.returncode == 0,
-        "returncode": proc.returncode,
-        "module": module,
-        "stdout": out[-4000:],
-        "response": produced,
-        "fixture": fixture_name,
-    }
-    if produced is not None:
-        committed = _read_json(FIXTURES_DIR / fixture_name) if fixture_name else None
-        if committed is not None:
-            matched, detail_diff = compare(produced, committed)
-            result["matched"] = matched
-            result["diff"] = detail_diff
-        db.init_db()
-        db.set_run_capture(endpoint_key, produced, fixture=fixture_name,
-                           matched=result.get("matched"))
-    return result
+    return _finish_run(endpoint_key, proc.returncode, out, produced, model, fixture_name,
+                       extra={"module": module})

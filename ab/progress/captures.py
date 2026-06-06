@@ -44,7 +44,12 @@ def load_captures(path: Path) -> dict[str, dict]:
     return captures
 
 
-def _model_class(model_name: str):
+def model_class(model_name: str):
+    """Resolve a response/request model name to its class on ``ab.api.models`` (or None).
+
+    Single resolver shared by capture validation, the app's save-request route, and the
+    workbench's pydantic view.
+    """
     import ab.api.models as models_pkg
 
     return getattr(models_pkg, model_name, None)
@@ -56,7 +61,7 @@ def _validate_payload(model_name: str, payload: Any) -> tuple[bool, str | None, 
         return False, "no JSON pasted", None
     if isinstance(payload, str):
         return False, "pasted value is not valid JSON (could not parse)", None
-    cls = _model_class(model_name)
+    cls = model_class(model_name)
     if cls is None:
         return False, f"unknown model '{model_name}' in ab.api.models", None
     try:

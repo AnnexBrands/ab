@@ -17,6 +17,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from ab.api.rtd import endpoint_page_slug, endpoint_top_group
+from ab.progress.route_index import normalize_path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
@@ -65,17 +66,12 @@ class EndpointHarmony:
 # ----------------------------------------------------------------------
 
 
-def _normalize(path: str) -> str:
-    import re
-
-    return re.sub(r"\{[^}]+\}", "{_}", path)
-
-
 def _swagger_tag_map() -> dict[tuple[str, str], list[str]]:
     """Build ``{(normalized_path, METHOD): [tags]}`` from the three swagger specs.
 
     Swagger paths carry a leading ``/api`` that Route paths lack; we strip it so
-    keys line up with live Route paths.
+    keys line up with live Route paths. Cached (see ``tag_map``) — the specs don't
+    change within a process and ``build_harmony`` runs on every report/app poll.
     """
     out: dict[tuple[str, str], list[str]] = {}
     for name in ("acportal", "catalog", "abc"):
@@ -93,8 +89,19 @@ def _swagger_tag_map() -> dict[tuple[str, str], list[str]]:
                     continue
                 tags = op.get("tags") or []
                 if tags:
-                    out[(_normalize(stripped), http_method.upper())] = list(tags)
+                    out[(normalize_path(stripped), http_method.upper())] = list(tags)
     return out
+
+
+_TAG_MAP: dict[tuple[str, str], list[str]] | None = None
+
+
+def tag_map() -> dict[tuple[str, str], list[str]]:
+    """Cached swagger tag map."""
+    global _TAG_MAP
+    if _TAG_MAP is None:
+        _TAG_MAP = _swagger_tag_map()
+    return _TAG_MAP
 
 
 # ----------------------------------------------------------------------
@@ -139,7 +146,7 @@ def build_harmony() -> list[EndpointHarmony]:
 
     index = build_example_index()
     fixture_files = scan_fixture_files(FIXTURES_DIR)
-    tag_map = _swagger_tag_map()
+    tags_by_key = tag_map()
     cov = _coverage_map()
     run_results = load_run_results()
 
@@ -185,7 +192,7 @@ def build_harmony() -> list[EndpointHarmony]:
                     api_surface=m.route.api_surface,
                     response_model=model,
                     request_model=m.route.request_model,
-                    tags=tag_map.get((_normalize(m.route.path), m.route.method.upper()), []),
+                    tags=tags_by_key.get((normalize_path(m.route.path), m.route.method.upper()), []),
                     has_example=has_example,
                     has_fixture=has_fixture,
                     has_test=has_test,

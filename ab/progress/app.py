@@ -156,7 +156,7 @@ class _Handler(BaseHTTPRequestHandler):
                 result = run_example_for(key, confirm_mutation=confirm)
             return self._json(result)
         if route.path == "/api/save-request":
-            from ab.progress.captures import _model_class
+            from ab.progress.captures import model_class
             from ab.progress.example_gen import strip_list_wrapper
             from ab.progress.report import FIXTURES_DIR as _FX
 
@@ -165,7 +165,7 @@ class _Handler(BaseHTTPRequestHandler):
             payload = body.get("request")
             if not key or not req_model:
                 return self._json({"error": "endpoint and request_model required"}, 400)
-            cls = _model_class(req_model)
+            cls = model_class(req_model)
             if cls is None or payload is None:
                 return self._json({"ok": False, "error": f"unknown model {req_model} or empty body"}, 400)
             try:
