@@ -113,11 +113,31 @@ class _Handler(BaseHTTPRequestHandler):
         return self._json({"error": "not found"}, 404)
 
 
-def serve(host: str = "127.0.0.1", port: int = 8765) -> None:
-    """Run the app (blocking). Initializes the DB and imports committed sign-offs."""
+def serve(host: str = "127.0.0.1", port: int = 8765, *, max_tries: int = 20) -> None:
+    """Run the app (blocking). Initializes the DB and imports committed sign-offs.
+
+    If *port* is already in use (e.g. another service holds it), advances to the
+    next free port rather than crashing, and prints the URL it actually bound.
+    """
+    import errno
+
     db.init_db()
     db.import_signoffs()
-    httpd = ThreadingHTTPServer((host, port), _Handler)
+
+    httpd = None
+    for candidate in range(port, port + max_tries):
+        try:
+            httpd = ThreadingHTTPServer((host, candidate), _Handler)
+            port = candidate
+            break
+        except OSError as exc:
+            if exc.errno == errno.EADDRINUSE:
+                print(f"port {candidate} in use, trying {candidate + 1}…")
+                continue
+            raise
+    if httpd is None:
+        raise SystemExit(f"no free port in {port}..{port + max_tries - 1}")
+
     print(f"ab progress app -> http://{host}:{port}  (Ctrl-C to stop)")
     try:
         httpd.serve_forever()
