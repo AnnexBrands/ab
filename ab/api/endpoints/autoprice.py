@@ -36,6 +36,10 @@ class AutoPriceEndpoint(BaseEndpoint):
                 :class:`QuoteRequestModel` instance or a dict.
 
         Request model: :class:`QuoteRequestModel`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/autoprice/quick_quote.html
+        Request model: QuoteRequestModel
+        Response model: QuickQuoteResponse
         """
         return self._request(_QUICK_QUOTE, json=data)
 
@@ -48,5 +52,9 @@ class AutoPriceEndpoint(BaseEndpoint):
                 :class:`QuoteRequestModel` instance or a dict.
 
         Request model: :class:`QuoteRequestModel`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/autoprice/quote_request.html
+        Request model: QuoteRequestModel
+        Response model: QuoteRequestResponse
         """
         return self._request(_QUOTE_REQUEST, json=data)

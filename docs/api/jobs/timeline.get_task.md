@@ -42,7 +42,7 @@ Returns `TimelineTask`.
 | `preferredEndDate` | `Optional[str]` | no | Preferred end date |
 | `truck` | `Optional[dict]` | no | Truck assignment |
 | `onSiteTimeLog` | `Optional[dict]` | no | On-site time log (PU) |
-| `tripTimeLog` | `dict | str | None` | no | Trip time log (PU) |
+| `tripTimeLog` | `dict \| str \| None` | no | Trip time log (PU) |
 | `completedDate` | `Optional[str]` | no | Completed date (PU) |
 | `scheduledDate` | `Optional[str]` | no | Carrier scheduled date |
 | `pickupCompletedDate` | `Optional[str]` | no | Carrier pickup completed |
@@ -51,4 +51,4 @@ Returns `TimelineTask`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)

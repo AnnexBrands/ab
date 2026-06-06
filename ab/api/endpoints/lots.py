@@ -36,6 +36,10 @@ class LotsEndpoint(BaseEndpoint):
                 Accepts an :class:`AddLotRequest` instance or a dict.
 
         Request model: :class:`AddLotRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/lots/create.html
+        Request model: AddLotRequest
+        Response model: LotDto
         """
         return self._request(_CREATE, json=data)
 
@@ -78,6 +82,9 @@ class LotsEndpoint(BaseEndpoint):
 
         Returns:
             LotDto: Lot details.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/lots/get.html
+        Response model: LotDto
         """
         return self._request(_GET.bind(id=lot_id))
 
@@ -93,6 +100,10 @@ class LotsEndpoint(BaseEndpoint):
                 or a dict.
 
         Request model: :class:`UpdateLotRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/lots/update.html
+        Request model: UpdateLotRequest
+        Response model: LotDto
         """
         return self._request(_UPDATE.bind(id=lot_id), json=data)
 
@@ -101,6 +112,8 @@ class LotsEndpoint(BaseEndpoint):
 
         Args:
             lot_id: Lot identifier.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/lots/delete.html
         """
         self._request(_DELETE.bind(id=lot_id))
 
@@ -112,5 +125,8 @@ class LotsEndpoint(BaseEndpoint):
 
         Returns:
             list[LotOverrideDto]: Override data for matched lots.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/lots/get_overrides.html
+        Response model: List[LotOverrideDto]
         """
         return self._request(_GET_OVERRIDES, json=customer_item_ids)

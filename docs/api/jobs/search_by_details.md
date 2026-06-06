@@ -48,4 +48,4 @@ Returns a list of `List[JobSearchResult]`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)

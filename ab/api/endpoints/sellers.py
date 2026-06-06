@@ -35,6 +35,10 @@ class SellersEndpoint(BaseEndpoint):
                 Accepts an :class:`AddSellerRequest` instance or a dict.
 
         Request model: :class:`AddSellerRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/sellers/create.html
+        Request model: AddSellerRequest
+        Response model: SellerDto
         """
         return self._request(_CREATE, json=data)
 
@@ -80,6 +84,9 @@ class SellersEndpoint(BaseEndpoint):
 
         Returns:
             SellerExpandedDto: Seller details with catalog associations.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/sellers/get.html
+        Response model: SellerExpandedDto
         """
         return self._request(_GET.bind(id=seller_id))
 
@@ -92,6 +99,10 @@ class SellersEndpoint(BaseEndpoint):
                 Accepts an :class:`UpdateSellerRequest` instance or a dict.
 
         Request model: :class:`UpdateSellerRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/sellers/update.html
+        Request model: UpdateSellerRequest
+        Response model: SellerDto
         """
         return self._request(_UPDATE.bind(id=seller_id), json=data)
 
@@ -100,5 +111,7 @@ class SellersEndpoint(BaseEndpoint):
 
         Args:
             seller_id: Seller identifier.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/sellers/delete.html
         """
         self._request(_DELETE.bind(id=seller_id))

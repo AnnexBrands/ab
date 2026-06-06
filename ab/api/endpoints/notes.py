@@ -58,6 +58,10 @@ class NotesEndpoint(BaseEndpoint):
             job_id: Filter to notes attached to this job UUID.
             contact_id: Filter to notes attached to this contact ID.
             company_id: Filter to notes attached to this company UUID.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/notes/list.html
+        Query params: NotesListParams
+        Response model: List[GlobalNote]
         """
         return self._request(
             _LIST,
@@ -73,6 +77,10 @@ class NotesEndpoint(BaseEndpoint):
                 swagger; the request model enforces this.
 
         Request model: :class:`NoteRequest` (same schema as ``update``).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/notes/create.html
+        Request model: NoteRequest
+        Response model: GlobalNote
         """
         return self._request(_CREATE, json=data)
 
@@ -89,6 +97,10 @@ class NotesEndpoint(BaseEndpoint):
                 a dict.
 
         Request model: :class:`NoteRequest` (same schema as ``create``).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/notes/update.html
+        Request model: NoteRequest
+        Response model: GlobalNote
         """
         return self._request(_UPDATE.bind(id=note_id), json=data)
 
@@ -105,6 +117,10 @@ class NotesEndpoint(BaseEndpoint):
         it cannot be silently omitted.
 
         Returns rows whose ``id`` feeds :attr:`NoteRequest.assigned_users`.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/notes/suggest_users.html
+        Query params: NotesSuggestUsersParams
+        Response model: List[SuggestedUser]
         """
         return self._request(
             _SUGGEST_USERS,

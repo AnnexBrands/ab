@@ -29,7 +29,12 @@ class AddressEndpoint(BaseEndpoint):
         state: str,
         zip: str
     ) -> AddressIsValidResult:
-        """GET /address/isvalid"""
+        """GET /address/isvalid
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/address/validate.html
+        Query params: AddressValidateParams
+        Response model: AddressIsValidResult
+        """
         return self._request(
             _IS_VALID, params=dict(line1=line1, city=city, state=state, zip=zip)
         )
@@ -43,7 +48,11 @@ class AddressEndpoint(BaseEndpoint):
         state: str,
         zip_code: str,
     ) -> Optional[int]:
-        """GET /address/propertytype"""
+        """GET /address/propertytype
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/address/get_property_type.html
+        Query params: AddressPropertyTypeParams
+        """
         return self._request(
             _PROPERTY_TYPE,
             params=dict(

@@ -1,5 +1,6 @@
-"""Example: Document operations (4 methods)."""
+"""Example: Document operations."""
 
+from ab.api.models.enums import DocumentType
 from examples._runner import ExampleRunner
 
 runner = ExampleRunner("Documents", env="staging")
@@ -18,11 +19,23 @@ runner.add(
 runner.add(
     "upload",
     lambda api: api.documents.upload(
-        job_id="2000000",
+        job_display_id="2000000",
         file_path="/tmp/test-upload.pdf",
-        document_type=6,
-        sharing_level=0,
+        document_type=DocumentType.BOL,
     ),
+    request_model="DocumentUploadRequest",
+    request_fixture_file="DocumentUploadRequest.json",
+)
+
+runner.add(
+    "upload_item_photo",
+    lambda api: api.documents.upload_item_photo(
+        job_display_id="2000000",
+        item_ids="550e8400-e29b-41d4-a716-446655440001",
+        file_path="/tmp/item-photo.jpg",
+    ),
+    request_model="DocumentUploadRequest",
+    request_fixture_file="DocumentUploadRequest.json",
 )
 
 runner.add(

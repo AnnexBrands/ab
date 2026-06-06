@@ -30,7 +30,11 @@ class CommoditiesEndpoint(BaseEndpoint):
     """Commodity operations (ACPortal API)."""
 
     def get(self, commodity_id: str) -> Commodity:
-        """GET /commodity/{id}"""
+        """GET /commodity/{id}
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodities/get.html
+        Response model: Commodity
+        """
         return self._request(_GET.bind(id=commodity_id))
 
     def update(self, commodity_id: str, *, data: CommodityUpdateRequest | dict) -> Commodity:
@@ -42,6 +46,10 @@ class CommoditiesEndpoint(BaseEndpoint):
                 Accepts a :class:`CommodityUpdateRequest` instance or a dict.
 
         Request model: :class:`CommodityUpdateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodities/update.html
+        Request model: CommodityUpdateRequest
+        Response model: Commodity
         """
         return self._request(_UPDATE.bind(id=commodity_id), json=data)
 
@@ -54,6 +62,10 @@ class CommoditiesEndpoint(BaseEndpoint):
                 Accepts a :class:`CommodityCreateRequest` instance or a dict.
 
         Request model: :class:`CommodityCreateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodities/create.html
+        Request model: CommodityCreateRequest
+        Response model: Commodity
         """
         return self._request(_CREATE, json=data)
 
@@ -65,6 +77,10 @@ class CommoditiesEndpoint(BaseEndpoint):
                 Accepts a :class:`CommoditySearchRequest` instance or a dict.
 
         Request model: :class:`CommoditySearchRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodities/search.html
+        Request model: CommoditySearchRequest
+        Response model: List[Commodity]
         """
         return self._request(_SEARCH, json=data)
 
@@ -76,5 +92,9 @@ class CommoditiesEndpoint(BaseEndpoint):
                 Accepts a :class:`CommoditySuggestionRequest` instance or a dict.
 
         Request model: :class:`CommoditySuggestionRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/commodities/suggestions.html
+        Request model: CommoditySuggestionRequest
+        Response model: List[Commodity]
         """
         return self._request(_SUGGESTIONS, json=data)

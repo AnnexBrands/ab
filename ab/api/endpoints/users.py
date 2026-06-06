@@ -28,11 +28,18 @@ class UsersEndpoint(BaseEndpoint):
                 Accepts a :class:`ListRequest` instance or a dict.
 
         Request model: :class:`ListRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/users/list.html
+        Request model: ListRequest
+        Response model: List[User]
         """
         return self._request(_LIST, json=data)
 
     def get_roles(self) -> list[str]:
-        """GET /users/roles"""
+        """GET /users/roles
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/users/get_roles.html
+        """
         return self._request(_ROLES)
 
     def create(self, *, data: UserCreateRequest | dict) -> None:
@@ -43,6 +50,9 @@ class UsersEndpoint(BaseEndpoint):
                 Accepts a :class:`UserCreateRequest` instance or a dict.
 
         Request model: :class:`UserCreateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/users/create.html
+        Request model: UserCreateRequest
         """
         return self._request(_CREATE, json=data)
 
@@ -54,5 +64,8 @@ class UsersEndpoint(BaseEndpoint):
                 Accepts a :class:`UserUpdateRequest` instance or a dict.
 
         Request model: :class:`UserUpdateRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/users/update.html
+        Request model: UserUpdateRequest
         """
         return self._request(_UPDATE, json=data)

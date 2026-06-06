@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "message": "Uploaded",
+  "uploadedFiles": [
+    {
+      "id": 12345,
+      "fileName": "photo.jpg",
+      "fileSize": 20480,
+      "documentType": "Item Photo",
+      "itemId": 1,
+      "thumbnailUrl": "https://cdn.example.com/thumbnails/12345.jpg"
+    }
+  ],
+  "id": 12345,
+  "fileName": "photo.jpg"
+}

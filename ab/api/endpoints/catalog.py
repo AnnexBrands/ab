@@ -48,6 +48,10 @@ class CatalogEndpoint(BaseEndpoint):
                 Accepts an :class:`AddCatalogRequest` instance or a dict.
 
         Request model: :class:`AddCatalogRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/catalog/create.html
+        Request model: AddCatalogRequest
+        Response model: CatalogWithSellersDto
         """
         return self._request(_CREATE, json=data)
 
@@ -105,6 +109,9 @@ class CatalogEndpoint(BaseEndpoint):
 
         Returns:
             CatalogExpandedDto: Catalog details with seller/lot counts.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/catalog/get.html
+        Response model: CatalogExpandedDto
         """
         return self._request(_GET.bind(id=catalog_id))
 
@@ -119,6 +126,10 @@ class CatalogEndpoint(BaseEndpoint):
                 :class:`UpdateCatalogRequest` instance or a dict.
 
         Request model: :class:`UpdateCatalogRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/catalog/update.html
+        Request model: UpdateCatalogRequest
+        Response model: CatalogWithSellersDto
         """
         return self._request(_UPDATE.bind(id=catalog_id), json=data)
 
@@ -127,6 +138,8 @@ class CatalogEndpoint(BaseEndpoint):
 
         Args:
             catalog_id: Catalog identifier.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/catalog/delete.html
         """
         self._request(_DELETE.bind(id=catalog_id))
 
@@ -143,5 +156,8 @@ class CatalogEndpoint(BaseEndpoint):
                 Accepts a :class:`BulkInsertRequest` instance or a dict.
 
         Request model: :class:`BulkInsertRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/catalog/bulk_insert.html
+        Request model: BulkInsertRequest
         """
         return self._request(_BULK_INSERT, json=data)

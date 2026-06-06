@@ -4,15 +4,33 @@ from enum import Enum
 
 
 class DocumentType(int, Enum):
-    """Document type identifiers used by the Documents endpoint."""
+    """Document type identifiers used by the Documents endpoint.
 
-    UNKNOWN = 0
-    BOL = 1
-    INVOICE = 2
-    PHOTO = 3
-    CLAIM = 4
-    POD = 5
-    OTHER = 6
+    Values mirror the live ``GET /lookup/documentTypes`` lookup exactly (see
+    ``tests/fixtures/DocumentTypeBySource.json``), which is the authoritative
+    source. ``ITEM_PHOTO`` (6) is the type used when attaching photos to job
+    items via ``POST /documents`` with ``JobItems`` set. The
+    ``test_document_type_enum_matches_lookup`` gate keeps this in sync.
+    """
+
+    LABEL = 1
+    USAR = 2
+    CREDIT_CARD_AUTH = 3
+    BOL = 4
+    ELECTRONIC_INVOICE = 5
+    ITEM_PHOTO = 6
+    OTHER = 7
+    MANIFEST = 8
+    COMMERCIAL_INVOICE = 9
+    PRO_FORMA_INVOICE = 10
+    PACKING_LIST = 11
+    INTERNATIONAL_FORMS = 12
+    AIR_WAYBILL = 13
+    TERMS_AND_CONDITIONS = 14
+    CUSTOMER_QUOTE = 15
+    PICKUP_RECEIPT = 16
+    UPS_CONTROL_LOG = 18
+    DELETED_LABEL = 19
 
 
 class CarrierAPI(int, Enum):

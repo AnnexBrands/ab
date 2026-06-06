@@ -59,7 +59,12 @@ def _load_swagger_params() -> dict[tuple[str, str], set[str]]:
 
 
 def _load_swagger_request_bodies() -> set[tuple[str, str]]:
-    """Return ``{(METHOD, /path)}`` for operations that define a requestBody."""
+    """Return ``{(METHOD, /path)}`` for operations with a **JSON** requestBody.
+
+    Multipart/form-data bodies (file uploads such as ``POST /documents``) are
+    intentionally excluded: those are sent via ``files=``/``data=`` multipart
+    transport, not ``json=``, so the json-transport check must not flag them.
+    """
     has_body: set[tuple[str, str]] = set()
     for surface, path in SWAGGER_FILES.items():
         if not path.exists():
@@ -70,7 +75,11 @@ def _load_swagger_request_bodies() -> set[tuple[str, str]]:
             for method, operation in methods.items():
                 if method in ("parameters", "servers", "summary", "description"):
                     continue
-                if "requestBody" in operation:
+                request_body = operation.get("requestBody")
+                if not request_body:
+                    continue
+                content_types = (request_body.get("content") or {}).keys()
+                if any("json" in ct.lower() for ct in content_types):
                     has_body.add((method.upper(), api_path))
     return has_body
 

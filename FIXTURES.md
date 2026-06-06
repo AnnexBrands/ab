@@ -207,7 +207,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /job/{jobDisplayId}/payment/cancelJobACHVerification | POST | api.jobs.payment.cancel_ach_verification | — | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /contacts/editdetails | POST | api.contacts.create | ContactEditRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /contacts/{contactId}/editdetails | PUT | api.contacts.update_details | ContactEditRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
-| /documents | POST | — | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
+| /documents | POST | api.documents.upload | DocumentUploadRequest | DocumentUploadResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /documents/update/{docId} | PUT | api.documents.update | DocumentUpdateRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /users/user | POST | api.users.create | UserCreateRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |
 | /users/user | PUT | api.users.update | UserUpdateRequest | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | 020 |

@@ -32,6 +32,10 @@ class Web2LeadEndpoint(BaseEndpoint):
                 with snake_case or PascalCase keys.
 
         Params model: :class:`Web2LeadGetParams`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/web2lead/get.html
+        Query params: Web2LeadGetParams
+        Response model: Web2LeadResponse
         """
         return self._request(_GET, params=params)
 
@@ -43,5 +47,9 @@ class Web2LeadEndpoint(BaseEndpoint):
                 Accepts a :class:`Web2LeadRequest` instance or a dict.
 
         Request model: :class:`Web2LeadRequest`
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/web2lead/post.html
+        Request model: Web2LeadRequest
+        Response model: Web2LeadResponse
         """
         return self._request(_POST, json=data)

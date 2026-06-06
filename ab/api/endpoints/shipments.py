@@ -68,18 +68,31 @@ class ShipmentsEndpoint(BaseEndpoint):
         provider_id: str | None = None,
         pro_number: str | None = None,
     ) -> ShipmentInfo:
-        """``GET /shipment``"""
+        """``GET /shipment``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/shipments/get_shipment.html
+        Query params: ShipmentParams
+        Response model: ShipmentInfo
+        """
         return self._request(
             _GET_SHIPMENT,
             params=dict(franchisee_id=franchisee_id, provider_id=provider_id, pro_number=pro_number),
         )
 
     def get_global_accessorials(self) -> list[GlobalAccessorial]:
-        """``GET /shipment/accessorials``"""
+        """``GET /shipment/accessorials``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/shipments/get_global_accessorials.html
+        Response model: List[GlobalAccessorial]
+        """
         return self._request(_GET_GLOBAL_ACCESSORIALS)
 
     def get_shipment_document(self, doc_id: str) -> bytes:
-        """``GET /shipment/document/{docId}``"""
+        """``GET /shipment/document/{docId}``
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/shipments/get_shipment_document.html
+        Query params: ShipmentDocumentParams
+        """
         return self._request(_GET_SHIPMENT_DOCUMENT.bind(docId=doc_id))
 
     # ---- Job-scoped (deprecated shims) --------------------------------

@@ -36,7 +36,7 @@ Returns `Job`.
 | `modifiedDate` | `Optional[datetime]` | no | Last modification timestamp |
 | `createdBy` | `Optional[str]` | no | Creator identifier |
 | `modifiedBy` | `Optional[str]` | no | Last modifier identifier |
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `jobDisplayId` | `Optional[int]` | no | Human-readable job ID |
 | `status` | `Optional[str]` | no | Job status |
 | `customer` | `Optional[dict]` | no | Customer details |
@@ -73,4 +73,4 @@ Returns `Job`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)

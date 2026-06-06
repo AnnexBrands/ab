@@ -23,7 +23,7 @@ Returns a list of `List[Accessorial]`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `str | int | None` | no | Unique identifier |
+| `id` | `str \| int \| None` | no | Unique identifier |
 | `name` | `Optional[str]` | no | Accessorial name |
 | `description` | `Optional[str]` | no | Description |
 | `price` | `Optional[float]` | no | Additional cost |
@@ -31,4 +31,4 @@ Returns a list of `List[Accessorial]`.
 
 ---
 
-[← Back to Jobs](../jobs.md)
+[← Back to api.jobs](../jobs.md)
