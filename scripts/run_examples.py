@@ -110,6 +110,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--capture", action="store_true", help="re-capture fixtures from live (refresh)")
     ap.add_argument("--list", action="store_true", dest="list_only", help="dry run; print plan, no network")
     ap.add_argument("--date", help="ISO date to stamp results (default: today)")
+    ap.add_argument(
+        "--no-log",
+        action="store_true",
+        help="do not record each run's produced JSON into progress.db (the app viewer)",
+    )
     args = ap.parse_args(argv)
 
     plan = _plan(args.group)
@@ -165,6 +170,12 @@ def main(argv: list[str] | None = None) -> int:
                     "fixture": fixture,
                     "detail": detail,
                 }
+                if not args.no_log:
+                    # Record the produced JSON so the interactive app can show it.
+                    from ab.progress import db
+
+                    db.init_db()
+                    db.set_run_capture(key, produced, fixture=fixture, matched=matches)
                 if matches:
                     passing += 1
                     print(f"  [pass  ] {key}")

@@ -56,11 +56,16 @@ def init_db(db_path: Path | None = None) -> None:
                 status_code   INTEGER,
                 request_json  TEXT,
                 response_json TEXT,
+                source        TEXT NOT NULL DEFAULT 'manual',
                 created_at    TEXT
             );
             CREATE INDEX IF NOT EXISTS ix_capture_endpoint ON capture(endpoint_key);
             """
         )
+        # Migrate older DBs that predate the `source` column.
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(capture)").fetchall()}
+        if "source" not in cols:
+            conn.execute("ALTER TABLE capture ADD COLUMN source TEXT NOT NULL DEFAULT 'manual'")
 
 
 # ---- sign-offs -------------------------------------------------------------
@@ -146,6 +151,7 @@ def add_capture(
     status_code: int | None = None,
     request: object = None,
     response: object = None,
+    source: str = "manual",
     db_path: Path | None = None,
 ) -> int:
     """Log one HTTP request/response for an endpoint; returns the row id."""
@@ -154,10 +160,43 @@ def add_capture(
     with connect(db_path) as conn:
         cur = conn.execute(
             "INSERT INTO capture(endpoint_key, http_method, url, status_code, request_json, "
-            "response_json, created_at) VALUES(?,?,?,?,?,?,?)",
-            (endpoint_key, http_method, url, status_code, req, resp, _now()),
+            "response_json, source, created_at) VALUES(?,?,?,?,?,?,?,?)",
+            (endpoint_key, http_method, url, status_code, req, resp, source, _now()),
         )
         return int(cur.lastrowid)
+
+
+def set_run_capture(
+    endpoint_key: str,
+    response: object,
+    *,
+    http_method: str | None = None,
+    fixture: str | None = None,
+    matched: bool | None = None,
+    db_path: Path | None = None,
+) -> int:
+    """Record the latest harness-run output for an endpoint (one per endpoint).
+
+    Replaces any prior ``source='run'`` row so the app shows the most recent run's
+    JSON response. ``url`` carries a human marker (fixture + match/diff).
+    """
+    marker = "example-run"
+    if fixture:
+        marker += f": {fixture}"
+    if matched is not None:
+        marker += "  (match)" if matched else "  (DIFF vs fixture)"
+    with connect(db_path) as conn:
+        conn.execute(
+            "DELETE FROM capture WHERE endpoint_key=? AND source='run'", (endpoint_key,)
+        )
+    return add_capture(
+        endpoint_key,
+        http_method=http_method,
+        url=marker,
+        response=response,
+        source="run",
+        db_path=db_path,
+    )
 
 
 def list_captures(endpoint_key: str, db_path: Path | None = None) -> list[dict]:
@@ -176,6 +215,7 @@ def list_captures(endpoint_key: str, db_path: Path | None = None) -> list[dict]:
                 "status_code": r["status_code"],
                 "request": json.loads(r["request_json"]) if r["request_json"] else None,
                 "response": json.loads(r["response_json"]) if r["response_json"] else None,
+                "source": r["source"] if "source" in r.keys() else "manual",
                 "created_at": r["created_at"],
             }
         )

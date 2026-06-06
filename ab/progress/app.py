@@ -305,10 +305,12 @@ function loadCaps(key){api('/api/captures?endpoint='+encodeURIComponent(key)).th
 function renderCaps(caps){
   const box=$('#caps');if(!box)return;
   if(!caps.length){box.innerHTML='<div class="muted" style="margin-top:10px">No captures logged yet.</div>';return;}
-  box.innerHTML='<h3 style="margin-top:16px">Logged captures ('+caps.length+')</h3>'+caps.map(c=>`
-    <div class="cap"><b>${c.http_method||''}</b> ${c.url||''} ${c.status_code?('· '+c.status_code):''}
+  box.innerHTML='<h3 style="margin-top:16px">Captures &amp; run output ('+caps.length+')</h3>'+caps.map(c=>{
+    const src=c.source==='run'?'<span class="pill" style="background:#4c8dff;color:#fff">run</span>'
+      :'<span class="pill" style="background:#fd7e14;color:#fff">paste</span>';
+    return `<div class="cap">${src} <b>${c.http_method||''}</b> ${escapeHtml(c.url||'')} ${c.status_code?('· '+c.status_code):''}
     <span class="muted">· ${c.created_at}</span>
-    ${c.response!=null?'<pre>'+escapeHtml(JSON.stringify(c.response,null,2)).slice(0,4000)+'</pre>':''}</div>`).join('');
+    ${c.response!=null?'<pre>'+escapeHtml(JSON.stringify(c.response,null,2)).slice(0,4000)+'</pre>':''}</div>`;}).join('');
 }
 function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 $('#t-tags').onclick=()=>{MODE='tags';$('#t-tags').classList.add('on');$('#t-paths').classList.remove('on');renderTree();};
