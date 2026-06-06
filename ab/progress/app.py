@@ -208,14 +208,14 @@ small.note{color:var(--mut)}
 <div id="nav">
   <header class="bar">
     <h1>Example Capture &amp; Harmony</h1>
-    <div class="tabs"><button id="t-tags" class="on">Tags</button><button id="t-paths">Paths</button></div>
+    <div class="muted" style="font-size:11px;margin-bottom:8px">path › tag › endpoint — click to expand</div>
     <input id="search" placeholder="filter endpoints…">
   </header>
   <div id="tree"></div>
 </div>
 <div id="main"><div class="empty">Loading…</div></div>
 <script>
-let DATA=null, MODE='tags', SEL=null, FILTER='';
+let DATA=null, SEL=null, FILTER='', OPEN=new Set();
 const $=s=>document.querySelector(s), ce=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e;};
 const RUN={passing:['#28a745','pass'],failing:['#dc3545','fail'],not_verified:['#6c757d','not run'],
 awaiting_data:['#ffc107','needs data'],awaiting_paste:['#fd7e14','paste'],binary:['#6610f2','binary'],
@@ -225,31 +225,56 @@ async function load(){DATA=await api('/api/data');renderSummary();renderTree();i
 function find(k){return DATA.endpoints.find(e=>e.endpoint_key===k);}
 function renderSummary(){/* summary cards live atop detail when nothing selected */}
 function epColor(e){return RUN[e.run_status]?RUN[e.run_status][0]:'#6c757d';}
-function groups(){
-  const map={};
+function epMatch(e){return !FILTER||e.endpoint_key.toLowerCase().includes(FILTER)||e.path.toLowerCase().includes(FILTER);}
+function doneCount(eps){return eps.filter(e=>e.example_ok&&e.tests_ok&&e.sphinx_ok).length;}
+function hasSel(eps){return SEL&&eps.some(e=>e.endpoint_key===SEL);}
+function buildTree(){
+  // path-segment -> tag -> [endpoints]
+  const segs={};
   for(const e of DATA.endpoints){
-    if(FILTER && !e.endpoint_key.toLowerCase().includes(FILTER) && !e.path.toLowerCase().includes(FILTER))continue;
-    let keys;
-    if(MODE==='tags')keys=(e.tags&&e.tags.length?e.tags:['(untagged)']);
-    else keys=['/'+(e.path.replace(/^\//,'').split('/')[0]||'')];
-    for(const k of keys){(map[k]=map[k]||[]).push(e);}
+    if(!epMatch(e))continue;
+    const seg='/'+(e.path.replace(/^\//,'').split('/')[0]||'');
+    const tag=(e.tags&&e.tags.length?e.tags[0]:'(untagged)');
+    ((segs[seg]=segs[seg]||{})[tag]=segs[seg][tag]||[]).push(e);
   }
-  return map;
+  return segs;
+}
+function epRow(e){
+  const row=ce('div','ep'+(SEL===e.endpoint_key?' sel':''));
+  const dot=ce('span','dot');dot.style.background=epColor(e);
+  const m=ce('span','m');m.textContent=e.http_method;
+  const t=ce('span');t.textContent=e.endpoint_key.replace(/^api\./,'');
+  row.append(dot,m,t);
+  row.onclick=()=>{SEL=e.endpoint_key;renderDetail(e);renderTree();};
+  return row;
+}
+function node(key,label,depth,forceOpen){
+  const d=ce('details','grp');
+  d.dataset.key=key;
+  d.open = forceOpen || OPEN.has(key) || !!FILTER;
+  d.addEventListener('toggle',()=>{ if(d.open)OPEN.add(key); else OPEN.delete(key); });
+  const s=ce('summary');s.style.paddingLeft=(8+depth*14)+'px';s.textContent=label;d.appendChild(s);
+  return d;
 }
 function renderTree(){
   const tree=$('#tree');tree.innerHTML='';
-  const map=groups();const keys=Object.keys(map).sort();
-  for(const k of keys){
-    const d=ce('details','grp');d.open=!!FILTER||keys.length<=4;
-    const s=ce('summary');const done=map[k].filter(e=>e.example_ok&&e.tests_ok&&e.sphinx_ok).length;
-    s.textContent=`${k}  (${done}/${map[k].length})`;d.appendChild(s);
-    for(const e of map[k].sort((a,b)=>a.endpoint_key.localeCompare(b.endpoint_key))){
-      const row=ce('div','ep'+(SEL===e.endpoint_key?' sel':''));
-      const dot=ce('span','dot');dot.style.background=epColor(e);
-      const m=ce('span','m');m.textContent=e.http_method;
-      const t=ce('span');t.textContent=e.endpoint_key.replace(/^api\./,'');
-      row.append(dot,m,t);row.onclick=()=>{SEL=e.endpoint_key;renderDetail(e);renderTree();};
-      d.appendChild(row);
+  const segs=buildTree();
+  for(const seg of Object.keys(segs).sort()){
+    const tags=segs[seg];
+    const tagNames=Object.keys(tags).sort();
+    const allEps=tagNames.map(t=>tags[t]).flat();
+    const segKey='seg:'+seg;
+    const d=node(segKey,`${seg}  (${doneCount(allEps)}/${allEps.length})`,0,hasSel(allEps));
+    if(tagNames.length===1){
+      // single tag for this path → collapse the redundant tag layer
+      allEps.sort((a,b)=>a.endpoint_key.localeCompare(b.endpoint_key)).forEach(e=>d.appendChild(epRow(e)));
+    } else {
+      for(const tag of tagNames){
+        const eps=tags[tag].sort((a,b)=>a.endpoint_key.localeCompare(b.endpoint_key));
+        const td=node(segKey+'|'+tag,`${tag}  (${doneCount(eps)}/${eps.length})`,1,hasSel(eps));
+        eps.forEach(e=>td.appendChild(epRow(e)));
+        d.appendChild(td);
+      }
     }
     tree.appendChild(d);
   }
@@ -333,8 +358,6 @@ function renderCaps(caps){
     ${c.response!=null?'<pre>'+escapeHtml(JSON.stringify(c.response,null,2)).slice(0,4000)+'</pre>':''}</div>`;}).join('');
 }
 function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
-$('#t-tags').onclick=()=>{MODE='tags';$('#t-tags').classList.add('on');$('#t-paths').classList.remove('on');renderTree();};
-$('#t-paths').onclick=()=>{MODE='paths';$('#t-paths').classList.add('on');$('#t-tags').classList.remove('on');renderTree();};
 $('#search').oninput=ev=>{FILTER=ev.target.value.toLowerCase();renderTree();};
 load();
 </script>
