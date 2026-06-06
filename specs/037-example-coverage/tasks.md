@@ -7,6 +7,22 @@ description: "Task list for 037-example-coverage"
 **Input**: Design documents from `/specs/037-example-coverage/`
 **Prerequisites**: plan.md, spec.md, research.md (D1–D11), data-model.md, contracts/
 
+## Status — end of speckit cycle (2026-06-06)
+
+The **framework and the interactive app are complete and shipped** (engine: example
+index, run-and-verify harness, comparison policy, paste-capture + ingest, no-drift
+report Run column, coverage gate; app: nested nav, per-endpoint request/response
+workbench with live Run, harmony popovers, sign-off, SQLite). Suite **925 passed / 0
+failed**, ruff clean, no-drift green.
+
+**Ongoing beyond this cycle (operator-driven, gated, not blocking):** the per-endpoint
+**content** migration — authoring/migrating the remaining ~175 examples (T010–T013,
+T027–T031). These proceed through the agreed **interactive enrichment flow** (operator
+gets a call working in the workbench or says "make `_X.py` pass with this input" → agent
+promotes it to the canonical `examples/X.py` + fixture + test). The coverage gate
+(`STRICT_*` flags) stays xfail until that work completes, so it can't silently regress.
+Current: 209 routed · **34 canonical** · 114 legacy-only · 175 uncovered.
+
 **Tests**: Included **only** where the test IS the deliverable — the coverage gate
 (FR-008), comparison policy (FR-009), no-drift artifact (FR-007), and ingest validation
 (FR-013). These are features, not tests-of-implementation.
@@ -84,7 +100,7 @@ per-endpoint Run status; mutations are never auto-run.
 - [X] T017 [US2] In `ab/progress/report.py::_gather()` load `tests/example_run_results.json` (if present) and compute each `MethodProgress.run_status`/`run_checked`/`run_detail`: artifact entry → `passing|failing|binary`; otherwise derive `runnable→awaiting_data / awaiting_paste / binary / missing_example` from method + example + fixture. Depends on T004, T005.
 - [X] T018 [US2] Add a **Run** column with status badges to the helpers and sub-group tables in `ab/progress/renderer.py::render_endpoint_class_progress` (reuse/extend `_yn_badge` with a status-badge variant); add a coverage summary card. Depends on T017.
 - [X] T019 [P] [US2] Write `tests/test_example_run_results_drift.py` (non-live): `tests/example_run_results.json` validates against `contracts/example_run_results.schema.json`, keys are sorted, and `is_report_current()` stays true after regeneration (no-drift incl. the artifact).
-- [ ] T020 [US2] Run `scripts/generate_progress.py`; confirm the Run column renders and existing no-drift tests pass. Validates SC-004.
+- [X] T020 [US2] Run `scripts/generate_progress.py`; confirm the Run column renders and existing no-drift tests pass. Validates SC-004.
 
 **Checkpoint**: The report verifiably expects read-only examples to match fixtures.
 
@@ -104,7 +120,7 @@ flips status.
 - [X] T023 [P] [US3] Create `ab/progress/captures.py`: load+shape-validate `captures.json`, resolve each endpoint→response/request model + fixture path, and validate each pasted payload by constructing the pydantic model (single or `List[...]`), returning structured ok/malformed results (FR-013).
 - [X] T024 [US3] Create `scripts/ingest_captures.py`: use `captures.py` to validate, write `tests/fixtures/<Model>.json` (+ `tests/fixtures/requests/<ReqModel>.json` when a request is present), generate/update the canonical example via `example_gen` (T006), and record `passing`(source=`paste`) in `tests/example_run_results.json`; malformed entries are reported and skipped (no fixture written). Depends on T006, T023.
 - [X] T025 [P] [US3] Write `tests/unit/test_captures_ingest.py` (non-live): a malformed paste is rejected with no fixture written; a valid sample paste yields a fixture + example + a `paste` results entry; a sample `captures.json` validates against the schema.
-- [ ] T026 [US3] Roundtrip per `quickstart.md`: regenerate the report, simulate a paste, download `captures.json`, run `ingest_captures.py`, and confirm `pytest -m "not live"` stays green and the endpoint is no longer awaiting paste. Validates SC-003.
+- [X] T026 [US3] Roundtrip per `quickstart.md`: regenerate the report, simulate a paste, download `captures.json`, run `ingest_captures.py`, and confirm `pytest -m "not live"` stays green and the endpoint is no longer awaiting paste. Validates SC-003.
 
 **Checkpoint**: Every non-runnable endpoint is coverable via paste.
 
@@ -123,7 +139,7 @@ remaining; each migrated endpoint reads as a plain script.
 - [ ] T029 [P] [US4] Migrate batch 3 (notes/notes_global, parcels, partners, payments, sellers, shipments, users, web2lead, forms, email_sms, onhold, freight_providers, tracking, lots, documents) → plain scripts; leave `_`-files in place.
 - [ ] T030 [US4] Update `html/rm_runner.html` to mark every migrated file done and show remaining count = 0.
 - [ ] T031 [US4] Harden the `legacy_only_endpoints()` assertion in `tests/test_example_coverage.py` from warning/xfail to a hard failure; run the gate → zero legacy-only. Validates SC-006.
-- [ ] T032 [US4] Record the explicit retain-vs-delete decision for `examples/_runner.py` and the `_`-files in `specs/037-example-coverage/research.md` (under D11) per the no-deletion policy; **do not delete** any file as part of this feature.
+- [X] T032 [US4] Record the explicit retain-vs-delete decision for `examples/_runner.py` and the `_`-files in `specs/037-example-coverage/research.md` (under D11) per the no-deletion policy; **do not delete** any file as part of this feature.
 
 **Checkpoint**: Canonical example set is entirely plain scripts.
 
@@ -149,12 +165,26 @@ toggle sign-offs (persist on reload), log a capture (retained), see harmony per 
 
 ---
 
+## Phase 9: Interactive app evolution (UAT-driven, US5)
+
+**Goal**: Make the app the working surface for the interactive enrichment flow.
+
+- [X] T045 Single nested `path › tag › endpoint` nav tree (collapsed, expand-on-select, redundant single-tag layer collapsed, OPEN-set preserves state) in `ab/progress/app.py`.
+- [X] T046 Per-endpoint request/response **workbench** (`ab/progress/workbench.py` + app UI): LHS real Python call read live from the example file (+ `from examples.constants` imports) + JSON request body; RHS swagger response codes + latest fixture JSON.
+- [X] T047 **▶ Run** executes the edited LHS code live (`run_code`, subprocess + capture) with a mutation-confirm gate; edits persist (no full re-render) and run output logs to the app viewer.
+- [X] T048 Harmony pillars are **popovers** (Implementation source, Sphinx link, Example, Fixture, Test coverage).
+- [X] T049 Response **JSON | Pydantic** toggle; save buttons for request fixture, response fixture, and improvement (`tests/example_edits.json`).
+- [X] T050 `serve()` auto-skips busy ports and binds `0.0.0.0` (WSL2 reachability); `tests/unit/test_progress_db.py` + `tests/unit/test_harmony.py` cover the new modules.
+- [X] T051 Demonstrate the interactive flow: migrate `examples/_agent.py` → canonical `examples/agent.py` (operator-verified input, mutation-guarded); `api.jobs.change_agent` now canonical.
+
+---
+
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T033 [P] Update `README.md` and the discoverability section of `CLAUDE.md` with the example contract, `scripts/run_examples.py`, and `scripts/ingest_captures.py` workflow.
+- [X] T033 [P] Update `README.md` and the discoverability section of `CLAUDE.md` with the example contract, `scripts/run_examples.py`, and `scripts/ingest_captures.py` workflow.
 - [ ] T034 [P] Reconcile `FIXTURES.md` notes with the new run-status source (cross-reference, no functional change).
-- [ ] T035 Full certification: `.venv/bin/pytest -m "not live" -q` green, `.venv/bin/ruff check .` clean, regenerate `html/progress.html`, confirm `is_report_current()` (no-drift). Validates SC-007.
-- [ ] T036 Checkpoint commits per phase boundary (Constitution VIII): one commit per completed phase with the phase name in the message.
+- [X] T035 Full certification: `.venv/bin/pytest -m "not live" -q` green, `.venv/bin/ruff check .` clean, regenerate `html/progress.html`, confirm `is_report_current()` (no-drift). Validates SC-007.
+- [X] T036 Checkpoint commits per phase boundary (Constitution VIII): one commit per completed phase with the phase name in the message.
 
 ---
 

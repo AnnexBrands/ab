@@ -134,6 +134,31 @@ adds two `scripts/` entrypoints (`run_examples.py`, `ingest_captures.py`), a sha
 `examples/_capture.py`, and non-live pytest gates. No new top-level packages; nothing
 removed.
 
+**Delivered additions beyond the original plan (interactive app, US5 + UAT):**
+
+```text
+ab/progress/
+├── harmony.py     # NEW: per-endpoint Four-Way Harmony + swagger tags + coverage.json
+├── db.py          # NEW: SQLite (signoff, capture, example_edit) + exports
+├── workbench.py   # NEW: per-endpoint detail (live snippet, response codes, run_code, pydantic)
+└── app.py         # NEW: stdlib http.server JSON API + single-page UI
+scripts/serve_progress.py   # NEW: launch the interactive app (0.0.0.0, auto-skip busy ports)
+tests/{example_signoffs.json, example_edits.json}  # committed sign-off / improvement stores
+tests/unit/{test_progress_db.py, test_harmony.py, ...}  # cover new modules
+tests/test_example_call_signatures.py   # NEW gate: example api.* calls bind to signatures
+```
+
+Still **stdlib-only** for `ab` (sqlite3 + http.server); `coverage` added to the
+pyproject *test* group only.
+
+## Delivered vs. ongoing (end of cycle)
+
+**Delivered & verified:** the full engine + interactive app (see tasks.md Status).
+**Ongoing (operator-driven, gated):** per-endpoint content migration of the remaining
+~175 examples via the interactive enrichment flow; the coverage gate stays xfail until
+it completes. `T044` (surface `example_signoffs.json` in CI) and full docs polish
+(`T033`/`T034`) are deferred follow-ups.
+
 ## Key Design Decisions (detail in research.md)
 
 - **D1 — Example is the instrument, harness redirects its save.** The live harness

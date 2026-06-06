@@ -94,6 +94,37 @@ pytest -m "not live" -k example_coverage
 
 ---
 
+## Interactive app — harmony, workbench, sign-off (US5)
+
+```bash
+python scripts/serve_progress.py          # http://localhost:8765+ (auto-skips busy ports)
+#   binds 0.0.0.0 → reachable from a Windows browser over WSL2 (localhost or the WSL IP)
+# refresh coverage first so the harmony "Test" column is current:
+coverage run --source=ab -m pytest -m "not live" -q && coverage json -o coverage.json
+```
+
+In the app: left nav drills `path › tag › endpoint`. Selecting an endpoint opens the
+**workbench**:
+
+- **LHS request** — the real `import` + `api.<group>.<method>(...)` call (read live from
+  the example file), editable, plus a JSON request-body field. **▶ Run** executes the
+  edited code against staging (mutations need the *confirm* checkbox) and shows the
+  produced response + a `matches fixture` / `DIFF` badge.
+- **RHS response** — swagger response codes + the latest fixture JSON, with a
+  **JSON | Pydantic** toggle. Save buttons write the request fixture, the response
+  fixture, and an "improvement" record (`tests/example_edits.json`).
+- **Harmony pillars** are popovers (implementation source, Sphinx link, example, fixture,
+  coverage). **Sign-off** checkboxes (example/tests/Sphinx) persist to `progress.db` and
+  export to `tests/example_signoffs.json`.
+
+### Interactive enrichment flow
+
+Get a call working in the workbench (or tell the agent "make `examples/_X.py` pass with
+this input"). The agent then promotes the legacy `_X.py` to the canonical
+`examples/X.py` (mutation-guarded, real input), captures its fixture, and wires the test
+— reading your saved `tests/example_edits.json` where relevant. `_X.py` is retained
+(no-deletion); `X.py` becomes canonical.
+
 ## Definition of done (maps to Success Criteria)
 
 - `pytest -m "not live"` green, incl. coverage gate → SC-001, SC-005.
