@@ -26,7 +26,7 @@ from ab.progress.app import serve  # noqa: E402
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--host", default="0.0.0.0")
     ap.add_argument("--port", type=int, default=8765)
     args = ap.parse_args(argv)
     serve(host=args.host, port=args.port)

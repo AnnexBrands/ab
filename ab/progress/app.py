@@ -166,11 +166,27 @@ class _Handler(BaseHTTPRequestHandler):
         return self._json({"error": "not found"}, 404)
 
 
-def serve(host: str = "127.0.0.1", port: int = 8765, *, max_tries: int = 20) -> None:
+def _primary_ip() -> str:
+    """Best-effort LAN/WSL IP for cross-host (e.g. Windows→WSL2) access."""
+    import socket
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.254", 1))
+        return s.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
+def serve(host: str = "0.0.0.0", port: int = 8765, *, max_tries: int = 20) -> None:
     """Run the app (blocking). Initializes the DB and imports committed sign-offs.
 
-    If *port* is already in use (e.g. another service holds it), advances to the
-    next free port rather than crashing, and prints the URL it actually bound.
+    Binds ``0.0.0.0`` by default so it is reachable both via ``localhost`` and via the
+    machine's IP — important under WSL2 NAT, where a 127.0.0.1-only bind is often not
+    forwarded to the Windows browser. If *port* is already in use, advances to the next
+    free port rather than crashing, and prints the URLs it actually bound.
     """
     import errno
 
@@ -191,7 +207,10 @@ def serve(host: str = "127.0.0.1", port: int = 8765, *, max_tries: int = 20) -> 
     if httpd is None:
         raise SystemExit(f"no free port in {port}..{port + max_tries - 1}")
 
-    print(f"ab progress app -> http://{host}:{port}  (Ctrl-C to stop)")
+    if host in ("0.0.0.0", "::"):
+        print(f"ab progress app -> http://localhost:{port}  (or http://{_primary_ip()}:{port})  (Ctrl-C to stop)")
+    else:
+        print(f"ab progress app -> http://{host}:{port}  (Ctrl-C to stop)")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
