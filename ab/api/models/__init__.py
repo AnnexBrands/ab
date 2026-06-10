@@ -135,7 +135,7 @@ from ab.api.models.documents import (
     DocumentUploadResponse,
     UploadedFile,
 )
-from ab.api.models.enums import CarrierAPI, DocumentType
+from ab.api.models.enums import CarrierAPI, DocumentType, MasterConstantKey
 from ab.api.models.forms import (
     BillOfLadingParams,
     FormsShipmentPlan,
@@ -354,7 +354,7 @@ __all__ = [
     # Shared
     "ServiceBaseResponse", "ServiceWarningResponse", "PaginatedList", "ListRequest",
     # Enums
-    "DocumentType", "CarrierAPI",
+    "DocumentType", "CarrierAPI", "MasterConstantKey",
     # Catalog
     "CatalogListParams",
     "CatalogDto", "CatalogWithSellersDto", "CatalogExpandedDto",

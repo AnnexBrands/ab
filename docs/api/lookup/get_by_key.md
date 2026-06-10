@@ -6,7 +6,7 @@
 **Python**
 
 ```python
-api.lookup.get_by_key(key: str) -> list[LookupValue]
+api.lookup.get_by_key(key: str | MasterConstantKey) -> list[LookupValue]
 ```
 
 **CLI**
@@ -16,6 +16,13 @@ ab lookup get_by_key <key>
 ```
 
 GET /lookup/{masterConstantKey}
+
+Args:
+    key: A master-constant GROUP key (e.g. ``"OnHoldReason"``,
+        ``"Job Management Status"``), NOT one of its values — see
+        :class:`~ab.api.models.enums.MasterConstantKey` for every
+        known key. The API returns ``[]`` (not 404) for an unknown
+        key, so a misspelt key looks like an empty group.
 
 ## Response
 
