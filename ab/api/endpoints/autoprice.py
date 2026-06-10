@@ -14,13 +14,18 @@ if TYPE_CHECKING:
 from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
+# Both quote routes accept body-level AccessKey credentials, so they are
+# callable from an anonymous client (``ABConnectAPI(anonymous=True)``); a
+# bearer token is still attached when the client has one.
 _QUICK_QUOTE = Route(
     "POST", "/autoprice/quickquote",
     request_model="QuoteRequestModel", response_model="QuickQuoteResponse", api_surface="abc",
+    auth_optional=True,
 )
 _QUOTE_REQUEST = Route(
     "POST", "/autoprice/v2/quoterequest",
     request_model="QuoteRequestModel", response_model="QuoteRequestResponse", api_surface="abc",
+    auth_optional=True,
 )
 
 

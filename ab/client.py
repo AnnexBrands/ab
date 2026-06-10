@@ -100,7 +100,28 @@ class ABConnectAPI:
         request: Any = None,
         token_storage: Optional[TokenStorage] = None,
         allow_password_fallback: Optional[bool] = None,
+        anonymous: bool = False,
+        extra_headers: Optional[Any] = None,
     ) -> None:
+        """See class docstring. Additional keyword args:
+
+        Args:
+            anonymous: Build a client with no credentials and no persisted
+                token. Only routes marked ``auth_optional`` (e.g. the
+                AccessKey-authenticated ``api.autoprice`` quote endpoints)
+                are callable; everything else raises
+                :class:`~ab.exceptions.AuthenticationError`.
+            extra_headers: A ``dict`` — or zero-arg callable returning a
+                ``dict`` — of headers attached to every request on all three
+                API surfaces (e.g. ``X-Correlation-ID`` / ``traceparent``).
+                Per-call ``headers=`` still win on conflict.
+        """
+        if anonymous and token_storage is None:
+            from ab.auth.memory import MemoryTokenStorage
+
+            token_storage = MemoryTokenStorage()
+            if allow_password_fallback is None:
+                allow_password_fallback = False
         external_storage = token_storage is not None or request is not None
         self._settings = load_settings(
             env=env,
@@ -129,18 +150,21 @@ class ABConnectAPI:
             self._settings,
             self._token_storage,
             allow_password_fallback=self._allow_password_fallback,
+            extra_headers=extra_headers,
         )
         self._catalog = HttpClient(
             self._settings.catalog_base_url,
             self._settings,
             self._token_storage,
             allow_password_fallback=self._allow_password_fallback,
+            extra_headers=extra_headers,
         )
         self._abc = HttpClient(
             self._settings.abc_base_url,
             self._settings,
             self._token_storage,
             allow_password_fallback=self._allow_password_fallback,
+            extra_headers=extra_headers,
         )
 
         # Code resolver (uses cache service for code→UUID)

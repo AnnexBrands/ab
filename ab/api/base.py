@@ -114,6 +114,8 @@ class BaseEndpoint:
                 kwargs["params"] = model_cls.check(params)
 
         target = client or self._client
+        if route.auth_optional:
+            kwargs.setdefault("auth_optional", True)
         response = target.request(route.method, route.path, **kwargs)
 
         # Cast response to model(s)
@@ -161,6 +163,8 @@ class BaseEndpoint:
             if hasattr(model_cls, "check"):
                 kwargs["params"] = model_cls.check(params)
 
+        if route.auth_optional:
+            kwargs.setdefault("auth_optional", True)
         response = self._client.request(route.method, route.path, **kwargs)
         if response is None:
             return None
