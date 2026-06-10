@@ -66,37 +66,8 @@ import json
 from ab import ABConnectAPI
 from ab.api.models.notes import NoteRequest, SuggestedUser
 from ab.cli.formatter import format_result
-from examples._capture import capture_dir, mutations_enabled
+from examples._capture import mutations_enabled, save
 from examples.constants import TEST_COMPANY_ID, TEST_NOTE_ID
-
-# Honors AB_EXAMPLE_CAPTURE_DIR (feature 037) — verify harness writes to temp.
-FIXTURES_DIR = capture_dir()
-
-
-def _save(name: str, payload) -> None:
-    """Serialise *payload* (Pydantic model or list) to ``tests/fixtures/{name}``.
-
-    No-ops when ``payload`` is an empty list -- the existing fixture (which
-    may have hand-crafted rows for tests) is preserved rather than
-    overwritten with ``[]``.
-    """
-    from pydantic import BaseModel
-
-    if isinstance(payload, list):
-        if not payload:
-            print(f"  (skipped -> {FIXTURES_DIR / name}: live result is empty)")
-            return
-        data = [
-            item.model_dump(by_alias=True, mode="json") if isinstance(item, BaseModel) else item
-            for item in payload
-        ]
-    elif isinstance(payload, BaseModel):
-        data = payload.model_dump(by_alias=True, mode="json")
-    else:
-        data = payload
-    out = FIXTURES_DIR / name
-    out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
-    print(f"  saved -> {out}")
 
 
 def main() -> None:
@@ -110,7 +81,7 @@ def main() -> None:
     print(f"\n# api.notes.list(company_id={TEST_COMPANY_ID!r})")
     notes = api.notes.list(company_id=TEST_COMPANY_ID)
     print(format_result(notes))
-    _save("GlobalNote.json", notes)
+    save("GlobalNote.json", notes)
 
     # --- Step 2: discover a category UUID -------------------------------
     # NB: for /lookup/referCategory the UUID lives in `.id` (not `.value`).
@@ -118,6 +89,7 @@ def main() -> None:
     categories = api.lookup.get_refer_categories()
     for c in categories[:5]:
         print(f"  id={c.id!r:<40} name={c.name!r}")
+    save("LookupValue.json", categories)
     if not categories:
         raise SystemExit("No note categories available on staging — cannot continue.")
     category_uuid = categories[0].id
@@ -127,7 +99,7 @@ def main() -> None:
     print(f"\n# api.notes.suggest_users('br', company_id={TEST_COMPANY_ID!r})")
     suggestions = api.notes.suggest_users("br", company_id=TEST_COMPANY_ID)
     print(format_result(suggestions))
-    _save("SuggestedUser.json", suggestions)
+    save("SuggestedUser.json", suggestions)
 
     # --- Step 4: build a NoteRequest (does not POST) --------------------
     # The example file deliberately does not call create() so re-running
@@ -153,7 +125,7 @@ def main() -> None:
         print("\n# api.notes.create(data=body)")
         created = api.notes.create(data=body)
         print(format_result(created))
-        _save("GlobalNote.json", [created])  # overwrite with a single-row fixture
+        save("GlobalNote.json", [created])  # overwrite with a single-row fixture
     else:
         print("\n# api.notes.create skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 
@@ -170,7 +142,7 @@ def main() -> None:
         print(f"\n# api.notes.update({str(TEST_NOTE_ID)!r}, data=update_body)")
         updated = api.notes.update(str(TEST_NOTE_ID), data=update_body)
         print(format_result(updated))
-        _save("GlobalNote.json", [updated])
+        save("GlobalNote.json", [updated])
     else:
         print("\n# api.notes.update skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 

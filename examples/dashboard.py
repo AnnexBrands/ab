@@ -34,34 +34,10 @@ See also: https://ab-sdk.readthedocs.io/en/latest/api/dashboard.html
 
 from __future__ import annotations
 
-import json
-
 from ab import ABConnectAPI
 from ab.cli.formatter import format_result
-from examples._capture import capture_dir, load_request, mutations_enabled
+from examples._capture import load_request, mutations_enabled, save
 from examples.constants import TEST_COMPANY_ID, TEST_VIEW_ID
-
-# Honors AB_EXAMPLE_CAPTURE_DIR so the verify harness writes to a temp dir, never
-# overwriting committed fixtures (feature 037).
-FIXTURES_DIR = capture_dir()
-
-
-def _save(name: str, payload) -> None:
-    """Serialise *payload* (Pydantic model or list) to ``tests/fixtures/{name}``."""
-    from pydantic import BaseModel
-
-    if isinstance(payload, list):
-        data = [
-            item.model_dump(by_alias=True, mode="json") if isinstance(item, BaseModel) else item
-            for item in payload
-        ]
-    elif isinstance(payload, BaseModel):
-        data = payload.model_dump(by_alias=True, mode="json")
-    else:
-        data = payload
-    out = FIXTURES_DIR / name
-    out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
-    print(f"  saved -> {out}")
 
 
 def main() -> None:
@@ -77,13 +53,13 @@ def main() -> None:
     print("\n# api.dashboard.get_grid_views()")
     views = api.dashboard.get_grid_views()
     print(format_result(views))
-    _save("GridViewInfo.json", views)
+    save("GridViewInfo.json", views)
 
     # --- Step 2: dashboard summary, all paths --------------------------
     print(f"\n# api.dashboard.get(view_id={TEST_VIEW_ID}, company_id={TEST_COMPANY_ID!r})")
     summary = api.dashboard.get(view_id=TEST_VIEW_ID, company_id=TEST_COMPANY_ID)
     print(format_result(summary))
-    _save("DashboardSummary.json", summary)
+    save("DashboardSummary.json", summary)
 
     # --- Step 3: documented "no params" call ---------------------------
     # Swagger marks both viewId and companyId optional. The API defaults
@@ -99,7 +75,7 @@ def main() -> None:
     print(f"\n# api.dashboard.get_grid_view_state(view_id={str(TEST_VIEW_ID)!r})")
     state = api.dashboard.get_grid_view_state(str(TEST_VIEW_ID))
     print(format_result(state))
-    _save("GridViewState.json", state)
+    save("GridViewState.json", state)
 
     # save_grid_view_state is state-changing -- guarded. resp="-" (no model), no save.
     if mutations_enabled():

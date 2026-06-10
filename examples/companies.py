@@ -33,19 +33,19 @@ def main() -> None:
     print(f"\n# api.companies.get_fulldetails({TEST_COMPANY_UUID!r})")
     result = api.companies.get_fulldetails(TEST_COMPANY_UUID)
     print(format_result(result))
-    save("CompanyDetails.json", result)
+    save("CompanyDetails_full.json", result)
 
     # GET /companies/availableByCurrentUser
     print("\n# api.companies.available_by_current_user()")
     result = api.companies.available_by_current_user()
     print(format_result(result))
-    save("CompanySimple.json", result)
+    save("CompanySimple_available.json", result)
 
     # POST /companies/list — read-only listing, safe to run unguarded.
     print("\n# api.companies.list(data=ListRequest(...))")
     result = api.companies.list(data=load_request("ListRequest.json"))
     print(format_result(result))
-    save("CompanySimple.json", result)
+    save("CompanySimple_list.json", result)
 
     # POST /companies/search/v2 — read-only search, safe to run unguarded.
     print("\n# api.companies.search(data=CompanySearchRequest(...))")

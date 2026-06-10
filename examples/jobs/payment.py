@@ -33,7 +33,7 @@ def main() -> None:
     print(f"\n# api.jobs.payment.get_create({TEST_JOB_DISPLAY_ID})")
     create_info = api.jobs.payment.get_create(TEST_JOB_DISPLAY_ID)
     print(format_result(create_info))
-    save("PaymentInfo.json", create_info)
+    save("PaymentInfo_create.json", create_info)
 
     print(f"\n# api.jobs.payment.get_sources({TEST_JOB_DISPLAY_ID})")
     sources = api.jobs.payment.get_sources(TEST_JOB_DISPLAY_ID)

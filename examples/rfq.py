@@ -25,7 +25,7 @@ def main() -> None:
     print(f"\n# api.rfq.get({TEST_RFQ_ID!r})")
     result = api.rfq.get(TEST_RFQ_ID)
     print(format_result(result))
-    save("QuoteRequestDisplayInfo.json", result)
+    save("QuoteRequestDisplayInfo_single.json", result)
 
     # GET /rfq/forjob/{jobId}
     print(f"\n# api.rfq.get_for_job({str(TEST_JOB_DISPLAY_ID)!r})")

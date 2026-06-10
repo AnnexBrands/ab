@@ -21,7 +21,7 @@ def main() -> None:
     print("\n# api.views.list()")
     result = api.views.list()
     print(format_result(result))
-    save("GridViewDetails.json", result)
+    save("GridViewDetails_list.json", result)
 
     # GET /views/{viewId}
     print(f"\n# api.views.get({TEST_VIEW_ID!r})")
@@ -39,7 +39,7 @@ def main() -> None:
     print("\n# api.views.get_dataset_sps()")
     result = api.views.get_dataset_sps()
     print(format_result(result))
-    save("StoredProcedureColumn.json", result)
+    save("StoredProcedureColumn_list.json", result)
 
     # GET /views/datasetsp/{spName}
     sp_name = "spName"  # legacy literal — replace with a real stored-procedure name
@@ -53,7 +53,7 @@ def main() -> None:
         print("\n# api.views.create(data=GridViewCreateRequest(...))")
         result = api.views.create(data=load_request("GridViewCreateRequest.json"))
         print(format_result(result))
-        save("GridViewDetails.json", result)
+        save("GridViewDetails_create.json", result)
     else:
         print("\n# api.views.create skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 

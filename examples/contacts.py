@@ -27,7 +27,7 @@ def main() -> None:
     print("\n# api.contacts.get_current_user()")
     result = api.contacts.get_current_user()
     print(format_result(result))
-    save("ContactSimple.json", result)
+    save("ContactSimple_current.json", result)
 
     # GET /contacts/{contactId}/editdetails
     print("\n# api.contacts.get_details(...)")

@@ -101,7 +101,7 @@ def main() -> None:
     print("\n# api.lookup.get_by_key_and_id(key=..., value_id=...)")
     result = api.lookup.get_by_key_and_id(key="contactTypes", value_id="1")
     print(format_result(result))
-    save("LookupValue.json", result)
+    save("LookupValue_single.json", result)
 
     # GET /lookup/resetMasterConstantCache — no response model; nothing to diff.
     print("\n# api.lookup.reset_cache()")

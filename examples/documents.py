@@ -40,7 +40,7 @@ def main() -> None:
             document_type=DocumentType.BOL,
         )
         print(format_result(result))
-        save("DocumentUploadResponse.json", result)
+        save("mocks/DocumentUploadResponse.json", result)
     else:
         print("\n# api.documents.upload skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 

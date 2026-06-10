@@ -70,7 +70,7 @@ def main() -> None:
     print("\n# api.companies.get_global_geo_settings()")
     result = api.companies.get_global_geo_settings()
     print(format_result(result))
-    save("GeoSettings.json", result)
+    save("GeoSettings_global.json", result)
 
     # ---- Packaging --------------------------------------------------------
 
@@ -90,7 +90,7 @@ def main() -> None:
     print(f"\n# api.companies.get_inherited_packaging_labor({TEST_COMPANY_ID!r})")
     result = api.companies.get_inherited_packaging_labor(TEST_COMPANY_ID)
     print(format_result(result))
-    save("PackagingLabor.json", result)
+    save("PackagingLabor_inherited.json", result)
 
     # GET /companies/{companyId}/inheritedPackagingTariffs
     print(f"\n# api.companies.get_inherited_packaging_tariffs({TEST_COMPANY_ID!r})")
