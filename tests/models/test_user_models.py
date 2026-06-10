@@ -7,7 +7,6 @@ from tests.conftest import assert_no_extra_fields, require_fixture
 
 
 class TestUserModels:
-    @pytest.mark.live
     def test_user(self):
         data = require_fixture("User", "POST", "/users/list", required=True)
         # User fixture is paginated: {totalCount, data}

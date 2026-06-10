@@ -1,6 +1,5 @@
 """Fixture validation tests for Catalog API models."""
 
-import pytest
 
 from ab.api.models.catalog import BulkInsertRequest, CatalogDto, CatalogExpandedDto, CatalogWithSellersDto
 from ab.api.models.lots import LotCatalogInformationDto, LotDataDto, LotDto, LotOverrideDto
@@ -161,14 +160,12 @@ class TestCatalogModels:
             },
         ]
 
-    @pytest.mark.live
     def test_seller_dto(self):
         data = require_fixture("SellerDto", "GET", "/Seller/{id}", required=True)
         model = SellerDto.model_validate(data)
         assert isinstance(model, SellerDto)
         assert_no_extra_fields(model)
 
-    @pytest.mark.live
     def test_seller_expanded_dto(self):
         data = require_fixture("SellerExpandedDto", "GET", "/Seller/{id}", required=True)
         # Fixture may be a paginated wrapper {items, pageNumber, ...}

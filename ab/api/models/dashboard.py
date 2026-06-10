@@ -50,6 +50,19 @@ class DashboardItem(ResponseModel):
     labor: Optional[float] = Field(None, description="Estimated labor hours")
     actual: Optional[float] = Field(None, description="Actual labor hours")
     item_count: Optional[int] = Field(None, alias="item_Count", description="Item count")
+    cust_ref: Optional[str] = Field(None, alias="custRef", description="Customer reference")
+    requestor: Optional[str] = Field(None, description="Requesting company name")
+    agent: Optional[str] = Field(None, description="Agent code")
+    rep: Optional[str] = Field(None, description="Sales rep name")
+    job_price: Optional[float] = Field(None, alias="jobPrice", description="Job price")
+    basis: Optional[str] = Field(None, description="Pricing basis code")
+    created: Optional[datetime] = Field(None, description="Job created date-time")
+    full_age: Optional[int] = Field(None, alias="fullAge", description="Full age in days")
+    held: Optional[int] = Field(None, description="Days held")
+    net_age: Optional[int] = Field(None, alias="netAge", description="Net age in days")
+    status: Optional[str] = Field(None, description="Job status label")
+    next_status: Optional[str] = Field(None, alias="next_Status", description="Next status label")
+    dims: Optional[str] = Field(None, description="Dimensions summary")
 
     def cli_format(self) -> str:
         """One-line pretty row used by the CLI and examples (vs. JSON)."""

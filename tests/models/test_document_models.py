@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-import pytest
-
 from ab.api.models.documents import (
     Document,
     DocumentUploadRequest,
@@ -18,7 +16,6 @@ FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
 
 
 class TestDocumentModels:
-    @pytest.mark.live
     def test_document(self):
         data = require_fixture("Document", "GET", "/documents", required=True)
         model = Document.model_validate(data)
