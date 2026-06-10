@@ -20,6 +20,8 @@ _UPLOAD = Route(
 _LIST = Route("GET", "/documents/list", params_model="DocumentListParams", response_model="List[Document]")
 _GET = Route("GET", "/documents/get/{docPath}", response_model="bytes")
 _UPDATE = Route("PUT", "/documents/update/{docId}", request_model="DocumentUpdateRequest")
+_GET_THUMBNAIL = Route("GET", "/documents/get/thumbnail/{docPath}", response_model="bytes")
+_HIDE = Route("PUT", "/documents/hide/{docId}")
 
 #: A file to upload: a filesystem path, raw bytes, or a binary file-like
 #: object (e.g. ``io.BytesIO``). Non-path sources require ``filename=``.
@@ -195,8 +197,41 @@ class DocumentsEndpoint(BaseEndpoint):
         return self._request(_LIST, params=dict(job_display_id=str(job_display_id)))
 
     def get(self, doc_path: str) -> bytes:
-        """GET /documents/get/{docPath} — returns raw bytes."""
-        return self._client.request("GET", f"/documents/get/{doc_path}", raw=True).content
+        """``GET /documents/get/{docPath}`` — download a document as raw bytes.
+
+        Args:
+            doc_path: The document's storage path, as returned in
+                ``Document.path`` by :meth:`list` (may contain ``/``
+                separators).
+
+        Response model: bytes
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/get.html
+        """
+        return self._request(_GET.bind(docPath=doc_path))
+
+    def get_thumbnail(self, doc_path: str) -> bytes:
+        """``GET /documents/get/thumbnail/{docPath}`` — document thumbnail bytes.
+
+        Args:
+            doc_path: The document's storage path, as returned in ``Document.path``
+                (or ``Document.thumbnail_path``) by :meth:`list`.
+
+        Response model: bytes
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/get_thumbnail.html
+        """
+        return self._request(_GET_THUMBNAIL.bind(docPath=doc_path))
+
+    def hide(self, doc_id: int) -> None:
+        """``PUT /documents/hide/{docId}`` — hide a document from listings.
+
+        Args:
+            doc_id: Numeric document identifier (``Document.id``).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/hide.html
+        """
+        return self._request(_HIDE.bind(docId=doc_id))
 
     def update(self, doc_id: str, *, data: DocumentUpdateRequest | dict) -> None:
         """PUT /documents/update/{docId}.

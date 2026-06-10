@@ -26,6 +26,30 @@ def main() -> None:
     print(format_result(result))
     save("Document.json", result)
 
+    # GET /documents/get/{docPath} — download the first listed document (bytes).
+    docs_with_path = [d for d in result if d.path]
+    if docs_with_path:
+        doc = docs_with_path[0]
+        print(f"\n# api.documents.get({doc.path!r})")
+        content = api.documents.get(doc.path)
+        print(f"  ({len(content)} bytes)")
+
+        # GET /documents/get/thumbnail/{docPath} — thumbnail bytes.
+        print(f"\n# api.documents.get_thumbnail({doc.path!r})")
+        thumb = api.documents.get_thumbnail(doc.path)
+        print(f"  ({len(thumb)} bytes)")
+    else:
+        print("\n# api.documents.get / get_thumbnail skipped — job has no documents with a path")
+
+    # PUT /documents/hide/{docId} — hides the document from listings (mutates staging).
+    if mutations_enabled() and docs_with_path:
+        doc_id = docs_with_path[0].id
+        print(f"\n# api.documents.hide({doc_id!r})")
+        api.documents.hide(doc_id)
+        print("  (hidden)")
+    else:
+        print("\n# api.documents.hide skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
+
     # POST /documents — upload a single document (multipart, mutates staging).
     if mutations_enabled():
         upload_path = Path("/tmp/test-upload.pdf")

@@ -14,6 +14,7 @@ from ab.http import HttpClient
 
 if TYPE_CHECKING:
     from ab.api.endpoints import (
+        AccountEndpoint,
         AddressEndpoint,
         AutoPriceEndpoint,
         CatalogEndpoint,
@@ -65,6 +66,7 @@ class ABConnectAPI:
     # these are type-only declarations (no runtime attribute is created).
     # Keep in sync with _init_endpoints — enforced by
     # tests/unit/test_client_discoverability.py.
+    account: AccountEndpoint
     companies: CompaniesEndpoint
     contacts: ContactsEndpoint
     jobs: JobsEndpoint
@@ -217,6 +219,7 @@ class ABConnectAPI:
     def _init_endpoints(self) -> None:
         """Instantiate all endpoint groups as attributes."""
         from ab.api.endpoints import (
+            AccountEndpoint,
             AddressEndpoint,
             AutoPriceEndpoint,
             CatalogEndpoint,
@@ -243,6 +246,7 @@ class ABConnectAPI:
         )
 
         # ACPortal endpoints
+        self.account: AccountEndpoint = AccountEndpoint(self._acportal)
         self.companies: CompaniesEndpoint = CompaniesEndpoint(self._acportal, self._resolver)
         self.contacts: ContactsEndpoint = ContactsEndpoint(self._acportal, self._resolver)
         self.jobs: JobsEndpoint = JobsEndpoint(self._acportal, self._abc, self._resolver)

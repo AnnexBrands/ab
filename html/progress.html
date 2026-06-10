@@ -104,12 +104,18 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 </head>
 <body>
 <h1>ABConnect SDK — Progress Report</h1>
-<p class='subtitle'>Generated 2026-06-10 12:53 UTC</p>
-<h2>Coverage Summary</h2><table><tr><th>API Surface</th><th>Total</th><th>Done</th><th>Pending</th><th>Not Started</th><th>%</th><th>Progress</th></tr><tr><td><strong>ACPortal</strong></td><td>206</td><td class='done'>206</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
+<p class='subtitle'>Generated 2026-06-10 13:04 UTC</p>
+<h2>Coverage Summary</h2><table><tr><th>API Surface</th><th>Total</th><th>Done</th><th>Pending</th><th>Not Started</th><th>%</th><th>Progress</th></tr><tr><td><strong>ACPortal</strong></td><td>211</td><td class='done'>211</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>Catalog</strong></td><td>17</td><td class='done'>17</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>ABC</strong></td><td>5</td><td class='done'>5</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
-<tr class='totals-row'><td>Total</td><td>228</td><td class='done'>228</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr></table>
+<tr class='totals-row'><td>Total</td><td>233</td><td class='done'>233</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr></table>
 <h2>Endpoint Coverage by Class</h2>
+<h3>account (1 methods)</h3>
+<p>Path root: <code>/account</code></p>
+<h4>profile (1 methods)</h4>
+<table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/account/profile</td><td>get_profile</td><td><code>api.account.get_profile</code></td><td>AccountProfile</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitdata' title=''>needs data</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+</table>
 <h3>address (2 methods) — aliases: addr</h3>
 <p>Path root: <code>/address</code></p>
 <h4>isvalid (1 methods)</h4>
@@ -329,17 +335,25 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/dashboard/recentestimates</td><td>recent_estimates</td><td><code>api.dashboard.recent_estimates</code></td><td>None</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
-<h3>documents (6 methods) — aliases: doc</h3>
+<h3>documents (8 methods) — aliases: doc</h3>
 <p>Path root: <code>/documents</code></p>
 <h4>Helpers</h4>
 <table><tr><th>Method</th><th>Python Path</th><th>Doc</th><th>Ex</th><th>CLI</th></tr>
-<tr><td>get</td><td><code>api.documents.get</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td>upload_item_photo</td><td><code>api.documents.upload_item_photo</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td>upload_item_photos</td><td><code>api.documents.upload_item_photos</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h4>(root) (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/documents</td><td>upload</td><td><code>api.documents.upload</code></td><td>DocumentUploadResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+</table>
+<h4>get (2 methods)</h4>
+<table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/documents/get/thumbnail/{docPath}</td><td>get_thumbnail</td><td><code>api.documents.get_thumbnail</code></td><td>bytes</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/documents/get/{docPath}</td><td>get</td><td><code>api.documents.get</code></td><td>bytes</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+</table>
+<h4>hide (1 methods)</h4>
+<table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
+<tr><td class='col-method'>PUT</td><td class='col-path'>/documents/hide/{docId}</td><td>hide</td><td><code>api.documents.hide</code></td><td>None</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h4>list (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
@@ -373,7 +387,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td>get_usar</td><td><code>api.forms.get_usar</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td>get_usar_editable</td><td><code>api.forms.get_usar_editable</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
-<h3>jobs (58 methods) — aliases: job</h3>
+<h3>jobs (59 methods) — aliases: job</h3>
 <p>Path root: <code>/job</code></p>
 <h4>Helpers</h4>
 <table><tr><th>Method</th><th>Python Path</th><th>Doc</th><th>Ex</th><th>CLI</th></tr>
@@ -425,6 +439,10 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job</td><td>create</td><td><code>api.jobs.create</code></td><td>None</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}</td><td>get</td><td><code>api.jobs.get</code></td><td>Job</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-notrun' title=''>not run</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+</table>
+<h4>book (1 methods)</h4>
+<table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
+<tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/book</td><td>book</td><td><code>api.jobs.book</code></td><td>None</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-binary' title=''>binary</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h4>calendaritems (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
@@ -626,15 +644,16 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>DELETE</td><td class='col-path'>/job/{jobDisplayId}/timeline/{timelineTaskId}</td><td>delete_task</td><td><code>api.jobs.timeline.delete_task</code></td><td>ServiceBaseResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td class='col-method'>PATCH</td><td class='col-path'>/job/{jobDisplayId}/timeline/{timelineTaskId}</td><td>update_task</td><td><code>api.jobs.timeline.update_task</code></td><td>TimelineTask</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
-<h3>jobs.tracking (2 methods)</h3>
+<h3>jobs.tracking (3 methods)</h3>
 <p>Path root: <code>/job</code></p>
 <h4>job (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/v3/job/{jobDisplayId}/tracking/{historyAmount}</td><td>v3</td><td><code>api.jobs.tracking.v3</code></td><td>TrackingInfoV3</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-notrun' title=''>not run</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
-<h4>tracking (1 methods)</h4>
+<h4>tracking (2 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/tracking</td><td>get</td><td><code>api.jobs.tracking.get</code></td><td>TrackingInfo</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-notrun' title=''>not run</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/tracking/shipment/{proNumber}</td><td>shipment</td><td><code>api.jobs.tracking.shipment</code></td><td>ShipmentTrackingDetails</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitdata' title=''>needs data</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h3>lookup (16 methods) — aliases: lu</h3>
 <p>Path root: <code>/lookup</code></p>
@@ -911,8 +930,10 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>POST</td><td class='col-path'>/Web2Lead/post</td><td>post</td><td><code>api.web2lead.post</code></td><td>Web2LeadResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h2>Paste Capture — endpoints awaiting a real response</h2>
-<div class='capture-bar'><button type='button' onclick='abDownloadCaptures()'>Download captures.json</button><span class='capture-count'><span id='capture-filled'>0</span> filled / 97 awaiting paste</span></div>
+<div class='capture-bar'><button type='button' onclick='abDownloadCaptures()'>Download captures.json</button><span class='capture-count'><span id='capture-filled'>0</span> filled / 99 awaiting paste</span></div>
 <p>Paste the real JSON response (and request body where shown) from a live call, then download <code>captures.json</code> and hand it back for ingest (<code>python scripts/ingest_captures.py captures.json</code>).</p>
+<details class='capture-item' data-endpoint='api.account.get_profile' data-method='GET' data-path='/account/profile' data-response-model='AccountProfile' data-request-model=''><summary><span class='badge badge-awaitdata'>needs data</span> <code>api.account.get_profile</code> <span class='capture-meta'>GET /account/profile &rarr; AccountProfile</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
+</div></details>
 <details class='capture-item' data-endpoint='api.autoprice.quick_quote' data-method='POST' data-path='/autoprice/quickquote' data-response-model='QuickQuoteResponse' data-request-model='QuoteRequestModel'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.autoprice.quick_quote</code> <span class='capture-meta'>POST /autoprice/quickquote &rarr; QuickQuoteResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (QuoteRequestModel):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
@@ -1089,6 +1110,8 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <details class='capture-item' data-endpoint='api.jobs.timeline.update_task' data-method='PATCH' data-path='/job/{jobDisplayId}/timeline/{timelineTaskId}' data-response-model='TimelineTask' data-request-model='TimelineTaskUpdateRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.timeline.update_task</code> <span class='capture-meta'>PATCH /job/{jobDisplayId}/timeline/{timelineTaskId} &rarr; TimelineTask</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (TimelineTaskUpdateRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
+<details class='capture-item' data-endpoint='api.jobs.tracking.shipment' data-method='GET' data-path='/job/{jobDisplayId}/tracking/shipment/{proNumber}' data-response-model='ShipmentTrackingDetails' data-request-model=''><summary><span class='badge badge-awaitdata'>needs data</span> <code>api.jobs.tracking.shipment</code> <span class='capture-meta'>GET /job/{jobDisplayId}/tracking/shipment/{proNumber} &rarr; ShipmentTrackingDetails</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
+</div></details>
 <details class='capture-item' data-endpoint='api.jobs.update_item' data-method='PUT' data-path='/job/{jobDisplayId}/item/{itemId}' data-response-model='ServiceBaseResponse' data-request-model='ItemUpdateRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.update_item</code> <span class='capture-meta'>PUT /job/{jobDisplayId}/item/{itemId} &rarr; ServiceBaseResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (ItemUpdateRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
@@ -1168,18 +1191,19 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <details class='capture-item' data-endpoint='api.web2lead.post' data-method='POST' data-path='/Web2Lead/post' data-response-model='Web2LeadResponse' data-request-model='Web2LeadRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.web2lead.post</code> <span class='capture-meta'>POST /Web2Lead/post &rarr; Web2LeadResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (Web2LeadRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
-<h2>Quality Gate Status</h2><div class='gate-cards'><div class='gate-card card-overall'><h4>Overall</h4><div class='count'>73%</div><div class='label'>167 of 228 complete</div></div>
-<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>180/228</div><div class='label'>Zero extra fields</div></div>
-<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>181/228</div><div class='label'>Fixture on disk</div></div>
-<div class='gate-card card-pass'><h4>G3: Test Quality</h4><div class='count'>221/228</div><div class='label'>isinstance + extra</div></div>
-<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>228/228</div><div class='label'>Correct return type</div></div>
-<div class='gate-card card-pass'><h4>G5: Param Routing</h4><div class='count'>222/228</div><div class='label'>params_model set</div></div>
-<div class='gate-card card-pass'><h4>G6: Request Quality</h4><div class='count'>223/228</div><div class='label'>Typed sigs + descriptions</div></div></div>
+<h2>Quality Gate Status</h2><div class='gate-cards'><div class='gate-card card-overall'><h4>Overall</h4><div class='count'>73%</div><div class='label'>170 of 233 complete</div></div>
+<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>183/233</div><div class='label'>Zero extra fields</div></div>
+<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>184/233</div><div class='label'>Fixture on disk</div></div>
+<div class='gate-card card-pass'><h4>G3: Test Quality</h4><div class='count'>224/233</div><div class='label'>isinstance + extra</div></div>
+<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>233/233</div><div class='label'>Correct return type</div></div>
+<div class='gate-card card-pass'><h4>G5: Param Routing</h4><div class='count'>227/233</div><div class='label'>params_model set</div></div>
+<div class='gate-card card-pass'><h4>G6: Request Quality</h4><div class='count'>228/233</div><div class='label'>Typed sigs + descriptions</div></div></div>
 <h2>Per-Endpoint Gate Details</h2><table class='gate-table'><tr><th>Method</th><th>Endpoint</th><th>Model</th><th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>G5</th><th>G6</th><th>Status</th></tr><tr><td class='col-method'>GET</td><td class='col-path'>/Web2Lead/get</td><td class='col-model'>Web2LeadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='Cannot infer endpoint module'>FAIL</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/Web2Lead/post</td><td class='col-model'>Web2LeadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/autoprice/quickquote</td><td class='col-model'>QuickQuoteResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/autoprice/v2/quoterequest</td><td class='col-model'>QuoteRequestResponse</td><td class='col-gate gate-fail' title='Fixture QuoteRequestResponse.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture QuoteRequestResponse.json not found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/update</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/account/profile</td><td class='col-model'>AccountProfile</td><td class='col-gate gate-fail' title='Fixture AccountProfile.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture AccountProfile.json not found'>FAIL</td><td class='col-gate gate-fail' title='No isinstance(result, AccountProfile) assertion found; No __pydantic_extra__ / assert_no_extra_fields check found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/address/isvalid</td><td class='col-model'>AddressIsValidResult</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/address/propertytype</td><td class='col-model'>int</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/commodity</td><td class='col-model'>Commodity</td><td class='col-gate gate-fail' title='Fixture Commodity.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture Commodity.json not found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
@@ -1238,7 +1262,9 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>POST</td><td class='col-path'>/dashboard/outbound</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='1 query param(s) (companyId) but no params_model'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/dashboard/recentestimates</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='1 query param(s) (companyId) but no params_model'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/documents</td><td class='col-model'>DocumentUploadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/documents/get/thumbnail/{docPath}</td><td class='col-model'>bytes</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/documents/get/{docPath}</td><td class='col-model'>bytes</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>PUT</td><td class='col-path'>/documents/hide/{docId}</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/documents/list</td><td class='col-model'>List[Document]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/documents/update/{docId}</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
@@ -1247,6 +1273,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/searchByDetails</td><td class='col-model'>List[JobSearchResult]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/transfer/{jobDisplayId}</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}</td><td class='col-model'>Job</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/book</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/calendaritems</td><td class='col-model'>List[CalendarItem]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/changeAgent</td><td class='col-model'>ServiceBaseResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/email</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
@@ -1331,6 +1358,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>DELETE</td><td class='col-path'>/job/{jobDisplayId}/timeline/{timelineTaskId}</td><td class='col-model'>ServiceBaseResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PATCH</td><td class='col-path'>/job/{jobDisplayId}/timeline/{timelineTaskId}</td><td class='col-model'>TimelineTask</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/tracking</td><td class='col-model'>TrackingInfo</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/tracking/shipment/{proNumber}</td><td class='col-model'>ShipmentTrackingDetails</td><td class='col-gate gate-fail' title='Fixture ShipmentTrackingDetails.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture ShipmentTrackingDetails.json not found'>FAIL</td><td class='col-gate gate-fail' title='No isinstance(result, ShipmentTrackingDetails) assertion found; No __pydantic_extra__ / assert_no_extra_fields check found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/updatePageConfig</td><td class='col-model'>JobUpdatePageConfig</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/lookup/PPCCampaigns</td><td class='col-model'>List[PPCCampaign]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/lookup/accessKey/{accessKey}</td><td class='col-model'>AccessKeySetup</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
@@ -1404,24 +1432,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>GET</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerExpandedDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr></table>
 <h2>Action Required</h2>
-<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (111 endpoints)</p>
-<details><summary><strong>Documents</strong> — 1 endpoints <span class='badge badge-constant'>Needs Constant</span>&nbsp;1</summary><div class='detail-body'>
-<div class='endpoint-row'>
-<span class='ep-method'>GET</span>
-<span class='ep-path'>/documents/get/{docPath}</span>
-<span class='ep-model'>bytes</span>
-<span class='badge badge-constant'>Needs Constant</span>
-</div>
-<ol class='instructions'>
-<li>Find a valid <code>doc_path</code> in the staging environment (check the ABConnect portal or database)</li>
-<li>Add <code>TEST_DOC_PATH = &lt;value&gt;</code> to <code>tests/constants.py</code></li>
-<li>Research ABConnectTools endpoint code (<code>endpoints/documents.py</code>) and swagger for required params/body</li>
-<li>Fix the example in <code>examples/documents.py</code> with correct request data</li>
-<li>Run the example — save 200 response to <code>tests/fixtures/bytes.json</code></li>
-<li>Run <code>pytest tests/ -k bytes</code> to verify the fixture validates against the Pydantic model</li>
-<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
-</ol>
-</div></details>
+<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (116 endpoints)</p>
 <details><summary><strong>Job</strong> — 14 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;14</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>GET</span>
@@ -1618,6 +1629,21 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Fix the example in <code>examples/lot.py</code> with correct request data</li>
 <li>Run the example — save 200 response to <code>tests/fixtures/LotDto.json</code></li>
 <li>Run <code>pytest tests/ -k lot_dto</code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+</div></details>
+<details><summary><strong>account</strong> — 1 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;1</summary><div class='detail-body'>
+<div class='endpoint-row'>
+<span class='ep-method'>GET</span>
+<span class='ep-path'>/account/profile</span>
+<span class='ep-model'>AccountProfile</span>
+<span class='badge badge-request'>Needs Request Data</span>
+</div>
+<ol class='instructions'>
+<li>Research ABConnectTools endpoint code (<code>endpoints/account.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/account.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/AccountProfile.json</code></li>
+<li>Run <code>pytest tests/ -k account_profile</code> to verify the fixture validates against the Pydantic model</li>
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>
@@ -2240,7 +2266,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>
-<details><summary><strong>documents</strong> — 2 endpoints <span class='badge badge-constant'>Needs Constant</span>&nbsp;1 <span class='badge badge-request'>Needs Request Data</span>&nbsp;1</summary><div class='detail-body'>
+<details><summary><strong>documents</strong> — 5 endpoints <span class='badge badge-constant'>Needs Constant</span>&nbsp;4 <span class='badge badge-request'>Needs Request Data</span>&nbsp;1</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>POST</span>
 <span class='ep-path'>/documents</span>
@@ -2252,6 +2278,51 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Fix the example in <code>examples/documents.py</code> with correct request data</li>
 <li>Run the example — save 200 response to <code>tests/fixtures/DocumentUploadResponse.json</code></li>
 <li>Run <code>pytest tests/ -k document_upload_response</code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+<div class='endpoint-row'>
+<span class='ep-method'>GET</span>
+<span class='ep-path'>/documents/get/thumbnail/{docPath}</span>
+<span class='ep-model'>bytes</span>
+<span class='badge badge-constant'>Needs Constant</span>
+</div>
+<ol class='instructions'>
+<li>Find a valid <code>doc_path</code> in the staging environment (check the ABConnect portal or database)</li>
+<li>Add <code>TEST_DOC_PATH = &lt;value&gt;</code> to <code>tests/constants.py</code></li>
+<li>Research ABConnectTools endpoint code (<code>endpoints/documents.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/documents.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/bytes.json</code></li>
+<li>Run <code>pytest tests/ -k bytes</code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+<div class='endpoint-row'>
+<span class='ep-method'>GET</span>
+<span class='ep-path'>/documents/get/{docPath}</span>
+<span class='ep-model'>bytes</span>
+<span class='badge badge-constant'>Needs Constant</span>
+</div>
+<ol class='instructions'>
+<li>Find a valid <code>doc_path</code> in the staging environment (check the ABConnect portal or database)</li>
+<li>Add <code>TEST_DOC_PATH = &lt;value&gt;</code> to <code>tests/constants.py</code></li>
+<li>Research ABConnectTools endpoint code (<code>endpoints/documents.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/documents.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/bytes.json</code></li>
+<li>Run <code>pytest tests/ -k bytes</code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+<div class='endpoint-row'>
+<span class='ep-method'>PUT</span>
+<span class='ep-path'>/documents/hide/{docId}</span>
+<span class='ep-model'></span>
+<span class='badge badge-constant'>Needs Constant</span>
+</div>
+<ol class='instructions'>
+<li>Find a valid <code>doc_id</code> in the staging environment (check the ABConnect portal or database)</li>
+<li>Add <code>TEST_DOC_ID = &lt;value&gt;</code> to <code>tests/constants.py</code></li>
+<li>Research ABConnectTools endpoint code (<code>endpoints/documents.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/documents.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/.json</code></li>
+<li>Run <code>pytest tests/ -k </code> to verify the fixture validates against the Pydantic model</li>
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 <div class='endpoint-row'>
@@ -2270,7 +2341,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>
-<details><summary><strong>jobs</strong> — 5 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;5</summary><div class='detail-body'>
+<details><summary><strong>jobs</strong> — 6 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;6</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>POST</span>
 <span class='ep-path'>/job/update</span>
@@ -2313,6 +2384,19 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <div class='endpoint-row'>
 <span class='ep-method'>POST</span>
 <span class='ep-path'>/job/transfer/{jobDisplayId}</span>
+<span class='ep-model'></span>
+<span class='badge badge-request'>Needs Request Data</span>
+</div>
+<ol class='instructions'>
+<li>Research ABConnectTools endpoint code (<code>endpoints/jobs.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/jobs.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/.json</code></li>
+<li>Run <code>pytest tests/ -k </code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+<div class='endpoint-row'>
+<span class='ep-method'>POST</span>
+<span class='ep-path'>/job/{jobDisplayId}/book</span>
 <span class='ep-model'></span>
 <span class='badge badge-request'>Needs Request Data</span>
 </div>
@@ -2571,6 +2655,23 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Fix the example in <code>examples/jobs.sms.py</code> with correct request data</li>
 <li>Run the example — save 200 response to <code>tests/fixtures/.json</code></li>
 <li>Run <code>pytest tests/ -k </code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+</div></details>
+<details><summary><strong>jobs.tracking</strong> — 1 endpoints <span class='badge badge-constant'>Needs Constant</span>&nbsp;1</summary><div class='detail-body'>
+<div class='endpoint-row'>
+<span class='ep-method'>GET</span>
+<span class='ep-path'>/job/{jobDisplayId}/tracking/shipment/{proNumber}</span>
+<span class='ep-model'>ShipmentTrackingDetails</span>
+<span class='badge badge-constant'>Needs Constant</span>
+</div>
+<ol class='instructions'>
+<li>Find a valid <code>pro_number</code> in the staging environment (check the ABConnect portal or database)</li>
+<li>Add <code>TEST_PRO_NUMBER = &lt;value&gt;</code> to <code>tests/constants.py</code></li>
+<li>Research ABConnectTools endpoint code (<code>endpoints/jobs.tracking.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/jobs.tracking.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/ShipmentTrackingDetails.json</code></li>
+<li>Run <code>pytest tests/ -k shipment_tracking_details</code> to verify the fixture validates against the Pydantic model</li>
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>

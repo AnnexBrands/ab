@@ -133,6 +133,15 @@ def main() -> None:
     else:
         print("  skipped — set AB_RUN_MUTATIONS=1 to run (mutates staging)")
 
+    # POST /job/{jobDisplayId}/book — books the job: confirms the quote into
+    # a booked job (mutating; irreversible through the API).
+    print(f"\n# api.jobs.book({TEST_JOB_DISPLAY_ID!r})")
+    if mutations_enabled():
+        api.jobs.book(TEST_JOB_DISPLAY_ID)
+        print("  (booked)")
+    else:
+        print("  skipped — set AB_RUN_MUTATIONS=1 to run (books the job on staging)")
+
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 """Re-export all model classes for lazy resolution by Route."""
 
+from ab.api.models.account import AccountProfile
 from ab.api.models.address import (
     AddressIsValidResult,
     AddressPropertyTypeParams,
@@ -191,7 +192,10 @@ from ab.api.models.jobs import (
     SendDocumentEmailModel,
     SendEmailRequest,
     SendSMSModel,
+    ShipmentDetails,
     ShipmentPlanProvider,
+    ShipmentTrackingDetails,
+    ShipmentTrackingDocument,
     SimpleTaskRequest,
     SortByModel,
     TaskTruckInfoRequest,
@@ -400,6 +404,7 @@ __all__ = [
     "TimeLogRequest", "TimeLogPauseRequest", "WorkTimeLogRequest", "InitialNoteRequest", "TaskTruckInfoRequest",
     "TimelineTaskUpdateRequest", "IncrementStatusRequest",
     "TrackingInfo", "TrackingInfoV3",
+    "ShipmentTrackingDetails", "ShipmentDetails", "ShipmentTrackingDocument",
     "JobNote", "JobNoteCreateRequest", "JobNoteUpdateRequest",
     "ParcelItem", "ParcelItemWithMaterials", "JobParcelItemMaterial", "PackagingContainer",
     "ParcelItemCreateRequest", "ItemNotesRequest", "ItemUpdateRequest",
@@ -419,6 +424,8 @@ __all__ = [
     # Documents
     "Document", "DocumentListParams", "DocumentUpdateRequest",
     "DocumentUploadRequest", "DocumentUploadResponse", "UploadedFile",
+    # Account
+    "AccountProfile",
     # Address
     "AddressValidateParams", "AddressPropertyTypeParams", "AddressIsValidResult", "PropertyType",
     # Lookup

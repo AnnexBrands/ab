@@ -151,6 +151,11 @@
     "G4",
     "G5"
   ],
+  "/account/profile GET": [
+    "G4",
+    "G5",
+    "G6"
+  ],
   "/address/isvalid GET": [
     "G1",
     "G2",
@@ -583,7 +588,23 @@
     "G5",
     "G6"
   ],
+  "/documents/get/thumbnail/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
   "/documents/get/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents/hide/{_} PUT": [
     "G1",
     "G2",
     "G3",
@@ -656,6 +677,14 @@
     "G6"
   ],
   "/job/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/book POST": [
     "G1",
     "G2",
     "G3",
@@ -1317,6 +1346,11 @@
     "G1",
     "G2",
     "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/tracking/shipment/{_} GET": [
     "G4",
     "G5",
     "G6"

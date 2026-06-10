@@ -54,6 +54,7 @@ from ab.cli.discovery import discover_endpoints_from_class  # noqa: E402
 # ``tests/unit/test_docstring_rtd_links.py`` (``test_top_groups_cover_every_routed_group``)
 # so a new endpoint group cannot silently ship without help()->RTD docs.
 TOP_GROUPS = [
+    "account",
     "address",
     "autoprice",
     "catalog",

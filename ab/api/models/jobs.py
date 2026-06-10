@@ -972,6 +972,60 @@ class TrackingInfo(ResponseModel):
     error_message: Optional[str] = Field(None, alias="errorMessage", description="Error message if lookup failed")
 
 
+class ShipmentTrackingDocument(ResponseModel):
+    """Document attached to a tracked shipment (POD, labels, ...)."""
+
+    document_id: Optional[str] = Field(None, alias="documentId", description="Document ID")
+    document_path: Optional[str] = Field(
+        None, alias="documentPath", description="Document path (usable with documents.get)",
+    )
+    document_description: Optional[str] = Field(
+        None, alias="documentDescription", description="Human-readable description",
+    )
+    error_message: Optional[str] = Field(
+        None, alias="errorMessage", description="Error message if retrieval failed",
+    )
+
+
+class ShipmentDetails(ResponseModel):
+    """Carrier-level detail for one shipment — nested in ShipmentTrackingDetails."""
+
+    pro_number: Optional[str] = Field(None, alias="proNumber", description="Carrier PRO number")
+    used_api: Optional[int] = Field(
+        None, alias="usedAPI", description="Carrier API used (CarrierAPI enum value)",
+    )
+    history_provider_name: Optional[str] = Field(
+        None, alias="historyProviderName", description="Tracking history provider",
+    )
+    history_statuses: Optional[List[dict]] = Field(
+        None, alias="historyStatuses", description="Tracking history status entries",
+    )
+    weight: Optional[dict] = Field(None, description="Shipment weight info")
+    job_weight: Optional[dict] = Field(None, alias="jobWeight", description="Job-level weight info")
+    successfully: Optional[bool] = Field(None, description="Whether the tracking lookup succeeded")
+    error_message: Optional[str] = Field(
+        None, alias="errorMessage", description="Error message if lookup failed",
+    )
+    multiple_shipments: Optional[bool] = Field(
+        None, alias="multipleShipments", description="True when the job has multiple shipments",
+    )
+    packages: Optional[List[dict]] = Field(None, description="Per-package shipping info")
+    estimated_delivery: Optional[datetime] = Field(
+        None, alias="estimatedDelivery", description="Estimated delivery date-time",
+    )
+
+
+class ShipmentTrackingDetails(ResponseModel):
+    """Per-shipment tracking — GET /job/{jobDisplayId}/tracking/shipment/{proNumber}."""
+
+    shipment_details: Optional[ShipmentDetails] = Field(
+        None, alias="shipmentDetails", description="Carrier tracking detail for the shipment",
+    )
+    documents: Optional[List[ShipmentTrackingDocument]] = Field(
+        None, description="Documents attached to the shipment",
+    )
+
+
 class TrackingInfoV3(ResponseModel):
     """Tracking info v3 — GET /v3/job/{jobDisplayId}/tracking/{historyAmount}."""
 
