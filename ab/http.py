@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Dict, Mapping, Optional
+from typing import Any, Callable, Dict, Mapping, Optional, Union
 
 import requests
 
@@ -38,12 +38,14 @@ class HttpClient:
         token_storage: TokenStorage,
         *,
         allow_password_fallback: bool = True,
+        extra_headers: Optional[Union[Dict[str, str], Callable[[], Dict[str, str]]]] = None,
     ) -> None:
         self._base_url = base_url.rstrip("/")
         self._settings = settings
         self._token_storage = token_storage
         self._session = requests.Session()
         self._allow_password_fallback = allow_password_fallback
+        self._extra_headers = extra_headers
 
     # ------------------------------------------------------------------
     # Authentication
@@ -135,16 +137,35 @@ class HttpClient:
         files: Optional[Mapping[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
         raw: bool = False,
+        auth_optional: bool = False,
     ) -> Any:
         """Send an HTTP request with auth, timeout, and retry logic.
+
+        When *auth_optional* is ``True`` and no token can be obtained, the
+        request proceeds **without** an ``Authorization`` header (endpoints
+        that accept body-level credentials such as an autoprice AccessKey).
+        A token is still attached whenever one is available.
 
         Returns parsed JSON, raw bytes, ``None`` (for 204), or the raw
         :class:`requests.Response` when *raw* is ``True``.
         """
-        token = self._ensure_token()
+        if auth_optional:
+            try:
+                token = self._ensure_token()
+            except AuthenticationError:
+                token = None
+        else:
+            token = self._ensure_token()
         url = f"{self._base_url}{path}"
 
-        req_headers: Dict[str, str] = {"Authorization": f"Bearer {token.access_token}"}
+        req_headers: Dict[str, str] = {}
+        if token is not None:
+            req_headers["Authorization"] = f"Bearer {token.access_token}"
+        if self._extra_headers is not None:
+            client_headers = (
+                self._extra_headers() if callable(self._extra_headers) else self._extra_headers
+            )
+            req_headers.update(client_headers or {})
         if headers:
             req_headers.update(headers)
 
@@ -204,6 +225,11 @@ class HttpClient:
         binary_types = ("application/pdf", "application/octet-stream", "image/", "application/zip")
         if any(bt in content_type for bt in binary_types):
             return resp.content
+
+        # A 2xx with an empty body (common for DELETE and replace-all save
+        # endpoints that return 200 + no content) is success, not a JSON error.
+        if not resp.content or not resp.text.strip():
+            return None
 
         try:
             return resp.json()

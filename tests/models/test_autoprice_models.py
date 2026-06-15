@@ -1,13 +1,11 @@
 """Fixture validation tests for AutoPrice models."""
 
-import pytest
 
 from ab.api.models.autoprice import QuickQuoteResponse, QuoteRequestModel, QuoteRequestResponse
 from tests.conftest import assert_no_extra_fields, load_request_fixture, require_fixture
 
 
 class TestAutoPriceModels:
-    @pytest.mark.live
     def test_quick_quote_response(self):
         data = require_fixture("QuickQuoteResponse", "POST", "/AutoPrice/QuickQuote", required=True)
         model = QuickQuoteResponse.model_validate(data)

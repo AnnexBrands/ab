@@ -11,22 +11,8 @@ import os
 from unittest.mock import patch
 
 from ab import ABConnectAPI
-from ab.auth.base import TokenStorage
+from ab.auth import MemoryTokenStorage as _MemoryStorage
 from ab.cli.discovery import discover_endpoints_from_class
-
-
-class _MemoryStorage(TokenStorage):
-    def __init__(self):
-        self.token = None
-
-    def get_token(self):
-        return self.token
-
-    def save_token(self, token):
-        self.token = token
-
-    def clear_token(self):
-        self.token = None
 
 
 def _make_api() -> ABConnectAPI:

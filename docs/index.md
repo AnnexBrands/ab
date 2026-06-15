@@ -46,6 +46,7 @@ Or use a `.env.staging` / `.env.production` file.
 ```{toctree}
 :maxdepth: 2
 
+api/account
 api/companies
 api/contacts
 api/jobs

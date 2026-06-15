@@ -41,6 +41,32 @@ from ab.progress.example_verify import compare  # noqa: E402
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures"
 RESULTS_JSON = REPO_ROOT / "tests" / "example_run_results.json"
 
+#: Endpoints whose example saves a fixture name that cannot be derived from the
+#: route's response model — scalar responses captured under a descriptive name,
+#: and within-module fixture-name collisions resolved with a suffixed name.
+FIXTURE_OVERRIDES: dict[str, str] = {
+    "api.address.get_property_type": "PropertyType.json",  # response_model=int
+    "api.users.get_roles": "UserRole.json",  # response_model=List[str]
+    "api.companies.available_by_current_user": "CompanySimple_available.json",
+    "api.companies.get_fulldetails": "CompanyDetails_full.json",
+    "api.companies.get_global_geo_settings": "GeoSettings_global.json",
+    "api.companies.get_inherited_packaging_labor": "PackagingLabor_inherited.json",
+    "api.contacts.get_current_user": "ContactSimple_current.json",
+    "api.jobs.note.list": "JobNote_list.json",
+    "api.jobs.on_hold.get_followup_user": "OnHoldUser_single.json",
+    "api.jobs.payment.get_create": "PaymentInfo_create.json",
+    "api.lookup.get_by_key_and_id": "LookupValue_single.json",
+    "api.partners.list": "Partner_list.json",
+    "api.rfq.get": "QuoteRequestDisplayInfo_single.json",
+    "api.views.get_dataset_sps": "StoredProcedureColumn_list.json",
+    "api.views.list": "GridViewDetails_list.json",
+}
+
+#: Scalar/binary response models that can't be diffed as a JSON model fixture.
+#: Endpoints with these models are excluded from the plan unless an override
+#: names the fixture their example actually saves.
+_UNVERIFIABLE_MODELS = {"int", "str", "bytes", "bool", "float", "dict", "Any", "None", ""}
+
 
 def _endpoint_meta() -> dict[str, tuple[str, str]]:
     """Map endpoint key -> (http_method, response_model) from live routes."""
@@ -72,10 +98,14 @@ def _plan(group_filter: str | None) -> dict[str, list[tuple[str, str]]]:
             continue  # mutations never auto-run
         if group_filter and not ex.group.startswith(group_filter):
             continue
-        model = strip_list_wrapper(response_model)
-        if not model:
-            continue
-        plan[_module_for(ex.example_path)].append((key, f"{model}.json"))
+        if key in FIXTURE_OVERRIDES:
+            fixture = FIXTURE_OVERRIDES[key]
+        else:
+            model = strip_list_wrapper(response_model)
+            if model in _UNVERIFIABLE_MODELS:
+                continue  # scalar/binary response — nothing to diff as a fixture
+            fixture = f"{model}.json"
+        plan[_module_for(ex.example_path)].append((key, fixture))
     return plan
 
 
@@ -96,12 +126,21 @@ def _run_module(module: str, capture_dir: Path | None) -> tuple[bool, str]:
 
 
 def _write_results(results: dict[str, dict], today: str) -> None:
-    ordered = {k: results[k] for k in sorted(results)}
+    # Merge into the existing artifact: a partial / --group run must update only
+    # the endpoints it actually verified, never discard prior recorded results.
+    merged: dict[str, dict] = {}
+    if RESULTS_JSON.is_file():
+        merged = json.loads(RESULTS_JSON.read_text(encoding="utf-8")).get("results", {})
+    merged.update(results)
+    ordered = {k: merged[k] for k in sorted(merged)}
     RESULTS_JSON.write_text(
         json.dumps({"schema": 1, "results": ordered}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    print(f"\nwrote {RESULTS_JSON.relative_to(REPO_ROOT)} ({len(ordered)} endpoints)")
+    print(
+        f"\nwrote {RESULTS_JSON.relative_to(REPO_ROOT)} "
+        f"({len(results)} updated, {len(ordered)} total endpoints)"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -137,6 +176,8 @@ def main(argv: list[str] | None = None) -> int:
 
     results: dict[str, dict] = {}
     passing = failing = errored = 0
+    missing_fixture: list[str] = []
+    not_produced: list[str] = []
 
     for module in sorted(plan):
         if args.capture:
@@ -160,8 +201,18 @@ def main(argv: list[str] | None = None) -> int:
             for key, fixture in plan[module]:
                 produced_path = tmp_dir / fixture
                 committed_path = FIXTURES_DIR / fixture
-                if not produced_path.is_file() or not committed_path.is_file():
-                    continue  # nothing produced/committed -> stays derived awaiting_data
+                if not produced_path.is_file():
+                    # The example ran but never save()d this fixture — either the
+                    # call failed mid-module or the example doesn't capture it.
+                    not_produced.append(key)
+                    print(f"  [no-out] {key}  (example produced no {fixture})")
+                    continue
+                if not committed_path.is_file():
+                    # Live data exists but there is no committed baseline to diff
+                    # against — run with --capture to create the fixture.
+                    missing_fixture.append(key)
+                    print(f"  [no-fix] {key}  (no committed {fixture}; run --capture)")
+                    continue
                 produced = json.loads(produced_path.read_text(encoding="utf-8"))
                 expected = json.loads(committed_path.read_text(encoding="utf-8"))
                 matches, detail = compare(produced, expected)
@@ -190,7 +241,11 @@ def main(argv: list[str] | None = None) -> int:
             _write_results(results, today)
         else:
             print(f"\n(no verifiable results — not writing {RESULTS_JSON.name})")
-        print(f"\nsummary: {passing} passing, {failing} failing, {errored} module errors")
+        print(
+            f"\nsummary: {passing} passing, {failing} failing, {errored} module errors, "
+            f"{len(missing_fixture)} missing committed fixture, "
+            f"{len(not_produced)} not produced by example"
+        )
         return 1 if (failing or errored) else 0
     return 0
 

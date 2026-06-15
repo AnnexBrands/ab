@@ -167,22 +167,43 @@ def first_or_skip(data: dict | list) -> dict:
 
 
 def assert_no_extra_fields(model: object) -> None:
-    """Assert a Pydantic model has no undeclared extra fields.
+    """Assert a Pydantic model tree has no undeclared extra fields.
+
+    Walks the model RECURSIVELY (nested models, lists, dicts) — drift confined
+    to a nested model must fail just like drift on the root.
 
     Args:
         model: A Pydantic model instance (ResponseModel subclass).
 
     Raises:
-        AssertionError: If ``model.__pydantic_extra__`` is non-empty,
-            with a message listing all undeclared field names.
+        AssertionError: If any model in the tree has a non-empty
+            ``__pydantic_extra__``, with a message listing the model class and
+            all undeclared field names.
     """
-    extra = getattr(model, "__pydantic_extra__", None)
-    if extra:
-        cls_name = model.__class__.__name__
-        fields = ", ".join(sorted(extra.keys()))
-        assert not extra, (
-            f"{cls_name} has {len(extra)} undeclared extra field(s): {fields}"
-        )
+    from pydantic import BaseModel
+
+    problems: list[str] = []
+
+    def _walk(node: object, path: str) -> None:
+        if isinstance(node, BaseModel):
+            extra = getattr(node, "__pydantic_extra__", None)
+            if extra:
+                fields = ", ".join(sorted(extra.keys()))
+                problems.append(
+                    f"{node.__class__.__name__} at {path or '<root>'} has "
+                    f"{len(extra)} undeclared extra field(s): {fields}"
+                )
+            for name in node.__pydantic_fields__:
+                _walk(getattr(node, name), f"{path}.{name}" if path else name)
+        elif isinstance(node, list):
+            for i, item in enumerate(node):
+                _walk(item, f"{path}[{i}]")
+        elif isinstance(node, dict):
+            for key, value in node.items():
+                _walk(value, f"{path}[{key!r}]")
+
+    _walk(model, "")
+    assert not problems, "; ".join(problems)
 
 
 @pytest.fixture(scope="session")

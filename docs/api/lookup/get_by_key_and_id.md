@@ -6,7 +6,7 @@
 **Python**
 
 ```python
-api.lookup.get_by_key_and_id(key: str, value_id: str) -> LookupValue
+api.lookup.get_by_key_and_id(key: str | MasterConstantKey, value_id: str) -> LookupValue
 ```
 
 **CLI**
@@ -16,6 +16,11 @@ ab lookup get_by_key_and_id <key> <value_id>
 ```
 
 GET /lookup/{masterConstantKey}/{valueId}
+
+Args:
+    key: A master-constant GROUP key — see
+        :class:`~ab.api.models.enums.MasterConstantKey`.
+    value_id: The ``LookupValue.id`` (MasterConstantValueID) to fetch.
 
 ## Response
 

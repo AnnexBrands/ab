@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     )
 
 from ab.api.base import BaseEndpoint
+from ab.api.models.enums import MasterConstantKey
 from ab.api.route import Route
 
 _CONTACT_TYPES = Route("GET", "/lookup/contactTypes", response_model="List[ContactTypeEntity]")
@@ -100,20 +101,34 @@ class LookupEndpoint(BaseEndpoint):
 
     # ---- Generic lookup (008) ---------------------------------------------
 
-    def get_by_key(self, key: str) -> list[LookupValue]:
+    def get_by_key(self, key: str | MasterConstantKey) -> list[LookupValue]:
         """GET /lookup/{masterConstantKey}
+
+        Args:
+            key: A master-constant GROUP key (e.g. ``"OnHoldReason"``,
+                ``"Job Management Status"``), NOT one of its values — see
+                :class:`~ab.api.models.enums.MasterConstantKey` for every
+                known key. The API returns ``[]`` (not 404) for an unknown
+                key, so a misspelt key looks like an empty group.
 
         Docs: https://ab-sdk.readthedocs.io/en/latest/api/lookup/get_by_key.html
         Response model: List[LookupValue]
         """
+        key = key.value if isinstance(key, MasterConstantKey) else key
         return self._request(_GET_BY_KEY.bind(masterConstantKey=key))
 
-    def get_by_key_and_id(self, key: str, value_id: str) -> LookupValue:
+    def get_by_key_and_id(self, key: str | MasterConstantKey, value_id: str) -> LookupValue:
         """GET /lookup/{masterConstantKey}/{valueId}
+
+        Args:
+            key: A master-constant GROUP key — see
+                :class:`~ab.api.models.enums.MasterConstantKey`.
+            value_id: The ``LookupValue.id`` (MasterConstantValueID) to fetch.
 
         Docs: https://ab-sdk.readthedocs.io/en/latest/api/lookup/get_by_key_and_id.html
         Response model: LookupValue
         """
+        key = key.value if isinstance(key, MasterConstantKey) else key
         return self._request(_GET_BY_KEY_AND_ID.bind(masterConstantKey=key, valueId=value_id))
 
     # ---- Named convenience methods (008) ----------------------------------

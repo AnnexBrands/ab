@@ -114,11 +114,18 @@ class BaseEndpoint:
                 kwargs["params"] = model_cls.check(params)
 
         target = client or self._client
+        if route.auth_optional:
+            kwargs.setdefault("auth_optional", True)
         response = target.request(route.method, route.path, **kwargs)
 
         # Cast response to model(s)
         if route.response_model is None:
             return response
+
+        # An empty 2xx body (e.g. DELETE / replace-all save returning 200 with no
+        # content) surfaces as None — there is nothing to cast.
+        if response is None:
+            return None
 
         if route.response_model == "bytes":
             return response
@@ -161,6 +168,8 @@ class BaseEndpoint:
             if hasattr(model_cls, "check"):
                 kwargs["params"] = model_cls.check(params)
 
+        if route.auth_optional:
+            kwargs.setdefault("auth_optional", True)
         response = self._client.request(route.method, route.path, **kwargs)
         if response is None:
             return None

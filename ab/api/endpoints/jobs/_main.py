@@ -39,6 +39,7 @@ def _deprecated(old: str, new: str) -> None:
 
 if TYPE_CHECKING:
     from ab.api.helpers.agent import AgentHelpers
+    from ab.api.helpers.items import JobItemsHelpers
     from ab.api.helpers.timeline import TimelineHelpers
     from ab.api.models.jobs import (
         BaseTimelineTaskRequest,
@@ -154,6 +155,8 @@ _ADD_FREIGHT_ITEMS = Route(
     request_model="FreightItemsRequest",
 )
 
+_BOOK = Route("POST", "/job/{jobDisplayId}/book")
+
 # Agent change route (029)
 _POST_CHANGE_AGENT = Route(
     "POST",
@@ -199,10 +202,12 @@ class JobsEndpoint(BaseEndpoint):
         self._resolver = resolver
 
         from ab.api.helpers.agent import AgentHelpers as _AgentHelpers
+        from ab.api.helpers.items import JobItemsHelpers as _JobItemsHelpers
         from ab.api.helpers.timeline import TimelineHelpers as _TimelineHelpers
 
         self.agent: AgentHelpers = _AgentHelpers(self, self._resolver)
         self.tasks: TimelineHelpers = _TimelineHelpers(self)
+        self.items: JobItemsHelpers = _JobItemsHelpers(self)
 
         # Subgroups (instances share the parent's HttpClient).
         self.note = JobNoteEndpoint(acportal_client)
@@ -327,6 +332,20 @@ class JobsEndpoint(BaseEndpoint):
         Request model: JobUpdateRequest
         """
         return self._request(_ABC_UPDATE, client=self._abc_client, json=data)
+
+    def book(self, job_display_id: int | str) -> None:
+        """``POST /job/{jobDisplayId}/book`` — book the job.
+
+        Confirms the quote/estimate into a booked job (swagger tag
+        ``JobBooking``). For carrier shipment booking use
+        :meth:`api.jobs.shipment.book` instead.
+
+        Args:
+            job_display_id: Job display ID to book.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/book.html
+        """
+        return self._request(_BOOK.bind(jobDisplayId=job_display_id))
 
     def transfer(self, job_display_id: int, franchisee_id: str) -> None:
         """POST /job/transfer/{jobDisplayId} (ACPortal)

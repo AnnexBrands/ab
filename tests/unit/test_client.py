@@ -6,21 +6,8 @@ import os
 from unittest.mock import MagicMock, patch
 
 from ab import ABConnectAPI
-from ab.auth.base import Token, TokenStorage
-
-
-class _MemoryStorage(TokenStorage):
-    def __init__(self):
-        self.token = None
-
-    def get_token(self):
-        return self.token
-
-    def save_token(self, token):
-        self.token = token
-
-    def clear_token(self):
-        self.token = None
+from ab.auth import MemoryTokenStorage as _MemoryStorage
+from ab.auth.base import Token
 
 
 def test_token_storage_construction_does_not_require_username_password(tmp_path, monkeypatch):
@@ -76,5 +63,21 @@ def test_login_primes_selected_token_storage():
         token = api.login("user@example.com", "secret")
 
     assert isinstance(token, Token)
-    assert storage.token is token
+    assert storage.get_token() is token
     assert mock_post.call_args.kwargs["data"]["username"] == "user@example.com"
+
+
+def test_anonymous_client_constructs_without_credentials(tmp_path, monkeypatch):
+    """ABConnectAPI(anonymous=True) needs no username/password and no storage;
+    only auth_optional routes (autoprice AccessKey quotes) are callable."""
+    monkeypatch.chdir(tmp_path)
+    env = {"ABCONNECT_CLIENT_ID": "cid", "ABCONNECT_CLIENT_SECRET": "secret"}
+    with patch.dict(os.environ, env, clear=True):
+        api = ABConnectAPI(anonymous=True)
+
+    assert api._allow_password_fallback is False
+    assert api._token_storage.get_token() is None
+    # the autoprice quote routes are flagged anonymous-capable
+    from ab.api.endpoints.autoprice import _QUICK_QUOTE, _QUOTE_REQUEST
+
+    assert _QUICK_QUOTE.auth_optional and _QUOTE_REQUEST.auth_optional

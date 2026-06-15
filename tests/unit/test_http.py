@@ -186,3 +186,96 @@ class TestHttpClient:
         assert token.access_token == "new-token"
         assert mock_post.call_args.kwargs["data"]["username"] == "form-user"
         assert mock_post.call_args.kwargs["data"]["password"] == "form-pass"
+
+
+class TestExtraHeaders:
+    """Client-level extra_headers (correlation IDs / traceparent injection)."""
+
+    def _client_with(self, extra_headers) -> HttpClient:
+        env = {
+            "ABCONNECT_USERNAME": "u",
+            "ABCONNECT_PASSWORD": "p",
+            "ABCONNECT_CLIENT_ID": "c",
+            "ABCONNECT_CLIENT_SECRET": "s",
+        }
+        with patch.dict(os.environ, env, clear=False):
+            settings = ABConnectSettings()
+        return HttpClient(
+            "https://example.com/api", settings, _StubTokenStorage(), extra_headers=extra_headers
+        )
+
+    def _sent_headers(self, client: HttpClient, **kwargs):
+        resp = MagicMock(status_code=200)
+        resp.headers = {"Content-Type": "application/json"}
+        resp.json.return_value = {}
+        with patch.object(client._session, "request", return_value=resp) as mock_req:
+            client.request("GET", "/x", **kwargs)
+        return mock_req.call_args.kwargs["headers"]
+
+    def test_static_dict_applied(self):
+        client = self._client_with({"X-Correlation-ID": "abc-123"})
+        headers = self._sent_headers(client)
+        assert headers["X-Correlation-ID"] == "abc-123"
+        assert headers["Authorization"] == "Bearer test_token"
+
+    def test_callable_applied_per_request(self):
+        calls = iter(["one", "two"])
+        client = self._client_with(lambda: {"traceparent": next(calls)})
+        assert self._sent_headers(client)["traceparent"] == "one"
+        assert self._sent_headers(client)["traceparent"] == "two"
+
+    def test_per_call_headers_win(self):
+        client = self._client_with({"X-Correlation-ID": "client-level"})
+        headers = self._sent_headers(client, headers={"X-Correlation-ID": "per-call"})
+        assert headers["X-Correlation-ID"] == "per-call"
+
+
+class TestAuthOptional:
+    """auth_optional requests proceed anonymously when no token is obtainable."""
+
+    def _anonymous_client(self) -> HttpClient:
+        from ab.auth.memory import MemoryTokenStorage
+
+        env = {
+            "ABCONNECT_USERNAME": "",
+            "ABCONNECT_PASSWORD": "",
+            "ABCONNECT_CLIENT_ID": "c",
+            "ABCONNECT_CLIENT_SECRET": "s",
+        }
+        with patch.dict(os.environ, env, clear=False):
+            settings = ABConnectSettings(require_credentials=False)
+        return HttpClient(
+            "https://example.com/api",
+            settings,
+            MemoryTokenStorage(),
+            allow_password_fallback=False,
+        )
+
+    def _sent_headers(self, client: HttpClient, **kwargs):
+        resp = MagicMock(status_code=200)
+        resp.headers = {"Content-Type": "application/json"}
+        resp.json.return_value = {}
+        with patch.object(client._session, "request", return_value=resp) as mock_req:
+            client.request("POST", "/autoprice/quickquote", **kwargs)
+        return mock_req.call_args.kwargs["headers"]
+
+    def test_anonymous_request_sends_no_authorization(self):
+        headers = self._sent_headers(self._anonymous_client(), auth_optional=True)
+        assert "Authorization" not in headers
+
+    def test_without_flag_still_raises(self):
+        with pytest.raises(AuthenticationError):
+            self._anonymous_client().request("POST", "/autoprice/quickquote")
+
+    def test_token_still_attached_when_available(self):
+        env = {
+            "ABCONNECT_USERNAME": "u",
+            "ABCONNECT_PASSWORD": "p",
+            "ABCONNECT_CLIENT_ID": "c",
+            "ABCONNECT_CLIENT_SECRET": "s",
+        }
+        with patch.dict(os.environ, env, clear=False):
+            settings = ABConnectSettings()
+        client = HttpClient("https://example.com/api", settings, _StubTokenStorage())
+        headers = self._sent_headers(client, auth_optional=True)
+        assert headers["Authorization"] == "Bearer test_token"

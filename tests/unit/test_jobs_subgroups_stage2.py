@@ -136,6 +136,49 @@ class TestParcelItemsSubgroup:
         args, _ = acportal.request.call_args
         assert args == ("DELETE", "/job/42/parcelitems/pi-1")
 
+    def test_create_is_acid_and_preserves_existing_items(self, jobs, acportal):
+        """POST /parcelitems is replace-all; create must merge, not wipe.
+
+        Regression guard for the destructive bug where a single-item create
+        body (no parcelItems array) cleared the whole set.
+        """
+        existing = {
+            "jobModifiedDate": "2026-01-01",
+            "parcelItems": [
+                {"id": 1, "jobItemId": "A", "description": "Existing", "quantity": 1, "jobItemPkdWeight": 10.0}
+            ],
+        }
+        saved = {
+            "jobModifiedDate": "2026-01-02",
+            "parcelItems": [
+                {"id": 1, "jobItemId": "A", "description": "Existing", "quantity": 1, "jobItemPkdWeight": 10.0},
+                {"id": 2, "jobItemId": "B", "description": "New crate", "quantity": 1, "jobItemPkdWeight": 40.0},
+            ],
+        }
+        captured = {}
+
+        def fake(method, path, **kwargs):
+            if method == "GET":
+                return existing
+            if method == "POST":
+                captured["body"] = kwargs.get("json")
+                return saved
+            return {}
+
+        acportal.request.side_effect = fake
+
+        created = jobs.parcel_items.create(42, data={"description": "New crate", "weight": 40})
+
+        body = captured["body"]
+        assert body["forceUpdate"] is True
+        # The POST carried the FULL set: the existing item is preserved...
+        assert any(p.get("id") == 1 for p in body["parcelItems"])
+        # ...and the new item was appended.
+        assert any(p.get("description") == "New crate" for p in body["parcelItems"])
+        assert len(body["parcelItems"]) == 2
+        # create returns the newly added item.
+        assert created.id == 2 and created.description == "New crate"
+
 
 class TestTrackingSubgroup:
     def test_get_route(self, jobs, acportal):

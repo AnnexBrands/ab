@@ -206,3 +206,22 @@ class TestDbTokenStorage:
         storage.save_token(Token(access_token="first", expires_at=time.time() + 600))
         storage.save_token(Token(access_token="second", expires_at=time.time() + 600))
         assert storage.get_token().access_token == "second"
+
+
+class TestMemoryTokenStorage:
+    def test_starts_empty_and_round_trips(self):
+        from ab.auth import MemoryTokenStorage
+
+        storage = MemoryTokenStorage()
+        assert storage.get_token() is None
+        token = Token(access_token="t", expires_at=9e9)
+        storage.save_token(token)
+        assert storage.get_token() is token
+        storage.clear_token()
+        assert storage.get_token() is None
+
+    def test_seeded_with_token(self):
+        from ab.auth import MemoryTokenStorage
+
+        token = Token(access_token="worker", expires_at=9e9)
+        assert MemoryTokenStorage(token=token).get_token() is token

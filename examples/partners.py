@@ -22,7 +22,7 @@ def main() -> None:
     print("\n# api.partners.list()")
     result = api.partners.list()
     print(format_result(result))
-    save("Partner.json", result)
+    save("Partner_list.json", result)
 
     print(f"\n# api.partners.get({TEST_PARTNER_ID!r})")
     result = api.partners.get(TEST_PARTNER_ID)

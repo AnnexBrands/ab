@@ -1,5 +1,6 @@
 """Re-export all model classes for lazy resolution by Route."""
 
+from ab.api.models.account import AccountProfile
 from ab.api.models.address import (
     AddressIsValidResult,
     AddressPropertyTypeParams,
@@ -134,7 +135,7 @@ from ab.api.models.documents import (
     DocumentUploadResponse,
     UploadedFile,
 )
-from ab.api.models.enums import CarrierAPI, DocumentType
+from ab.api.models.enums import CarrierAPI, DocumentType, MasterConstantKey
 from ab.api.models.forms import (
     BillOfLadingParams,
     FormsShipmentPlan,
@@ -180,6 +181,9 @@ from ab.api.models.jobs import (
     PackagingContainer,
     ParcelItem,
     ParcelItemCreateRequest,
+    ParcelItemSave,
+    ParcelItemsRequest,
+    ParcelItemsResponse,
     ParcelItemWithMaterials,
     PricedFreightProvider,
     RateQuoteRequest,
@@ -191,7 +195,10 @@ from ab.api.models.jobs import (
     SendDocumentEmailModel,
     SendEmailRequest,
     SendSMSModel,
+    ShipmentDetails,
     ShipmentPlanProvider,
+    ShipmentTrackingDetails,
+    ShipmentTrackingDocument,
     SimpleTaskRequest,
     SortByModel,
     TaskTruckInfoRequest,
@@ -350,7 +357,7 @@ __all__ = [
     # Shared
     "ServiceBaseResponse", "ServiceWarningResponse", "PaginatedList", "ListRequest",
     # Enums
-    "DocumentType", "CarrierAPI",
+    "DocumentType", "CarrierAPI", "MasterConstantKey",
     # Catalog
     "CatalogListParams",
     "CatalogDto", "CatalogWithSellersDto", "CatalogExpandedDto",
@@ -400,9 +407,11 @@ __all__ = [
     "TimeLogRequest", "TimeLogPauseRequest", "WorkTimeLogRequest", "InitialNoteRequest", "TaskTruckInfoRequest",
     "TimelineTaskUpdateRequest", "IncrementStatusRequest",
     "TrackingInfo", "TrackingInfoV3",
+    "ShipmentTrackingDetails", "ShipmentDetails", "ShipmentTrackingDocument",
     "JobNote", "JobNoteCreateRequest", "JobNoteUpdateRequest",
     "ParcelItem", "ParcelItemWithMaterials", "JobParcelItemMaterial", "PackagingContainer",
-    "ParcelItemCreateRequest", "ItemNotesRequest", "ItemUpdateRequest",
+    "ParcelItemCreateRequest", "ParcelItemsRequest", "ParcelItemsResponse", "ParcelItemSave",
+    "ItemNotesRequest", "ItemUpdateRequest",
     "ExtendedOnHoldInfo", "OnHoldDetails", "SaveOnHoldRequest", "SaveOnHoldResponse",
     "ResolveJobOnHoldResponse", "SaveOnHoldDatesModel", "OnHoldUser", "OnHoldNoteDetails",
     "SendDocumentEmailModel", "SendEmailRequest", "SendSMSModel", "MarkSmsAsReadModel",
@@ -419,6 +428,8 @@ __all__ = [
     # Documents
     "Document", "DocumentListParams", "DocumentUpdateRequest",
     "DocumentUploadRequest", "DocumentUploadResponse", "UploadedFile",
+    # Account
+    "AccountProfile",
     # Address
     "AddressValidateParams", "AddressPropertyTypeParams", "AddressIsValidResult", "PropertyType",
     # Lookup

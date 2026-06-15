@@ -1,6 +1,5 @@
 """Fixture validation tests for Lookup and Address models."""
 
-import pytest
 
 from ab.api.models.address import AddressIsValidResult
 from ab.api.models.lookup import ContactTypeEntity, CountryCodeDto, JobStatus, LookupItem
@@ -8,7 +7,6 @@ from tests.conftest import assert_no_extra_fields, first_or_skip, require_fixtur
 
 
 class TestLookupModels:
-    @pytest.mark.live
     def test_contact_type_entity(self):
         data = require_fixture("ContactTypeEntity", "GET", "/lookup/contacttypes", required=True)
         item = first_or_skip(data)
@@ -16,7 +14,6 @@ class TestLookupModels:
         assert isinstance(model, ContactTypeEntity)
         assert_no_extra_fields(model)
 
-    @pytest.mark.live
     def test_country_code_dto(self):
         data = require_fixture("CountryCodeDto", "GET", "/lookup/countries", required=True)
         item = first_or_skip(data)
@@ -24,7 +21,6 @@ class TestLookupModels:
         assert isinstance(model, CountryCodeDto)
         assert_no_extra_fields(model)
 
-    @pytest.mark.live
     def test_job_status(self):
         data = require_fixture("JobStatus", "GET", "/lookup/jobstatuses", required=True)
         item = first_or_skip(data)

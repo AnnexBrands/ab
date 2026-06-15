@@ -90,20 +90,39 @@ a real reconciliation between the five artefacts.
 </ol>
 
 <h2>Current snapshot</h2>
-<p>As of 2026-05-17, CLI discovery reports 23 top-level endpoint groups
-and 239 top-level public methods. Including discoverable jobs subgroups,
-the CLI registry contains 36 dispatch entries and 323 public methods.</p>
+<p>As of 2026-06-06, <strong>every routed endpoint has a canonical example</strong>:
+<code>ab.progress.example_index</code> reports <strong>209 / 209</strong> canonical,
+<code>uncovered_endpoints() == []</code> and <code>legacy_only_endpoints() == []</code>.
+Both coverage gates in <code>tests/test_example_coverage.py</code> are hardened to
+hard asserts: <code>STRICT_COVERAGE = True</code> and <code>STRICT_NO_LEGACY = True</code>.</p>
 
 <ul>
-  <li><span class='badge badge-done'>done</span> Full runner-removal
-      conversions: <code>dashboard</code>, <code>notes</code>.</li>
-  <li><span class='badge badge-partial'>partial</span> Endpoint work ahead
-      of full example conversion: <code>jobs.on_hold</code> conversion chain;
-      <code>contacts.get_did</code> resolver helper.</li>
-  <li><span class='badge badge-deprecated'>deprecated</span> Groups retained
-      as forwarding shims: <code>forms</code>, <code>payments</code>.</li>
-  <li><span class='badge badge-todo'>todo</span> Missing example coverage:
-      <code>commodity_maps</code>.</li>
+  <li><span class='badge badge-done'>done</span> All 114 legacy-only endpoints
+      migrated from <code>examples/_X.py</code> &rarr; canonical plain-script
+      <code>examples/X.py</code> (fan-out 1: catalog, commodities, commodity_maps,
+      companies(+extended), contacts(+extended), documents, jobs/core, lookup,
+      lots, notes, reports, rfq, shipments, views).</li>
+  <li><span class='badge badge-done'>done</span> All 61 author-new endpoints
+      (no prior example) authored (fan-out 2: dashboard reads, jobs.transfer,
+      jobs.status, and the jobs subgroups email, sms, note, on_hold, parcel_items,
+      payment, shipment, rfq, tracking, timeline, form, freight_providers).</li>
+  <li><span class='badge badge-done'>done</span> Canonical example coverage:
+      <strong>209 / 209</strong> routed endpoints (was 34). Offline gates green:
+      ruff, <code>test_example_call_signatures</code> (every call binds to the real
+      signature), no-drift <code>html/progress.html</code>, full
+      <code>pytest -m "not live"</code>.</li>
+  <li><span class='badge badge-todo'>todo</span> Live verification (operator, in
+      <code>serve_progress</code>): GET examples capture fixtures on first run;
+      mutations run under <code>AB_RUN_MUTATIONS=1</code>. Some calls carry a
+      placeholder / discovery-fallback id to replace with a real staging value:
+      commodities/commodity_maps, top-level rfq, <code>views.get_dataset_sp</code>,
+      <code>shipments.get_shipment_document</code>, <code>jobs.email.send_template</code>
+      (template guid), <code>jobs.on_hold</code> / <code>jobs.note</code> /
+      <code>jobs.parcel_items</code> / <code>jobs.shipment.remove_accessorial</code>
+      sub-ids.</li>
+  <li><span class='badge badge-deprecated'>deprecated</span> Legacy
+      <code>examples/_X.py</code> files are retained (no-deletion policy); they are
+      excluded from the canonical set and no longer back any endpoint.</li>
 </ul>
 
 <h2>Reference conversion: <code>dashboard</code></h2>

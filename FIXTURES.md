@@ -8,14 +8,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 
 ## Summary
 
-- **Total endpoints**: 232
-- **Complete (all gates pass)**: 171
-- **G1 Model Fidelity**: 184/232 pass
-- **G2 Fixture Status**: 185/232 pass
-- **G3 Test Quality**: 225/232 pass
-- **G4 Doc Accuracy**: 232/232 pass
-- **G5 Param Routing**: 226/232 pass
-- **G6 Request Quality**: 228/232 pass
+- **Total endpoints**: 237
+- **Complete (all gates pass)**: 174
+- **G1 Model Fidelity**: 187/237 pass
+- **G2 Fixture Status**: 188/237 pass
+- **G3 Test Quality**: 228/237 pass
+- **G4 Doc Accuracy**: 237/237 pass
+- **G5 Param Routing**: 231/237 pass
+- **G6 Request Quality**: 233/237 pass
 
 ## Status Legend
 
@@ -224,7 +224,7 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /Lot/get-overrides | POST | api.lots.get_overrides | — | List[LotOverrideDto] | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | 020 |
 | /Catalog | POST | api.catalog.create | AddCatalogRequest | CatalogWithSellersDto | FAIL | FAIL | PASS | PASS | PASS | PASS | incomplete | auto-discovered |
 | /contacts/{id} | GET | api.contacts.get | — | ContactSimple | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
-| /documents/get/{docPath} | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /documents/get/{docPath} | GET | api.documents.get | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /documents/list | GET | api.documents.list | — | List[Document] | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/address-label | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/form/bill-of-lading | GET | — | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
@@ -259,6 +259,11 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /shipment/document/{docId} | GET | api.shipments.get_shipment_document | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /Web2Lead/get | GET | api.web2lead.get | — | Web2LeadResponse | PASS | PASS | PASS | PASS | FAIL | PASS | incomplete | auto-discovered |
 | /job/{jobDisplayId}/changeAgent | POST | api.jobs.change_agent | ChangeJobAgentRequest | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /account/profile | GET | api.account.get_profile | — | AccountProfile | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /documents/get/thumbnail/{docPath} | GET | api.documents.get_thumbnail | — | bytes | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /documents/hide/{docId} | PUT | api.documents.hide | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/book | POST | api.jobs.book | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
+| /job/{jobDisplayId}/tracking/shipment/{proNumber} | GET | api.jobs.tracking.shipment | — | ShipmentTrackingDetails | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
 
 ## Model Warning Summary
 

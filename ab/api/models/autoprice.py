@@ -30,6 +30,18 @@ class QuickQuotePriceBreakdown(ResponseModel):
     miscellaneous: Optional[float] = Field(None, alias="Miscellaneous")
 
 
+class QuickQuoteCarrierInfo(ResponseModel):
+    """Carrier metadata within a quick quote result."""
+
+    api: Optional[str] = Field(None, alias="Api")
+    code: Optional[str] = Field(None, alias="Code")
+    short_code: Optional[str] = Field(None, alias="ShortCode")
+    signature_option: Optional[str] = Field(None, alias="SignatureOption")
+    carrier_specific_signature_option: Optional[str] = Field(
+        None, alias="CarrierSpecificSignatureOption"
+    )
+
+
 class QuickQuoteResult(ResponseModel):
     """Inner result from POST /autoprice/quickquote."""
 
@@ -38,6 +50,9 @@ class QuickQuoteResult(ResponseModel):
     warnings: Optional[List[str]] = Field(None, alias="Warnings")
     price_breakdown: Optional[QuickQuotePriceBreakdown] = Field(None, alias="PriceBreakdown")
     request_errors: Optional[List[str]] = Field(None, alias="RequestErrors")
+    carrier_info: Optional[QuickQuoteCarrierInfo] = Field(None, alias="CarrierInfo")
+    considered_pickup_areas: Optional[List[str]] = Field(None, alias="ConsideredPickupAreas")
+    considered_delivery_areas: Optional[List[str]] = Field(None, alias="ConsideredDeliveryAreas")
 
 
 class QuickQuoteResponse(ResponseModel):

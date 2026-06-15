@@ -15,41 +15,31 @@ api.jobs.parcel_items.create(job_display_id: int, *, data: ParcelItemCreateReque
 ab jobs parcel_items create <job_display_id> [--data ...]
 ```
 
-``POST /job/{jobDisplayId}/parcelitems``
+Add ONE parcel item, preserving the existing set (ACID get-merge-write).
 
-Request model: :class:`ParcelItemCreateRequest`.
+``POST /job/{jobDisplayId}/parcelitems`` is replace-all
+(``SaveAllParcelItemsRequest``): the body's ``parcelItems`` array becomes
+the ENTIRE set. To avoid wiping the other items, this reads the current
+parcel items, appends *data* (an ergonomic single-item
+:class:`ParcelItemCreateRequest`), and saves the full set. Returns the
+newly added :class:`ParcelItem`.
 
-## Request body — `ParcelItemCreateRequest`
+## Request body — `ParcelItemsRequest`
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `description` | `str` | yes | Item description |
-| `length` | `Optional[float]` | no | Length |
-| `width` | `Optional[float]` | no | Width |
-| `height` | `Optional[float]` | no | Height |
-| `weight` | `Optional[float]` | no | Weight |
-| `quantity` | `Optional[int]` | no | Quantity |
+| `jobModifiedDate` | `Optional[str]` | no | Job modified timestamp (optimistic concurrency) |
+| `forceUpdate` | `Optional[bool]` | no | Bypass the optimistic-concurrency check |
+| `parcelItems` | `Optional[list[ParcelItemSave]]` | no | Full parcel-item set to save |
 
 ## Response
 
-Returns `ParcelItem`.
+Returns `ParcelItemsResponse`.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | `Optional[int]` | no | Parcel item ID |
-| `jobItemId` | `Optional[str]` | no | Job item UUID |
-| `description` | `Optional[str]` | no | Item description |
-| `quantity` | `Optional[int]` | no | Number of pieces |
-| `jobItemPkdLength` | `Optional[float]` | no | Packed length |
-| `jobItemPkdWidth` | `Optional[float]` | no | Packed width |
-| `jobItemPkdHeight` | `Optional[float]` | no | Packed height |
-| `jobItemPkdWeight` | `Optional[float]` | no | Packed weight |
-| `jobItemParcelValue` | `Optional[float]` | no | Declared value |
-| `parcelPackageTypeId` | `Optional[int]` | no | Package type ID |
-| `insureKey` | `Optional[str]` | no | Insurance key |
-| `packageTypeCode` | `Optional[str]` | no | Package type code |
-| `jobModifiedDate` | `Optional[str]` | no | Job modified datetime |
-| `parcelItems` | `Optional[list[dict]]` | no | Nested parcel items |
+| `jobModifiedDate` | `Optional[str]` | no | Job modified timestamp |
+| `parcelItems` | `Optional[list[ParcelItem]]` | no | Parcel items after the save |
 
 ---
 

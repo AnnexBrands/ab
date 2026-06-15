@@ -24,6 +24,10 @@ class Route:
     params_model: Optional[str] = None
     response_model: Optional[str] = None
     api_surface: str = "acportal"  # acportal | catalog | abc
+    #: When True the endpoint also works without a bearer token (e.g. the
+    #: AccessKey-authenticated autoprice quote endpoints): a token is attached
+    #: when one is available, but an anonymous client may call it too.
+    auth_optional: bool = False
 
     # Private: extracted ``{param}`` names — populated in __post_init__
     _path_params: frozenset[str] = field(default=frozenset(), repr=False, compare=False)
@@ -51,4 +55,5 @@ class Route:
             params_model=self.params_model,
             response_model=self.response_model,
             api_surface=self.api_surface,
+            auth_optional=self.auth_optional,
         )

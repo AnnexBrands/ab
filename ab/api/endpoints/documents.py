@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import IO, TYPE_CHECKING, Union
 
 from ab.api.base import BaseEndpoint
 from ab.api.models.documents import DocumentUploadRequest, DocumentUploadResponse
@@ -20,6 +20,22 @@ _UPLOAD = Route(
 _LIST = Route("GET", "/documents/list", params_model="DocumentListParams", response_model="List[Document]")
 _GET = Route("GET", "/documents/get/{docPath}", response_model="bytes")
 _UPDATE = Route("PUT", "/documents/update/{docId}", request_model="DocumentUpdateRequest")
+_GET_THUMBNAIL = Route("GET", "/documents/get/thumbnail/{docPath}", response_model="bytes")
+_HIDE = Route("PUT", "/documents/hide/{docId}")
+
+#: A file to upload: a filesystem path, raw bytes, or a binary file-like
+#: object (e.g. ``io.BytesIO``). Non-path sources require ``filename=``.
+FileSource = Union[str, Path, bytes, IO[bytes]]
+
+
+def _file_part(file: FileSource, filename: str | None) -> tuple[str, object]:
+    """Resolve *(name, file-object/bytes)* for the multipart ``file`` part."""
+    if isinstance(file, (str, Path)):
+        path = Path(file)
+        return filename or path.name, path.open("rb")
+    if filename is None:
+        raise ValueError("filename= is required when uploading bytes or a file-like object")
+    return filename, file
 
 
 class DocumentsEndpoint(BaseEndpoint):
@@ -29,7 +45,7 @@ class DocumentsEndpoint(BaseEndpoint):
         self,
         *,
         job_display_id: str,
-        file_path: str | Path,
+        file_path: FileSource,
         document_type: DocumentType | int,
         document_type_description: str | None = None,
         shared: int = 0,
@@ -48,14 +64,16 @@ class DocumentsEndpoint(BaseEndpoint):
 
         Args:
             job_display_id: Job display ID the document belongs to.
-            file_path: Path to the file to upload.
+            file_path: The file to upload — a filesystem path, raw ``bytes``,
+                or a binary file-like object (e.g. ``io.BytesIO``).
             document_type: Document type; see :class:`~ab.api.models.enums.DocumentType`.
             document_type_description: Optional human-readable type label.
             shared: Sharing bitmask (0 = private).
             tags: Optional tags to attach.
             job_items: Item UUID(s) to associate (used for item photos).
             rfq_id: Optional RFQ ID to associate.
-            filename: Override the multipart filename (defaults to the file's name).
+            filename: Override the multipart filename (defaults to the file's
+                name; **required** for bytes / file-like sources).
 
         Returns:
             DocumentUploadResponse: The parsed upload result.
@@ -74,17 +92,20 @@ class DocumentsEndpoint(BaseEndpoint):
             rfq_id=rfq_id,
         )
         data = form.model_dump(by_alias=True, exclude_none=True)
-        path = Path(file_path)
-        with open(path, "rb") as fh:
-            files = {"file": (filename or path.name, fh, "application/octet-stream")}
+        part_name, source = _file_part(file_path, filename)
+        try:
+            files = {"file": (part_name, source, "application/octet-stream")}
             return self._request(_UPLOAD, files=files, data=data)
+        finally:
+            if isinstance(file_path, (str, Path)):
+                source.close()
 
     def upload_item_photo(
         self,
         *,
         job_display_id: str,
         item_ids: str | list[str],
-        file_path: str | Path,
+        file_path: FileSource,
         shared: int = 0,
         tags: list[str] | None = None,
         filename: str | None = None,
@@ -98,10 +119,12 @@ class DocumentsEndpoint(BaseEndpoint):
         Args:
             job_display_id: Job display ID the photo belongs to.
             item_ids: One item UUID, or a list of UUIDs, to attach the photo to.
-            file_path: Path to the image file.
+            file_path: The image — a filesystem path, raw ``bytes``, or a
+                binary file-like object.
             shared: Sharing bitmask (0 = private).
             tags: Optional tags to attach.
-            filename: Override the multipart filename (defaults to the file's name).
+            filename: Override the multipart filename (defaults to the file's
+                name; required for bytes / file-like sources).
 
         Returns:
             DocumentUploadResponse: The parsed upload result.
@@ -125,7 +148,8 @@ class DocumentsEndpoint(BaseEndpoint):
         *,
         job_display_id: str,
         item_ids: str | list[str],
-        file_paths: list[str | Path],
+        file_paths: list[FileSource],
+        filenames: list[str] | None = None,
         shared: int = 0,
         tags: list[str] | None = None,
     ) -> list[DocumentUploadResponse]:
@@ -139,13 +163,18 @@ class DocumentsEndpoint(BaseEndpoint):
         Args:
             job_display_id: Job display ID the photos belong to.
             item_ids: One item UUID, or a list of UUIDs, to attach every photo to.
-            file_paths: Paths to the image files to upload.
+            file_paths: The image files to upload — filesystem paths, raw
+                ``bytes``, or binary file-like objects.
+            filenames: Multipart filenames, one per file — required when any
+                entry in ``file_paths`` is not a filesystem path.
             shared: Sharing bitmask (0 = private).
             tags: Optional tags to attach to every photo.
 
         Returns:
             list[DocumentUploadResponse]: One result per uploaded file, in order.
         """
+        if filenames is not None and len(filenames) != len(file_paths):
+            raise ValueError("filenames must have one entry per file_paths entry")
         return [
             self.upload_item_photo(
                 job_display_id=job_display_id,
@@ -153,8 +182,9 @@ class DocumentsEndpoint(BaseEndpoint):
                 file_path=file_path,
                 shared=shared,
                 tags=tags,
+                filename=filenames[i] if filenames else None,
             )
-            for file_path in file_paths
+            for i, file_path in enumerate(file_paths)
         ]
 
     def list(self, job_display_id: str | int) -> list[Document]:
@@ -167,8 +197,41 @@ class DocumentsEndpoint(BaseEndpoint):
         return self._request(_LIST, params=dict(job_display_id=str(job_display_id)))
 
     def get(self, doc_path: str) -> bytes:
-        """GET /documents/get/{docPath} — returns raw bytes."""
-        return self._client.request("GET", f"/documents/get/{doc_path}", raw=True).content
+        """``GET /documents/get/{docPath}`` — download a document as raw bytes.
+
+        Args:
+            doc_path: The document's storage path, as returned in
+                ``Document.path`` by :meth:`list` (may contain ``/``
+                separators).
+
+        Response model: bytes
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/get.html
+        """
+        return self._request(_GET.bind(docPath=doc_path))
+
+    def get_thumbnail(self, doc_path: str) -> bytes:
+        """``GET /documents/get/thumbnail/{docPath}`` — document thumbnail bytes.
+
+        Args:
+            doc_path: The document's storage path, as returned in ``Document.path``
+                (or ``Document.thumbnail_path``) by :meth:`list`.
+
+        Response model: bytes
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/get_thumbnail.html
+        """
+        return self._request(_GET_THUMBNAIL.bind(docPath=doc_path))
+
+    def hide(self, doc_id: int) -> None:
+        """``PUT /documents/hide/{docId}`` — hide a document from listings.
+
+        Args:
+            doc_id: Numeric document identifier (``Document.id``).
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/documents/hide.html
+        """
+        return self._request(_HIDE.bind(docId=doc_id))
 
     def update(self, doc_id: str, *, data: DocumentUpdateRequest | dict) -> None:
         """PUT /documents/update/{docId}.

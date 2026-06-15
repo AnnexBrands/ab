@@ -67,3 +67,53 @@ class ServiceType(int, Enum):
     PACK = 2
     PICKANDPACK = 3
     DELIVERY = 4
+
+
+class MasterConstantKey(str, Enum):
+    """Master-constant lookup keys accepted by ``GET /lookup/{masterConstantKey}``.
+
+    The API exposes no endpoint that lists these keys — the authoritative
+    source is the ``lookups.MasterConstant`` table (snapshot 2026-06-10).
+    ``api.lookup.get_by_key`` returns ``[]`` (not 404) for an unknown key, so
+    use these members to avoid silent typos. Note ``ON_HOLD_RESOLVED_CODE``:
+    the wire value really is ``"OnHoldRecolvedCode"`` — the typo is in the
+    database and must be preserved.
+    """
+
+    BASIS_TYPES = "BasisTypes"
+    CANCELLED_TYPES = "CancelledTypes"
+    C_FILL_TYPE = "CFillType"
+    COMMODITY_CATEGORY = "CommodityCategory"
+    COMPANY_TYPES = "CompanyTypes"
+    CONTACT_TYPES = "ContactTypes"
+    CONTAINER_TYPE = "ContainerType"
+    C_PACK_TYPE = "CPackType"
+    DOCUMENT_TAGS = "DocumentTags"
+    FOLLOWUP_HEAT_OPTION = "FollowupHeatOption"
+    FOLLOWUP_PIPELINE_OPTION = "FollowupPipelineOption"
+    FRANCHISEE_TYPES = "FranchiseeTypes"
+    FREIGHT_CLASS = "FreightClass"
+    FREIGHT_TYPES = "FreightTypes"
+    INDUSTRY_TYPES = "IndustryTypes"
+    INSURANCE_OPTION = "InsuranceOption"
+    INSURANCE_TYPE = "InsuranceType"
+    ITEM_NOTED_CONDITIONS = "ItemNotedConditions"
+    ITEM_TYPES = "ItemTypes"
+    JOB_INTACCT_STATUS = "JobIntacctStatus"
+    JOB_MANAGEMENT_STATUS = "Job Management Status"
+    JOB_MGMT_TYPES = "JobMgmtTypes"
+    JOB_NOTE_CATEGORY = "JobNoteCategory"
+    JOBS_STATUS_TYPES = "JobsStatusTypes"
+    JOB_TYPE = "JobType"
+    ON_HOLD_NEXT_STEP = "OnHoldNextStep"
+    ON_HOLD_REASON = "OnHoldReason"
+    ON_HOLD_RESOLVED_CODE = "OnHoldRecolvedCode"  # sic — typo lives in the DB
+    PAYMENT_STATUSES = "PaymentStatuses"
+    PRICING_TO_USE = "PricingToUse"
+    QB_JOB_TRANS_TYPE = "QBJobTransType"
+    QB_WS_TRANS_TYPE = "QBWSTransType"
+    RESPONSIBILITY_PARTY = "ResponsibilityParty"
+    ROOM_TYPES = "RoomTypes"
+    TRANS_RULES = "TransRules"
+    TRANS_TYPES = "TransTypes"
+    YES_NO = "YesNo"

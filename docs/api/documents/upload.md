@@ -6,7 +6,7 @@
 **Python**
 
 ```python
-api.documents.upload(*, job_display_id: str, file_path: str | Path, document_type: DocumentType | int, document_type_description: str | None = None, shared: int = 0, tags: list[str] | None = None, job_items: list[str] | None = None, rfq_id: int | None = None, filename: str | None = None) -> DocumentUploadResponse
+api.documents.upload(*, job_display_id: str, file_path: FileSource, document_type: DocumentType | int, document_type_description: str | None = None, shared: int = 0, tags: list[str] | None = None, job_items: list[str] | None = None, rfq_id: int | None = None, filename: str | None = None) -> DocumentUploadResponse
 ```
 
 **CLI**
@@ -25,14 +25,16 @@ item-photo specifics.
 
 Args:
     job_display_id: Job display ID the document belongs to.
-    file_path: Path to the file to upload.
+    file_path: The file to upload — a filesystem path, raw ``bytes``,
+        or a binary file-like object (e.g. ``io.BytesIO``).
     document_type: Document type; see :class:`~ab.api.models.enums.DocumentType`.
     document_type_description: Optional human-readable type label.
     shared: Sharing bitmask (0 = private).
     tags: Optional tags to attach.
     job_items: Item UUID(s) to associate (used for item photos).
     rfq_id: Optional RFQ ID to associate.
-    filename: Override the multipart filename (defaults to the file's name).
+    filename: Override the multipart filename (defaults to the file's
+        name; **required** for bytes / file-like sources).
 
 Returns:
     DocumentUploadResponse: The parsed upload result.

@@ -1,5 +1,6 @@
 """Endpoint group classes."""
 
+from ab.api.endpoints.account import AccountEndpoint
 from ab.api.endpoints.address import AddressEndpoint
 from ab.api.endpoints.autoprice import AutoPriceEndpoint
 from ab.api.endpoints.catalog import CatalogEndpoint
@@ -25,6 +26,7 @@ from ab.api.endpoints.views import ViewsEndpoint
 from ab.api.endpoints.web2lead import Web2LeadEndpoint
 
 __all__ = [
+    "AccountEndpoint",
     "AddressEndpoint",
     "AutoPriceEndpoint",
     "CatalogEndpoint",

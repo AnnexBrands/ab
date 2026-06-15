@@ -16,12 +16,14 @@
   ],
   "/Catalog GET": [
     "G4",
+    "G5",
     "G6"
   ],
   "/Catalog POST": [
     "G3",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/Catalog/{_} DELETE": [
     "G1",
@@ -42,7 +44,8 @@
   "/Catalog/{_} PUT": [
     "G3",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/Lot GET": [
     "G4",
@@ -91,6 +94,7 @@
   ],
   "/Seller GET": [
     "G4",
+    "G5",
     "G6"
   ],
   "/Seller POST": [
@@ -98,7 +102,8 @@
     "G2",
     "G3",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/Seller/{_} DELETE": [
     "G1",
@@ -121,7 +126,8 @@
     "G2",
     "G3",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/Web2Lead GET": [
     "G1",
@@ -144,6 +150,11 @@
     "G3",
     "G4",
     "G5"
+  ],
+  "/account/profile GET": [
+    "G4",
+    "G5",
+    "G6"
   ],
   "/address/isvalid GET": [
     "G1",
@@ -194,6 +205,7 @@
   "/commodity-map/{_} DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -497,12 +509,15 @@
     "G6"
   ],
   "/dashboard GET": [
+    "G2",
     "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/dashboard/gridviews GET": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
@@ -573,7 +588,23 @@
     "G5",
     "G6"
   ],
+  "/documents/get/thumbnail/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
   "/documents/get/{_} GET": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/documents/hide/{_} PUT": [
     "G1",
     "G2",
     "G3",
@@ -653,6 +684,14 @@
     "G5",
     "G6"
   ],
+  "/job/{_}/book POST": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
   "/job/{_}/calendaritems GET": [
     "G1",
     "G2",
@@ -664,6 +703,7 @@
   "/job/{_}/changeAgent POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -713,6 +753,7 @@
     "G2",
     "G3",
     "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/form/credit-card-authorization GET": [
@@ -736,6 +777,7 @@
     "G2",
     "G3",
     "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/form/invoice/editable GET": [
@@ -759,6 +801,7 @@
     "G2",
     "G3",
     "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/form/packaging-labels GET": [
@@ -766,6 +809,7 @@
     "G2",
     "G3",
     "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/form/packaging-specification GET": [
@@ -796,6 +840,7 @@
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
@@ -804,6 +849,7 @@
     "G2",
     "G3",
     "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/form/usar/editable GET": [
@@ -849,6 +895,7 @@
   "/job/{_}/item/notes POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -856,6 +903,7 @@
   "/job/{_}/item/{_} PUT": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -909,6 +957,8 @@
     "G6"
   ],
   "/job/{_}/onhold POST": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
@@ -931,12 +981,16 @@
     "G6"
   ],
   "/job/{_}/onhold/{_} GET": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/onhold/{_} PUT": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
@@ -957,6 +1011,8 @@
     "G6"
   ],
   "/job/{_}/onhold/{_}/resolve PUT": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
@@ -993,29 +1049,35 @@
   "/job/{_}/parcelitems/{_} DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment GET": [
     "G3",
+    "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/payment/ACHCreditTransfer POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/ACHPaymentSession POST": [
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/attachCustomerBank POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1023,6 +1085,7 @@
   "/job/{_}/payment/banksource POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1030,6 +1093,7 @@
   "/job/{_}/payment/bysource POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1037,23 +1101,27 @@
   "/job/{_}/payment/cancelJobACHVerification POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/create GET": [
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/sources GET": [
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/payment/verifyJobACHSource POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1085,6 +1153,7 @@
   "/job/{_}/shipment DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1092,6 +1161,7 @@
   "/job/{_}/shipment/accessorial POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1099,6 +1169,7 @@
   "/job/{_}/shipment/accessorial/{_} DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1107,12 +1178,14 @@
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/shipment/book POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1121,12 +1194,14 @@
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
   "/job/{_}/shipment/exportdata POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1135,6 +1210,7 @@
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
@@ -1142,12 +1218,15 @@
     "G1",
     "G2",
     "G3",
+    "G4",
+    "G5",
     "G6"
   ],
   "/job/{_}/shipment/ratequotes POST": [
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
@@ -1155,6 +1234,7 @@
     "G1",
     "G2",
     "G3",
+    "G4",
     "G5",
     "G6"
   ],
@@ -1193,6 +1273,7 @@
   "/job/{_}/status/quote POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1210,11 +1291,13 @@
     "G2",
     "G3",
     "G4",
-    "G5"
+    "G5",
+    "G6"
   ],
   "/job/{_}/timeline/incrementjobstatus POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1222,6 +1305,7 @@
   "/job/{_}/timeline/undoincrementjobstatus POST": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1229,6 +1313,7 @@
   "/job/{_}/timeline/{_} DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
@@ -1261,6 +1346,11 @@
     "G1",
     "G2",
     "G3",
+    "G4",
+    "G5",
+    "G6"
+  ],
+  "/job/{_}/tracking/shipment/{_} GET": [
     "G4",
     "G5",
     "G6"
@@ -1402,24 +1492,32 @@
     "G6"
   ],
   "/note GET": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/note POST": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/note/suggestUsers GET": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
     "G6"
   ],
   "/note/{_} PUT": [
+    "G1",
+    "G2",
     "G3",
     "G4",
     "G5",
@@ -1654,6 +1752,7 @@
   "/views/{_} DELETE": [
     "G1",
     "G2",
+    "G3",
     "G4",
     "G5",
     "G6"
