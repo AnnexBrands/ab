@@ -39,6 +39,7 @@ def _deprecated(old: str, new: str) -> None:
 
 if TYPE_CHECKING:
     from ab.api.helpers.agent import AgentHelpers
+    from ab.api.helpers.items import JobItemsHelpers
     from ab.api.helpers.timeline import TimelineHelpers
     from ab.api.models.jobs import (
         BaseTimelineTaskRequest,
@@ -201,10 +202,12 @@ class JobsEndpoint(BaseEndpoint):
         self._resolver = resolver
 
         from ab.api.helpers.agent import AgentHelpers as _AgentHelpers
+        from ab.api.helpers.items import JobItemsHelpers as _JobItemsHelpers
         from ab.api.helpers.timeline import TimelineHelpers as _TimelineHelpers
 
         self.agent: AgentHelpers = _AgentHelpers(self, self._resolver)
         self.tasks: TimelineHelpers = _TimelineHelpers(self)
+        self.items: JobItemsHelpers = _JobItemsHelpers(self)
 
         # Subgroups (instances share the parent's HttpClient).
         self.note = JobNoteEndpoint(acportal_client)

@@ -60,3 +60,23 @@ TEST_USER_ID = 206
 # Discovery sequence: GET /dashboard/gridviews returns a list of GridViewInfo;
 # pick `.id` of the desired view, then pass it as `view_id` to GET /dashboard.
 TEST_VIEW_ID = 1
+
+# ---- Acme pickup-and-pack AGENT test account (staging) --------------------
+# Acme is an *agent* on jobs owned by OTHER companies (e.g. the Live-owned job
+# below): it can advance the pickup (PU) timeline category but has fewer
+# permissions than the job owner — notably it cannot write top-level job notes.
+# Secrets (password, client secret) live in the gitignored .env.acme; the
+# client factory is examples/_acme.py (``acme_api()``). Mutations are always
+# allowed for this disposable account.
+ACME_USERNAME = "Acme"
+ACME_ENV_FILE = ".env.acme"
+
+# Originally-reported job for the status-with-note regression. NOTE: on current
+# staging this job is OUT OF Acme's scope (every endpoint returns HTTP 400), so
+# it cannot be used for the live Acme repro — kept for reference.
+LIVE_OWNED_JOB_DISPLAY_ID = 7009964
+
+# In-scope Acme (LA869) staging job used for live verification: pickup
+# status-with-note (no 403) and the parcel/freight item helpers. Acme can read
+# and act on this job (writeAccess=False, agent-level access).
+ACME_JOB_DISPLAY_ID = 6902293

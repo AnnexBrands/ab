@@ -10,6 +10,7 @@ while updating only the fields the helper touches.
 from __future__ import annotations
 
 import logging
+import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
@@ -21,7 +22,6 @@ from ab.api.models.jobs import (
     TimelineSaveResponse,
     TimeLogRequest,
 )
-from ab.api.models.notes import NoteRequest
 
 JOB_HISTORY_CATEGORY_KEY = "JobNoteCategory"
 JOB_HISTORY_CATEGORY_NAME = "Job History"
@@ -236,20 +236,28 @@ class TimelineHelpers:
         method_name: str,
         task_code: str | None,
     ) -> TimelineSaveResponse:
-        """POST timeline task data, then add the matching job note."""
-        response = self._jobs.create_timeline_task(
+        """POST the timeline task; the server records the Job History note.
+
+        The ABConnect job-management endpoint now writes the Job History note
+        itself when the timeline task is saved, so the SDK no longer issues a
+        second ``POST /note``.  That redundant call required top-level
+        note-write permission, which a pickup-and-pack agent does not have: it
+        403'd and masked an otherwise-successful pickup status change (the
+        pickup category itself never 403s).  The audit-note formatting helpers
+        and :meth:`_create_job_history_note` are retained for backward
+        compatibility; see that method's deprecation note.
+        """
+        logger.debug(
+            "timeline task %s (%s) saved for job %s; server records the Job History note",
+            method_name,
+            task_code,
+            job_id,
+        )
+        return self._jobs.create_timeline_task(
             job_id,
             data=data,
             create_email=create_email,
         )
-        self._create_job_history_note(
-            job_display_id=job_id,
-            task_code=task_code,
-            data=data,
-            response=response,
-            comment=f"{self._username()} set {method_name} for {_task_date_range(data, method_name)}",
-        )
-        return response
 
     def _create_job_history_note(
         self,
@@ -260,24 +268,22 @@ class TimelineHelpers:
         response: TimelineSaveResponse,
         comment: str,
     ) -> None:
-        """Create a top-level job note in the Job History category."""
-        job_uuid = self._job_uuid(job_display_id, task_code, data, response)
-        if not job_uuid:
-            logger.warning("Could not resolve job UUID for job %s; skipping job history note", job_display_id)
-            return
+        """Deprecated no-op — the server now creates the Job History note.
 
-        self._jobs._client.request(
-            "POST",
-            "/note",
-            json=NoteRequest.check(
-                NoteRequest(
-                    comments=comment,
-                    category=self._job_history_category(),
-                    job_id=job_uuid,
-                    is_important=False,
-                    send_notification=False,
-                )
-            ),
+        Historically this issued a top-level ``POST /note`` after a timeline
+        task was saved, to mirror the status change into the Job History log.
+        The ABConnect job-management endpoint now records that note itself when
+        the task is saved, so this second call is redundant.  It also required
+        note-write permission that pickup-and-pack agents lack, producing
+        spurious 403s on otherwise-successful pickup status changes.  Retained
+        as a no-op for backward compatibility; callers should stop invoking it.
+        """
+        warnings.warn(
+            "TimelineHelpers._create_job_history_note is deprecated and now a "
+            "no-op: the ABConnect server creates the Job History note when the "
+            "timeline task is saved.",
+            DeprecationWarning,
+            stacklevel=2,
         )
 
     def _job_history_category(self) -> str:

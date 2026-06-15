@@ -32,11 +32,14 @@ from ab.api.base import BaseEndpoint
 from ab.api.route import Route
 
 _LIST = Route("GET", "/job/{jobDisplayId}/parcelitems", response_model="List[ParcelItem]")
-_CREATE = Route(
+# POST /parcelitems is replace-all (SaveAllParcelItemsRequest): the body's
+# parcelItems array becomes the ENTIRE set. `save` exposes that directly; `create`
+# reads the current set and merges one item so existing items are not wiped.
+_SAVE = Route(
     "POST",
     "/job/{jobDisplayId}/parcelitems",
-    request_model="ParcelItemCreateRequest",
-    response_model="ParcelItem",
+    request_model="ParcelItemsRequest",
+    response_model="ParcelItemsResponse",
 )
 _DELETE = Route(
     "DELETE",
@@ -67,15 +70,51 @@ class JobParcelItemsEndpoint(BaseEndpoint):
         *,
         data: ParcelItemCreateRequest | dict,
     ) -> ParcelItem:
-        """``POST /job/{jobDisplayId}/parcelitems``
+        """Add ONE parcel item, preserving the existing set (ACID get-merge-write).
 
-        Request model: :class:`ParcelItemCreateRequest`.
+        ``POST /job/{jobDisplayId}/parcelitems`` is replace-all
+        (``SaveAllParcelItemsRequest``): the body's ``parcelItems`` array becomes
+        the ENTIRE set. To avoid wiping the other items, this reads the current
+        parcel items, appends *data* (an ergonomic single-item
+        :class:`ParcelItemCreateRequest`), and saves the full set. Returns the
+        newly added :class:`ParcelItem`.
 
         Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/parcel_items.create.html
-        Request model: ParcelItemCreateRequest
-        Response model: ParcelItem
+        Request model: ParcelItemsRequest
+        Response model: ParcelItemsResponse
         """
-        return self._request(_CREATE.bind(jobDisplayId=job_display_id), json=data)
+        from ab.api.models.jobs import ParcelItemCreateRequest as _CreateReq
+        from ab.api.models.jobs import ParcelItemSave as _Save
+
+        one = _CreateReq.check(data)
+        new_item = {
+            "description": one.get("description"),
+            "quantity": one.get("quantity"),
+            "jobItemPkdLength": one.get("length"),
+            "jobItemPkdWidth": one.get("width"),
+            "jobItemPkdHeight": one.get("height"),
+            "jobItemPkdWeight": one.get("weight"),
+        }
+        new_item = {k: v for k, v in new_item.items() if v is not None}
+
+        allowed = {f.alias or n for n, f in _Save.model_fields.items()}
+        existing = self.list(job_display_id)
+        before_ids = {p.id for p in existing if getattr(p, "id", None) is not None}
+        payload = [
+            {k: v for k, v in p.model_dump(by_alias=True, exclude_none=True).items() if k in allowed}
+            for p in existing
+        ]
+        payload.append(new_item)
+
+        resp = self._request(
+            _SAVE.bind(jobDisplayId=job_display_id),
+            json={"parcelItems": payload, "forceUpdate": True},
+        )
+        after = list(getattr(resp, "parcel_items", None) or [])
+        for p in after:
+            if getattr(p, "id", None) is not None and p.id not in before_ids:
+                return p
+        return after[-1] if after else self._resolve_model("ParcelItem").model_validate(new_item)
 
     def delete(self, job_display_id: int, parcel_item_id: str) -> ServiceBaseResponse:
         """``DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId}``

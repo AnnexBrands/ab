@@ -122,6 +122,11 @@ class BaseEndpoint:
         if route.response_model is None:
             return response
 
+        # An empty 2xx body (e.g. DELETE / replace-all save returning 200 with no
+        # content) surfaces as None — there is nothing to cast.
+        if response is None:
+            return None
+
         if route.response_model == "bytes":
             return response
 

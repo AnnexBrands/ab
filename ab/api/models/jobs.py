@@ -425,22 +425,58 @@ class JobAgentPaymentInfo(ResponseModel):
 class JobFreightItem(ResponseModel):
     """Freight shipment item — nested in Job.freight_items.
 
-    Maps to C# FreightShimpment entity (inherits ItemFeature).
+    Maps to the C# ``FreightShimpment`` entity (inherits ItemFeature). The
+    field set mirrors the swagger ``FreightShimpment`` schema in full so that a
+    populated freight item validates without emitting drift warnings (the
+    ResponseModel "consider adding it to the model" log) and so a
+    get-modify-replace round-trip through :class:`FreightShipment` is lossless.
     """
 
+    # Identity
+    item_id: Optional[str] = Field(None, alias="itemID", description="Item UUID")
     job_id: Optional[str] = Field(None, alias="jobID", description="Job UUID")
-    quantity: Optional[int] = Field(None, description="Quantity")
+    job_display_id: Optional[str] = Field(None, alias="jobDisplayId", description="Job display ID")
     freight_item_id: Optional[str] = Field(None, alias="freightItemId", description="Freight item UUID")
     freight_item_class_id: Optional[str] = Field(
         None, alias="freightItemClassId", description="Freight item class UUID"
     )
     job_freight_id: Optional[str] = Field(None, alias="jobFreightID", description="Job freight UUID")
+    quantity: Optional[int] = Field(None, description="Quantity")
+    # Dimensions / weight / value
+    item_length: Optional[float] = Field(None, alias="itemLength", description="Item length")
+    item_width: Optional[float] = Field(None, alias="itemWidth", description="Item width")
+    item_height: Optional[float] = Field(None, alias="itemHeight", description="Item height")
+    item_weight: Optional[float] = Field(None, alias="itemWeight", description="Item weight")
+    item_value: Optional[float] = Field(None, alias="itemValue", description="Item value")
+    total_weight: Optional[float] = Field(None, alias="totalWeight", description="Total weight")
+    cube: Optional[float] = Field(None, description="Cube measurement")
+    net_cubic_feet: Optional[float] = Field(None, alias="netCubicFeet", description="Net cubic feet")
+    net_cubic_inches: Optional[int] = Field(None, alias="netCubicInches", description="Net cubic inches")
+    longest_dimension: Optional[float] = Field(None, alias="longestDimension", description="Longest dimension")
+    transportation_length: Optional[int] = Field(
+        None, alias="transportationLength", description="Transportation length"
+    )
+    transportation_width: Optional[int] = Field(
+        None, alias="transportationWidth", description="Transportation width"
+    )
+    transportation_height: Optional[int] = Field(
+        None, alias="transportationHeight", description="Transportation height"
+    )
+    ceiling_transportation_weight: Optional[int] = Field(
+        None, alias="ceilingTransportationWeight", description="Ceiling transportation weight"
+    )
+    # Freight classification / description
     freight_description: Optional[str] = Field(None, alias="freightDescription", description="Freight description")
     freight_item_value: Optional[str] = Field(None, alias="freightItemValue", description="Freight item value")
     freight_item_class: Optional[str] = Field(None, alias="freightItemClass", description="Freight item class")
-    job_display_id: Optional[str] = Field(None, alias="jobDisplayId", description="Job display ID")
     nmfc_item: Optional[str] = Field(None, alias="nmfcItem", description="NMFC item code")
-    total_weight: Optional[float] = Field(None, alias="totalWeight", description="Total weight")
+    bol_description: Optional[str] = Field(None, alias="bolDescription", description="BOL description")
+    job_freight_report: Optional[str] = Field(None, alias="jobFreightReport", description="Job freight report")
+    # Audit
+    created_by: Optional[str] = Field(None, alias="createdBy", description="Created by user UUID")
+    created_date: Optional[str] = Field(None, alias="createdDate", description="Created timestamp")
+    modified_by: Optional[str] = Field(None, alias="modifiedBy", description="Modified by user UUID")
+    modified_date: Optional[str] = Field(None, alias="modifiedDate", description="Modified timestamp")
 
 
 # ---- Job primary response model -------------------------------------------
@@ -1134,7 +1170,12 @@ class PackagingContainer(ResponseModel):
 
 
 class ParcelItemCreateRequest(RequestModel):
-    """Body for POST /job/{jobDisplayId}/parcelitems."""
+    """Ergonomic single-item body for ``api.jobs.parcel_items.create``.
+
+    The endpoint itself is replace-all (:class:`ParcelItemsRequest`); ``create``
+    reads the current parcel set and merges this item onto it, so existing
+    parcel items are preserved rather than wiped.
+    """
 
     description: str = Field(..., description="Item description")
     length: Optional[float] = Field(None, description="Length")
@@ -1142,6 +1183,54 @@ class ParcelItemCreateRequest(RequestModel):
     height: Optional[float] = Field(None, description="Height")
     weight: Optional[float] = Field(None, description="Weight")
     quantity: Optional[int] = Field(None, description="Quantity")
+
+
+class ParcelItemSave(RequestModel):
+    """One parcel item inside a :class:`ParcelItemsRequest` replace set.
+
+    Mirrors the swagger ``ParcelItem`` request schema. An existing item keeps
+    its ``id``/``jobItemId``; a new item omits ``id``.
+    """
+
+    id: Optional[int] = Field(None, description="Existing parcel item ID (omit for a new item)")
+    job_item_id: Optional[str] = Field(None, alias="jobItemId", description="Job item UUID this parcel packs")
+    description: Optional[str] = Field(None, description="Item description")
+    quantity: Optional[int] = Field(None, description="Number of pieces")
+    job_item_pkd_length: Optional[float] = Field(None, alias="jobItemPkdLength", description="Packed length")
+    job_item_pkd_width: Optional[float] = Field(None, alias="jobItemPkdWidth", description="Packed width")
+    job_item_pkd_height: Optional[float] = Field(None, alias="jobItemPkdHeight", description="Packed height")
+    job_item_pkd_weight: Optional[float] = Field(None, alias="jobItemPkdWeight", description="Packed weight")
+    job_item_parcel_value: Optional[float] = Field(None, alias="jobItemParcelValue", description="Declared value")
+    parcel_package_type_id: Optional[int] = Field(None, alias="parcelPackageTypeId", description="Package type ID")
+    insure_key: Optional[str] = Field(None, alias="insureKey", description="Insurance key")
+
+
+class ParcelItemsRequest(RequestModel):
+    """Body for POST /job/{jobDisplayId}/parcelitems (``SaveAllParcelItemsRequest``).
+
+    Replace-all: the job's parcel-item set becomes exactly ``parcelItems``. The
+    SDK's save/create helpers read the current set first and merge, so existing
+    items are never lost.
+    """
+
+    job_modified_date: Optional[str] = Field(
+        None, alias="jobModifiedDate", description="Job modified timestamp (optimistic concurrency)"
+    )
+    force_update: Optional[bool] = Field(
+        None, alias="forceUpdate", description="Bypass the optimistic-concurrency check"
+    )
+    parcel_items: Optional[List[ParcelItemSave]] = Field(
+        None, alias="parcelItems", description="Full parcel-item set to save"
+    )
+
+
+class ParcelItemsResponse(ResponseModel):
+    """Response wrapper for the parcel-items save/list (``{jobModifiedDate, parcelItems}``)."""
+
+    job_modified_date: Optional[str] = Field(None, alias="jobModifiedDate", description="Job modified timestamp")
+    parcel_items: Optional[List[ParcelItem]] = Field(
+        None, alias="parcelItems", description="Parcel items after the save"
+    )
 
 
 class ItemNotesRequest(RequestModel):
@@ -1518,6 +1607,21 @@ class FreightShipment(RequestModel):
     item_value: Optional[float] = Field(None, alias="itemValue", description="Item value")
     cube: Optional[float] = Field(None, description="Cube measurement")
     total_weight: Optional[float] = Field(None, alias="totalWeight", description="Total weight")
+    net_cubic_feet: Optional[float] = Field(None, alias="netCubicFeet", description="Net cubic feet")
+    net_cubic_inches: Optional[int] = Field(None, alias="netCubicInches", description="Net cubic inches")
+    longest_dimension: Optional[float] = Field(None, alias="longestDimension", description="Longest dimension")
+    transportation_length: Optional[int] = Field(
+        None, alias="transportationLength", description="Transportation length"
+    )
+    transportation_width: Optional[int] = Field(
+        None, alias="transportationWidth", description="Transportation width"
+    )
+    transportation_height: Optional[int] = Field(
+        None, alias="transportationHeight", description="Transportation height"
+    )
+    ceiling_transportation_weight: Optional[int] = Field(
+        None, alias="ceilingTransportationWeight", description="Ceiling transportation weight"
+    )
     freight_description: Optional[str] = Field(None, alias="freightDescription", description="Freight description")
     freight_item_value: Optional[str] = Field(None, alias="freightItemValue", description="Freight item value label")
     freight_item_class: Optional[str] = Field(None, alias="freightItemClass", description="Freight item class label")

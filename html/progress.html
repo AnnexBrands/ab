@@ -104,7 +104,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 </head>
 <body>
 <h1>ABConnect SDK — Progress Report</h1>
-<p class='subtitle'>Generated 2026-06-10 13:49 UTC</p>
+<p class='subtitle'>Generated 2026-06-15 18:21 UTC</p>
 <h2>Coverage Summary</h2><table><tr><th>API Surface</th><th>Total</th><th>Done</th><th>Pending</th><th>Not Started</th><th>%</th><th>Progress</th></tr><tr><td><strong>ACPortal</strong></td><td>211</td><td class='done'>211</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>Catalog</strong></td><td>17</td><td class='done'>17</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>ABC</strong></td><td>5</td><td class='done'>5</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
@@ -1045,8 +1045,8 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <details class='capture-item' data-endpoint='api.jobs.on_hold.update' data-method='PUT' data-path='/job/{jobDisplayId}/onhold/{onHoldId}' data-response-model='SaveOnHoldResponse' data-request-model='SaveOnHoldRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.on_hold.update</code> <span class='capture-meta'>PUT /job/{jobDisplayId}/onhold/{onHoldId} &rarr; SaveOnHoldResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (SaveOnHoldRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
-<details class='capture-item' data-endpoint='api.jobs.parcel_items.create' data-method='POST' data-path='/job/{jobDisplayId}/parcelitems' data-response-model='ParcelItem' data-request-model='ParcelItemCreateRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.parcel_items.create</code> <span class='capture-meta'>POST /job/{jobDisplayId}/parcelitems &rarr; ParcelItem</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
-<label>request body JSON (ParcelItemCreateRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
+<details class='capture-item' data-endpoint='api.jobs.parcel_items.create' data-method='POST' data-path='/job/{jobDisplayId}/parcelitems' data-response-model='ParcelItemsResponse' data-request-model='ParcelItemsRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.parcel_items.create</code> <span class='capture-meta'>POST /job/{jobDisplayId}/parcelitems &rarr; ParcelItemsResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
+<label>request body JSON (ParcelItemsRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
 <details class='capture-item' data-endpoint='api.jobs.parcel_items.delete' data-method='DELETE' data-path='/job/{jobDisplayId}/parcelitems/{parcelItemId}' data-response-model='ServiceBaseResponse' data-request-model=''><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.parcel_items.delete</code> <span class='capture-meta'>DELETE /job/{jobDisplayId}/parcelitems/{parcelItemId} &rarr; ServiceBaseResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 </div></details>
@@ -1192,10 +1192,10 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <label>request body JSON (Web2LeadRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
 <h2>Quality Gate Status</h2><div class='gate-cards'><div class='gate-card card-overall'><h4>Overall</h4><div class='count'>73%</div><div class='label'>170 of 233 complete</div></div>
-<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>183/233</div><div class='label'>Zero extra fields</div></div>
-<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>184/233</div><div class='label'>Fixture on disk</div></div>
+<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>182/233</div><div class='label'>Zero extra fields</div></div>
+<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>183/233</div><div class='label'>Fixture on disk</div></div>
 <div class='gate-card card-pass'><h4>G3: Test Quality</h4><div class='count'>224/233</div><div class='label'>isinstance + extra</div></div>
-<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>233/233</div><div class='label'>Correct return type</div></div>
+<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>232/233</div><div class='label'>Correct return type</div></div>
 <div class='gate-card card-pass'><h4>G5: Param Routing</h4><div class='count'>227/233</div><div class='label'>params_model set</div></div>
 <div class='gate-card card-pass'><h4>G6: Request Quality</h4><div class='count'>228/233</div><div class='label'>Typed sigs + descriptions</div></div></div>
 <h2>Per-Endpoint Gate Details</h2><table class='gate-table'><tr><th>Method</th><th>Endpoint</th><th>Model</th><th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>G5</th><th>G6</th><th>Status</th></tr><tr><td class='col-method'>GET</td><td class='col-path'>/Web2Lead/get</td><td class='col-model'>Web2LeadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='Cannot infer endpoint module'>FAIL</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
@@ -1318,7 +1318,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/packagingcontainers</td><td class='col-model'>List[PackagingContainer]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='No isinstance(result, PackagingContainer) assertion found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/parcel-items-with-materials</td><td class='col-model'>List[ParcelItemWithMaterials]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='No isinstance(result, ParcelItemWithMaterials) assertion found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/parcelitems</td><td class='col-model'>List[ParcelItem]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='No isinstance(result, ParcelItem) assertion found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
-<tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/parcelitems</td><td class='col-model'>ParcelItem</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='No isinstance(result, ParcelItem) assertion found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
+<tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/parcelitems</td><td class='col-model'>ParcelItemsResponse</td><td class='col-gate gate-fail' title='Fixture ParcelItemsResponse.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture ParcelItemsResponse.json not found'>FAIL</td><td class='col-gate gate-fail' title='No isinstance(result, ParcelItemsResponse) assertion found; No __pydantic_extra__ / assert_no_extra_fields check found'>FAIL</td><td class='col-gate gate-fail' title='No correct return type annotation for ParcelItemsResponse found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>DELETE</td><td class='col-path'>/job/{jobDisplayId}/parcelitems/{parcelItemId}</td><td class='col-model'>ServiceBaseResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/{jobDisplayId}/payment</td><td class='col-model'>PaymentInfo</td><td class='col-gate gate-fail' title='Fixture PaymentInfo.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture PaymentInfo.json not found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/payment/ACHCreditTransfer</td><td class='col-model'>ServiceBaseResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
@@ -1432,7 +1432,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>GET</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerExpandedDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr></table>
 <h2>Action Required</h2>
-<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (116 endpoints)</p>
+<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (117 endpoints)</p>
 <details><summary><strong>Job</strong> — 14 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;14</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>GET</span>
@@ -2545,6 +2545,21 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Fix the example in <code>examples/jobs.on_hold.py</code> with correct request data</li>
 <li>Run the example — save 200 response to <code>tests/fixtures/.json</code></li>
 <li>Run <code>pytest tests/ -k </code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+</div></details>
+<details><summary><strong>jobs.parcel_items</strong> — 1 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;1</summary><div class='detail-body'>
+<div class='endpoint-row'>
+<span class='ep-method'>POST</span>
+<span class='ep-path'>/job/{jobDisplayId}/parcelitems</span>
+<span class='ep-model'>ParcelItemsResponse</span>
+<span class='badge badge-request'>Needs Request Data</span>
+</div>
+<ol class='instructions'>
+<li>Research ABConnectTools endpoint code (<code>endpoints/jobs.parcel_items.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/jobs.parcel_items.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/ParcelItemsResponse.json</code></li>
+<li>Run <code>pytest tests/ -k parcel_items_response</code> to verify the fixture validates against the Pydantic model</li>
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>

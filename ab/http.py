@@ -226,6 +226,11 @@ class HttpClient:
         if any(bt in content_type for bt in binary_types):
             return resp.content
 
+        # A 2xx with an empty body (common for DELETE and replace-all save
+        # endpoints that return 200 + no content) is success, not a JSON error.
+        if not resp.content or not resp.text.strip():
+            return None
+
         try:
             return resp.json()
         except Exception:

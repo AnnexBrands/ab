@@ -1,4 +1,16 @@
-"""Unit tests for timeline helper audit-note creation."""
+"""Timeline helper behaviour after the redundant Job History note was removed.
+
+Regression context: the ABConnect job-management endpoint now writes the Job
+History note itself when a timeline task is saved. The SDK used to issue a
+*second* ``POST /note`` to mirror the status change into Job History. That
+redundant call required top-level note-write permission, which a
+pickup-and-pack agent does not have — so advancing the pickup (PU) category as
+an agent 403'd even though the pickup status change itself succeeded.
+
+These tests pin the fix: the status helpers save the timeline task and make NO
+raw ``/note`` request, and :meth:`TimelineHelpers._create_job_history_note` is a
+deprecated no-op.
+"""
 
 from __future__ import annotations
 
@@ -16,20 +28,22 @@ from ab.api.models.jobs import (
     TimelineTask,
     TimeLogRequest,
 )
+from ab.exceptions import RequestError
 
 
 def _jobs(username: str = "brett@example.com") -> MagicMock:
+    """A jobs mock whose raw HTTP client raises if touched.
+
+    The status helpers must never call ``self._jobs._client.request`` now that
+    the redundant ``POST /note`` is gone; wiring the client to raise turns any
+    accidental reintroduction into a loud failure.
+    """
     jobs = MagicMock()
     jobs._client._settings = SimpleNamespace(username=username)
-    jobs._client.request.side_effect = [
-        [{"id": "history-category-id", "name": "Job History"}],
-        {
-            "noteID": 100,
-            "comments": "note",
-            "category": "history-category-id",
-            "jobId": "job-uuid",
-        },
-    ]
+    jobs._client.request.side_effect = AssertionError(
+        "TimelineHelpers must not issue a raw request (the redundant POST /note "
+        "was removed; the server records the Job History note)"
+    )
     jobs.create_timeline_task.return_value = TimelineSaveResponse(
         success=True,
         task=TimelineTask(jobId="job-uuid"),
@@ -37,13 +51,7 @@ def _jobs(username: str = "brett@example.com") -> MagicMock:
     return jobs
 
 
-def _created_note_payload(jobs: MagicMock) -> dict:
-    request = jobs._client.request.call_args_list[-1]
-    assert request.args == ("POST", "/note")
-    return request.kwargs["json"]
-
-
-def test_set_task_creates_task_then_adds_note():
+def test_set_task_saves_timeline_task_and_makes_no_note_request():
     jobs = _jobs()
     helper = TimelineHelpers(jobs)
     task = InTheFieldTaskRequest(
@@ -64,18 +72,12 @@ def test_set_task_creates_task_then_adds_note():
         },
         create_email=False,
     )
-    assert jobs._client.request.call_args_list[0].args == ("GET", "/lookup/JobNoteCategory")
-    assert _created_note_payload(jobs) == {
-        "comments": "brett@example.com set schedule for 2026-06-01 10:00-12:00",
-        "category": "history-category-id",
-        "isImportant": False,
-        "jobId": "job-uuid",
-        "sendNotification": False,
-    }
+    # No redundant Job History note: the raw client is never touched.
+    jobs._client.request.assert_not_called()
     jobs.note.create.assert_not_called()
 
 
-def test_schedule_creates_jobhistory_note_with_related_task_code():
+def test_schedule_saves_pu_task_without_note_request():
     jobs = _jobs()
     jobs.get_timeline_response.return_value = TimelineResponse(
         tasks=[],
@@ -83,19 +85,41 @@ def test_schedule_creates_jobhistory_note_with_related_task_code():
     )
     helper = TimelineHelpers(jobs)
 
-    helper.schedule(
-        4000000,
-        start="2026-06-01T10:00:00Z",
-        end="2026-06-01T12:00:00Z",
-    )
+    helper.schedule(4000000, start="2026-06-01T10:00:00Z", end="2026-06-01T12:00:00Z")
 
-    assert _created_note_payload(jobs) == {
-        "comments": "brett@example.com set schedule for 2026-06-01 10:00-12:00",
-        "category": "history-category-id",
-        "isImportant": False,
-        "jobId": "job-uuid",
-        "sendNotification": False,
-    }
+    data = jobs.create_timeline_task.call_args.kwargs["data"]
+    assert data["taskCode"] == "PU"
+    assert data["plannedStartDate"] == "2026-06-01T10:00:00Z"
+    jobs._client.request.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "call_helper",
+    [
+        lambda helper: helper.schedule(4000000, start="2026-06-01T10:00:00Z", end="2026-06-01T12:00:00Z"),
+        lambda helper: helper.received(4000000, start="2026-06-01T10:15:00Z", end="2026-06-01T12:30:00Z"),
+        lambda helper: helper.pack_start(4000000, start="2026-06-02T10:00:00Z"),
+        lambda helper: helper.pack_finish(4000000, end="2026-06-02T10:59:59Z"),
+        lambda helper: helper.storage_begin(4000000, start="2026-06-03T10:00:00Z"),
+        lambda helper: helper.storage_end(4000000, end="2026-06-03T10:59:59Z"),
+        lambda helper: helper.carrier_schedule(4000000, start="2026-06-04T10:00:00Z"),
+        lambda helper: helper.carrier_pickup(4000000, start="2026-06-04T10:59:59Z"),
+        lambda helper: helper.carrier_delivery(4000000, end="2026-06-05T11:00:00Z"),
+    ],
+)
+def test_named_task_helpers_make_no_redundant_note_request(call_helper):
+    jobs = _jobs()
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[],
+        jobSubManagementStatus={"name": "1 - Created"},
+    )
+    helper = TimelineHelpers(jobs)
+
+    call_helper(helper)
+
+    jobs.create_timeline_task.assert_called_once()
+    jobs._client.request.assert_not_called()
+    jobs.note.create.assert_not_called()
 
 
 def test_received_positional_start_end_maps_on_site_time_log_in_order():
@@ -106,11 +130,7 @@ def test_received_positional_start_end_maps_on_site_time_log_in_order():
     )
     helper = TimelineHelpers(jobs)
 
-    helper.received(
-        4000000,
-        "2026-06-01T10:15:00Z",
-        "2026-06-01T12:30:00Z",
-    )
+    helper.received(4000000, "2026-06-01T10:15:00Z", "2026-06-01T12:30:00Z")
 
     data = jobs.create_timeline_task.call_args.kwargs["data"]
     assert data["completedDate"] == "2026-06-01T12:30:00Z"
@@ -118,6 +138,7 @@ def test_received_positional_start_end_maps_on_site_time_log_in_order():
         "start": "2026-06-01T10:15:00Z",
         "end": "2026-06-01T12:30:00Z",
     }
+    jobs._client.request.assert_not_called()
 
 
 def test_received_single_positional_date_sets_completed_date_for_compatibility():
@@ -135,76 +156,7 @@ def test_received_single_positional_date_sets_completed_date_for_compatibility()
     assert "onSiteTimeLog" not in data
 
 
-@pytest.mark.parametrize(
-    ("call_helper", "expected_comment"),
-    [
-        (
-            lambda helper: helper.schedule(
-                4000000,
-                start="2026-06-01T10:00:00Z",
-                end="2026-06-01T12:00:00Z",
-            ),
-            "brett@example.com set schedule for 2026-06-01 10:00-12:00",
-        ),
-        (
-            lambda helper: helper.received(
-                4000000,
-                start="2026-06-01T10:15:00Z",
-                end="2026-06-01T12:30:00Z",
-            ),
-            "brett@example.com set received for 2026-06-01 10:15-12:30",
-        ),
-        (
-            lambda helper: helper.pack_start(4000000, start="2026-06-02T10:00:00Z"),
-            "brett@example.com set pack_start for 2026-06-02 10:00",
-        ),
-        (
-            lambda helper: helper.pack_finish(4000000, end="2026-06-02T10:59:59Z"),
-            "brett@example.com set pack_finish for 2026-06-02 10:59",
-        ),
-        (
-            lambda helper: helper.storage_begin(4000000, start="2026-06-03T10:00:00Z"),
-            "brett@example.com set storage_begin for 2026-06-03 10:00",
-        ),
-        (
-            lambda helper: helper.storage_end(4000000, end="2026-06-03T10:59:59Z"),
-            "brett@example.com set storage_end for 2026-06-03 10:59",
-        ),
-        (
-            lambda helper: helper.carrier_schedule(4000000, start="2026-06-04T10:00:00Z"),
-            "brett@example.com set carrier_schedule for 2026-06-04 10:00",
-        ),
-        (
-            lambda helper: helper.carrier_pickup(4000000, start="2026-06-04T10:59:59Z"),
-            "brett@example.com set carrier_pickup for 2026-06-04 10:59",
-        ),
-        (
-            lambda helper: helper.carrier_delivery(4000000, end="2026-06-05T11:00:00Z"),
-            "brett@example.com set carrier_delivery for 2026-06-05 11:00",
-        ),
-    ],
-)
-def test_named_task_helpers_create_top_level_job_history_notes(call_helper, expected_comment):
-    jobs = _jobs()
-    jobs.get_timeline_response.return_value = TimelineResponse(
-        tasks=[],
-        jobSubManagementStatus={"name": "1 - Created"},
-    )
-    helper = TimelineHelpers(jobs)
-
-    call_helper(helper)
-
-    assert _created_note_payload(jobs) == {
-        "comments": expected_comment,
-        "category": "history-category-id",
-        "isImportant": False,
-        "jobId": "job-uuid",
-        "sendNotification": False,
-    }
-    jobs.note.create.assert_not_called()
-
-
-def test_upsert_adds_note_from_merged_task_range():
+def test_upsert_deep_merges_onto_existing_task_without_note_request():
     jobs = _jobs()
     helper = TimelineHelpers(jobs)
     existing = {
@@ -221,32 +173,12 @@ def test_upsert_adds_note_from_merged_task_range():
     helper._upsert(4000000, task, existing, method_name="pack_finish")
 
     data = jobs.create_timeline_task.call_args.kwargs["data"]
+    # Prior data preserved, only the touched field overlaid.
     assert data["timeLog"] == {
         "start": "2026-06-02T10:00:00Z",
         "end": "2026-06-02T10:59:59Z",
     }
-    assert _created_note_payload(jobs)["comments"] == (
-        "brett@example.com set pack_finish for 2026-06-02 10:00-10:59"
-    )
-
-
-def test_received_note_uses_completed_date_over_existing_planned_date():
-    jobs = _jobs()
-    helper = TimelineHelpers(jobs)
-    existing = {
-        "id": 456,
-        "taskCode": "PU",
-        "plannedStartDate": "2026-06-01T10:00:00Z",
-        "plannedEndDate": "2026-06-01T12:00:00Z",
-    }
-    task = InTheFieldTaskRequest(
-        task_code="PU",
-        completed_date="2026-06-03T15:30:00Z",
-    )
-
-    helper._upsert(4000000, task, existing, method_name="received")
-
-    assert _created_note_payload(jobs)["comments"] == "brett@example.com set received for 2026-06-03 15:30"
+    jobs._client.request.assert_not_called()
 
 
 def test_note_is_not_added_when_task_create_fails():
@@ -260,3 +192,52 @@ def test_note_is_not_added_when_task_create_fails():
 
     jobs._client.request.assert_not_called()
     jobs.note.create.assert_not_called()
+
+
+# ---- Regression: pickup-and-pack agent no longer 403s on the note ----------
+
+
+def test_pickup_agent_status_with_note_does_not_403_on_redundant_note():
+    """The exact regression: an agent that lacks note-write permission.
+
+    Before the fix, advancing the pickup (PU) category issued a second
+    ``POST /note`` that 403'd for the agent and propagated, masking the
+    successful pickup status change. With the redundant call gone, the helper
+    succeeds and never touches the raw ``/note`` endpoint.
+    """
+    jobs = MagicMock()
+    jobs._client._settings = SimpleNamespace(username="Acme")
+    # A pickup-and-pack agent: the timeline (PU) save succeeds...
+    jobs.create_timeline_task.return_value = TimelineSaveResponse(
+        success=True, task=TimelineTask(jobId="live-owned-job-uuid")
+    )
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[], jobSubManagementStatus={"name": "2 - Scheduled"}
+    )
+    # ...but the raw note endpoint would 403 for the agent if ever called.
+    jobs._client.request.side_effect = RequestError(403, "Forbidden")
+
+    helper = TimelineHelpers(jobs)
+
+    # Must NOT raise — the pickup category status-with-note now succeeds.
+    result = helper.received(7009964, end="2026-06-01T12:00:00Z")
+
+    assert result is jobs.create_timeline_task.return_value
+    jobs._client.request.assert_not_called()
+
+
+def test_create_job_history_note_is_deprecated_noop():
+    """The retained method warns and performs no request (server owns the note)."""
+    jobs = _jobs()
+    helper = TimelineHelpers(jobs)
+
+    with pytest.warns(DeprecationWarning, match="no-op"):
+        helper._create_job_history_note(
+            job_display_id=7009964,
+            task_code="PU",
+            data={"taskCode": "PU"},
+            response=jobs.create_timeline_task.return_value,
+            comment="ignored",
+        )
+
+    jobs._client.request.assert_not_called()
