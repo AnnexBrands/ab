@@ -1,0 +1,15 @@
+# The published package ships ONLY the `ab` library (+ its package-data).
+# Keep all dev/internal/demo trees out of the sdist as well as the wheel.
+prune tests
+prune examples
+prune scripts
+prune docs
+prune html
+prune specs
+prune build
+prune dist
+prune .github
+prune .specify
+prune .claude
+global-exclude *.pyc
+global-exclude __pycache__/*
