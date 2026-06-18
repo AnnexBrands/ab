@@ -20,17 +20,32 @@ class BookedDocument(ResponseModel):
     """A document object returned by booking / label-generating operations.
 
     The ACPortal book response is undocumented in swagger; these fields were
-    observed live (UPS book of job 7036373). ``byteCode`` carries the
-    base64-encoded label bytes when ``documentByteCodeRequired`` is set on the
-    request. ``ResponseModel`` (``extra="allow"``) tolerates any extra keys.
+    observed live (UPS books of jobs 7036373 / 7107421). On a normal book the
+    label is a **path reference** (``documentPath`` + ``documentDescription``,
+    keyed off the PRO in ``ServiceBaseResponse.shipmentId``); ``byteCode`` is
+    only populated when the request sets ``documentByteCodeRequired=True``.
+    ``ResponseModel`` (``extra="allow"``) still tolerates any further keys.
     """
 
     document_id: Optional[Union[int, str]] = Field(
         None, alias="documentId", description="Document identifier"
     )
-    doc_type: Optional[str] = Field(None, alias="docType", description="Document type/category")
+    doc_type: Optional[str] = Field(None, alias="docType", description="Document type/category code")
+    document_type_name: Optional[str] = Field(
+        None, alias="documentTypeName", description="Human-readable document type name"
+    )
+    document_path: Optional[str] = Field(
+        None, alias="documentPath", description="Storage path/reference to the document (e.g. label PDF)"
+    )
+    document_description: Optional[str] = Field(
+        None, alias="documentDescription", description="Document description (e.g. 'Label <PRO>')"
+    )
     byte_code: Optional[str] = Field(
-        None, alias="byteCode", description="Base64-encoded document bytes (e.g. shipping label)"
+        None, alias="byteCode",
+        description="Base64-encoded document bytes (only when documentByteCodeRequired=True)",
+    )
+    error_message: Optional[str] = Field(
+        None, alias="errorMessage", description="Error detail for this document, if any"
     )
 
 

@@ -53,3 +53,27 @@ class TestServiceBaseResponse:
         """
         model = ServiceBaseResponse.model_validate({"success": True, "documents": ["https://x/doc.pdf"]})
         assert model.documents == ["https://x/doc.pdf"]
+
+    def test_booked_document_real_path_reference_shape(self):
+        """The real UPS book envelope (jobs 7036373 / 7107421) returns a path
+        reference, not inline bytes. All keys must be typed with NO extra-field
+        warnings — regression for the incomplete BookedDocument model.
+        """
+        pro = "1ZK430390306149813"
+        doc = {
+            "documentId": None,
+            "docType": None,
+            "documentTypeName": "ShippingLabel",
+            "documentPath": f"shipment/{pro}/{pro}_Label.pdf",
+            "documentDescription": f"Label {pro}",
+            "byteCode": None,
+            "errorMessage": None,
+        }
+        model = ServiceBaseResponse.model_validate({"success": True, "shipmentId": pro, "documents": [doc]})
+        booked = model.documents[0]
+        assert isinstance(booked, BookedDocument)
+        assert booked.document_path == f"shipment/{pro}/{pro}_Label.pdf"
+        assert booked.document_description == f"Label {pro}"
+        assert booked.document_type_name == "ShippingLabel"
+        # Every key is modeled — no leftover unexpected fields (no log warnings).
+        assert_no_extra_fields(booked)
