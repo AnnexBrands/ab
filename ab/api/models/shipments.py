@@ -180,12 +180,36 @@ class GlobalAccessorial(ResponseModel):
 
 
 class ShipmentBookRequest(RequestModel):
-    """Body for POST /job/{jobDisplayId}/shipment/book."""
+    """Body for POST /job/{jobDisplayId}/shipment/book.
 
-    provider_option_index: Optional[int] = Field(
-        None, alias="providerOptionIndex", description="Selected rate quote index",
+    Wire aliases follow the ACPortal ``BookShipmentRequest`` schema:
+    ``quoteOptionIndex`` selects the chosen rate option and ``shipOutDate``
+    (ISO-8601 date-time) is **required for non-UPS carriers**. The model
+    previously sent ``providerOptionIndex``/``shipDate``, which the portal
+    never reads — so ``quoteOptionIndex`` defaulted to 0, the selected
+    provider was never set, and every book was rejected with "Specified
+    provider was not set or it is not active".
+    """
+
+    quote_option_index: Optional[int] = Field(
+        None, alias="quoteOptionIndex", description="Selected rate quote option index",
     )
-    ship_date: Optional[str] = Field(None, alias="shipDate", description="Requested ship date")
+    ship_out_date: Optional[str] = Field(
+        None,
+        alias="shipOutDate",
+        description="Requested ship-out date (ISO-8601 date-time); required for non-UPS carriers",
+    )
+    international_params: Optional[dict] = Field(
+        None, alias="internationalParams", description="International shipment export parameters",
+    )
+    carrier_specific_params: Optional[dict] = Field(
+        None, alias="carrierSpecificParams", description="Carrier-specific booking parameters",
+    )
+    document_byte_code_required: Optional[bool] = Field(
+        None,
+        alias="documentByteCodeRequired",
+        description="Whether the response should include document byte codes (labels)",
+    )
 
 
 class AccessorialAddRequest(RequestModel):
