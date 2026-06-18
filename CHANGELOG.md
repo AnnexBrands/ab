@@ -4,6 +4,22 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [0.1.7] - 2026-06-18
+
+A packaging-hygiene release. No library code or API changes — the `ab` import
+surface is identical to `0.1.6`.
+
+### Changed
+
+- **The published package now ships only the `ab` library.** Previous releases
+  bundled the entire `examples/` tree (demo/dev scripts, including
+  internal/Acme-specific and harness tooling) into both the wheel and sdist.
+  `[tool.setuptools.packages.find]` now includes `ab*` only, and a new
+  `MANIFEST.in` prunes `examples/`, `scripts/`, `tests/`, `docs/`, and other
+  dev trees from the sdist. Installed size drops and no internal scripts leak to
+  PyPI consumers. (`ab` package-data — `py.typed`, `api/schemas/*.json` — is
+  unchanged.)
+
 ## [0.1.6] - 2026-06-18
 
 A correctness release for shipment booking. Backward-compatible with `0.1.5`
