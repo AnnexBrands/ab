@@ -6,8 +6,8 @@ per 0.x pragmatics). The package is imported as `ab`.
 
 ## [0.1.7] - 2026-06-18
 
-A packaging-hygiene release. No library code or API changes — the `ab` import
-surface is identical to `0.1.6`.
+A packaging-hygiene release plus a small model completion. The `ab` import
+surface is backward-compatible with `0.1.6`.
 
 ### Changed
 
@@ -19,6 +19,17 @@ surface is identical to `0.1.6`.
   dev trees from the sdist. Installed size drops and no internal scripts leak to
   PyPI consumers. (`ab` package-data — `py.typed`, `api/schemas/*.json` — is
   unchanged.)
+
+### Fixed
+
+- **`BookedDocument` now models the full book-response document object.** Added
+  `documentPath`, `documentDescription`, `documentTypeName`, and `errorMessage`
+  (alongside the existing `documentId` / `docType` / `byteCode`). On a normal
+  book the label is a **path reference** — `documentPath` + `documentDescription`,
+  keyed off the PRO in `ServiceBaseResponse.shipmentId` — and `byteCode` is only
+  populated when the request sets `documentByteCodeRequired=True`. The missing
+  fields previously surfaced as `extra="allow"` warnings (accessible but
+  untyped). Verified live (UPS book of job 7107421, PRO `1ZK430390306149813`).
 
 ## [0.1.6] - 2026-06-18
 
