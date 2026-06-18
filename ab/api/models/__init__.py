@@ -309,6 +309,7 @@ from ab.api.models.sellers import (
     UpdateSellerRequest,
 )
 from ab.api.models.shared import (
+    BookedDocument,
     ListRequest,
     PaginatedList,
     ServiceBaseResponse,
@@ -355,7 +356,7 @@ __all__ = [
     # Common (shared sub-models)
     "Coordinates", "CompanyAddress",
     # Shared
-    "ServiceBaseResponse", "ServiceWarningResponse", "PaginatedList", "ListRequest",
+    "ServiceBaseResponse", "ServiceWarningResponse", "BookedDocument", "PaginatedList", "ListRequest",
     # Enums
     "DocumentType", "CarrierAPI", "MasterConstantKey",
     # Catalog

@@ -4,6 +4,37 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [0.1.6] - 2026-06-18
+
+A correctness release for shipment booking. Backward-compatible with `0.1.5`
+for client construction, auth, and config; the single **Fixed** item changes
+the *wire payload* of `api.jobs.shipment.book()` (not its signature).
+
+### Fixed
+
+- **`ShipmentBookRequest` now sends `quoteOptionIndex`/`shipOutDate` (was
+  `providerOptionIndex`/`shipDate`) so `shipment.book()` succeeds.** The portal's
+  `BookShipmentRequest` schema binds `quoteOptionIndex` for the chosen rate
+  option and requires `shipOutDate` for non-UPS carriers; the old aliases were
+  never read, so `quoteOptionIndex` defaulted to `0`, the selected provider was
+  never set, and every Ready-to-Ship book was rejected with "Specified provider
+  was not set or it is not active" (callers saw a phantom success with no
+  PRO/label). The Python attributes are renamed to `quote_option_index` /
+  `ship_out_date` (construction by attribute or alias both still work). The body
+  also gains the schema's optional `internationalParams`,
+  `carrierSpecificParams`, and `documentByteCodeRequired` fields. Downstream
+  apps that posted a raw dict to work around this can drop the workaround and
+  call the typed `book()` again.
+- **`ServiceBaseResponse.documents` now accepts document objects, not just
+  strings.** A *successful* book returns `documents` as a list of objects
+  (`{documentId, docType, byteCode}` — the label byte codes), but the field was
+  typed `list[str]`, so the typed `book()` raised a `ValidationError` parsing
+  its own success envelope (surfaced live booking UPS job 7036373, PRO
+  `1ZK430390312572326`). The field is now `list[str | BookedDocument]`
+  (new `BookedDocument` model), so `book()` returns the success envelope
+  instead of throwing. Backward-compatible with operations that return
+  document URL/reference strings.
+
 ## [0.1.5] - 2026-06-15
 
 An example-coverage + ergonomics + correctness release. **Every routed endpoint
