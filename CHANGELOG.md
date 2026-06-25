@@ -4,7 +4,22 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
-## [0.1.7] - 2026-06-18
+## [0.1.8] - 2026-06-25
+
+A model-correctness patch. Backward-compatible with `0.1.7`.
+
+### Fixed
+
+- **`Job` nested contacts no longer reject integer ID values.** In the
+  `ContactDetails` model nested under `Job` (`customerContact` / `pickupContact`
+  / `deliveryContact`), `jobTitleId` and `rootContactId` were typed
+  `Optional[str]`, but the API (and both OpenAPI schemas) declare them as
+  nullable **integers**, and the standalone `contacts.py` models already typed
+  them as `int`. Because Pydantic v2 does not coerce `int → str`, any
+  `api.jobs.get()` on a job whose contact carried a non-null `jobTitleId` /
+  `rootContactId` (e.g. a warehouse pickup contact with `jobTitleId=83`) raised
+  `ValidationError` and the whole job fetch failed. Both fields are now
+  `Optional[int]`, matching the schema and the `contacts.py` twin.
 
 A packaging-hygiene release plus a small model completion. The `ab` import
 surface is backward-compatible with `0.1.6`.

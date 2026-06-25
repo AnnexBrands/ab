@@ -66,7 +66,7 @@ class ContactDetails(ResponseModel):
     is_private: Optional[bool] = Field(None, alias="isPrivate", description="Private contact flag")
     is_active: Optional[bool] = Field(None, alias="isActive", description="Active flag")
     company_id: Optional[str] = Field(None, alias="companyId", description="Company UUID")
-    root_contact_id: Optional[str] = Field(None, alias="rootContactId", description="Root contact ID")
+    root_contact_id: Optional[int] = Field(None, alias="rootContactId", description="Root contact ID")
     owner_franchisee_id: Optional[str] = Field(None, alias="ownerFranchiseeId", description="Owner franchisee UUID")
     company: Optional[dict] = Field(None, description="Lightweight company summary")
     legacy_guid: Optional[str] = Field(None, alias="legacyGuid", description="Legacy GUID")
@@ -75,7 +75,7 @@ class ContactDetails(ResponseModel):
     department: Optional[str] = Field(None, description="Department")
     web_site: Optional[str] = Field(None, alias="webSite", description="Website URL")
     birth_date: Optional[str] = Field(None, alias="birthDate", description="Birth date")
-    job_title_id: Optional[str] = Field(None, alias="jobTitleId", description="Job title ID")
+    job_title_id: Optional[int] = Field(None, alias="jobTitleId", description="Job title ID")
     job_title: Optional[str] = Field(None, alias="jobTitle", description="Job title")
 
 
