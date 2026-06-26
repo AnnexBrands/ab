@@ -4,6 +4,14 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [0.1.9] - 2026-06-26
+
+### Added
+
+- **`api.jobs.get_feedback()` and `api.jobs.save_feedback()` now expose
+  `/job/feedback/{jobDisplayId}`.** `save_feedback()` accepts a `feedback_id`
+  and `cancel_job` flag and sends the API's `feedbackId` / `cancelJob` payload.
+
 ## [0.1.8] - 2026-06-25
 
 A model-correctness patch. Backward-compatible with `0.1.7`.

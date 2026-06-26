@@ -8,14 +8,14 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 
 ## Summary
 
-- **Total endpoints**: 237
-- **Complete (all gates pass)**: 174
-- **G1 Model Fidelity**: 187/237 pass
-- **G2 Fixture Status**: 188/237 pass
-- **G3 Test Quality**: 228/237 pass
-- **G4 Doc Accuracy**: 237/237 pass
-- **G5 Param Routing**: 231/237 pass
-- **G6 Request Quality**: 233/237 pass
+- **Total endpoints**: 239
+- **Complete (all gates pass)**: 175
+- **G1 Model Fidelity**: 188/239 pass
+- **G2 Fixture Status**: 189/239 pass
+- **G3 Test Quality**: 229/239 pass
+- **G4 Doc Accuracy**: 239/239 pass
+- **G5 Param Routing**: 233/239 pass
+- **G6 Request Quality**: 235/239 pass
 
 ## Status Legend
 
@@ -264,6 +264,8 @@ Tracks capture status and quality gates for all endpoint fixtures in `tests/fixt
 | /documents/hide/{docId} | PUT | api.documents.hide | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/book | POST | api.jobs.book | — | — | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 | /job/{jobDisplayId}/tracking/shipment/{proNumber} | GET | api.jobs.tracking.shipment | — | ShipmentTrackingDetails | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/feedback/{jobDisplayId} | GET | api.jobs.get_feedback | — | FeedbackSaveModel | FAIL | FAIL | FAIL | PASS | PASS | PASS | incomplete | auto-discovered |
+| /job/feedback/{jobDisplayId} | POST | api.jobs.save_feedback | FeedbackSaveModel | ServiceBaseResponse | PASS | PASS | PASS | PASS | PASS | PASS | complete | auto-discovered |
 
 ## Model Warning Summary
 

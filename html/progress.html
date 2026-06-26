@@ -104,11 +104,11 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 </head>
 <body>
 <h1>ABConnect SDK — Progress Report</h1>
-<p class='subtitle'>Generated 2026-06-15 18:21 UTC</p>
-<h2>Coverage Summary</h2><table><tr><th>API Surface</th><th>Total</th><th>Done</th><th>Pending</th><th>Not Started</th><th>%</th><th>Progress</th></tr><tr><td><strong>ACPortal</strong></td><td>211</td><td class='done'>211</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
+<p class='subtitle'>Generated 2026-06-26 23:34 UTC</p>
+<h2>Coverage Summary</h2><table><tr><th>API Surface</th><th>Total</th><th>Done</th><th>Pending</th><th>Not Started</th><th>%</th><th>Progress</th></tr><tr><td><strong>ACPortal</strong></td><td>213</td><td class='done'>213</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>Catalog</strong></td><td>17</td><td class='done'>17</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
 <tr><td><strong>ABC</strong></td><td>5</td><td class='done'>5</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr>
-<tr class='totals-row'><td>Total</td><td>233</td><td class='done'>233</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr></table>
+<tr class='totals-row'><td>Total</td><td>235</td><td class='done'>235</td><td class='pending'>0</td><td class='not-started'>0</td><td>100%</td><td><div class='progress-bar'><div class='seg-done' style='width:100.0%'></div><div class='seg-pending' style='width:0.0%'></div><div class='seg-ns' style='width:0.0%'></div></div></td></tr></table>
 <h2>Endpoint Coverage by Class</h2>
 <h3>account (1 methods)</h3>
 <p>Path root: <code>/account</code></p>
@@ -387,7 +387,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td>get_usar</td><td><code>api.forms.get_usar</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 <tr><td>get_usar_editable</td><td><code>api.forms.get_usar_editable</code></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-ns'>no</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
-<h3>jobs (59 methods) — aliases: job</h3>
+<h3>jobs (61 methods) — aliases: job</h3>
 <p>Path root: <code>/job</code></p>
 <h4>Helpers</h4>
 <table><tr><th>Method</th><th>Python Path</th><th>Doc</th><th>Ex</th><th>CLI</th></tr>
@@ -451,6 +451,11 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <h4>changeAgent (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/{jobDisplayId}/changeAgent</td><td>change_agent</td><td><code>api.jobs.change_agent</code></td><td>ServiceBaseResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+</table>
+<h4>feedback (2 methods)</h4>
+<table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/job/feedback/{jobDisplayId}</td><td>get_feedback</td><td><code>api.jobs.get_feedback</code></td><td>FeedbackSaveModel</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitdata' title=''>needs data</span></td><td><span class='badge badge-done'>yes</span></td></tr>
+<tr><td class='col-method'>POST</td><td class='col-path'>/job/feedback/{jobDisplayId}</td><td>save_feedback</td><td><code>api.jobs.save_feedback</code></td><td>ServiceBaseResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h4>freightitems (1 methods)</h4>
 <table><tr><th>HTTP</th><th>Path</th><th>Method</th><th>Python Path</th><th>Return</th><th>Doc</th><th>Ex</th><th>Run</th><th>CLI</th></tr>
@@ -930,7 +935,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>POST</td><td class='col-path'>/Web2Lead/post</td><td>post</td><td><code>api.web2lead.post</code></td><td>Web2LeadResponse</td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-done'>yes</span></td><td><span class='badge badge-awaitpaste' title=''>paste</span></td><td><span class='badge badge-done'>yes</span></td></tr>
 </table>
 <h2>Paste Capture — endpoints awaiting a real response</h2>
-<div class='capture-bar'><button type='button' onclick='abDownloadCaptures()'>Download captures.json</button><span class='capture-count'><span id='capture-filled'>0</span> filled / 99 awaiting paste</span></div>
+<div class='capture-bar'><button type='button' onclick='abDownloadCaptures()'>Download captures.json</button><span class='capture-count'><span id='capture-filled'>0</span> filled / 101 awaiting paste</span></div>
 <p>Paste the real JSON response (and request body where shown) from a live call, then download <code>captures.json</code> and hand it back for ingest (<code>python scripts/ingest_captures.py captures.json</code>).</p>
 <details class='capture-item' data-endpoint='api.account.get_profile' data-method='GET' data-path='/account/profile' data-response-model='AccountProfile' data-request-model=''><summary><span class='badge badge-awaitdata'>needs data</span> <code>api.account.get_profile</code> <span class='capture-meta'>GET /account/profile &rarr; AccountProfile</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 </div></details>
@@ -1027,6 +1032,8 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <details class='capture-item' data-endpoint='api.jobs.change_agent' data-method='POST' data-path='/job/{jobDisplayId}/changeAgent' data-response-model='ServiceBaseResponse' data-request-model='ChangeJobAgentRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.change_agent</code> <span class='capture-meta'>POST /job/{jobDisplayId}/changeAgent &rarr; ServiceBaseResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (ChangeJobAgentRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
+<details class='capture-item' data-endpoint='api.jobs.get_feedback' data-method='GET' data-path='/job/feedback/{jobDisplayId}' data-response-model='FeedbackSaveModel' data-request-model=''><summary><span class='badge badge-awaitdata'>needs data</span> <code>api.jobs.get_feedback</code> <span class='capture-meta'>GET /job/feedback/{jobDisplayId} &rarr; FeedbackSaveModel</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
+</div></details>
 <details class='capture-item' data-endpoint='api.jobs.note.create' data-method='POST' data-path='/job/{jobDisplayId}/note' data-response-model='JobNote' data-request-model='JobNoteCreateRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.note.create</code> <span class='capture-meta'>POST /job/{jobDisplayId}/note &rarr; JobNote</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (JobNoteCreateRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
@@ -1075,6 +1082,9 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 </div></details>
 <details class='capture-item' data-endpoint='api.jobs.payment.verify_ach_source' data-method='POST' data-path='/job/{jobDisplayId}/payment/verifyJobACHSource' data-response-model='ServiceBaseResponse' data-request-model='VerifyACHRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.payment.verify_ach_source</code> <span class='capture-meta'>POST /job/{jobDisplayId}/payment/verifyJobACHSource &rarr; ServiceBaseResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (VerifyACHRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
+</div></details>
+<details class='capture-item' data-endpoint='api.jobs.save_feedback' data-method='POST' data-path='/job/feedback/{jobDisplayId}' data-response-model='ServiceBaseResponse' data-request-model='FeedbackSaveModel'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.save_feedback</code> <span class='capture-meta'>POST /job/feedback/{jobDisplayId} &rarr; ServiceBaseResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
+<label>request body JSON (FeedbackSaveModel):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
 <details class='capture-item' data-endpoint='api.jobs.search_by_details' data-method='POST' data-path='/job/searchByDetails' data-response-model='JobSearchResult' data-request-model='JobSearchRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.jobs.search_by_details</code> <span class='capture-meta'>POST /job/searchByDetails &rarr; JobSearchResult</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (JobSearchRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
@@ -1191,13 +1201,13 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <details class='capture-item' data-endpoint='api.web2lead.post' data-method='POST' data-path='/Web2Lead/post' data-response-model='Web2LeadResponse' data-request-model='Web2LeadRequest'><summary><span class='badge badge-awaitpaste'>paste</span> <code>api.web2lead.post</code> <span class='capture-meta'>POST /Web2Lead/post &rarr; Web2LeadResponse</span></summary><div class='detail-body'><label>response JSON:</label><textarea data-role='response' placeholder='paste real JSON response'></textarea>
 <label>request body JSON (Web2LeadRequest):</label><textarea data-role='request' placeholder='paste real JSON request body'></textarea>
 </div></details>
-<h2>Quality Gate Status</h2><div class='gate-cards'><div class='gate-card card-overall'><h4>Overall</h4><div class='count'>73%</div><div class='label'>170 of 233 complete</div></div>
-<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>182/233</div><div class='label'>Zero extra fields</div></div>
-<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>183/233</div><div class='label'>Fixture on disk</div></div>
-<div class='gate-card card-pass'><h4>G3: Test Quality</h4><div class='count'>224/233</div><div class='label'>isinstance + extra</div></div>
-<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>232/233</div><div class='label'>Correct return type</div></div>
-<div class='gate-card card-pass'><h4>G5: Param Routing</h4><div class='count'>227/233</div><div class='label'>params_model set</div></div>
-<div class='gate-card card-pass'><h4>G6: Request Quality</h4><div class='count'>228/233</div><div class='label'>Typed sigs + descriptions</div></div></div>
+<h2>Quality Gate Status</h2><div class='gate-cards'><div class='gate-card card-overall'><h4>Overall</h4><div class='count'>73%</div><div class='label'>171 of 235 complete</div></div>
+<div class='gate-card card-pass'><h4>G1: Model Fidelity</h4><div class='count'>183/235</div><div class='label'>Zero extra fields</div></div>
+<div class='gate-card card-pass'><h4>G2: Fixture Status</h4><div class='count'>184/235</div><div class='label'>Fixture on disk</div></div>
+<div class='gate-card card-pass'><h4>G3: Test Quality</h4><div class='count'>225/235</div><div class='label'>isinstance + extra</div></div>
+<div class='gate-card card-pass'><h4>G4: Doc Accuracy</h4><div class='count'>234/235</div><div class='label'>Correct return type</div></div>
+<div class='gate-card card-pass'><h4>G5: Param Routing</h4><div class='count'>229/235</div><div class='label'>params_model set</div></div>
+<div class='gate-card card-pass'><h4>G6: Request Quality</h4><div class='count'>230/235</div><div class='label'>Typed sigs + descriptions</div></div></div>
 <h2>Per-Endpoint Gate Details</h2><table class='gate-table'><tr><th>Method</th><th>Endpoint</th><th>Model</th><th>G1</th><th>G2</th><th>G3</th><th>G4</th><th>G5</th><th>G6</th><th>Status</th></tr><tr><td class='col-method'>GET</td><td class='col-path'>/Web2Lead/get</td><td class='col-model'>Web2LeadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='Cannot infer endpoint module'>FAIL</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/Web2Lead/post</td><td class='col-model'>Web2LeadResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/autoprice/quickquote</td><td class='col-model'>QuickQuoteResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-fail' title='G6a: Cannot infer endpoint module'>FAIL</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
@@ -1268,6 +1278,8 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>GET</td><td class='col-path'>/documents/list</td><td class='col-model'>List[Document]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/documents/update/{docId}</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
+<tr><td class='col-method'>GET</td><td class='col-path'>/job/feedback/{jobDisplayId}</td><td class='col-model'>FeedbackSaveModel</td><td class='col-gate gate-fail' title='Fixture FeedbackSaveModel.json not found'>FAIL</td><td class='col-gate gate-fail' title='Fixture FeedbackSaveModel.json not found'>FAIL</td><td class='col-gate gate-fail' title='No isinstance(result, FeedbackSaveModel) assertion found'>FAIL</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-ns'>incomplete</span></td></tr>
+<tr><td class='col-method'>POST</td><td class='col-path'>/job/feedback/{jobDisplayId}</td><td class='col-model'>ServiceBaseResponse</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/job/save</td><td class='col-model'>—</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>GET</td><td class='col-path'>/job/search</td><td class='col-model'>JobSearchResult</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>POST</td><td class='col-path'>/job/searchByDetails</td><td class='col-model'>List[JobSearchResult]</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
@@ -1432,7 +1444,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <tr><td class='col-method'>GET</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerExpandedDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr>
 <tr><td class='col-method'>PUT</td><td class='col-path'>/Seller/{id}</td><td class='col-model'>SellerDto</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-gate gate-pass'>PASS</td><td class='col-status'><span class='badge badge-done'>complete</span></td></tr></table>
 <h2>Action Required</h2>
-<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (117 endpoints)</p>
+<p class='tier-header'><span class='badge badge-pending'>Tier 1</span> Scaffolded — needs correct request data (118 endpoints)</p>
 <details><summary><strong>Job</strong> — 14 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;14</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>GET</span>
@@ -2341,7 +2353,7 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 </div></details>
-<details><summary><strong>jobs</strong> — 6 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;6</summary><div class='detail-body'>
+<details><summary><strong>jobs</strong> — 7 endpoints <span class='badge badge-request'>Needs Request Data</span>&nbsp;7</summary><div class='detail-body'>
 <div class='endpoint-row'>
 <span class='ep-method'>POST</span>
 <span class='ep-path'>/job/update</span>
@@ -2366,6 +2378,19 @@ code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px;
 <li>Fix the example in <code>examples/jobs.py</code> with correct request data</li>
 <li>Run the example — save 200 response to <code>tests/fixtures/.json</code></li>
 <li>Run <code>pytest tests/ -k </code> to verify the fixture validates against the Pydantic model</li>
+<li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
+</ol>
+<div class='endpoint-row'>
+<span class='ep-method'>GET</span>
+<span class='ep-path'>/job/feedback/{jobDisplayId}</span>
+<span class='ep-model'>FeedbackSaveModel</span>
+<span class='badge badge-request'>Needs Request Data</span>
+</div>
+<ol class='instructions'>
+<li>Research ABConnectTools endpoint code (<code>endpoints/jobs.py</code>) and swagger for required params/body</li>
+<li>Fix the example in <code>examples/jobs.py</code> with correct request data</li>
+<li>Run the example — save 200 response to <code>tests/fixtures/FeedbackSaveModel.json</code></li>
+<li>Run <code>pytest tests/ -k feedback_save_model</code> to verify the fixture validates against the Pydantic model</li>
 <li>Update <code>FIXTURES.md</code>: move to Captured with today's date</li>
 </ol>
 <div class='endpoint-row'>

@@ -46,6 +46,7 @@ if TYPE_CHECKING:
         CalendarItem,
         ChangeJobAgentRequest,
         ExtendedOnHoldInfo,
+        FeedbackSaveModel,
         FreightItemsRequest,
         IncrementStatusRequest,
         ItemNotesRequest,
@@ -106,6 +107,13 @@ _SEARCH_BY_DETAILS = Route(
 _GET_PRICE = Route("GET", "/job/{jobDisplayId}/price", response_model="JobPrice")
 _GET_CALENDAR = Route("GET", "/job/{jobDisplayId}/calendaritems", response_model="List[CalendarItem]")
 _GET_CONFIG = Route("GET", "/job/{jobDisplayId}/updatePageConfig", response_model="JobUpdatePageConfig")
+_GET_FEEDBACK = Route("GET", "/job/feedback/{jobDisplayId}", response_model="FeedbackSaveModel")
+_POST_FEEDBACK = Route(
+    "POST",
+    "/job/feedback/{jobDisplayId}",
+    request_model="FeedbackSaveModel",
+    response_model="ServiceBaseResponse",
+)
 
 # Transfer route
 _TRANSFER = Route("POST", "/job/transfer/{jobDisplayId}", request_model="TransferModel")
@@ -318,6 +326,43 @@ class JobsEndpoint(BaseEndpoint):
         Response model: JobUpdatePageConfig
         """
         return self._request(_GET_CONFIG.bind(jobDisplayId=job_display_id))
+
+    def get_feedback(self, job_display_id: int | str) -> FeedbackSaveModel:
+        """GET /job/feedback/{jobDisplayId} (ACPortal)
+
+        Retrieve the saved feedback selection for a job.
+
+        Args:
+            job_display_id: Job display ID.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/get_feedback.html
+        Response model: FeedbackSaveModel
+        """
+        return self._request(_GET_FEEDBACK.bind(jobDisplayId=job_display_id))
+
+    def save_feedback(
+        self,
+        job_display_id: int | str,
+        feedback_id: str | None = None,
+        cancel_job: bool = False,
+        *,
+        data: FeedbackSaveModel | dict | None = None,
+    ) -> ServiceBaseResponse:
+        """POST /job/feedback/{jobDisplayId} (ACPortal)
+
+        Args:
+            job_display_id: Job display ID.
+            feedback_id: Feedback UUID to save.
+            cancel_job: Whether the API should cancel the job.
+            data: Optional full feedback payload. When provided, this payload
+                is sent instead of building one from feedback_id/cancel_job.
+
+        Docs: https://ab-sdk.readthedocs.io/en/latest/api/jobs/save_feedback.html
+        Request model: FeedbackSaveModel
+        Response model: ServiceBaseResponse
+        """
+        payload = data if data is not None else {"feedbackId": feedback_id, "cancelJob": cancel_job}
+        return self._request(_POST_FEEDBACK.bind(jobDisplayId=job_display_id), json=payload)
 
     def update(self, *, data: JobUpdateRequest | dict) -> None:
         """POST /job/update (ABC API surface).

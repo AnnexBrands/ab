@@ -6,6 +6,7 @@ from ab.api.models.jobs import (
     ActiveOnHoldInfo,
     CalendarItem,
     ContactDetails,
+    FeedbackSaveModel,
     Job,
     JobContactDetails,
     JobContactEmail,
@@ -98,3 +99,18 @@ class TestJobModels:
         model = JobUpdatePageConfig.model_validate(data)
         assert isinstance(model, JobUpdatePageConfig)
         assert_no_extra_fields(model)
+
+    def test_feedback_save_model(self):
+        model = FeedbackSaveModel.model_validate(
+            {
+                "feedbackId": "12345678-1234-1234-1234-123456789abc",
+                "cancelJob": True,
+            }
+        )
+
+        assert model.feedback_id == "12345678-1234-1234-1234-123456789abc"
+        assert model.cancel_job is True
+        assert model.model_dump(by_alias=True, exclude_none=True) == {
+            "feedbackId": "12345678-1234-1234-1234-123456789abc",
+            "cancelJob": True,
+        }

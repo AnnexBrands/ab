@@ -488,6 +488,13 @@ class TransferModel(RequestModel):
     franchisee_id: str = Field(..., alias="franchiseeId", description="Target franchisee company UUID")
 
 
+class FeedbackSaveModel(RequestModel):
+    """Body for POST /job/feedback/{jobDisplayId}; also returned by GET."""
+
+    feedback_id: Optional[str] = Field(None, alias="feedbackId", description="Feedback UUID")
+    cancel_job: Optional[bool] = Field(None, alias="cancelJob", description="Whether to cancel the job")
+
+
 class JobSearchParams(RequestModel):
     """Query parameters for GET /job/search."""
 
