@@ -4,6 +4,17 @@ All notable changes to `annex-abconnect` are documented here. This project
 adheres to [Semantic Versioning](https://semver.org/) (pre-1.0: minor/patch
 per 0.x pragmatics). The package is imported as `ab`.
 
+## [0.1.10] - 2026-06-27
+
+### Added
+
+- **`api.jobs.tasks.clear_pack_finish()` reopens packaging without deleting
+  the PK timeline task.** The helper fetches the current PK task and posts it
+  back with explicit JSON `null` values for `timeLog.end` and `completedDate`,
+  preserving the task id, `modifiedDate`, work logs, and `timeLog.start`. When
+  the job is below Packaging Completed, it returns a successful no-op response
+  without touching the API.
+
 ## [0.1.9] - 2026-06-26
 
 ### Added
