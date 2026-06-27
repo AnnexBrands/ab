@@ -181,6 +181,82 @@ def test_upsert_deep_merges_onto_existing_task_without_note_request():
     jobs._client.request.assert_not_called()
 
 
+def test_clear_pack_finish_noops_below_status_5_without_post():
+    jobs = _jobs()
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[
+            TimelineTask(
+                id=123,
+                taskCode="PK",
+                modifiedDate="2026-06-02T09:00:00Z",
+                timeLog={"id": 456, "start": "2026-06-02T10:00:00Z"},
+            )
+        ],
+        jobSubManagementStatus={"name": "4 - Packaging Started"},
+    )
+    helper = TimelineHelpers(jobs)
+
+    resp = helper.clear_pack_finish(4000000)
+
+    assert resp.success is True
+    assert resp.job_sub_management_status == {"name": "4 - Packaging Started"}
+    assert "No-op" in (resp.error_message or "")
+    jobs._client.request.assert_not_called()
+
+
+def test_clear_pack_finish_posts_existing_pk_with_null_end_at_status_5():
+    jobs = _jobs()
+    jobs._client.request.side_effect = None
+    jobs._client.request.return_value = {
+        "success": True,
+        "taskExists": False,
+        "jobSubManagementStatus": {"name": "4 - Packaging Started"},
+        "task": {
+            "id": 123,
+            "taskCode": "PK",
+            "modifiedDate": "2026-06-02T09:30:00Z",
+            "timeLog": {"id": 456, "start": "2026-06-02T10:00:00Z", "end": None},
+        },
+    }
+    jobs.get_timeline_response.return_value = TimelineResponse(
+        tasks=[
+            TimelineTask(
+                id=123,
+                jobId="job-uuid",
+                taskCode="PK",
+                modifiedDate="2026-06-02T09:00:00Z",
+                timeLog={
+                    "id": 456,
+                    "start": "2026-06-02T10:00:00Z",
+                    "end": "2026-06-02T10:59:59Z",
+                },
+                workTimeLogs=[{"id": 789, "minutes": 12}],
+            )
+        ],
+        jobSubManagementStatus={"name": "5 - Packaging Completed"},
+    )
+    helper = TimelineHelpers(jobs)
+
+    resp = helper.clear_pack_finish(4000000, create_email=True)
+
+    assert resp.success is True
+    jobs._client.request.assert_called_once()
+    args, kwargs = jobs._client.request.call_args
+    assert args == ("POST", "/job/4000000/timeline")
+    assert kwargs["params"] == {"createEmail": True}
+    body = kwargs["json"]
+    assert body["id"] == 123
+    assert body["taskCode"] == "PK"
+    assert body["modifiedDate"] == "2026-06-02T09:00:00Z"
+    assert body["workTimeLogs"] == [{"id": 789, "minutes": 12}]
+    assert body["timeLog"] == {
+        "id": 456,
+        "start": "2026-06-02T10:00:00Z",
+        "end": None,
+    }
+    assert body["completedDate"] is None
+
+
 def test_note_is_not_added_when_task_create_fails():
     jobs = _jobs()
     jobs.create_timeline_task.side_effect = RuntimeError("conflict")

@@ -202,3 +202,100 @@ class TestTimelineHelperSequence:
         assert cp.get("scheduledDate") is not None, "CP scheduledDate"
         assert cp.get("pickupCompletedDate") is not None, "CP pickupCompletedDate"
         assert cp.get("deliveryCompletedDate") is not None, "CP deliveryCompletedDate"
+
+
+class TestTimelineRollbackBehavior:
+    """Focused live repros for backward timeline transitions."""
+
+    def test_patch_packaging_completed_back_to_started_requires_deleting_pk(self, api):
+        """PATCH PK from status 5 to 4 is rejected; deleting PK rolls status back.
+
+        Repro sequence:
+        1. delete all timeline tasks
+        2. create PU received (status 3)
+        3. create PK started/completed with a timeLog (status 5)
+        4. PATCH the PK task to status 4 with ``completedDate: null``
+        5. delete PK to roll the job back to status 3
+        """
+        api.jobs.tasks.delete_all(JOB)
+
+        try:
+            received = api.jobs.tasks.received(
+                JOB,
+                start=TEST_PU_START_DATE,
+                end=TEST_PU_END_DATE,
+            )
+            assert received.success is True
+            assert _current_status_code(api, JOB) == 3
+
+            pack_started = api.jobs.tasks.pack_start(JOB, start=TEST_PK_START_DATE)
+            assert pack_started.success is True
+            pack_finished = api.jobs.tasks.pack_finish(JOB, end=TEST_PK_END_DATE)
+            assert pack_finished.success is True
+            assert _current_status_code(api, JOB) == 5
+
+            _, pk = api.jobs.tasks.get_task(JOB, "PK")
+            assert pk is not None
+            pk_id = pk.get("id")
+            assert pk_id is not None
+
+            with pytest.raises(RequestError) as exc_info:
+                api.jobs.timeline._client.request(
+                    "PATCH",
+                    f"/job/{JOB}/timeline/{pk_id}",
+                    json={"status": 4, "completedDate": None},
+                )
+
+            assert exc_info.value.status_code == 400
+            assert "Task of a such type (PK) can not be updated" in exc_info.value.message
+            assert _current_status_code(api, JOB) == 5
+
+            deleted = api.jobs.tasks.delete(JOB, "PK")
+            assert deleted is not None
+            assert _current_status_code(api, JOB) == 3
+            _, pk_after_delete = api.jobs.tasks.get_task(JOB, "PK")
+            assert pk_after_delete is None
+        finally:
+            api.jobs.tasks.delete_all(JOB)
+
+    def test_clear_pack_finish_reopens_packaging_without_deleting_pk(self, api):
+        """clear_pack_finish() clears PK completion and keeps the same PK task."""
+        api.jobs.tasks.delete_all(JOB)
+
+        try:
+            received = api.jobs.tasks.received(
+                JOB,
+                start=TEST_PU_START_DATE,
+                end=TEST_PU_END_DATE,
+            )
+            assert received.success is True
+            pack_started = api.jobs.tasks.pack_start(JOB, start=TEST_PK_START_DATE)
+            assert pack_started.success is True
+            pack_finished = api.jobs.tasks.pack_finish(JOB, end=TEST_PK_END_DATE)
+            assert pack_finished.success is True
+            assert _current_status_code(api, JOB) == 5
+
+            _, pk_before = api.jobs.tasks.get_task(JOB, "PK")
+            assert pk_before is not None
+            pk_id = pk_before.get("id")
+            assert pk_id is not None
+
+            reopened = api.jobs.tasks.clear_pack_finish(JOB)
+
+            assert reopened.success is True
+            assert _current_status_code(api, JOB) == 4
+            _, pk_after = api.jobs.tasks.get_task(JOB, "PK")
+            assert pk_after is not None
+            assert pk_after.get("id") == pk_id
+            time_log = pk_after.get("timeLog") or {}
+            assert time_log.get("start") is not None
+            assert time_log.get("end") is None
+        finally:
+            api.jobs.tasks.delete_all(JOB)
+
+
+def _current_status_code(api, job_id: int) -> int:
+    """Return the integer status code from ``jobSubManagementStatus.name``."""
+    status_info, _ = api.jobs.tasks.get_task(job_id, "PU")
+    name = status_info.get("name") or ""
+    return int(float(name.split(" - ", 1)[0]))

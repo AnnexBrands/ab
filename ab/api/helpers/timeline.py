@@ -461,6 +461,47 @@ class TimelineHelpers:
 
     _5 = pack_finish
 
+    def clear_pack_finish(self, job_id: int, create_email: bool = False) -> TimelineSaveResponse:
+        """Clear ``PK.timeLog.end`` to reopen packaging from status 5.
+
+        The raw timeline POST endpoint accepts an existing PK task with an
+        explicit JSON ``null`` for ``timeLog.end`` and moves the job back to
+        status 4. The typed request-model path omits ``None`` values, so this
+        helper intentionally posts the fresh server task dict directly.
+
+        If the job is below status 5, no request is sent and a successful
+        no-op response is returned.
+        """
+        status_info, task = self.get_task(job_id, PK)
+        curr = _status_code(status_info)
+        if curr < 5:
+            return TimelineSaveResponse(
+                success=True,
+                errorMessage=f"No-op: job status is {curr:g}, below packaging completed",
+                jobSubManagementStatus=status_info,
+            )
+        if task is None:
+            return TimelineSaveResponse(
+                success=False,
+                errorMessage="Cannot clear packaging completion: PK task not found",
+                jobSubManagementStatus=status_info,
+            )
+
+        data = dict(task)
+        data["taskCode"] = PK
+        time_log = dict(data.get("timeLog") or {})
+        time_log["end"] = None
+        data["timeLog"] = time_log
+        data["completedDate"] = None
+
+        resp = self._jobs._client.request(
+            "POST",
+            f"/job/{job_id}/timeline",
+            params={"createEmail": create_email},
+            json=data,
+        )
+        return TimelineSaveResponse.model_validate(resp)
+
     # ---- Status helpers (ST) ------------------------------------------------
 
     def storage_begin(
